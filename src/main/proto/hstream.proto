@@ -1,0 +1,152 @@
+syntax = "proto3";
+
+package hstream.server;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+
+option java_package = "io.hstream";
+option java_multiple_files = true;
+option java_outer_classname = "HStreamProto";
+
+service HStreamApi {
+
+  rpc Append(AppendRequest) returns (AppendResponse) {}
+
+  rpc Subscribe(Subscription) returns (Subscription) {}
+
+  rpc DeleteSubscription(DeleteSubscriptionRequest) returns (google.protobuf.Empty) {}
+
+  rpc ListSubscriptions(google.protobuf.Empty) returns (ListSubscriptionsResponse) {}
+
+  rpc Fetch(FetchRequest) returns (FetchResponse) {}
+
+  rpc CommitOffset(CommittedOffset) returns (CommittedOffset) {}
+
+  rpc CreateStream(Stream) returns (Stream) {}
+
+  rpc DeleteStream(DeleteStreamRequest) returns (google.protobuf.Empty) {}
+
+  rpc ListStreams(google.protobuf.Empty) returns (ListStreamsResponse) {}
+
+  // rpc ExecuteStreamQuery(ExecuteStreamQueryRequest) returns (stream
+  // google.protobuf.Struct) {}
+
+  rpc ExecutePushQuery(CommandPushQuery) returns (stream google.protobuf.Struct) {}
+
+}
+
+
+message AppendRequest {
+  string streamName = 1;
+  repeated bytes records = 2;
+}
+
+message AppendResponse {
+  string streamName = 1;
+  repeated RecordId recordIds = 2;
+}
+
+message Subscription {
+  string subscriptionId = 1;
+  string streamName = 2;
+  SubscriptionOffset offset = 3;
+}
+
+message SubscriptionOffset {
+  enum SpecialOffset {
+    EARLIST = 0;
+    LATEST = 1;
+  }
+
+  oneof offset {
+    SpecialOffset specialOffset = 1;
+    RecordId recordOffset = 2;
+  }
+}
+
+message FetchRequest {
+  string subscriptionId = 1;
+  uint64 timeout = 2;
+  uint32 maxSize = 3;
+}
+
+message FetchResponse {
+  repeated ReceivedRecord receivedRecords = 1;
+}
+
+message ReceivedRecord {
+  RecordId recordId = 1;
+  bytes record = 2;
+}
+
+message CommittedOffset {
+  string subscriptionId = 1;
+  string streamName = 2;
+  RecordId offset = 3;
+}
+
+message Stream {
+  string streamName = 1;
+  uint32 replicationFactor = 2;
+}
+
+message DeleteStreamRequest {
+  string streamName = 1;
+}
+
+message ListStreamsResponse {
+  repeated Stream streams = 1;
+}
+
+message HStreamRecord {
+  // Required.
+  HStreamRecordHeader header = 1;
+
+  // Optional.
+  // Payload may be empty.
+  bytes payload = 2;
+}
+
+message HStreamRecordHeader {
+  // Required.
+  // Flag for payload.
+  // - JSON: 0x01 << 24
+  // - RAW:  0x02 << 24
+  uint32 flag = 1;
+
+  // Optional.
+  // Attributes attached to this record.
+  map<string, string> attributes = 2;
+
+  // Required.
+  // The time at which the message was published,
+  // populated by the server.
+  google.protobuf.Timestamp publish_time = 3;
+
+  // Optional.
+  // key for the message.
+  string key = 4;
+}
+
+message RecordId {
+  uint64 batchId = 1;
+  uint32 batchIndex = 2;
+}
+
+// message ExecuteStreamQueryRequest {
+//   string sql = 1;
+// }
+
+message CommandPushQuery {
+  string query_text = 1;
+}
+
+message DeleteSubscriptionRequest {
+  string subscriptionId = 1;
+}
+
+message ListSubscriptionsResponse {
+  repeated Subscription subscription = 1;
+}
