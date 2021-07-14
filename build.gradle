@@ -7,6 +7,9 @@ plugins {
     id 'signing'
 }
 
+group = 'io.hstream'
+version = '0.1.0-SNAPSHOT'
+
 repositories {
     mavenCentral()
 }
@@ -59,9 +62,7 @@ java {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            group = 'io.hstream'
             artifactId = 'hstreamdb-java'
-            version = '0.1.0-SNAPSHOT'
             from components.java
             versionMapping {
                 usage('java-api') {
