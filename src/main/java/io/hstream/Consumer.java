@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface Consumer {
 
-    List<ReceivedHRecord> pollHRecords();
+  List<ReceivedHRecord> pollHRecords();
 
-    List<ReceivedRawRecord> pollRawRecords();
+  List<ReceivedRawRecord> pollRawRecords();
 
-    void commit(RecordId recordId);
+  void commit(RecordId recordId);
 }

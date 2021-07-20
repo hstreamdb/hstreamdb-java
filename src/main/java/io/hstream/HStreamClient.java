@@ -4,24 +4,23 @@ import java.util.List;
 
 public interface HStreamClient extends AutoCloseable {
 
-    static ClientBuilder builder() {
-        return new ClientBuilder();
-    }
+  static ClientBuilder builder() {
+    return new ClientBuilder();
+  }
 
-    ProducerBuilder newProducer();
+  ProducerBuilder newProducer();
 
-    ConsumerBuilder newConsumer();
+  ConsumerBuilder newConsumer();
 
-    Publisher<HRecord> streamQuery(String sql);
+  Publisher<HRecord> streamQuery(String sql);
 
-    void createStream(String stream);
+  void createStream(String stream);
 
-    void deleteStream(String stream);
+  void deleteStream(String stream);
 
-    List<Stream> listStreams();
+  List<Stream> listStreams();
 
-    List<Subscription> listSubscriptions();
+  List<Subscription> listSubscriptions();
 
-    void deleteSubscription(String subscriptionId);
-
+  void deleteSubscription(String subscriptionId);
 }
