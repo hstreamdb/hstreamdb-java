@@ -1,11 +1,15 @@
 package io.hstream.impl;
 
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
 import io.hstream.util.RecordUtils;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,41 +18,27 @@ public class ConsumerImpl implements Consumer {
   private static final Logger logger = LoggerFactory.getLogger(ConsumerImpl.class);
 
   private HStreamApiGrpc.HStreamApiStub grpcStub;
+  private HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub;
   private String subscriptionId;
   private String streamName;
   private long pollTimeoutMs;
   private int maxPollRecords;
+  private ScheduledExecutorService scheduledExecutorService;
 
   public ConsumerImpl(
       HStreamApiGrpc.HStreamApiStub grpcStub,
+      HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub,
       String subscriptionId,
       String streamName,
       long pollTimeoutMs,
       int maxPollRecords) {
     this.grpcStub = grpcStub;
+    this.grpcBlockingStub = grpcBlockingStub;
     this.subscriptionId = subscriptionId;
     this.streamName = streamName;
     this.pollTimeoutMs = pollTimeoutMs;
     this.maxPollRecords = maxPollRecords;
-
-    CompletableFuture<Subscription> completableFuture = new CompletableFuture<>();
-    StreamObserver<Subscription> streamObserver =
-        new StreamObserver<>() {
-          @Override
-          public void onNext(Subscription subscription) {
-            logger.info("create subscription {} successfully", subscription.getSubscriptionId());
-            completableFuture.complete(subscription);
-          }
-
-          @Override
-          public void onError(Throwable t) {
-            logger.error("create subscription error: ", t);
-            completableFuture.completeExceptionally(t);
-          }
-
-          @Override
-          public void onCompleted() {}
-        };
+    this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
 
     Subscription subscription =
         Subscription.newBuilder()
@@ -58,11 +48,39 @@ public class ConsumerImpl implements Consumer {
                 SubscriptionOffset.newBuilder()
                     .setSpecialOffset(SubscriptionOffset.SpecialOffset.LATEST))
             .build();
+    try {
+      Subscription subscriptionResponse = grpcBlockingStub.subscribe(subscription);
+      logger.info(
+          "consumer with subscription {} created", subscriptionResponse.getSubscriptionId());
+    } catch (StatusRuntimeException e) {
+      throw new HStreamDBClientException.SubscribeException("consumer subscribe error", e);
+    }
 
-    grpcStub.subscribe(subscription, streamObserver);
+    final ConsumerHeartbeatRequest consumerHeartbeatRequest =
+        ConsumerHeartbeatRequest.newBuilder().setSubscriptionId(this.subscriptionId).build();
+    final StreamObserver<ConsumerHeartbeatResponse> heartbeatObserver =
+        new StreamObserver<>() {
+          @Override
+          public void onNext(ConsumerHeartbeatResponse response) {
+            logger.info(
+                "received consumer heartbeat response for subscription {}",
+                response.getSubscriptionId());
+          }
 
-    Subscription subscription1 = completableFuture.join();
-    logger.info("consumer with subscription {} created", subscription1.getSubscriptionId());
+          @Override
+          public void onError(Throwable t) {
+            logger.error("send consumer heartbeat error: ", t);
+          }
+
+          @Override
+          public void onCompleted() {}
+        };
+
+    scheduledExecutorService.scheduleAtFixedRate(
+        () -> grpcStub.sendConsumerHeartbeat(consumerHeartbeatRequest, heartbeatObserver),
+        0,
+        1,
+        TimeUnit.SECONDS);
   }
 
   @Override
@@ -159,6 +177,15 @@ public class ConsumerImpl implements Consumer {
 
     grpcStub.commitOffset(committedOffset, streamObserver);
     completableFuture.join();
+  }
+
+  @Override
+  public void close() throws Exception {
+    logger.info("prepare to close consumer");
+
+    scheduledExecutorService.shutdownNow();
+
+    logger.info("consumer has been closed");
   }
 
   private static ReceivedRawRecord toReceivedRawRecord(ReceivedRecord receivedRecord) {
