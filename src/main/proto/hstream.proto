@@ -24,6 +24,8 @@ service HStreamApi {
 
   rpc CommitOffset(CommittedOffset) returns (CommittedOffset) {}
 
+  rpc sendConsumerHeartbeat(ConsumerHeartbeatRequest) returns (ConsumerHeartbeatResponse) {}
+
   rpc CreateStream(Stream) returns (Stream) {}
 
   rpc DeleteStream(DeleteStreamRequest) returns (google.protobuf.Empty) {}
@@ -149,4 +151,12 @@ message DeleteSubscriptionRequest {
 
 message ListSubscriptionsResponse {
   repeated Subscription subscription = 1;
+}
+
+message ConsumerHeartbeatRequest {
+  string subscriptionId = 1;
+}
+
+message ConsumerHeartbeatResponse {
+  string subscriptionId = 1;
 }

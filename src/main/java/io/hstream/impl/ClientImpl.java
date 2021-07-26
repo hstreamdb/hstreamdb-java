@@ -34,7 +34,7 @@ public class ClientImpl implements HStreamClient {
 
   @Override
   public ConsumerBuilder newConsumer() {
-    return new ConsumerBuilder(stub);
+    return new ConsumerBuilder(stub, blockingStub);
   }
 
   @Override

@@ -5,13 +5,17 @@ import io.hstream.impl.ConsumerImpl;
 public class ConsumerBuilder {
 
   private HStreamApiGrpc.HStreamApiStub grpcStub;
+  private HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub;
   private String subscription;
   private String streamName;
   private long pollTimeoutMs = 3000;
   private int maxPollRecords = 500;
 
-  public ConsumerBuilder(HStreamApiGrpc.HStreamApiStub grpcStub) {
+  public ConsumerBuilder(
+      HStreamApiGrpc.HStreamApiStub grpcStub,
+      HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub) {
     this.grpcStub = grpcStub;
+    this.grpcBlockingStub = grpcBlockingStub;
   }
 
   public ConsumerBuilder subscription(String subscription) {
@@ -35,6 +39,7 @@ public class ConsumerBuilder {
   }
 
   public Consumer build() {
-    return new ConsumerImpl(grpcStub, subscription, streamName, pollTimeoutMs, maxPollRecords);
+    return new ConsumerImpl(
+        grpcStub, grpcBlockingStub, subscription, streamName, pollTimeoutMs, maxPollRecords);
   }
 }

@@ -2,7 +2,7 @@ package io.hstream;
 
 import java.util.List;
 
-public interface Consumer {
+public interface Consumer extends AutoCloseable {
 
   List<ReceivedHRecord> pollHRecords();
 

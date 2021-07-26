@@ -30,7 +30,7 @@ public class HStreamClientTest {
   }
 
   @Test
-  public void testWriteRawRecord() {
+  public void testWriteRawRecord() throws Exception {
     Consumer consumer =
         client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
             .maxPollRecords(100)
@@ -45,10 +45,12 @@ public class HStreamClientTest {
 
     List<ReceivedRawRecord> receivedRawRecords = consumer.pollRawRecords();
     Assertions.assertEquals(recordId, receivedRawRecords.get(0).getRecordId());
+
+    consumer.close();
   }
 
   @Test
-  public void testWriteHRecord() {
+  public void testWriteHRecord() throws Exception {
     Consumer consumer =
         client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
             .maxPollRecords(100)
@@ -62,6 +64,51 @@ public class HStreamClientTest {
 
     List<ReceivedHRecord> receivedHRecords = consumer.pollHRecords();
     Assertions.assertEquals(recordId, receivedHRecords.get(0).getRecordId());
+
+    consumer.close();
+  }
+
+  @Test
+  public void testDuplicateSubscribe() throws Exception {
+    Consumer consumer1 =
+        client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
+            .maxPollRecords(100)
+            .pollTimeoutMs(100)
+            .build();
+
+    Assertions.assertThrows(
+        HStreamDBClientException.SubscribeException.class,
+        () -> {
+          Consumer consumer2 =
+              client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
+                  .maxPollRecords(100)
+                  .pollTimeoutMs(100)
+                  .build();
+          consumer2.close();
+        });
+
+    consumer1.close();
+  }
+
+  @Test
+  public void testConsumerSession() throws Exception {
+    Consumer consumer1 =
+        client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
+            .maxPollRecords(100)
+            .pollTimeoutMs(100)
+            .build();
+
+    consumer1.close();
+
+    Thread.sleep(5000);
+
+    Consumer consumer2 =
+        client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
+            .maxPollRecords(100)
+            .pollTimeoutMs(100)
+            .build();
+
+    consumer2.close();
   }
 
   @Test
@@ -113,7 +160,7 @@ public class HStreamClientTest {
   }
 
   @Test
-  public void testWriteBatchRawRecord() {
+  public void testWriteBatchRawRecord() throws Exception {
     Consumer consumer =
         client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
             .maxPollRecords(100)
@@ -144,10 +191,12 @@ public class HStreamClientTest {
         ++readCount;
       }
     }
+
+    consumer.close();
   }
 
   @Test
-  public void testWriteBatchRawRecordMultiThread() {
+  public void testWriteBatchRawRecordMultiThread() throws Exception {
     Consumer consumer =
         client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
             .maxPollRecords(100)
@@ -195,10 +244,12 @@ public class HStreamClientTest {
     }
 
     Assertions.assertEquals(count, readCount);
+
+    consumer.close();
   }
 
   @Test
-  public void testFlush() {
+  public void testFlush() throws Exception {
     Consumer consumer =
         client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
             .maxPollRecords(100)
@@ -231,10 +282,12 @@ public class HStreamClientTest {
         ++readCount;
       }
     }
+
+    consumer.close();
   }
 
   @Test
-  public void testFlushMultiThread() {
+  public void testFlushMultiThread() throws Exception {
     Consumer consumer =
         client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
             .maxPollRecords(100)
@@ -279,5 +332,7 @@ public class HStreamClientTest {
         ++readCount;
       }
     }
+
+    consumer.close();
   }
 }
