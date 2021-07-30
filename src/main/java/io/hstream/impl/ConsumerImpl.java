@@ -1,60 +1,53 @@
 package io.hstream.impl;
 
+import com.google.common.util.concurrent.AbstractService;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
 import io.hstream.util.RecordUtils;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import java.util.concurrent.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConsumerImpl implements Consumer {
+public class ConsumerImpl extends AbstractService implements Consumer {
   private static final Logger logger = LoggerFactory.getLogger(ConsumerImpl.class);
 
   private HStreamApiGrpc.HStreamApiStub grpcStub;
   private HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub;
+  private String consumerName;
   private String subscriptionId;
-  private String streamName;
-  private long pollTimeoutMs;
-  private int maxPollRecords;
+  private RawRecordReceiver rawRecordReceiver;
+  private HRecordReceiver hRecordReceiver;
+
+  private static final long pollTimeoutMs = 1000;
+  private static final int maxPollRecords = 1000;
+
+  private ExecutorService executorService;
   private ScheduledExecutorService scheduledExecutorService;
 
   public ConsumerImpl(
       HStreamApiGrpc.HStreamApiStub grpcStub,
       HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub,
+      String consumerName,
       String subscriptionId,
-      String streamName,
-      long pollTimeoutMs,
-      int maxPollRecords) {
+      RawRecordReceiver rawRecordReceiver,
+      HRecordReceiver hRecordReceiver) {
     this.grpcStub = grpcStub;
     this.grpcBlockingStub = grpcBlockingStub;
+    this.consumerName = consumerName;
     this.subscriptionId = subscriptionId;
-    this.streamName = streamName;
-    this.pollTimeoutMs = pollTimeoutMs;
-    this.maxPollRecords = maxPollRecords;
-    this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
+    this.rawRecordReceiver = rawRecordReceiver;
+    this.hRecordReceiver = hRecordReceiver;
 
-    Subscription subscription =
-        Subscription.newBuilder()
-            .setSubscriptionId(subscriptionId)
-            .setStreamName(streamName)
-            .setOffset(
-                SubscriptionOffset.newBuilder()
-                    .setSpecialOffset(SubscriptionOffset.SpecialOffset.LATEST))
-            .build();
-    try {
-      Subscription subscriptionResponse = grpcBlockingStub.subscribe(subscription);
-      logger.info(
-          "consumer with subscription {} created", subscriptionResponse.getSubscriptionId());
-    } catch (StatusRuntimeException e) {
-      throw new HStreamDBClientException.SubscribeException("consumer subscribe error", e);
-    }
+    this.executorService =
+        Executors.newSingleThreadExecutor(
+            new ThreadFactoryBuilder().setNameFormat("receiver-running-pool-%d").build());
+    this.scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
+  }
+
+  @Override
+  public void doStart() {
 
     final ConsumerHeartbeatRequest consumerHeartbeatRequest =
         ConsumerHeartbeatRequest.newBuilder().setSubscriptionId(this.subscriptionId).build();
@@ -63,28 +56,21 @@ public class ConsumerImpl implements Consumer {
           @Override
           public void onNext(ConsumerHeartbeatResponse response) {
             logger.info(
-                "received consumer heartbeat response for subscription {}",
+                "consumer {} received heartbeat response for subscription {}",
+                consumerName,
                 response.getSubscriptionId());
           }
 
           @Override
           public void onError(Throwable t) {
-            logger.error("send consumer heartbeat error: ", t);
+            logger.error("consumer {} send heartbeat error: {}", ConsumerImpl.this.consumerName, t);
+            throw new HStreamDBClientException.ConsumerException("send heartbeat error", t);
           }
 
           @Override
           public void onCompleted() {}
         };
 
-    scheduledExecutorService.scheduleAtFixedRate(
-        () -> grpcStub.sendConsumerHeartbeat(consumerHeartbeatRequest, heartbeatObserver),
-        0,
-        1,
-        TimeUnit.SECONDS);
-  }
-
-  @Override
-  public List<ReceivedHRecord> pollHRecords() {
     FetchRequest fetchRequest =
         FetchRequest.newBuilder()
             .setSubscriptionId(subscriptionId)
@@ -92,100 +78,87 @@ public class ConsumerImpl implements Consumer {
             .setMaxSize(maxPollRecords)
             .build();
 
-    CompletableFuture<FetchResponse> completableFuture = new CompletableFuture<>();
-    StreamObserver<FetchResponse> streamObserver =
+    StreamObserver<FetchResponse> fetchResponseStreamObserver =
         new StreamObserver<>() {
           @Override
           public void onNext(FetchResponse fetchResponse) {
-            completableFuture.complete(fetchResponse);
+            executorService.submit(
+                () -> {
+                  for (ReceivedRecord receivedRecord : fetchResponse.getReceivedRecordsList()) {
+                    if (RecordUtils.isRawRecord(receivedRecord)) {
+                      rawRecordReceiver.processRawRecord(
+                          toReceivedRawRecord(receivedRecord), new ResponderImpl());
+                    } else {
+                      hRecordReceiver.processHRecord(
+                          toReceivedHRecord(receivedRecord), new ResponderImpl());
+                    }
+                  }
+                });
           }
 
           @Override
           public void onError(Throwable t) {
-            completableFuture.completeExceptionally(t);
+            notifyFailed(t);
           }
 
           @Override
           public void onCompleted() {}
         };
-    grpcStub.fetch(fetchRequest, streamObserver);
 
-    FetchResponse fetchResponse = completableFuture.join();
-    return fetchResponse.getReceivedRecordsList().stream()
-        .map(ConsumerImpl::toReceivedHRecord)
-        .collect(Collectors.toList());
-  }
+    SubscribeRequest subscribeRequest =
+        SubscribeRequest.newBuilder().setSubscriptionId(subscriptionId).build();
 
-  @Override
-  public List<ReceivedRawRecord> pollRawRecords() {
-    FetchRequest fetchRequest =
-        FetchRequest.newBuilder()
-            .setSubscriptionId(subscriptionId)
-            .setTimeout(pollTimeoutMs)
-            .setMaxSize(maxPollRecords)
-            .build();
-
-    CompletableFuture<FetchResponse> completableFuture = new CompletableFuture<>();
-    StreamObserver<FetchResponse> streamObserver =
+    final StreamObserver<SubscribeResponse> subscribeResponseStreamObserver =
         new StreamObserver<>() {
           @Override
-          public void onNext(FetchResponse fetchResponse) {
-            completableFuture.complete(fetchResponse);
+          public void onNext(SubscribeResponse response) {
+            logger.info(
+                "consumer {} attach to subscription {} successfully",
+                ConsumerImpl.this.consumerName,
+                response.getSubscriptionId());
+
+            scheduledExecutorService.scheduleAtFixedRate(
+                () -> grpcStub.sendConsumerHeartbeat(consumerHeartbeatRequest, heartbeatObserver),
+                0,
+                1,
+                TimeUnit.SECONDS);
+
+            scheduledExecutorService.scheduleAtFixedRate(
+                () -> grpcStub.fetch(fetchRequest, fetchResponseStreamObserver),
+                0,
+                1,
+                TimeUnit.SECONDS);
+
+            ConsumerImpl.this.notifyStarted();
           }
 
           @Override
           public void onError(Throwable t) {
-            completableFuture.completeExceptionally(t);
-          }
-
-          @Override
-          public void onCompleted() {}
-        };
-    grpcStub.fetch(fetchRequest, streamObserver);
-
-    FetchResponse fetchResponse = completableFuture.join();
-    return fetchResponse.getReceivedRecordsList().stream()
-        .map(ConsumerImpl::toReceivedRawRecord)
-        .collect(Collectors.toList());
-  }
-
-  @Override
-  public void commit(RecordId recordId) {
-    CommittedOffset committedOffset =
-        CommittedOffset.newBuilder()
-            .setSubscriptionId(subscriptionId)
-            .setStreamName(streamName)
-            .setOffset(recordId)
-            .build();
-
-    CompletableFuture<CommittedOffset> completableFuture = new CompletableFuture<>();
-    StreamObserver<CommittedOffset> streamObserver =
-        new StreamObserver<>() {
-          @Override
-          public void onNext(CommittedOffset offset) {
-            completableFuture.complete(offset);
-          }
-
-          @Override
-          public void onError(Throwable t) {
-            completableFuture.completeExceptionally(t);
+            logger.error(
+                "consumer {} attach to subscription {} error: {}",
+                ConsumerImpl.this.consumerName,
+                ConsumerImpl.this.subscriptionId,
+                t);
+            throw new HStreamDBClientException.SubscribeException("consumer subscribe error", t);
           }
 
           @Override
           public void onCompleted() {}
         };
 
-    grpcStub.commitOffset(committedOffset, streamObserver);
-    completableFuture.join();
+    grpcStub.subscribe(subscribeRequest, subscribeResponseStreamObserver);
   }
 
   @Override
-  public void close() throws Exception {
-    logger.info("prepare to close consumer");
+  public void doStop() {
+    logger.info("prepare to stop consumer");
 
     scheduledExecutorService.shutdownNow();
+    executorService.shutdownNow();
 
-    logger.info("consumer has been closed");
+    notifyStopped();
+
+    logger.info("consumer has been stopped");
   }
 
   private static ReceivedRawRecord toReceivedRawRecord(ReceivedRecord receivedRecord) {

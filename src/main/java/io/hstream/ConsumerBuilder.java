@@ -6,10 +6,10 @@ public class ConsumerBuilder {
 
   private HStreamApiGrpc.HStreamApiStub grpcStub;
   private HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub;
+  private String name;
   private String subscription;
-  private String streamName;
-  private long pollTimeoutMs = 3000;
-  private int maxPollRecords = 500;
+  private RawRecordReceiver rawRecordReceiver;
+  private HRecordReceiver hRecordReceiver;
 
   public ConsumerBuilder(
       HStreamApiGrpc.HStreamApiStub grpcStub,
@@ -18,28 +18,28 @@ public class ConsumerBuilder {
     this.grpcBlockingStub = grpcBlockingStub;
   }
 
+  public ConsumerBuilder name(String name) {
+    this.name = name;
+    return this;
+  }
+
   public ConsumerBuilder subscription(String subscription) {
     this.subscription = subscription;
     return this;
   }
 
-  public ConsumerBuilder stream(String stream) {
-    this.streamName = stream;
+  public ConsumerBuilder rawRecordReceiver(RawRecordReceiver rawRecordReceiver) {
+    this.rawRecordReceiver = rawRecordReceiver;
     return this;
   }
 
-  public ConsumerBuilder pollTimeoutMs(long timeoutMs) {
-    this.pollTimeoutMs = timeoutMs;
-    return this;
-  }
-
-  public ConsumerBuilder maxPollRecords(int maxPollRecords) {
-    this.maxPollRecords = maxPollRecords;
+  public ConsumerBuilder hRecordReceiver(HRecordReceiver hRecordReceiver) {
+    this.hRecordReceiver = hRecordReceiver;
     return this;
   }
 
   public Consumer build() {
     return new ConsumerImpl(
-        grpcStub, grpcBlockingStub, subscription, streamName, pollTimeoutMs, maxPollRecords);
+        grpcStub, grpcBlockingStub, name, subscription, rawRecordReceiver, hRecordReceiver);
   }
 }

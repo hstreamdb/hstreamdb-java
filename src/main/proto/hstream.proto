@@ -14,11 +14,13 @@ service HStreamApi {
 
   rpc Append(AppendRequest) returns (AppendResponse) {}
 
-  rpc Subscribe(Subscription) returns (Subscription) {}
+  rpc CreateSubscription(Subscription) returns (Subscription) {}
 
   rpc DeleteSubscription(DeleteSubscriptionRequest) returns (google.protobuf.Empty) {}
 
   rpc ListSubscriptions(google.protobuf.Empty) returns (ListSubscriptionsResponse) {}
+
+  rpc Subscribe(SubscribeRequest) returns (SubscribeResponse) {}
 
   rpc Fetch(FetchRequest) returns (FetchResponse) {}
 
@@ -66,6 +68,14 @@ message SubscriptionOffset {
     SpecialOffset specialOffset = 1;
     RecordId recordOffset = 2;
   }
+}
+
+message SubscribeRequest {
+  string subscriptionId = 1;
+}
+
+message SubscribeResponse {
+  string subscriptionId = 1;
 }
 
 message FetchRequest {

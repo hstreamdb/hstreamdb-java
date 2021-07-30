@@ -4,10 +4,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
 import com.google.protobuf.util.JsonFormat;
-import io.hstream.HRecord;
-import io.hstream.HStreamDBClientException;
-import io.hstream.HStreamRecord;
-import io.hstream.HStreamRecordHeader;
+import io.hstream.*;
 import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,5 +65,33 @@ public class RecordUtils {
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("construct hrecord error", e);
     }
+  }
+
+  public static boolean isRawRecord(ReceivedRecord receivedRecord) {
+    try {
+      HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
+      return isRawRecord(hStreamRecord);
+    } catch (InvalidProtocolBufferException e) {
+      throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
+    }
+  }
+
+  public static boolean isRawRecord(HStreamRecord hStreamRecord) {
+    int flag = hStreamRecord.getHeader().getFlag();
+    return flag == RAW_RECORD_FLAG;
+  }
+
+  public static boolean isHRecord(ReceivedRecord receivedRecord) {
+    try {
+      HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
+      return isHRecord(hStreamRecord);
+    } catch (InvalidProtocolBufferException e) {
+      throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
+    }
+  }
+
+  public static boolean isHRecord(HStreamRecord hStreamRecord) {
+    int flag = hStreamRecord.getHeader().getFlag();
+    return flag == JSON_RECORD_FLAG;
   }
 }

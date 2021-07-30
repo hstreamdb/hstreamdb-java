@@ -24,6 +24,16 @@ public class HStreamDBClientException extends RuntimeException {
     }
   }
 
+  public static final class ConsumerException extends HStreamDBClientException {
+    public ConsumerException(final String message) {
+      super(message);
+    }
+
+    public ConsumerException(final String message, final Throwable cause) {
+      super(message, cause);
+    }
+  }
+
   public static final class SubscribeException extends HStreamDBClientException {
     public SubscribeException(final String message) {
       super(message);

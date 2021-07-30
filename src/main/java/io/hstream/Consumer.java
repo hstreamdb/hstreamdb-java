@@ -1,12 +1,5 @@
 package io.hstream;
 
-import java.util.List;
+import com.google.common.util.concurrent.Service;
 
-public interface Consumer extends AutoCloseable {
-
-  List<ReceivedHRecord> pollHRecords();
-
-  List<ReceivedRawRecord> pollRawRecords();
-
-  void commit(RecordId recordId);
-}
+public interface Consumer extends Service {}
