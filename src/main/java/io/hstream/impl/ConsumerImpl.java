@@ -84,6 +84,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
           public void onNext(FetchResponse fetchResponse) {
             executorService.submit(
                 () -> {
+                  logger.info("ready to process record...");
                   for (ReceivedRecord receivedRecord : fetchResponse.getReceivedRecordsList()) {
                     if (RecordUtils.isRawRecord(receivedRecord)) {
                       rawRecordReceiver.processRawRecord(
