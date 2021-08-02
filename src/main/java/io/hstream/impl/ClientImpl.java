@@ -93,6 +93,11 @@ public class ClientImpl implements HStreamClient {
   }
 
   @Override
+  public void createSubscription(Subscription subscription) {
+    blockingStub.createSubscription(subscription);
+  }
+
+  @Override
   public List<Subscription> listSubscriptions() {
     return blockingStub.listSubscriptions(Empty.newBuilder().build()).getSubscriptionList();
   }

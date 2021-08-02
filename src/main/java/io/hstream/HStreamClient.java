@@ -20,6 +20,8 @@ public interface HStreamClient extends AutoCloseable {
 
   List<Stream> listStreams();
 
+  void createSubscription(Subscription subscription);
+
   List<Subscription> listSubscriptions();
 
   void deleteSubscription(String subscriptionId);
