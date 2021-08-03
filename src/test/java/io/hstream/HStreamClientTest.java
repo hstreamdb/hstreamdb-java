@@ -76,48 +76,49 @@ public class HStreamClientTest {
   //   consumer.close();
   // }
 
-  // @Test
-  // public void testDuplicateSubscribe() throws Exception {
-  //   Consumer consumer1 =
-  //       client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
-  //           .maxPollRecords(100)
-  //           .pollTimeoutMs(100)
-  //           .build();
+  @Test
+  public void testDuplicateSubscribe() throws Exception {
+    Consumer consumer1 =
+            client.newConsumer().subscription(TEST_SUBSCRIPTION)
+                    .rawRecordReceiver((receivedRawRecord, responder) -> {} )
+                    .build();
+    consumer1.startAsync().awaitRunning();
 
-  //   Assertions.assertThrows(
-  //       HStreamDBClientException.SubscribeException.class,
-  //       () -> {
-  //         Consumer consumer2 =
-  //             client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
-  //                 .maxPollRecords(100)
-  //                 .pollTimeoutMs(100)
-  //                 .build();
-  //         consumer2.close();
-  //       });
+    Assertions.assertThrows(
+        HStreamDBClientException.SubscribeException.class,
+        () -> {
+          Consumer consumer2 =
+                  client.newConsumer().subscription(TEST_SUBSCRIPTION)
+                          .rawRecordReceiver((receivedRawRecord, responder) -> {} )
+                          .build();
+          try{
+            consumer2.startAsync().awaitRunning();
+          } catch (IllegalStateException e) {
+            throw e.getCause();
+          }
+        });
 
-  //   consumer1.close();
-  // }
+    consumer1.stopAsync().awaitTerminated();
+  }
 
-  // @Test
-  // public void testConsumerSession() throws Exception {
-  //   Consumer consumer1 =
-  //       client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
-  //           .maxPollRecords(100)
-  //           .pollTimeoutMs(100)
-  //           .build();
+  @Test
+  public void testConsumerSession() throws Exception {
+    Consumer consumer1 =
+            client.newConsumer().subscription(TEST_SUBSCRIPTION)
+                    .rawRecordReceiver((receivedRawRecord, responder) -> {} )
+                    .build();
+    consumer1.startAsync().awaitRunning();
+    consumer1.stopAsync().awaitTerminated();
 
-  //   consumer1.close();
+    Thread.sleep(3000);
 
-  //   Thread.sleep(5000);
-
-  //   Consumer consumer2 =
-  //       client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
-  //           .maxPollRecords(100)
-  //           .pollTimeoutMs(100)
-  //           .build();
-
-  //   consumer2.close();
-  // }
+    Consumer consumer2 =
+            client.newConsumer().subscription(TEST_SUBSCRIPTION)
+                    .rawRecordReceiver((receivedRawRecord, responder) -> {} )
+                    .build();
+    consumer2.startAsync().awaitRunning();
+    consumer2.stopAsync().awaitTerminated();
+  }
 
   // @Test
   // public void testStreamQuery() {
