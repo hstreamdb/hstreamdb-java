@@ -1,8 +1,10 @@
 package io.hstream;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
@@ -117,6 +119,52 @@ public class HStreamClientTest {
                     .rawRecordReceiver((receivedRawRecord, responder) -> {} )
                     .build();
     consumer2.startAsync().awaitRunning();
+    consumer2.stopAsync().awaitTerminated();
+  }
+
+  @Test
+  public void testResponder() throws Exception{
+    CountDownLatch flag1 = new CountDownLatch(1);
+    AtomicInteger consumedCount = new AtomicInteger();
+    Consumer consumer1 =
+            client.newConsumer().subscription(TEST_SUBSCRIPTION)
+                    .rawRecordReceiver((receivedRawRecord, responder) -> {
+                        logger.info("enter process, count is {}", consumedCount.incrementAndGet());
+                      if(consumedCount.get() == 3) {
+                        logger.info("enter if");
+                        responder.ack();
+                        logger.info("finished ack");
+                        flag1.countDown();
+                      }
+                    })
+                    .build();
+    consumer1.startAsync().awaitRunning();
+
+    Producer producer = client.newProducer().stream(TEST_STREAM).build();
+    Random random = new Random();
+    ArrayList<RecordId> recordIds = new ArrayList<>(5);
+    for(int i = 0; i < 4; ++i) {
+      byte[] rawRecord = new byte[100];
+      random.nextBytes(rawRecord);
+      RecordId recordId = producer.write(rawRecord);
+      recordIds.add(recordId);
+    }
+
+    flag1.await();
+    consumer1.stopAsync().awaitTerminated();
+
+    Thread.sleep(3000);
+    CountDownLatch flag2 = new CountDownLatch(1);
+    Consumer consumer2 =
+            client.newConsumer().subscription(TEST_SUBSCRIPTION)
+                    .rawRecordReceiver((receivedRawRecord, responder) -> {
+                      Assertions.assertEquals(recordIds.get(3), receivedRawRecord.getRecordId());
+                      flag2.countDown();
+                    })
+                    .build();
+    consumer2.startAsync().awaitRunning();
+
+    flag2.await();
     consumer2.stopAsync().awaitTerminated();
   }
 

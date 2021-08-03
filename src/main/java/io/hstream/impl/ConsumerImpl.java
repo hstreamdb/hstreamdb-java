@@ -96,12 +96,15 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                    FetchResponse fetchResponse = grpcBlockingStub.fetch(fetchRequest);
                     logger.info("fetched {} records", fetchResponse.getReceivedRecordsCount());
                    for (ReceivedRecord receivedRecord : fetchResponse.getReceivedRecordsList()) {
+                       logger.info("enter for loop");
                        if (RecordUtils.isRawRecord(receivedRecord)) {
+                           logger.info("ready to process rawRecord");
                            rawRecordReceiver.processRawRecord(
-                                   toReceivedRawRecord(receivedRecord), new ResponderImpl());
+                                   toReceivedRawRecord(receivedRecord), new ResponderImpl(grpcBlockingStub, subscriptionId, receivedRecord.getRecordId()));
                        } else {
+                           logger.info("ready to process hrecord");
                            hRecordReceiver.processHRecord(
-                                   toReceivedHRecord(receivedRecord), new ResponderImpl());
+                                   toReceivedHRecord(receivedRecord), new ResponderImpl(grpcBlockingStub, subscriptionId, receivedRecord.getRecordId()));
                        }
                    }
                    logger.info("processed {} records", fetchResponse.getReceivedRecordsCount());
