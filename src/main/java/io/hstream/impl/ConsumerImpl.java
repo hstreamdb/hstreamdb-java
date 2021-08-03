@@ -124,7 +124,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                 ConsumerImpl.this.consumerName,
                 ConsumerImpl.this.subscriptionId,
                 t);
-            throw new HStreamDBClientException.SubscribeException("consumer subscribe error", t);
+            notifyFailed(new HStreamDBClientException.SubscribeException("consumer subscribe error", t));
           }
 
           @Override
