@@ -78,34 +78,6 @@ public class ConsumerImpl extends AbstractService implements Consumer {
             .setMaxSize(maxPollRecords)
             .build();
 
-    StreamObserver<FetchResponse> fetchResponseStreamObserver =
-        new StreamObserver<>() {
-          @Override
-          public void onNext(FetchResponse fetchResponse) {
-            executorService.submit(
-                () -> {
-                  logger.info("ready to process record...");
-                  for (ReceivedRecord receivedRecord : fetchResponse.getReceivedRecordsList()) {
-                    if (RecordUtils.isRawRecord(receivedRecord)) {
-                      rawRecordReceiver.processRawRecord(
-                          toReceivedRawRecord(receivedRecord), new ResponderImpl());
-                    } else {
-                      hRecordReceiver.processHRecord(
-                          toReceivedHRecord(receivedRecord), new ResponderImpl());
-                    }
-                  }
-                });
-          }
-
-          @Override
-          public void onError(Throwable t) {
-            notifyFailed(t);
-          }
-
-          @Override
-          public void onCompleted() {}
-        };
-
     SubscribeRequest subscribeRequest =
         SubscribeRequest.newBuilder().setSubscriptionId(subscriptionId).build();
 
@@ -118,14 +90,26 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                 ConsumerImpl.this.consumerName,
                 response.getSubscriptionId());
 
-            scheduledExecutorService.scheduleAtFixedRate(
-                () -> grpcStub.sendConsumerHeartbeat(consumerHeartbeatRequest, heartbeatObserver),
-                0,
-                1,
-                TimeUnit.SECONDS);
+            executorService.submit(() -> {
+                do {
+                    logger.info("start fetch and processing ...");
+                   FetchResponse fetchResponse = grpcBlockingStub.fetch(fetchRequest);
+                    logger.info("fetched {} records", fetchResponse.getReceivedRecordsCount());
+                   for (ReceivedRecord receivedRecord : fetchResponse.getReceivedRecordsList()) {
+                       if (RecordUtils.isRawRecord(receivedRecord)) {
+                           rawRecordReceiver.processRawRecord(
+                                   toReceivedRawRecord(receivedRecord), new ResponderImpl());
+                       } else {
+                           hRecordReceiver.processHRecord(
+                                   toReceivedHRecord(receivedRecord), new ResponderImpl());
+                       }
+                   }
+                   logger.info("processed {} records", fetchResponse.getReceivedRecordsCount());
+                } while(isRunning());
+            });
 
             scheduledExecutorService.scheduleAtFixedRate(
-                () -> grpcStub.fetch(fetchRequest, fetchResponseStreamObserver),
+                () -> grpcStub.sendConsumerHeartbeat(consumerHeartbeatRequest, heartbeatObserver),
                 0,
                 1,
                 TimeUnit.SECONDS);

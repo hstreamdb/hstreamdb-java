@@ -53,7 +53,7 @@ public class HStreamClientTest {
     recordIdFuture.complete(recordId);
 
 
-    Thread.sleep(5000);
+    Thread.sleep(1000);
     consumer.stopAsync().awaitTerminated();
   }
 
