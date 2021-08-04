@@ -15,7 +15,10 @@ public class ResponderImpl implements Responder {
   private final String subscriptionId;
   private final RecordId recordId;
 
-  public ResponderImpl(HStreamApiGrpc.HStreamApiBlockingStub blockingStub, String subscriptionId, RecordId recordId) {
+  public ResponderImpl(
+      HStreamApiGrpc.HStreamApiBlockingStub blockingStub,
+      String subscriptionId,
+      RecordId recordId) {
     this.blockingStub = blockingStub;
     this.subscriptionId = subscriptionId;
     this.recordId = recordId;
@@ -24,12 +27,9 @@ public class ResponderImpl implements Responder {
   @Override
   public void ack() {
     CommittedOffset committedOffset =
-            CommittedOffset.newBuilder()
-                    .setSubscriptionId(subscriptionId)
-                    .setOffset(recordId)
-                    .build();
+        CommittedOffset.newBuilder().setSubscriptionId(subscriptionId).setOffset(recordId).build();
 
-    try{
+    try {
       blockingStub.commitOffset(committedOffset);
     } catch (StatusRuntimeException e) {
       logger.error("commit offset failed: {}", e);

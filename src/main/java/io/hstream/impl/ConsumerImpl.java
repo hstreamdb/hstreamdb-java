@@ -90,26 +90,31 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                 ConsumerImpl.this.consumerName,
                 response.getSubscriptionId());
 
-            executorService.submit(() -> {
-                do {
+            executorService.submit(
+                () -> {
+                  do {
                     logger.info("start fetch and processing ...");
-                   FetchResponse fetchResponse = grpcBlockingStub.fetch(fetchRequest);
+                    FetchResponse fetchResponse = grpcBlockingStub.fetch(fetchRequest);
                     logger.info("fetched {} records", fetchResponse.getReceivedRecordsCount());
-                   for (ReceivedRecord receivedRecord : fetchResponse.getReceivedRecordsList()) {
-                       logger.info("enter for loop");
-                       if (RecordUtils.isRawRecord(receivedRecord)) {
-                           logger.info("ready to process rawRecord");
-                           rawRecordReceiver.processRawRecord(
-                                   toReceivedRawRecord(receivedRecord), new ResponderImpl(grpcBlockingStub, subscriptionId, receivedRecord.getRecordId()));
-                       } else {
-                           logger.info("ready to process hrecord");
-                           hRecordReceiver.processHRecord(
-                                   toReceivedHRecord(receivedRecord), new ResponderImpl(grpcBlockingStub, subscriptionId, receivedRecord.getRecordId()));
-                       }
-                   }
-                   logger.info("processed {} records", fetchResponse.getReceivedRecordsCount());
-                } while(isRunning());
-            });
+                    for (ReceivedRecord receivedRecord : fetchResponse.getReceivedRecordsList()) {
+                      logger.info("enter for loop");
+                      if (RecordUtils.isRawRecord(receivedRecord)) {
+                        logger.info("ready to process rawRecord");
+                        rawRecordReceiver.processRawRecord(
+                            toReceivedRawRecord(receivedRecord),
+                            new ResponderImpl(
+                                grpcBlockingStub, subscriptionId, receivedRecord.getRecordId()));
+                      } else {
+                        logger.info("ready to process hrecord");
+                        hRecordReceiver.processHRecord(
+                            toReceivedHRecord(receivedRecord),
+                            new ResponderImpl(
+                                grpcBlockingStub, subscriptionId, receivedRecord.getRecordId()));
+                      }
+                    }
+                    logger.info("processed {} records", fetchResponse.getReceivedRecordsCount());
+                  } while (isRunning());
+                });
 
             scheduledExecutorService.scheduleAtFixedRate(
                 () -> grpcStub.sendConsumerHeartbeat(consumerHeartbeatRequest, heartbeatObserver),
@@ -127,7 +132,8 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                 ConsumerImpl.this.consumerName,
                 ConsumerImpl.this.subscriptionId,
                 t);
-            notifyFailed(new HStreamDBClientException.SubscribeException("consumer subscribe error", t));
+            notifyFailed(
+                new HStreamDBClientException.SubscribeException("consumer subscribe error", t));
           }
 
           @Override
