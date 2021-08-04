@@ -22,10 +22,14 @@ public class HStreamClientTest {
   public void setUp() {
     client = HStreamClient.builder().serviceUrl(serviceUrl).build();
     client.createStream(TEST_STREAM);
-    Subscription subscription = Subscription.newBuilder()
+    Subscription subscription =
+        Subscription.newBuilder()
             .setSubscriptionId(TEST_SUBSCRIPTION)
             .setStreamName(TEST_STREAM)
-            .setOffset(SubscriptionOffset.newBuilder().setSpecialOffset(SubscriptionOffset.SpecialOffset.LATEST).build())
+            .setOffset(
+                SubscriptionOffset.newBuilder()
+                    .setSpecialOffset(SubscriptionOffset.SpecialOffset.LATEST)
+                    .build())
             .build();
     client.createSubscription(subscription);
   }
@@ -37,12 +41,17 @@ public class HStreamClientTest {
   }
 
   @Test
-  public void testWriteRawRecord() throws Exception{
+  public void testWriteRawRecord() throws Exception {
     CompletableFuture<RecordId> recordIdFuture = new CompletableFuture<>();
     Consumer consumer =
-        client.newConsumer().subscription(TEST_SUBSCRIPTION)
-                .rawRecordReceiver((receivedRawRecord, responder) ->
-                        recordIdFuture.thenAccept(recordId -> Assertions.assertEquals(recordId, receivedRawRecord.getRecordId())))
+        client
+            .newConsumer()
+            .subscription(TEST_SUBSCRIPTION)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) ->
+                    recordIdFuture.thenAccept(
+                        recordId ->
+                            Assertions.assertEquals(recordId, receivedRawRecord.getRecordId())))
             .build();
     consumer.startAsync().awaitRunning();
 
@@ -53,46 +62,55 @@ public class HStreamClientTest {
     RecordId recordId = producer.write(rawRecord);
     recordIdFuture.complete(recordId);
 
-
     Thread.sleep(1000);
     consumer.stopAsync().awaitTerminated();
   }
 
-  // @Test
-  // public void testWriteHRecord() throws Exception {
-  //   Consumer consumer =
-  //       client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
-  //           .maxPollRecords(100)
-  //           .pollTimeoutMs(100)
-  //           .build();
+  @Test
+  public void testWriteHRecord() throws Exception {
 
-  //   Producer producer = client.newProducer().stream(TEST_STREAM).build();
-  //   HRecord hRecord =
-  //       HRecord.newBuilder().put("key1", 10).put("key2", "hello").put("key3", true).build();
-  //   RecordId recordId = producer.write(hRecord);
+    Producer producer = client.newProducer().stream(TEST_STREAM).build();
+    HRecord hRecord =
+        HRecord.newBuilder().put("key1", 10).put("key2", "hello").put("key3", true).build();
+    RecordId recordId = producer.write(hRecord);
 
-  //   List<ReceivedHRecord> receivedHRecords = consumer.pollHRecords();
-  //   Assertions.assertEquals(recordId, receivedHRecords.get(0).getRecordId());
+    CountDownLatch countDownLatch = new CountDownLatch(1);
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(TEST_SUBSCRIPTION)
+            .hRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  Assertions.assertEquals(recordId, receivedRawRecord.getRecordId());
+                  countDownLatch.countDown();
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
 
-  //   consumer.close();
-  // }
+    countDownLatch.await();
+    consumer.stopAsync().awaitTerminated();
+  }
 
   @Test
   public void testDuplicateSubscribe() throws Exception {
     Consumer consumer1 =
-            client.newConsumer().subscription(TEST_SUBSCRIPTION)
-                    .rawRecordReceiver((receivedRawRecord, responder) -> {} )
-                    .build();
+        client
+            .newConsumer()
+            .subscription(TEST_SUBSCRIPTION)
+            .rawRecordReceiver((receivedRawRecord, responder) -> {})
+            .build();
     consumer1.startAsync().awaitRunning();
 
     Assertions.assertThrows(
         HStreamDBClientException.SubscribeException.class,
         () -> {
           Consumer consumer2 =
-                  client.newConsumer().subscription(TEST_SUBSCRIPTION)
-                          .rawRecordReceiver((receivedRawRecord, responder) -> {} )
-                          .build();
-          try{
+              client
+                  .newConsumer()
+                  .subscription(TEST_SUBSCRIPTION)
+                  .rawRecordReceiver((receivedRawRecord, responder) -> {})
+                  .build();
+          try {
             consumer2.startAsync().awaitRunning();
           } catch (IllegalStateException e) {
             throw e.getCause();
@@ -105,44 +123,51 @@ public class HStreamClientTest {
   @Test
   public void testConsumerSession() throws Exception {
     Consumer consumer1 =
-            client.newConsumer().subscription(TEST_SUBSCRIPTION)
-                    .rawRecordReceiver((receivedRawRecord, responder) -> {} )
-                    .build();
+        client
+            .newConsumer()
+            .subscription(TEST_SUBSCRIPTION)
+            .rawRecordReceiver((receivedRawRecord, responder) -> {})
+            .build();
     consumer1.startAsync().awaitRunning();
     consumer1.stopAsync().awaitTerminated();
 
     Thread.sleep(3000);
 
     Consumer consumer2 =
-            client.newConsumer().subscription(TEST_SUBSCRIPTION)
-                    .rawRecordReceiver((receivedRawRecord, responder) -> {} )
-                    .build();
+        client
+            .newConsumer()
+            .subscription(TEST_SUBSCRIPTION)
+            .rawRecordReceiver((receivedRawRecord, responder) -> {})
+            .build();
     consumer2.startAsync().awaitRunning();
     consumer2.stopAsync().awaitTerminated();
   }
 
   @Test
-  public void testResponder() throws Exception{
+  public void testResponder() throws Exception {
     CountDownLatch flag1 = new CountDownLatch(1);
     AtomicInteger consumedCount = new AtomicInteger();
     Consumer consumer1 =
-            client.newConsumer().subscription(TEST_SUBSCRIPTION)
-                    .rawRecordReceiver((receivedRawRecord, responder) -> {
-                        logger.info("enter process, count is {}", consumedCount.incrementAndGet());
-                      if(consumedCount.get() == 3) {
-                        logger.info("enter if");
-                        responder.ack();
-                        logger.info("finished ack");
-                        flag1.countDown();
-                      }
-                    })
-                    .build();
+        client
+            .newConsumer()
+            .subscription(TEST_SUBSCRIPTION)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  logger.info("enter process, count is {}", consumedCount.incrementAndGet());
+                  if (consumedCount.get() == 3) {
+                    logger.info("enter if");
+                    responder.ack();
+                    logger.info("finished ack");
+                    flag1.countDown();
+                  }
+                })
+            .build();
     consumer1.startAsync().awaitRunning();
 
     Producer producer = client.newProducer().stream(TEST_STREAM).build();
     Random random = new Random();
     ArrayList<RecordId> recordIds = new ArrayList<>(5);
-    for(int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) {
       byte[] rawRecord = new byte[100];
       random.nextBytes(rawRecord);
       RecordId recordId = producer.write(rawRecord);
@@ -155,240 +180,246 @@ public class HStreamClientTest {
     Thread.sleep(3000);
     CountDownLatch flag2 = new CountDownLatch(1);
     Consumer consumer2 =
-            client.newConsumer().subscription(TEST_SUBSCRIPTION)
-                    .rawRecordReceiver((receivedRawRecord, responder) -> {
-                      Assertions.assertEquals(recordIds.get(3), receivedRawRecord.getRecordId());
-                      flag2.countDown();
-                    })
-                    .build();
+        client
+            .newConsumer()
+            .subscription(TEST_SUBSCRIPTION)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  Assertions.assertEquals(recordIds.get(3), receivedRawRecord.getRecordId());
+                  flag2.countDown();
+                })
+            .build();
     consumer2.startAsync().awaitRunning();
 
     flag2.await();
     consumer2.stopAsync().awaitTerminated();
   }
 
-  // @Test
-  // public void testStreamQuery() {
-  //   Publisher<HRecord> publisher =
-  //       client.streamQuery(
-  //           "select * from " + TEST_STREAM + " where temperature > 30 emit changes;");
-  //   AtomicInteger receivedCount = new AtomicInteger(0);
-  //   Observer<HRecord> observer =
-  //       new Observer<HRecord>() {
-  //         @Override
-  //         public void onNext(HRecord value) {
-  //           logger.info("get hrecord: {}", value);
-  //           receivedCount.incrementAndGet();
-  //         }
+  @Test
+  public void testStreamQuery() {
+    Publisher<HRecord> publisher =
+        client.streamQuery(
+            "select * from " + TEST_STREAM + " where temperature > 30 emit changes;");
+    AtomicInteger receivedCount = new AtomicInteger(0);
+    Observer<HRecord> observer =
+        new Observer<HRecord>() {
+          @Override
+          public void onNext(HRecord value) {
+            logger.info("get hrecord: {}", value);
+            receivedCount.incrementAndGet();
+          }
 
-  //         @Override
-  //         public void onError(Throwable t) {
-  //           throw new RuntimeException(t);
-  //         }
+          @Override
+          public void onError(Throwable t) {
+            throw new RuntimeException(t);
+          }
 
-  //         @Override
-  //         public void onCompleted() {}
-  //       };
-  //   publisher.subscribe(observer);
+          @Override
+          public void onCompleted() {}
+        };
+    publisher.subscribe(observer);
 
-  //   try {
-  //     Thread.sleep(3000);
-  //   } catch (InterruptedException e) {
-  //     throw new RuntimeException(e);
-  //   }
+    try {
+      Thread.sleep(10000);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
 
-  //   logger.info("begin to write");
+    logger.info("begin to write");
 
-  //   Producer producer = client.newProducer().stream(TEST_STREAM).build();
-  //   HRecord hRecord1 = HRecord.newBuilder().put("temperature", 29).put("humidity", 20).build();
-  //   HRecord hRecord2 = HRecord.newBuilder().put("temperature", 34).put("humidity", 21).build();
-  //   HRecord hRecord3 = HRecord.newBuilder().put("temperature", 35).put("humidity", 22).build();
-  //   producer.write(hRecord1);
-  //   producer.write(hRecord2);
-  //   producer.write(hRecord3);
+    Producer producer = client.newProducer().stream(TEST_STREAM).build();
+    HRecord hRecord1 = HRecord.newBuilder().put("temperature", 29).put("humidity", 20).build();
+    HRecord hRecord2 = HRecord.newBuilder().put("temperature", 34).put("humidity", 21).build();
+    HRecord hRecord3 = HRecord.newBuilder().put("temperature", 35).put("humidity", 22).build();
+    producer.write(hRecord1);
+    producer.write(hRecord2);
+    producer.write(hRecord3);
 
-  //   try {
-  //     Thread.sleep(10000);
-  //     Assertions.assertEquals(2, receivedCount.get());
-  //   } catch (InterruptedException e) {
-  //     throw new RuntimeException(e);
-  //   }
-  // }
+    try {
+      Thread.sleep(20000);
+      Assertions.assertEquals(2, receivedCount.get());
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-  // @Test
-  // public void testWriteBatchRawRecord() throws Exception {
-  //   Consumer consumer =
-  //       client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
-  //           .maxPollRecords(100)
-  //           .pollTimeoutMs(100)
-  //           .build();
+  @Test
+  public void testWriteBatchRawRecord() throws Exception {
 
-  //   Producer producer =
-  //       client.newProducer().stream(TEST_STREAM).enableBatch().recordCountLimit(10).build();
-  //   Random random = new Random();
-  //   final int count = 100;
-  //   CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
-  //   for (int i = 0; i < count; ++i) {
-  //     byte[] rawRecord = new byte[100];
-  //     random.nextBytes(rawRecord);
-  //     CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
-  //     recordIdFutures[i] = future;
-  //   }
-  //   CompletableFuture.allOf(recordIdFutures).join();
+    Producer producer =
+        client.newProducer().stream(TEST_STREAM).enableBatch().recordCountLimit(10).build();
+    Random random = new Random();
+    final int count = 100;
+    CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
+    for (int i = 0; i < count; ++i) {
+      byte[] rawRecord = new byte[100];
+      random.nextBytes(rawRecord);
+      CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
+      recordIdFutures[i] = future;
+    }
+    CompletableFuture.allOf(recordIdFutures).join();
 
-  //   logger.info("producer finish");
+    logger.info("producer finish");
 
-  //   int readCount = 0;
-  //   while (readCount < count) {
-  //     List<ReceivedRawRecord> receivedRawRecords = consumer.pollRawRecords();
-  //     for (ReceivedRawRecord receivedRawRecord : receivedRawRecords) {
-  //       System.out.println(receivedRawRecord.getRecordId());
-  //       Assertions.assertEquals(recordIdFutures[readCount].join(), receivedRawRecord.getRecordId());
-  //       ++readCount;
-  //     }
-  //   }
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicInteger index = new AtomicInteger();
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(TEST_SUBSCRIPTION)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  Assertions.assertEquals(
+                      recordIdFutures[index.getAndIncrement()].join(),
+                      receivedRawRecord.getRecordId());
+                  if (index.get() == count - 1) {
+                    latch.countDown();
+                  }
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
 
-  //   consumer.close();
-  // }
+    latch.await();
+    consumer.stopAsync().awaitTerminated();
+  }
 
-  // @Test
-  // public void testWriteBatchRawRecordMultiThread() throws Exception {
-  //   Consumer consumer =
-  //       client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
-  //           .maxPollRecords(100)
-  //           .pollTimeoutMs(100)
-  //           .build();
+  @Test
+  public void testWriteBatchRawRecordMultiThread() throws Exception {
+    Producer producer =
+        client.newProducer().stream(TEST_STREAM).enableBatch().recordCountLimit(10).build();
+    Random random = new Random();
+    final int count = 100;
+    CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
 
-  //   Producer producer =
-  //       client.newProducer().stream(TEST_STREAM).enableBatch().recordCountLimit(10).build();
-  //   Random random = new Random();
-  //   final int count = 100;
-  //   CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
+    Thread thread1 =
+        new Thread(
+            () -> {
+              for (int i = 0; i < count / 2; ++i) {
+                byte[] rawRecord = new byte[100];
+                random.nextBytes(rawRecord);
+                CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
+                recordIdFutures[i] = future;
+              }
+            });
 
-  //   Thread thread1 =
-  //       new Thread(
-  //           () -> {
-  //             for (int i = 0; i < count / 2; ++i) {
-  //               byte[] rawRecord = new byte[100];
-  //               random.nextBytes(rawRecord);
-  //               CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
-  //               recordIdFutures[i] = future;
-  //             }
-  //           });
+    Thread thread2 =
+        new Thread(
+            () -> {
+              for (int i = count / 2; i < count; ++i) {
+                byte[] rawRecord = new byte[100];
+                random.nextBytes(rawRecord);
+                CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
+                recordIdFutures[i] = future;
+              }
+            });
 
-  //   Thread thread2 =
-  //       new Thread(
-  //           () -> {
-  //             for (int i = count / 2; i < count; ++i) {
-  //               byte[] rawRecord = new byte[100];
-  //               random.nextBytes(rawRecord);
-  //               CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
-  //               recordIdFutures[i] = future;
-  //             }
-  //           });
+    thread1.start();
+    thread2.start();
 
-  //   thread1.start();
-  //   thread2.start();
+    AtomicInteger readCount = new AtomicInteger();
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(TEST_SUBSCRIPTION)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  readCount.incrementAndGet();
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
 
-  //   int readCount = 0;
-  //   while (readCount < count) {
-  //     List<ReceivedRawRecord> receivedRawRecords = consumer.pollRawRecords();
-  //     for (ReceivedRawRecord receivedRawRecord : receivedRawRecords) {
-  //       System.out.println(receivedRawRecord.getRecordId());
-  //       ++readCount;
-  //     }
-  //   }
+    Thread.sleep(3000);
+    Assertions.assertEquals(count, readCount.get());
+    consumer.stopAsync().awaitTerminated();
+  }
 
-  //   Assertions.assertEquals(count, readCount);
+  @Test
+  public void testFlush() throws Exception {
+    Producer producer =
+        client.newProducer().stream(TEST_STREAM).enableBatch().recordCountLimit(100).build();
+    Random random = new Random();
+    final int count = 10;
+    CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
+    for (int i = 0; i < count; ++i) {
+      byte[] rawRecord = new byte[100];
+      random.nextBytes(rawRecord);
+      CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
+      recordIdFutures[i] = future;
+    }
+    producer.flush();
 
-  //   consumer.close();
-  // }
+    // CompletableFuture.allOf(recordIdFutures).join();
 
-  // @Test
-  // public void testFlush() throws Exception {
-  //   Consumer consumer =
-  //       client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
-  //           .maxPollRecords(100)
-  //           .pollTimeoutMs(100)
-  //           .build();
+    logger.info("producer finish");
 
-  //   Producer producer =
-  //       client.newProducer().stream(TEST_STREAM).enableBatch().recordCountLimit(100).build();
-  //   Random random = new Random();
-  //   final int count = 10;
-  //   CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
-  //   for (int i = 0; i < count; ++i) {
-  //     byte[] rawRecord = new byte[100];
-  //     random.nextBytes(rawRecord);
-  //     CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
-  //     recordIdFutures[i] = future;
-  //   }
-  //   producer.flush();
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicInteger index = new AtomicInteger();
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(TEST_SUBSCRIPTION)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  Assertions.assertEquals(
+                      recordIdFutures[index.getAndIncrement()].join(),
+                      receivedRawRecord.getRecordId());
+                  if (index.get() == count - 1) {
+                    latch.countDown();
+                  }
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
 
-  //   // CompletableFuture.allOf(recordIdFutures).join();
+    latch.await();
+    consumer.stopAsync().awaitTerminated();
+  }
 
-  //   logger.info("producer finish");
+  @Test
+  public void testFlushMultiThread() throws Exception {
+    AtomicInteger readCount = new AtomicInteger();
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(TEST_SUBSCRIPTION)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  readCount.incrementAndGet();
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
 
-  //   int readCount = 0;
-  //   while (readCount < count) {
-  //     List<ReceivedRawRecord> receivedRawRecords = consumer.pollRawRecords();
-  //     for (ReceivedRawRecord receivedRawRecord : receivedRawRecords) {
-  //       System.out.println(receivedRawRecord.getRecordId());
-  //       Assertions.assertEquals(recordIdFutures[readCount].join(), receivedRawRecord.getRecordId());
-  //       ++readCount;
-  //     }
-  //   }
+    Producer producer =
+        client.newProducer().stream(TEST_STREAM).enableBatch().recordCountLimit(100).build();
+    Random random = new Random();
+    final int count = 10;
 
-  //   consumer.close();
-  // }
+    Thread thread1 =
+        new Thread(
+            () -> {
+              for (int i = 0; i < count; ++i) {
+                byte[] rawRecord = new byte[100];
+                random.nextBytes(rawRecord);
+                producer.writeAsync(rawRecord);
+              }
+              producer.flush();
+            });
 
-  // @Test
-  // public void testFlushMultiThread() throws Exception {
-  //   Consumer consumer =
-  //       client.newConsumer().subscription(TEST_SUBSCRIPTION).stream(TEST_STREAM)
-  //           .maxPollRecords(100)
-  //           .pollTimeoutMs(100)
-  //           .build();
+    Thread thread2 =
+        new Thread(
+            () -> {
+              for (int i = 0; i < count; ++i) {
+                byte[] rawRecord = new byte[100];
+                random.nextBytes(rawRecord);
+                producer.writeAsync(rawRecord);
+              }
+              producer.flush();
+            });
 
-  //   Producer producer =
-  //       client.newProducer().stream(TEST_STREAM).enableBatch().recordCountLimit(100).build();
-  //   Random random = new Random();
-  //   final int count = 10;
+    thread1.start();
+    thread2.start();
 
-  //   Thread thread1 =
-  //       new Thread(
-  //           () -> {
-  //             for (int i = 0; i < count; ++i) {
-  //               byte[] rawRecord = new byte[100];
-  //               random.nextBytes(rawRecord);
-  //               producer.writeAsync(rawRecord);
-  //             }
-  //             producer.flush();
-  //           });
-
-  //   Thread thread2 =
-  //       new Thread(
-  //           () -> {
-  //             for (int i = 0; i < count; ++i) {
-  //               byte[] rawRecord = new byte[100];
-  //               random.nextBytes(rawRecord);
-  //               producer.writeAsync(rawRecord);
-  //             }
-  //             producer.flush();
-  //           });
-
-  //   thread1.start();
-  //   thread2.start();
-
-  //   int readCount = 0;
-  //   while (readCount < count * 2) {
-  //     List<ReceivedRawRecord> receivedRawRecords = consumer.pollRawRecords();
-  //     for (ReceivedRawRecord receivedRawRecord : receivedRawRecords) {
-  //       System.out.println(receivedRawRecord.getRecordId());
-  //       ++readCount;
-  //     }
-  //   }
-
-  //   consumer.close();
-  // }
+    Thread.sleep(5000);
+    Assertions.assertEquals(count * 2, readCount.get());
+    consumer.stopAsync().awaitTerminated();
+  }
 }
