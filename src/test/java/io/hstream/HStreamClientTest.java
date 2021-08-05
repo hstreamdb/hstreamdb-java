@@ -93,55 +93,6 @@ public class HStreamClientTest {
   }
 
   @Test
-  public void testRead1111() throws Exception {
-    logger.info("enter read 11111");
-    CountDownLatch countDownLatch = new CountDownLatch(1);
-    Consumer consumer =
-            client
-                    .newConsumer()
-                    .subscription(TEST_SUBSCRIPTION)
-                    .hRecordReceiver(
-                            (receivedHRecord, responder) -> {
-                              System.out.println("ttttttt");
-                              logger.info("receivedHRecord: {}", receivedHRecord.getHRecord());
-                            })
-                    .build();
-    consumer.startAsync().awaitRunning();
-
-    countDownLatch.await();
-    consumer.stopAsync().awaitTerminated();
-  }
-
-  @Test
-  public void testWriteHRecord1111() throws Exception {
-    logger.info("enter 11111");
-    Thread.sleep(6000);
-
-    Producer producer = client.newProducer().stream(TEST_STREAM).build();
-
-    for(int i = 0; i < 3; ++i) {
-      HRecord hRecord1 = HRecord.newBuilder().put("temperature", 39).put("humidity", 20).build();
-      producer.write(hRecord1);
-
-    }
-
-    CountDownLatch countDownLatch = new CountDownLatch(1);
-    Consumer consumer =
-            client
-                    .newConsumer()
-                    .subscription(TEST_SUBSCRIPTION)
-                    .hRecordReceiver(
-                            (receivedHRecord, responder) -> {
-                              logger.info("receivedHRecord: {}", receivedHRecord.getHRecord());
-                            })
-                    .build();
-    consumer.startAsync().awaitRunning();
-
-    countDownLatch.await();
-    consumer.stopAsync().awaitTerminated();
-  }
-
-  @Test
   public void testDuplicateSubscribe() throws Exception {
     Consumer consumer1 =
         client
@@ -270,7 +221,7 @@ public class HStreamClientTest {
     publisher.subscribe(observer);
 
     try {
-      Thread.sleep(10000);
+      Thread.sleep(5000);
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
@@ -285,22 +236,8 @@ public class HStreamClientTest {
     producer.write(hRecord2);
     producer.write(hRecord3);
 
-    // CountDownLatch countDownLatch = new CountDownLatch(1);
-    // Consumer consumer =
-    //         client
-    //                 .newConsumer()
-    //                 .subscription(TEST_SUBSCRIPTION)
-    //                 .hRecordReceiver(
-    //                         (receivedHRecord, responder) -> {
-    //                           logger.info("receivedHRecord: {}", receivedHRecord.getHRecord());
-    //                         })
-    //                 .build();
-    // consumer.startAsync().awaitRunning();
-
-    // countDownLatch.await();
-    // consumer.stopAsync().awaitTerminated();
     try {
-      Thread.sleep(10000);
+      Thread.sleep(5000);
       Assertions.assertEquals(2, receivedCount.get());
     } catch (InterruptedException e) {
       throw new RuntimeException(e);

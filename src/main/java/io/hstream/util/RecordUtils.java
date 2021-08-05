@@ -13,13 +13,8 @@ public class RecordUtils {
 
   private static Logger logger = LoggerFactory.getLogger(RecordUtils.class);
 
-  private static final int JSON_RECORD_FLAG = 0x01 << 24;
-
-  // - RAW:  0x02 << 24
-  private static final int RAW_RECORD_FLAG = 0x02 << 24;
-
   public static HStreamRecord buildHStreamRecordFromRawRecord(byte[] rawRecord) {
-    HStreamRecordHeader header = HStreamRecordHeader.newBuilder().setFlag(RAW_RECORD_FLAG).build();
+    HStreamRecordHeader header = HStreamRecordHeader.newBuilder().setFlag(HStreamRecordHeader.Flag.RAW).build();
     return HStreamRecord.newBuilder()
         .setHeader(header)
         .setPayload(ByteString.copyFrom(rawRecord))
@@ -29,7 +24,7 @@ public class RecordUtils {
   public static HStreamRecord buildHStreamRecordFromHRecord(HRecord hRecord) {
     try {
       HStreamRecordHeader header =
-          HStreamRecordHeader.newBuilder().setFlag(JSON_RECORD_FLAG).build();
+          HStreamRecordHeader.newBuilder().setFlag(HStreamRecordHeader.Flag.JSON).build();
       String json = JsonFormat.printer().print(hRecord.getDelegate());
       logger.debug("hrecord to json: {}", json);
       return HStreamRecord.newBuilder()
@@ -42,16 +37,16 @@ public class RecordUtils {
   }
 
   public static byte[] parseRawRecordFromHStreamRecord(HStreamRecord hStreamRecord) {
-    int flag = hStreamRecord.getHeader().getFlag();
-    if (flag != RAW_RECORD_FLAG) {
+    HStreamRecordHeader.Flag flag = hStreamRecord.getHeader().getFlag();
+    if (!flag.equals(HStreamRecordHeader.Flag.RAW)) {
       throw new HStreamDBClientException.InvalidRecordException("not raw record");
     }
     return hStreamRecord.getPayload().toByteArray();
   }
 
   public static HRecord parseHRecordFromHStreamRecord(HStreamRecord hStreamRecord) {
-    int flag = hStreamRecord.getHeader().getFlag();
-    if (flag != JSON_RECORD_FLAG) {
+    HStreamRecordHeader.Flag flag = hStreamRecord.getHeader().getFlag();
+    if (!flag.equals(HStreamRecordHeader.Flag.JSON)) {
       logger.error("expect json record error");
       throw new HStreamDBClientException.InvalidRecordException("not json record");
     }
@@ -78,8 +73,8 @@ public class RecordUtils {
   }
 
   public static boolean isRawRecord(HStreamRecord hStreamRecord) {
-    int flag = hStreamRecord.getHeader().getFlag();
-    return flag == RAW_RECORD_FLAG;
+    HStreamRecordHeader.Flag flag = hStreamRecord.getHeader().getFlag();
+    return flag.equals(HStreamRecordHeader.Flag.RAW) ;
   }
 
   public static boolean isHRecord(ReceivedRecord receivedRecord) {
@@ -92,7 +87,7 @@ public class RecordUtils {
   }
 
   public static boolean isHRecord(HStreamRecord hStreamRecord) {
-    int flag = hStreamRecord.getHeader().getFlag();
-    return flag == JSON_RECORD_FLAG;
+    HStreamRecordHeader.Flag flag = hStreamRecord.getHeader().getFlag();
+    return flag.equals(HStreamRecordHeader.Flag.JSON);
   }
 }

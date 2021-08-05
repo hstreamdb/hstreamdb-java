@@ -123,9 +123,11 @@ message HStreamRecord {
 message HStreamRecordHeader {
   // Required.
   // Flag for payload.
-  // - JSON: 0x01 << 24
-  // - RAW:  0x02 << 24
-  uint32 flag = 1;
+  enum Flag {
+    JSON = 0;
+    RAW  = 1;
+  }
+  Flag flag = 1;
 
   // Optional.
   // Attributes attached to this record.
