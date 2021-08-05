@@ -2,6 +2,7 @@ package io.hstream;
 
 import io.hstream.impl.ProducerImpl;
 
+/** used to construct a producer */
 public class ProducerBuilder {
 
   private HStreamApiGrpc.HStreamApiStub grpcStub;
