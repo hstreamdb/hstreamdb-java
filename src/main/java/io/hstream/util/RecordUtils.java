@@ -14,7 +14,8 @@ public class RecordUtils {
   private static Logger logger = LoggerFactory.getLogger(RecordUtils.class);
 
   public static HStreamRecord buildHStreamRecordFromRawRecord(byte[] rawRecord) {
-    HStreamRecordHeader header = HStreamRecordHeader.newBuilder().setFlag(HStreamRecordHeader.Flag.RAW).build();
+    HStreamRecordHeader header =
+        HStreamRecordHeader.newBuilder().setFlag(HStreamRecordHeader.Flag.RAW).build();
     return HStreamRecord.newBuilder()
         .setHeader(header)
         .setPayload(ByteString.copyFrom(rawRecord))
@@ -74,7 +75,7 @@ public class RecordUtils {
 
   public static boolean isRawRecord(HStreamRecord hStreamRecord) {
     HStreamRecordHeader.Flag flag = hStreamRecord.getHeader().getFlag();
-    return flag.equals(HStreamRecordHeader.Flag.RAW) ;
+    return flag.equals(HStreamRecordHeader.Flag.RAW);
   }
 
   public static boolean isHRecord(ReceivedRecord receivedRecord) {

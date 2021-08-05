@@ -197,7 +197,7 @@ public class HStreamClientTest {
   }
 
   @Test
-  public void testStreamQuery() throws Exception{
+  public void testStreamQuery() throws Exception {
     Publisher<HRecord> publisher =
         client.streamQuery(
             "select * from " + TEST_STREAM + " where temperature > 30 emit changes;");

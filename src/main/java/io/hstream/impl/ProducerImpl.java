@@ -132,9 +132,7 @@ public class ProducerImpl implements Producer {
             .setStreamName(this.stream)
             .addAllRecords(
                 rawRecords.stream()
-                    .map(
-                        rawRecord ->
-                            RecordUtils.buildHStreamRecordFromRawRecord(rawRecord))
+                    .map(rawRecord -> RecordUtils.buildHStreamRecordFromRawRecord(rawRecord))
                     .collect(Collectors.toList()))
             .build();
 
@@ -167,9 +165,7 @@ public class ProducerImpl implements Producer {
             .setStreamName(this.stream)
             .addAllRecords(
                 hRecords.stream()
-                    .map(
-                        hRecord ->
-                            RecordUtils.buildHStreamRecordFromHRecord(hRecord))
+                    .map(hRecord -> RecordUtils.buildHStreamRecordFromHRecord(hRecord))
                     .collect(Collectors.toList()))
             .build();
 
