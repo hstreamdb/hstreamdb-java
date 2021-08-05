@@ -31,13 +31,22 @@ dependencies {
     implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.14.1'
 
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-    
+
     implementation 'com.google.guava:guava:30.1.1-jre'
 
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
 }
 
 protobuf {
@@ -120,7 +129,7 @@ signing {
 
 
 javadoc {
-    if(JavaVersion.current().isJava9Compatible()) {
+    if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
     }
 }

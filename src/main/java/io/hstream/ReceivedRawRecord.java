@@ -1,5 +1,6 @@
 package io.hstream;
 
+/** refer to a raw format record */
 public class ReceivedRawRecord {
 
   private RecordId recordId;
