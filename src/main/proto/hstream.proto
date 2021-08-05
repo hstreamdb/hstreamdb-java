@@ -44,7 +44,7 @@ service HStreamApi {
 
 message AppendRequest {
   string streamName = 1;
-  repeated bytes records = 2;
+  repeated HStreamRecord records = 2;
 }
 
 message AppendResponse {

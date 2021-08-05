@@ -52,6 +52,7 @@ public class RecordUtils {
   public static HRecord parseHRecordFromHStreamRecord(HStreamRecord hStreamRecord) {
     int flag = hStreamRecord.getHeader().getFlag();
     if (flag != JSON_RECORD_FLAG) {
+      logger.error("expect json record error");
       throw new HStreamDBClientException.InvalidRecordException("not json record");
     }
 

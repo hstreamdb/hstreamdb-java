@@ -134,7 +134,7 @@ public class ProducerImpl implements Producer {
                 rawRecords.stream()
                     .map(
                         rawRecord ->
-                            RecordUtils.buildHStreamRecordFromRawRecord(rawRecord).toByteString())
+                            RecordUtils.buildHStreamRecordFromRawRecord(rawRecord))
                     .collect(Collectors.toList()))
             .build();
 
@@ -169,7 +169,7 @@ public class ProducerImpl implements Producer {
                 hRecords.stream()
                     .map(
                         hRecord ->
-                            RecordUtils.buildHStreamRecordFromHRecord(hRecord).toByteString())
+                            RecordUtils.buildHStreamRecordFromHRecord(hRecord))
                     .collect(Collectors.toList()))
             .build();
 

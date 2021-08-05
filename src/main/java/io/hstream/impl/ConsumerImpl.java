@@ -168,10 +168,14 @@ public class ConsumerImpl extends AbstractService implements Consumer {
   }
 
   private static ReceivedHRecord toReceivedHRecord(ReceivedRecord receivedRecord) {
+      logger.info("enter toHRecord");
     try {
       HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
+        logger.info("parse done");
       HRecord hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord);
+        logger.info("get hrecord done");
       ReceivedHRecord receivedHRecord = new ReceivedHRecord(receivedRecord.getRecordId(), hRecord);
+        logger.info("get recv done");
       return receivedHRecord;
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
