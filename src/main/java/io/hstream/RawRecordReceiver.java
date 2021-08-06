@@ -1,5 +1,6 @@
 package io.hstream;
 
+/** the interface that user use to process raw record received from server */
 public interface RawRecordReceiver {
 
   /**

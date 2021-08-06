@@ -3,6 +3,7 @@ package io.hstream;
 import com.google.protobuf.ListValue;
 import com.google.protobuf.util.Values;
 
+/** the {@link HArray} constructor */
 public class HArrayBuilder {
 
   private ListValue.Builder delegate;

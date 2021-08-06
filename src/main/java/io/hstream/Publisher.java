@@ -1,5 +1,6 @@
 package io.hstream;
 
+/** a Publisher is a provider of a potentially unbounded number of sequenced elements */
 public interface Publisher<V> {
 
   /**

@@ -1,5 +1,6 @@
 package io.hstream;
 
+/** Client exception definition */
 public class HStreamDBClientException extends RuntimeException {
 
   public HStreamDBClientException(final String message) {
