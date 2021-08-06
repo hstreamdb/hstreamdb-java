@@ -1,5 +1,6 @@
 package io.hstream;
 
+/** the interface that user use to process {@link HRecord} received from server */
 public interface HRecordReceiver {
 
   /**

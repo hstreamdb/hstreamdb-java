@@ -2,6 +2,7 @@ package io.hstream;
 
 import com.google.protobuf.ListValue;
 
+/** a data structure like array */
 public class HArray {
 
   private ListValue delegate;

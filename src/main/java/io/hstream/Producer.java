@@ -2,6 +2,7 @@ package io.hstream;
 
 import java.util.concurrent.CompletableFuture;
 
+/** the interface of hstream producer */
 public interface Producer {
 
   /**

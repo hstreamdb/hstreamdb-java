@@ -3,6 +3,7 @@ package io.hstream;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Struct;
 
+/** the data structure defined by hstream */
 public class HRecord {
 
   private Struct delegate;

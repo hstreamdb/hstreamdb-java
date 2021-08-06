@@ -2,7 +2,7 @@ package io.hstream;
 
 import java.util.List;
 
-/** HstreamClient implement the hstreamdb client */
+/** HstreamClient implement the hstream client, user can use it to interact with server */
 public interface HStreamClient extends AutoCloseable {
 
   /**
