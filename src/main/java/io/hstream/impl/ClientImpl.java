@@ -3,12 +3,9 @@ package io.hstream.impl;
 import com.google.protobuf.Empty;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.stub.StreamObserver;
 import io.hstream.*;
 import io.hstream.HStreamApiGrpc;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +13,6 @@ import org.slf4j.LoggerFactory;
 public class ClientImpl implements HStreamClient {
 
   private static final Logger logger = LoggerFactory.getLogger(ClientImpl.class);
-
-  private static final String STREAM_QUERY_STREAM_PREFIX = "STREAM-QUERY-";
-
-  private static final String STREAM_QUERY_SUBSCRIPTION_PREFIX = "STREAM-QUERY-";
 
   private final ManagedChannel managedChannel;
   private final HStreamApiGrpc.HStreamApiStub stub;
@@ -43,74 +36,8 @@ public class ClientImpl implements HStreamClient {
   }
 
   @Override
-  public CompletableFuture<Publisher<HRecord>> streamQuery(String sql) {
-    CompletableFuture<Publisher<HRecord>> publisherFuture = new CompletableFuture<>();
-
-    String resultStreamNameSuffix = UUID.randomUUID().toString();
-    Publisher<HRecord> responsePublisher =
-        new Publisher<HRecord>() {
-          @Override
-          public void subscribe(Observer<? super HRecord> observer) {
-            createSubscription(
-                Subscription.newBuilder()
-                    .setSubscriptionId(STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix)
-                    .setStreamName(STREAM_QUERY_STREAM_PREFIX + resultStreamNameSuffix)
-                    .setOffset(
-                        SubscriptionOffset.newBuilder()
-                            .setSpecialOffset(SubscriptionOffset.SpecialOffset.EARLIST)
-                            .build())
-                    .build());
-
-            Consumer consumer =
-                newConsumer()
-                    .subscription(STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix)
-                    .hRecordReceiver(
-                        (receivedHRecord, responder) -> {
-                          try {
-                            observer.onNext(receivedHRecord.getHRecord());
-                            responder.ack();
-                          } catch (Throwable t) {
-                            observer.onError(t);
-                          }
-                        })
-                    .build();
-            consumer.startAsync().awaitRunning();
-          }
-        };
-
-    CreateQueryStreamRequest createQueryStreamRequest =
-        CreateQueryStreamRequest.newBuilder()
-            .setQueryStream(
-                Stream.newBuilder()
-                    .setStreamName(STREAM_QUERY_STREAM_PREFIX + resultStreamNameSuffix)
-                    .setReplicationFactor(3)
-                    .build())
-            .setQueryStatements(sql)
-            .build();
-    stub.createQueryStream(
-        createQueryStreamRequest,
-        new StreamObserver<CreateQueryStreamResponse>() {
-          @Override
-          public void onNext(CreateQueryStreamResponse value) {
-            logger.info(
-                "query [{}] created, related result stream is [{}]",
-                value.getStreamQuery().getId(),
-                value.getQueryStream().getStreamName());
-
-            publisherFuture.complete(responsePublisher);
-          }
-
-          @Override
-          public void onError(Throwable t) {
-            logger.error("creating stream query happens error: ", t);
-            publisherFuture.completeExceptionally(t);
-          }
-
-          @Override
-          public void onCompleted() {}
-        });
-
-    return publisherFuture;
+  public QueryerBuilder newQueryer() {
+    return new QueryerBuilder(this, stub);
   }
 
   @Override

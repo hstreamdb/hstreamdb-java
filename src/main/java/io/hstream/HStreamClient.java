@@ -1,7 +1,6 @@
 package io.hstream;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /** HstreamClient implement the hstream client, user can use it to interact with server */
 public interface HStreamClient extends AutoCloseable {
@@ -30,12 +29,11 @@ public interface HStreamClient extends AutoCloseable {
   ConsumerBuilder newConsumer();
 
   /**
-   * Execute a stream sql query.
+   * create a {@link QueryerBuilder}.
    *
-   * @param sql sql query wait to execute.
-   * @return a future contains a {@link Publisher}, which contains the results of the sql execution.
+   * @return the {@link Queryer}.
    */
-  CompletableFuture<Publisher<HRecord>> streamQuery(String sql);
+  QueryerBuilder newQueryer();
 
   /**
    * Create a stream.
