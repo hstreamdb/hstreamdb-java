@@ -1,6 +1,6 @@
 package io.hstream;
 
-/** user can define actions when consume data from {@link Publisher} */
+/** Receives notifications from an observable stream of results */
 public interface Observer<V> {
 
   /**
