@@ -198,10 +198,6 @@ public class HStreamClientTest {
 
   @Test
   public void testStreamQuery() throws Exception {
-    CompletableFuture<Publisher<HRecord>> publisherFuture =
-        client.streamQuery(
-            "select * from " + TEST_STREAM + " where temperature > 30 emit changes;");
-
     AtomicInteger receivedCount = new AtomicInteger(0);
     Observer<HRecord> observer =
         new Observer<HRecord>() {
@@ -220,7 +216,14 @@ public class HStreamClientTest {
           public void onCompleted() {}
         };
 
-    publisherFuture.join().subscribe(observer);
+    Queryer queryer =
+        client
+            .newQueryer()
+            .sql("select * from " + TEST_STREAM + " where temperature > 30 emit changes;")
+            .resultObserver(observer)
+            .build();
+
+    queryer.startAsync().awaitRunning();
 
     logger.info("begin to write");
 
@@ -238,6 +241,8 @@ public class HStreamClientTest {
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
+
+    queryer.stopAsync().awaitTerminated();
   }
 
   @Test
