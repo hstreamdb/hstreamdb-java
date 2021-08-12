@@ -14,7 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Prepare test env 
+      - name: check code format
+        uses: axel-op/googlejavaformat-action@v3
+        with:
+          version: '1.10.0'
+          skipCommit: true
+          args: '--set-exit-if-changed'
+
+      - name: Prepare test env
         run:  script/prepare-test-env-latest.sh
 
       - name: Set up JDK 11
