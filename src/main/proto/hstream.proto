@@ -34,10 +34,7 @@ service HStreamApi {
 
   rpc ListStreams(google.protobuf.Empty) returns (ListStreamsResponse) {}
 
-  // rpc ExecuteStreamQuery(ExecuteStreamQueryRequest) returns (stream
-  // google.protobuf.Struct) {}
-
-  rpc ExecutePushQuery(CommandPushQuery) returns (stream google.protobuf.Struct) {}
+  rpc CreateQueryStream(CreateQueryStreamRequest) returns (CreateQueryStreamResponse) {}
 
 }
 
@@ -148,14 +145,6 @@ message RecordId {
   uint32 batchIndex = 2;
 }
 
-// message ExecuteStreamQueryRequest {
-//   string sql = 1;
-// }
-
-message CommandPushQuery {
-  string query_text = 1;
-}
-
 message DeleteSubscriptionRequest {
   string subscriptionId = 1;
 }
@@ -170,4 +159,21 @@ message ConsumerHeartbeatRequest {
 
 message ConsumerHeartbeatResponse {
   string subscriptionId = 1;
+}
+
+message CreateQueryStreamRequest {
+  Stream queryStream = 1;
+  string queryStatements = 2;
+}
+
+message CreateQueryStreamResponse {
+  Stream queryStream = 1;
+  Query streamQuery = 2;
+}
+
+message Query {
+  string id = 1;
+  int32 status = 2;
+  int64 createdTime = 3;
+  string queryText = 4;
 }
