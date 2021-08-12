@@ -198,9 +198,10 @@ public class HStreamClientTest {
 
   @Test
   public void testStreamQuery() throws Exception {
-    Publisher<HRecord> publisher =
+    CompletableFuture<Publisher<HRecord>> publisherFuture =
         client.streamQuery(
             "select * from " + TEST_STREAM + " where temperature > 30 emit changes;");
+
     AtomicInteger receivedCount = new AtomicInteger(0);
     Observer<HRecord> observer =
         new Observer<HRecord>() {
@@ -212,19 +213,14 @@ public class HStreamClientTest {
 
           @Override
           public void onError(Throwable t) {
-            throw new RuntimeException(t);
+            logger.error("error: ", t);
           }
 
           @Override
           public void onCompleted() {}
         };
-    publisher.subscribe(observer);
 
-    try {
-      Thread.sleep(5000);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
+    publisherFuture.join().subscribe(observer);
 
     logger.info("begin to write");
 
@@ -237,7 +233,7 @@ public class HStreamClientTest {
     producer.write(hRecord3);
 
     try {
-      Thread.sleep(5000);
+      Thread.sleep(3000);
       Assertions.assertEquals(2, receivedCount.get());
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
