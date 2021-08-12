@@ -7,7 +7,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QueryerImpl extends AbstractService implements Queryer {
+public class QueryerImpl
+        extends AbstractService implements Queryer {
 
   private static final Logger logger = LoggerFactory.getLogger(QueryerImpl.class);
 
