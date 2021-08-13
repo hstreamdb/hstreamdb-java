@@ -1,6 +1,7 @@
 # hstreamdb-java
 
 ![Build Status](https://github.com/hstreamdb/hstreamdb-java/actions/workflows/main.yml/badge.svg)
+[![Maven Central](https://img.shields.io/maven-central/v/io.hstream/hstreamdb-java)](https://search.maven.org/artifact/io.hstream/hstreamdb-java)
 
 This is the offical Java client library for [HStreamDB](https://hstream.io/).
 
