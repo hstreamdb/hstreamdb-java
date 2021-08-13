@@ -165,6 +165,7 @@ consumer.startAsync().awaitRunning();
 
 ```java
 
+// first, create an observer for sql results
 Observer<HRecord> observer =
       new Observer<HRecord>() {
         @Override
@@ -181,6 +182,7 @@ Observer<HRecord> observer =
         public void onCompleted() {}
       };
 
+// second, create a queryer to execute a sql 
 Queryer queryer =
       client
           .newQueryer()
@@ -188,6 +190,7 @@ Queryer queryer =
           .resultObserver(observer)
           .build();
 
+// third, start the queryer 
 queryer.startAsync().awaitRunning();
 
 ```
