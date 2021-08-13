@@ -126,7 +126,7 @@ batchedProducer.flush()
 
 ```
 
-** Please do not write both binary data and hrecord in one stream.**
+**Please do not write both binary data and hrecord in one stream.**
 
 
 ### Consume Data from a Stream 
