@@ -1,5 +1,7 @@
 # hstreamdb-java
 
+![Build Status](https://github.com/hstreamdb/hstreamdb-java/actions/workflows/main.yml/badge.svg)
+
 This is the offical Java client library for [HStreamDB](https://hstream.io/).
 
 ## Content 
