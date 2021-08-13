@@ -14,17 +14,17 @@ public class QueryerBuilder {
     this.grpcStub = grpcStub;
   }
 
-  QueryerBuilder sql(String sql) {
+  public QueryerBuilder sql(String sql) {
     this.sql = sql;
     return this;
   }
 
-  QueryerBuilder resultObserver(Observer<HRecord> resultObserver) {
+  public QueryerBuilder resultObserver(Observer<HRecord> resultObserver) {
     this.resultObserver = resultObserver;
     return this;
   }
 
-  Queryer build() {
+  public Queryer build() {
     return new QueryerImpl(client, grpcStub, sql, resultObserver);
   }
 }
