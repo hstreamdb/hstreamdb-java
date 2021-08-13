@@ -2,6 +2,17 @@
 
 This is the offical Java client library for [HStreamDB](https://hstream.io/).
 
+## Content 
+- [Installation](#installation)
+    - [Maven](#maven)
+    - [Gradle](#gradle)
+- [Example Usage](#example-usage)
+    - [Connect to HStreamDB](#connect-to-hstreamdb)
+    - [Work with Streams](#work-with-streams)
+    - [Write Data to a Stream](#write-data-to-a-stream)
+    - [Consume Data from a Stream](#consume-data-from-a-stream)
+    - [Process Data in Stream with SQL](#process-data-in-stream-with-sql)
+
 ## Installation
 
 The library artifact is published in Maven central, 
