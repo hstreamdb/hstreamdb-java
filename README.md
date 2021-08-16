@@ -6,6 +6,10 @@
 
 This is the offical Java client library for [HStreamDB](https://hstream.io/).
 
+**Please use the latest released version.** 
+
+**The latest release is v0.3.0, which requires hstream server v0.5.1.x.**
+
 ## Content 
 - [Installation](#installation)
     - [Maven](#maven)
