@@ -40,6 +40,63 @@ public class HStreamClientTest {
     client.deleteStream(TEST_STREAM);
   }
 
+  // @Test
+  // public void testReceiverException() throws Exception {
+  //   Consumer consumer =
+  //       client
+  //           .newConsumer()
+  //           .subscription(TEST_SUBSCRIPTION)
+  //           .rawRecordReceiver(
+  //               (receivedRawRecord, responder) -> {
+  //                 throw new RuntimeException("receiver exception");
+  //               })
+  //           .build();
+  //   Service.Listener listener =
+  //       new Service.Listener() {
+  //         @Override
+  //         public void starting() {
+  //           super.starting();
+  //         }
+
+  //         @Override
+  //         public void running() {
+  //           super.running();
+  //         }
+
+  //         @Override
+  //         public void stopping(Service.State from) {
+  //           super.stopping(from);
+  //         }
+
+  //         @Override
+  //         public void terminated(Service.State from) {
+  //           super.terminated(from);
+  //         }
+
+  //         @Override
+  //         public void failed(Service.State from, Throwable failure) {
+  //           logger.error("consumer failed from state {} ", from, failure);
+  //           super.failed(from, failure);
+  //           // consumer.stopAsync();
+  //         }
+  //       };
+
+  //   consumer.addListener(listener, Executors.newSingleThreadExecutor());
+  //   consumer.startAsync().awaitRunning();
+
+  //   Producer producer = client.newProducer().stream(TEST_STREAM).build();
+  //   Random random = new Random();
+  //   byte[] rawRecord = new byte[100];
+  //   for (int i = 0; i < 5; ++i) {
+  //     Thread.sleep(5000);
+  //     random.nextBytes(rawRecord);
+  //     producer.write(rawRecord);
+  //   }
+
+  //   consumer.awaitTerminated(1, TimeUnit.SECONDS);
+  //   consumer.stopAsync().awaitTerminated();
+  // }
+
   @Test
   public void testWriteRawRecord() throws Exception {
     CompletableFuture<RecordId> recordIdFuture = new CompletableFuture<>();

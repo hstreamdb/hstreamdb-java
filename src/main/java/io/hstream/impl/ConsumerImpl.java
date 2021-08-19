@@ -3,6 +3,7 @@ package io.hstream.impl;
 import com.google.common.util.concurrent.AbstractService;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
 import io.hstream.util.RecordUtils;
@@ -92,31 +93,62 @@ public class ConsumerImpl extends AbstractService implements Consumer {
 
             executorService.submit(
                 () -> {
-                  do {
+                  awaitRunning();
+                  while (isRunning()) {
                     logger.info("start fetch and processing ...");
-                    FetchResponse fetchResponse = grpcBlockingStub.fetch(fetchRequest);
+                    FetchResponse fetchResponse;
+                    try {
+                      fetchResponse = grpcBlockingStub.fetch(fetchRequest);
+                    } catch (StatusRuntimeException e) {
+                      logger.error("fetch records error", e);
+                      throw new HStreamDBClientException.ConsumerException(
+                          "fetch records error", e);
+                    }
+
                     logger.info("fetched {} records", fetchResponse.getReceivedRecordsCount());
                     for (ReceivedRecord receivedRecord : fetchResponse.getReceivedRecordsList()) {
                       if (RecordUtils.isRawRecord(receivedRecord)) {
                         logger.info("ready to process rawRecord");
-                        rawRecordReceiver.processRawRecord(
-                            toReceivedRawRecord(receivedRecord),
-                            new ResponderImpl(
-                                grpcBlockingStub, subscriptionId, receivedRecord.getRecordId()));
+                        try {
+                          rawRecordReceiver.processRawRecord(
+                              toReceivedRawRecord(receivedRecord),
+                              new ResponderImpl(
+                                  grpcBlockingStub, subscriptionId, receivedRecord.getRecordId()));
+                        } catch (Exception e) {
+                          logger.error("process rawRecord error", e);
+                        }
                       } else {
                         logger.info("ready to process hrecord");
-                        hRecordReceiver.processHRecord(
-                            toReceivedHRecord(receivedRecord),
-                            new ResponderImpl(
-                                grpcBlockingStub, subscriptionId, receivedRecord.getRecordId()));
+                        try {
+                          hRecordReceiver.processHRecord(
+                              toReceivedHRecord(receivedRecord),
+                              new ResponderImpl(
+                                  grpcBlockingStub, subscriptionId, receivedRecord.getRecordId()));
+
+                        } catch (Exception e) {
+                          logger.error("process hrecord error", e);
+                        }
                       }
                     }
                     logger.info("processed {} records", fetchResponse.getReceivedRecordsCount());
-                  } while (isRunning());
+                  }
                 });
 
             scheduledExecutorService.scheduleAtFixedRate(
-                () -> grpcStub.sendConsumerHeartbeat(consumerHeartbeatRequest, heartbeatObserver),
+                () -> {
+                  awaitRunning();
+                  if (!isRunning()) {
+                    return;
+                  }
+
+                  try {
+                    grpcStub.sendConsumerHeartbeat(consumerHeartbeatRequest, heartbeatObserver);
+                  } catch (StatusRuntimeException e) {
+                    logger.error("send heartbeat error", e);
+                    throw new HStreamDBClientException.ConsumerException(
+                        "send heart beat error", e);
+                  }
+                },
                 0,
                 1,
                 TimeUnit.SECONDS);
