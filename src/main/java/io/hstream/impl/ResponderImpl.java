@@ -32,7 +32,7 @@ public class ResponderImpl implements Responder {
     try {
       blockingStub.commitOffset(committedOffset);
     } catch (StatusRuntimeException e) {
-      logger.error("commit offset failed: {}", e);
+      logger.error("commit offset failed: ", e);
       throw new RuntimeException(e);
     }
     logger.info("committed offset {} for subscription {}", recordId, subscriptionId);

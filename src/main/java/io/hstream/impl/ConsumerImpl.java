@@ -56,7 +56,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
         new StreamObserver<>() {
           @Override
           public void onNext(ConsumerHeartbeatResponse response) {
-            logger.info(
+            logger.debug(
                 "consumer {} received heartbeat response for subscription {}",
                 consumerName,
                 response.getSubscriptionId());
@@ -190,9 +190,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
     try {
       HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
       byte[] rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord);
-      ReceivedRawRecord receivedRawRecord =
-          new ReceivedRawRecord(receivedRecord.getRecordId(), rawRecord);
-      return receivedRawRecord;
+      return new ReceivedRawRecord(receivedRecord.getRecordId(), rawRecord);
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
     }
@@ -202,8 +200,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
     try {
       HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
       HRecord hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord);
-      ReceivedHRecord receivedHRecord = new ReceivedHRecord(receivedRecord.getRecordId(), hRecord);
-      return receivedHRecord;
+      return new ReceivedHRecord(receivedRecord.getRecordId(), hRecord);
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
     }

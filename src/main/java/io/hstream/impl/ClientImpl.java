@@ -45,6 +45,7 @@ public class ClientImpl implements HStreamClient {
     Stream stream = Stream.newBuilder().setStreamName(streamName).setReplicationFactor(3).build();
 
     blockingStub.createStream(stream);
+    logger.info("create stream {}", streamName);
   }
 
   @Override
@@ -65,6 +66,7 @@ public class ClientImpl implements HStreamClient {
   @Override
   public void createSubscription(Subscription subscription) {
     blockingStub.createSubscription(subscription);
+    logger.info("Create subscription {}", subscription);
   }
 
   @Override

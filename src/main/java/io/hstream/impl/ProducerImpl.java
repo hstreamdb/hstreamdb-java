@@ -72,6 +72,7 @@ public class ProducerImpl implements Producer {
       try {
         semaphore.acquire();
       } catch (InterruptedException e) {
+        logger.error("error when try to acquire semaphore in writeAsync method: ", e);
         throw new HStreamDBClientException(e);
       }
 
@@ -99,6 +100,7 @@ public class ProducerImpl implements Producer {
       try {
         semaphore.acquire();
       } catch (InterruptedException e) {
+        logger.error("error when try to acquire semaphore in writeAsync method: ", e);
         throw new HStreamDBClientException(e);
       }
 
@@ -132,7 +134,7 @@ public class ProducerImpl implements Producer {
             .setStreamName(this.stream)
             .addAllRecords(
                 rawRecords.stream()
-                    .map(rawRecord -> RecordUtils.buildHStreamRecordFromRawRecord(rawRecord))
+                    .map(RecordUtils::buildHStreamRecordFromRawRecord)
                     .collect(Collectors.toList()))
             .build();
 
@@ -145,6 +147,8 @@ public class ProducerImpl implements Producer {
 
           @Override
           public void onError(Throwable t) {
+            logger.error(
+                "producer write raw record to stream {} error: {}", ProducerImpl.this.stream, t);
             throw new HStreamDBClientException(t);
           }
 
@@ -165,7 +169,7 @@ public class ProducerImpl implements Producer {
             .setStreamName(this.stream)
             .addAllRecords(
                 hRecords.stream()
-                    .map(hRecord -> RecordUtils.buildHStreamRecordFromHRecord(hRecord))
+                    .map(RecordUtils::buildHStreamRecordFromHRecord)
                     .collect(Collectors.toList()))
             .build();
 
@@ -178,6 +182,8 @@ public class ProducerImpl implements Producer {
 
           @Override
           public void onError(Throwable t) {
+            logger.error(
+                "producer write hrecord to stream {} error: {}", ProducerImpl.this.stream, t);
             throw new HStreamDBClientException(t);
           }
 
@@ -214,7 +220,7 @@ public class ProducerImpl implements Producer {
 
         List<RecordId> rawRecordIds =
             writeRawRecordsAsync(
-                    rawRecords.stream().map(pair -> pair.getRight()).collect(Collectors.toList()))
+                    rawRecords.stream().map(ImmutablePair::getRight).collect(Collectors.toList()))
                 .join();
         List<RecordId> hRecordIds =
             writeHRecordsAsync(
