@@ -1,10 +1,10 @@
 package io.hstream.impl;
 
 import io.grpc.StatusRuntimeException;
-import io.hstream.CommittedOffset;
-import io.hstream.HStreamApiGrpc;
 import io.hstream.RecordId;
 import io.hstream.Responder;
+import io.hstream.internal.CommittedOffset;
+import io.hstream.internal.HStreamApiGrpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,10 @@ public class ResponderImpl implements Responder {
   @Override
   public void ack() {
     CommittedOffset committedOffset =
-        CommittedOffset.newBuilder().setSubscriptionId(subscriptionId).setOffset(recordId).build();
+        CommittedOffset.newBuilder()
+            .setSubscriptionId(subscriptionId)
+            .setOffset(recordId.getRep())
+            .build();
 
     try {
       blockingStub.commitOffset(committedOffset);

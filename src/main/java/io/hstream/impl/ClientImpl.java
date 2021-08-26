@@ -4,9 +4,14 @@ import com.google.protobuf.Empty;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.hstream.*;
-import io.hstream.HStreamApiGrpc;
+import io.hstream.internal.DeleteStreamRequest;
+import io.hstream.internal.DeleteSubscriptionRequest;
+import io.hstream.internal.HStreamApiGrpc;
+import io.hstream.internal.ListStreamsResponse;
+import io.hstream.internal.Stream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,12 +69,14 @@ public class ClientImpl implements HStreamClient {
 
   @Override
   public void createSubscription(Subscription subscription) {
-    blockingStub.createSubscription(subscription);
+    blockingStub.createSubscription(subscription.getRep());
   }
 
   @Override
   public List<Subscription> listSubscriptions() {
-    return blockingStub.listSubscriptions(Empty.newBuilder().build()).getSubscriptionList();
+    return blockingStub.listSubscriptions(Empty.newBuilder().build()).getSubscriptionList().stream()
+        .map(Subscription::subscriptionFromGrpc)
+        .collect(Collectors.toList());
   }
 
   @Override

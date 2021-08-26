@@ -3,6 +3,10 @@ package io.hstream.impl;
 import com.google.common.util.concurrent.AbstractService;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
+import io.hstream.internal.CreateQueryStreamRequest;
+import io.hstream.internal.CreateQueryStreamResponse;
+import io.hstream.internal.HStreamApiGrpc;
+import io.hstream.internal.Stream;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,14 +61,10 @@ public class QueryerImpl extends AbstractService implements Queryer {
                 value.getQueryStream().getStreamName());
 
             client.createSubscription(
-                Subscription.newBuilder()
-                    .setSubscriptionId(STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix)
-                    .setStreamName(STREAM_QUERY_STREAM_PREFIX + resultStreamNameSuffix)
-                    .setOffset(
-                        SubscriptionOffset.newBuilder()
-                            .setSpecialOffset(SubscriptionOffset.SpecialOffset.EARLIST)
-                            .build())
-                    .build());
+                new Subscription(
+                    STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix,
+                    STREAM_QUERY_STREAM_PREFIX + resultStreamNameSuffix,
+                    new SubscriptionOffset(SubscriptionOffset.SpecialOffset.EARLIEST)));
 
             queryInnerConsumer =
                 client

@@ -2,6 +2,9 @@ package io.hstream.impl;
 
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
+import io.hstream.internal.AppendRequest;
+import io.hstream.internal.AppendResponse;
+import io.hstream.internal.HStreamApiGrpc;
 import io.hstream.util.RecordUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -140,7 +143,10 @@ public class ProducerImpl implements Producer {
         new StreamObserver<>() {
           @Override
           public void onNext(AppendResponse appendResponse) {
-            completableFuture.complete(appendResponse.getRecordIdsList());
+            completableFuture.complete(
+                appendResponse.getRecordIdsList().stream()
+                    .map(RecordId::RecordIdFromGrpc)
+                    .collect(Collectors.toList()));
           }
 
           @Override
@@ -173,7 +179,10 @@ public class ProducerImpl implements Producer {
         new StreamObserver<>() {
           @Override
           public void onNext(AppendResponse appendResponse) {
-            completableFuture.complete(appendResponse.getRecordIdsList());
+            completableFuture.complete(
+                appendResponse.getRecordIdsList().stream()
+                    .map(RecordId::RecordIdFromGrpc)
+                    .collect(Collectors.toList()));
           }
 
           @Override

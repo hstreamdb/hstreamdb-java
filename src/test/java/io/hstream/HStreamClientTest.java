@@ -12,25 +12,20 @@ import org.slf4j.LoggerFactory;
 public class HStreamClientTest {
 
   private static final Logger logger = LoggerFactory.getLogger(HStreamClientTest.class);
-
-  private HStreamClient client;
   private static final String serviceUrl = "localhost:6570";
   private static final String TEST_STREAM = "test_stream";
   private static final String TEST_SUBSCRIPTION = "test_subscription";
+  private HStreamClient client;
 
   @BeforeEach
   public void setUp() {
     client = HStreamClient.builder().serviceUrl(serviceUrl).build();
     client.createStream(TEST_STREAM);
     Subscription subscription =
-        Subscription.newBuilder()
-            .setSubscriptionId(TEST_SUBSCRIPTION)
-            .setStreamName(TEST_STREAM)
-            .setOffset(
-                SubscriptionOffset.newBuilder()
-                    .setSpecialOffset(SubscriptionOffset.SpecialOffset.LATEST)
-                    .build())
-            .build();
+        new Subscription(
+            TEST_SUBSCRIPTION,
+            TEST_STREAM,
+            new SubscriptionOffset(SubscriptionOffset.SpecialOffset.LATEST));
     client.createSubscription(subscription);
   }
 
