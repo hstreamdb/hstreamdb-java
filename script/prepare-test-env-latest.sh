@@ -13,7 +13,7 @@ docker run \
     --rm  \
     -v /tmp/hstream-test-data:/data/store \
     --name hstore-test \
-    -P \
+    --network host \
     hstreamdb/hstream:${DEFAULT_HSTREAM_DOCKER_TAG} \
     ld-dev-cluster --root /data/store --use-tcp
 
@@ -22,6 +22,6 @@ docker run \
   --rm \
   -v /tmp/hstream-test-data:/data/store \
   --name hserver-test \
-  -p 6570:6570 \
+  --network host \
   hstreamdb/hstream:${DEFAULT_HSTREAM_DOCKER_TAG} \
   hstream-server --port 6570 --store-config /data/store/logdevice.conf

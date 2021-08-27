@@ -146,7 +146,7 @@ public class ProducerImpl implements Producer {
           public void onNext(AppendResponse appendResponse) {
             completableFuture.complete(
                 appendResponse.getRecordIdsList().stream()
-                    .map(GrpcUtils::RecordIdFromGrpc)
+                    .map(GrpcUtils::recordIdFromGrpc)
                     .collect(Collectors.toList()));
           }
 
@@ -182,7 +182,7 @@ public class ProducerImpl implements Producer {
           public void onNext(AppendResponse appendResponse) {
             completableFuture.complete(
                 appendResponse.getRecordIdsList().stream()
-                    .map(GrpcUtils::RecordIdFromGrpc)
+                    .map(GrpcUtils::recordIdFromGrpc)
                     .collect(Collectors.toList()));
           }
 

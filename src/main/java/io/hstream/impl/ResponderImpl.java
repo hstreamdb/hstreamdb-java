@@ -30,7 +30,7 @@ public class ResponderImpl implements Responder {
     CommittedOffset committedOffset =
         CommittedOffset.newBuilder()
             .setSubscriptionId(subscriptionId)
-            .setOffset(GrpcUtils.RecordIdToGrpc(recordId))
+            .setOffset(GrpcUtils.recordIdToGrpc(recordId))
             .build();
 
     try {

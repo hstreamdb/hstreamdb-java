@@ -117,7 +117,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                               new ResponderImpl(
                                   grpcBlockingStub,
                                   subscriptionId,
-                                  GrpcUtils.RecordIdFromGrpc(receivedRecord.getRecordId())));
+                                  GrpcUtils.recordIdFromGrpc(receivedRecord.getRecordId())));
                         } catch (Exception e) {
                           logger.error("process rawRecord error", e);
                         }
@@ -129,7 +129,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                               new ResponderImpl(
                                   grpcBlockingStub,
                                   subscriptionId,
-                                  GrpcUtils.RecordIdFromGrpc(receivedRecord.getRecordId())));
+                                  GrpcUtils.recordIdFromGrpc(receivedRecord.getRecordId())));
 
                         } catch (Exception e) {
                           logger.error("process hrecord error", e);
@@ -198,7 +198,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
       byte[] rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord);
       ReceivedRawRecord receivedRawRecord =
           new ReceivedRawRecord(
-              GrpcUtils.RecordIdFromGrpc(receivedRecord.getRecordId()), rawRecord);
+              GrpcUtils.recordIdFromGrpc(receivedRecord.getRecordId()), rawRecord);
       return receivedRawRecord;
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
@@ -210,7 +210,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
       HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
       HRecord hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord);
       ReceivedHRecord receivedHRecord =
-          new ReceivedHRecord(GrpcUtils.RecordIdFromGrpc(receivedRecord.getRecordId()), hRecord);
+          new ReceivedHRecord(GrpcUtils.recordIdFromGrpc(receivedRecord.getRecordId()), hRecord);
       return receivedHRecord;
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);

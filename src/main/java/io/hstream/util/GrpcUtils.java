@@ -4,14 +4,14 @@ import io.hstream.*;
 
 public class GrpcUtils {
 
-  public static io.hstream.internal.RecordId RecordIdToGrpc(RecordId recordId) {
+  public static io.hstream.internal.RecordId recordIdToGrpc(RecordId recordId) {
     return io.hstream.internal.RecordId.newBuilder()
         .setBatchId(recordId.getBatchId())
         .setBatchId(recordId.getBatchIndex())
         .build();
   }
 
-  public static RecordId RecordIdFromGrpc(io.hstream.internal.RecordId recordId) {
+  public static RecordId recordIdFromGrpc(io.hstream.internal.RecordId recordId) {
     return new RecordId(recordId.getBatchId(), recordId.getBatchIndex());
   }
 
