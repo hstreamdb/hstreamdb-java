@@ -5,6 +5,7 @@ import io.hstream.*;
 import io.hstream.internal.AppendRequest;
 import io.hstream.internal.AppendResponse;
 import io.hstream.internal.HStreamApiGrpc;
+import io.hstream.util.GrpcUtils;
 import io.hstream.util.RecordUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,7 +146,7 @@ public class ProducerImpl implements Producer {
           public void onNext(AppendResponse appendResponse) {
             completableFuture.complete(
                 appendResponse.getRecordIdsList().stream()
-                    .map(RecordId::RecordIdFromGrpc)
+                    .map(GrpcUtils::RecordIdFromGrpc)
                     .collect(Collectors.toList()));
           }
 
@@ -181,7 +182,7 @@ public class ProducerImpl implements Producer {
           public void onNext(AppendResponse appendResponse) {
             completableFuture.complete(
                 appendResponse.getRecordIdsList().stream()
-                    .map(RecordId::RecordIdFromGrpc)
+                    .map(GrpcUtils::RecordIdFromGrpc)
                     .collect(Collectors.toList()));
           }
 

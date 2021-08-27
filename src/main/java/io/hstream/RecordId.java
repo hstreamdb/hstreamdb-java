@@ -1,33 +1,28 @@
 package io.hstream;
 
 public class RecordId {
-  private final io.hstream.internal.RecordId rep;
 
-  public RecordId(io.hstream.internal.RecordId rep) {
-    this.rep = rep;
-  }
+  private long batchId;
+  private int batchIndex;
 
   public RecordId(long batchId, int batchIndex) {
-    this.rep =
-        io.hstream.internal.RecordId.newBuilder()
-            .setBatchId(batchId)
-            .setBatchIndex(batchIndex)
-            .build();
-  }
-
-  public io.hstream.internal.RecordId getRep() {
-    return this.rep;
-  }
-
-  public static RecordId RecordIdFromGrpc(io.hstream.internal.RecordId recordId) {
-    return new RecordId(recordId);
+    this.batchId = batchId;
+    this.batchIndex = batchIndex;
   }
 
   public long getBatchId() {
-    return this.rep.getBatchId();
+    return batchId;
   }
 
   public int getBatchIndex() {
-    return this.rep.getBatchIndex();
+    return batchIndex;
+  }
+
+  public void setBatchId(long batchId) {
+    this.batchId = batchId;
+  }
+
+  public void setBatchIndex(int batchIndex) {
+    this.batchIndex = batchIndex;
   }
 }

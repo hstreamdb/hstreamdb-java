@@ -9,6 +9,7 @@ import io.hstream.internal.DeleteSubscriptionRequest;
 import io.hstream.internal.HStreamApiGrpc;
 import io.hstream.internal.ListStreamsResponse;
 import io.hstream.internal.Stream;
+import io.hstream.util.GrpcUtils;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -69,13 +70,13 @@ public class ClientImpl implements HStreamClient {
 
   @Override
   public void createSubscription(Subscription subscription) {
-    blockingStub.createSubscription(subscription.getRep());
+    blockingStub.createSubscription(GrpcUtils.subscriptionToGrpc(subscription));
   }
 
   @Override
   public List<Subscription> listSubscriptions() {
     return blockingStub.listSubscriptions(Empty.newBuilder().build()).getSubscriptionList().stream()
-        .map(Subscription::subscriptionFromGrpc)
+        .map(GrpcUtils::subscriptionFromGrpc)
         .collect(Collectors.toList());
   }
 

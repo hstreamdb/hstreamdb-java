@@ -6,8 +6,8 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
-import io.hstream.RecordId;
 import io.hstream.internal.*;
+import io.hstream.util.GrpcUtils;
 import io.hstream.util.RecordUtils;
 import java.util.concurrent.*;
 import org.slf4j.Logger;
@@ -117,7 +117,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                               new ResponderImpl(
                                   grpcBlockingStub,
                                   subscriptionId,
-                                  RecordId.RecordIdFromGrpc(receivedRecord.getRecordId())));
+                                  GrpcUtils.RecordIdFromGrpc(receivedRecord.getRecordId())));
                         } catch (Exception e) {
                           logger.error("process rawRecord error", e);
                         }
@@ -129,7 +129,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                               new ResponderImpl(
                                   grpcBlockingStub,
                                   subscriptionId,
-                                  RecordId.RecordIdFromGrpc(receivedRecord.getRecordId())));
+                                  GrpcUtils.RecordIdFromGrpc(receivedRecord.getRecordId())));
 
                         } catch (Exception e) {
                           logger.error("process hrecord error", e);
@@ -197,7 +197,8 @@ public class ConsumerImpl extends AbstractService implements Consumer {
       HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
       byte[] rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord);
       ReceivedRawRecord receivedRawRecord =
-          new ReceivedRawRecord(RecordId.RecordIdFromGrpc(receivedRecord.getRecordId()), rawRecord);
+          new ReceivedRawRecord(
+              GrpcUtils.RecordIdFromGrpc(receivedRecord.getRecordId()), rawRecord);
       return receivedRawRecord;
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
@@ -209,7 +210,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
       HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
       HRecord hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord);
       ReceivedHRecord receivedHRecord =
-          new ReceivedHRecord(RecordId.RecordIdFromGrpc(receivedRecord.getRecordId()), hRecord);
+          new ReceivedHRecord(GrpcUtils.RecordIdFromGrpc(receivedRecord.getRecordId()), hRecord);
       return receivedHRecord;
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);

@@ -5,6 +5,7 @@ import io.hstream.RecordId;
 import io.hstream.Responder;
 import io.hstream.internal.CommittedOffset;
 import io.hstream.internal.HStreamApiGrpc;
+import io.hstream.util.GrpcUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,7 @@ public class ResponderImpl implements Responder {
     CommittedOffset committedOffset =
         CommittedOffset.newBuilder()
             .setSubscriptionId(subscriptionId)
-            .setOffset(recordId.getRep())
+            .setOffset(GrpcUtils.RecordIdToGrpc(recordId))
             .build();
 
     try {

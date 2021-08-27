@@ -2,38 +2,38 @@ package io.hstream;
 
 public class Subscription {
 
-  private final io.hstream.internal.Subscription rep;
+  private String subscriptionId;
+  private String streamName;
+  private SubscriptionOffset subscriptionOffset;
 
-  public Subscription(io.hstream.internal.Subscription rep) {
-    this.rep = rep;
-  }
-
-  public Subscription(String subscriptionId, String streamName, SubscriptionOffset offset) {
-    this.rep =
-        io.hstream.internal.Subscription.newBuilder()
-            .setSubscriptionId(subscriptionId)
-            .setStreamName(streamName)
-            .setOffset(offset.getRep())
-            .build();
-  }
-
-  public static Subscription subscriptionFromGrpc(io.hstream.internal.Subscription subscription) {
-    return new Subscription(subscription);
-  }
-
-  public io.hstream.internal.Subscription getRep() {
-    return this.rep;
+  public Subscription(
+      String subscriptionId, String streamName, SubscriptionOffset subscriptionOffset) {
+    this.subscriptionId = subscriptionId;
+    this.streamName = streamName;
+    this.subscriptionOffset = subscriptionOffset;
   }
 
   public String getSubscriptionId() {
-    return this.rep.getSubscriptionId();
+    return subscriptionId;
   }
 
   public String getStreamName() {
-    return this.rep.getStreamName();
+    return streamName;
   }
 
-  public SubscriptionOffset getOffset() {
-    return SubscriptionOffset.subscriptionOffsetFromGrpc(this.rep.getOffset());
+  public SubscriptionOffset getSubscriptionOffset() {
+    return subscriptionOffset;
+  }
+
+  public void setSubscriptionId(String subscriptionId) {
+    this.subscriptionId = subscriptionId;
+  }
+
+  public void setStreamName(String streamName) {
+    this.streamName = streamName;
+  }
+
+  public void setSubscriptionOffset(SubscriptionOffset subscriptionOffset) {
+    this.subscriptionOffset = subscriptionOffset;
   }
 }
