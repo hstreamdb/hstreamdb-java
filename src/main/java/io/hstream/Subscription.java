@@ -1,5 +1,7 @@
 package io.hstream;
 
+import java.util.Objects;
+
 public class Subscription {
 
   private String subscriptionId;
@@ -35,5 +37,24 @@ public class Subscription {
 
   public void setSubscriptionOffset(SubscriptionOffset subscriptionOffset) {
     this.subscriptionOffset = subscriptionOffset;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Subscription that = (Subscription) o;
+    return Objects.equals(subscriptionId, that.subscriptionId)
+        && Objects.equals(streamName, that.streamName)
+        && Objects.equals(subscriptionOffset, that.subscriptionOffset);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(subscriptionId, streamName, subscriptionOffset);
   }
 }

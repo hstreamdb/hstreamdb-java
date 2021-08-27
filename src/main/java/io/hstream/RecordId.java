@@ -1,5 +1,7 @@
 package io.hstream;
 
+import java.util.Objects;
+
 public class RecordId {
 
   private long batchId;
@@ -24,5 +26,22 @@ public class RecordId {
 
   public void setBatchIndex(int batchIndex) {
     this.batchIndex = batchIndex;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    RecordId recordId = (RecordId) o;
+    return batchId == recordId.batchId && batchIndex == recordId.batchIndex;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(batchId, batchIndex);
   }
 }
