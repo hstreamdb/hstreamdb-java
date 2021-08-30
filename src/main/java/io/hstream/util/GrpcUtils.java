@@ -2,6 +2,10 @@ package io.hstream.util;
 
 import io.hstream.*;
 
+/**
+ * A class of utility functions to convert between the GRPC generated classes and the custom classes
+ * e.g. {@link RecordId}, {@link Subscription}, and {@link Stream}
+ */
 public class GrpcUtils {
 
   public static io.hstream.internal.RecordId recordIdToGrpc(RecordId recordId) {
