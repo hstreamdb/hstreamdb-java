@@ -69,4 +69,15 @@ public class GrpcUtils {
         subscription.getStreamName(),
         subscriptionOffsetFromGrpc(subscription.getOffset()));
   }
+
+  public static io.hstream.internal.Stream streamToGrpc(Stream stream) {
+    return io.hstream.internal.Stream.newBuilder()
+        .setStreamName(stream.getStreamName())
+        .setReplicationFactor(stream.getReplicationFactor())
+        .build();
+  }
+
+  public static Stream streamFromGrpc(io.hstream.internal.Stream stream) {
+    return new Stream(stream.getStreamName(), stream.getReplicationFactor());
+  }
 }

@@ -8,7 +8,6 @@ import io.hstream.internal.DeleteStreamRequest;
 import io.hstream.internal.DeleteSubscriptionRequest;
 import io.hstream.internal.HStreamApiGrpc;
 import io.hstream.internal.ListStreamsResponse;
-import io.hstream.internal.Stream;
 import io.hstream.util.GrpcUtils;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -48,9 +47,9 @@ public class ClientImpl implements HStreamClient {
 
   @Override
   public void createStream(String streamName) {
-    Stream stream = Stream.newBuilder().setStreamName(streamName).setReplicationFactor(3).build();
+    Stream stream = new Stream(streamName, 3);
 
-    blockingStub.createStream(stream);
+    blockingStub.createStream(GrpcUtils.streamToGrpc(stream));
   }
 
   @Override
@@ -65,7 +64,9 @@ public class ClientImpl implements HStreamClient {
   public List<Stream> listStreams() {
     Empty empty = Empty.newBuilder().build();
     ListStreamsResponse listStreamsResponse = blockingStub.listStreams(empty);
-    return listStreamsResponse.getStreamsList();
+    return listStreamsResponse.getStreamsList().stream()
+        .map(GrpcUtils::streamFromGrpc)
+        .collect(Collectors.toList());
   }
 
   @Override
