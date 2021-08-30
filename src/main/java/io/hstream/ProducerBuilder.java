@@ -1,6 +1,7 @@
 package io.hstream;
 
 import io.hstream.impl.ProducerImpl;
+import io.hstream.internal.HStreamApiGrpc;
 
 /** used to construct a producer */
 public class ProducerBuilder {

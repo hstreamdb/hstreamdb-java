@@ -1,6 +1,7 @@
 package io.hstream;
 
 import io.hstream.impl.ConsumerImpl;
+import io.hstream.internal.HStreamApiGrpc;
 
 /** used to construct a consumer */
 public class ConsumerBuilder {

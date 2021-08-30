@@ -1,5 +1,6 @@
 package io.hstream;
 
+import io.hstream.internal.Stream;
 import java.util.List;
 
 /** HstreamClient implement the hstream client, user can use it to interact with server */

@@ -1,6 +1,7 @@
 package io.hstream;
 
 import io.hstream.impl.QueryerImpl;
+import io.hstream.internal.HStreamApiGrpc;
 
 /** Builder used to configure and construct a {@link Queryer} instance. */
 public class QueryerBuilder {
