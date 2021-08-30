@@ -224,7 +224,6 @@ public class HStreamClientTest {
       byte[] rawRecord = new byte[100];
       random.nextBytes(rawRecord);
       RecordId recordId = producer.write(rawRecord);
-      System.out.println("i: " + i + " record id: " + recordId.getBatchId());
       recordIds.add(recordId);
     }
 
@@ -239,8 +238,6 @@ public class HStreamClientTest {
             .subscription(TEST_SUBSCRIPTION)
             .rawRecordReceiver(
                 (receivedRawRecord, responder) -> {
-                  System.out.println("expected: " + recordIds.get(3).getBatchId());
-                  System.out.println("got: " + receivedRawRecord.getRecordId().getBatchId());
                   Assertions.assertEquals(recordIds.get(3), receivedRawRecord.getRecordId());
                   flag2.countDown();
                 })

@@ -7,7 +7,7 @@ public class GrpcUtils {
   public static io.hstream.internal.RecordId recordIdToGrpc(RecordId recordId) {
     return io.hstream.internal.RecordId.newBuilder()
         .setBatchId(recordId.getBatchId())
-        .setBatchId(recordId.getBatchIndex())
+        .setBatchIndex(recordId.getBatchIndex())
         .build();
   }
 
