@@ -36,7 +36,7 @@ jobs:
       - name: Build and test with Gradle
         run: cd hstreamdb && ./gradlew build
 
-  run-examples:
+  build-examples:
     runs-on: ubuntu-latest
 
     steps:
@@ -55,4 +55,4 @@ jobs:
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
 
       - name: Build and run examples
-        run: cd examples && ./gradlew run
+        run: cd examples && ./gradlew build
