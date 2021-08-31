@@ -137,31 +137,27 @@ batchedProducer.flush()
 ### Consume Data from a Stream 
 
 ```java
-
 // first, create a subscription for the stream
 Subscription subscription =
-        Subscription.newBuilder()
-            .setSubscriptionId("my_subscription")
-            .setStreamName("test_stream")
-            .setOffset(
-                SubscriptionOffset.newBuilder()
-                    .setSpecialOffset(SubscriptionOffset.SpecialOffset.LATEST)
-                    .build())
-            .build();
-client.createSubscription(subscription);
+    new Subscription(
+        "my_subscription",
+        "test_stream",
+        new SubscriptionOffset(SubscriptionOffset.SpecialOffset.LATEST));
+    client.createSubscription(subscription);
 
-// second, create a consumer attacth to the subscription 
+// second, create a consumer attach to the subscription
 Consumer consumer =
-      client
-          .newConsumer()
-          .subscription("my_subscription")
-          .rawRecordReceiver(
-              (receivedRawRecord, responder) -> {
-                  System.out.println(receivedRawRecord.getRecordId());
-                  responder.ack();})
-          .build();
+    client
+        .newConsumer()
+        .subscription("my_subscription")
+        .rawRecordReceiver(
+            ((receivedRawRecord, responder) -> {
+                System.out.println(receivedRawRecord.getRecordId());
+                responder.ack();
+            }))
+        .build();
 
-// third, start the consumer 
+// third, start the consumer
 consumer.startAsync().awaitRunning();
 
 ```

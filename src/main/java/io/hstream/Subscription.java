@@ -2,12 +2,24 @@ package io.hstream;
 
 import java.util.Objects;
 
+/** A class for storing information about subscriptions */
 public class Subscription {
 
+  /** An identifier for the subscription */
   private String subscriptionId;
+  /** The name of the stream being subscribed to */
   private String streamName;
+  /** The offset that indicates the position to start consuming data from the stream */
   private SubscriptionOffset subscriptionOffset;
 
+  /**
+   * A constructor for subscriptions
+   *
+   * @param subscriptionId An identifier for the subscription
+   * @param streamName The name of the stream being subscribed to
+   * @param subscriptionOffset A {@link SubscriptionOffset} to indicate the position to start
+   *     consuming data
+   */
   public Subscription(
       String subscriptionId, String streamName, SubscriptionOffset subscriptionOffset) {
     this.subscriptionId = subscriptionId;
@@ -15,26 +27,32 @@ public class Subscription {
     this.subscriptionOffset = subscriptionOffset;
   }
 
+  /** get the identifier of the subscription */
   public String getSubscriptionId() {
     return subscriptionId;
   }
 
+  /** get the name of stream being subscribed to */
   public String getStreamName() {
     return streamName;
   }
 
+  /** get the subscription offset */
   public SubscriptionOffset getSubscriptionOffset() {
     return subscriptionOffset;
   }
 
+  /** update the identifier of the subscription */
   public void setSubscriptionId(String subscriptionId) {
     this.subscriptionId = subscriptionId;
   }
 
+  /** update the name of the stream */
   public void setStreamName(String streamName) {
     this.streamName = streamName;
   }
 
+  /** update the subscription offset */
   public void setSubscriptionOffset(SubscriptionOffset subscriptionOffset) {
     this.subscriptionOffset = subscriptionOffset;
   }

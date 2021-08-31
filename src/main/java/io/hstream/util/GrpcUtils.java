@@ -2,6 +2,10 @@ package io.hstream.util;
 
 import io.hstream.*;
 
+/**
+ * A class of utility functions to convert between the GRPC generated classes and the custom classes
+ * e.g. {@link RecordId}, {@link Subscription}, and {@link Stream}
+ */
 public class GrpcUtils {
 
   public static io.hstream.internal.RecordId recordIdToGrpc(RecordId recordId) {
@@ -68,5 +72,16 @@ public class GrpcUtils {
         subscription.getSubscriptionId(),
         subscription.getStreamName(),
         subscriptionOffsetFromGrpc(subscription.getOffset()));
+  }
+
+  public static io.hstream.internal.Stream streamToGrpc(Stream stream) {
+    return io.hstream.internal.Stream.newBuilder()
+        .setStreamName(stream.getStreamName())
+        .setReplicationFactor(stream.getReplicationFactor())
+        .build();
+  }
+
+  public static Stream streamFromGrpc(io.hstream.internal.Stream stream) {
+    return new Stream(stream.getStreamName(), stream.getReplicationFactor());
   }
 }
