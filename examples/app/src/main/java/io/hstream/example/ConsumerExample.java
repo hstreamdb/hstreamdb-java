@@ -14,14 +14,10 @@ public class ConsumerExample {
     client.createStream(DEMO_STREAM);
 
     Subscription subscription =
-        Subscription.newBuilder()
-            .setSubscriptionId(DEMO_SUBSCRIPTION)
-            .setStreamName(DEMO_STREAM)
-            .setOffset(
-                SubscriptionOffset.newBuilder()
-                    .setSpecialOffset(SubscriptionOffset.SpecialOffset.EARLIST)
-                    .build())
-            .build();
+        new Subscription(
+            DEMO_SUBSCRIPTION,
+            DEMO_STREAM,
+            new SubscriptionOffset(SubscriptionOffset.SpecialOffset.LATEST));
     client.createSubscription(subscription);
 
     Producer producer =
