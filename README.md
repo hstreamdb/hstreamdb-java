@@ -6,11 +6,11 @@
 
 This is the offical Java client library for [HStreamDB](https://hstream.io/).
 
-**Please use the latest released version.** 
+**Please use the latest released version.**
 
-**The latest release is v0.3.0, which requires hstream server v0.5.2 .**
+**The latest release is v0.4.0, which requires hstream server v0.5.2 .**
 
-## Content 
+## Content
 - [Installation](#installation)
     - [Maven](#maven)
     - [Gradle](#gradle)
@@ -23,7 +23,7 @@ This is the offical Java client library for [HStreamDB](https://hstream.io/).
 
 ## Installation
 
-The library artifact is published in Maven central, 
+The library artifact is published in Maven central,
 available at [hstreamdb-java](https://search.maven.org/artifact/io.hstream/hstreamdb-java).
 
 ### Maven
@@ -42,7 +42,7 @@ For Maven Users, the library can be included easily like this:
 
 ```
 
-### Gradle 
+### Gradle
 
 For Gradle Users, the library can be included easily like this:
 
@@ -52,7 +52,7 @@ implementation 'io.hstream:hstreamdb-java:${hstreamdbClientVersion}'
 
 ```
 
-## Example Usage 
+## Example Usage
 
 ### Connect to HStreamDB
 
@@ -71,11 +71,11 @@ public class ConnectExample {
 
 ```
 
-### Work with Streams 
+### Work with Streams
 
 ```java
 
-// get a list of streams 
+// get a list of streams
 for(Stream stream: client.listStreams()) {
   System.out.println(stream.getStreamName());
 }
@@ -90,7 +90,7 @@ client.deleteStream("test_stream");
 
 ```
 
-### Write Data to a Stream 
+### Write Data to a Stream
 
 ```java
 
@@ -134,7 +134,7 @@ batchedProducer.flush()
 **Please do not write both binary data and hrecord in one stream.**
 
 
-### Consume Data from a Stream 
+### Consume Data from a Stream
 
 ```java
 // first, create a subscription for the stream
@@ -162,7 +162,7 @@ consumer.startAsync().awaitRunning();
 
 ```
 
-### Process Data in Stream with SQL   
+### Process Data in Stream with SQL
 
 ```java
 
@@ -183,7 +183,7 @@ Observer<HRecord> observer =
         public void onCompleted() {}
       };
 
-// second, create a queryer to execute a sql 
+// second, create a queryer to execute a sql
 Queryer queryer =
       client
           .newQueryer()
@@ -191,7 +191,7 @@ Queryer queryer =
           .resultObserver(observer)
           .build();
 
-// third, start the queryer 
+// third, start the queryer
 queryer.startAsync().awaitRunning();
 
 ```
