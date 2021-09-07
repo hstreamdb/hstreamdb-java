@@ -11,6 +11,13 @@ mkdir /tmp/hstream-test-data
 docker run \
     -td \
     --rm  \
+    --name zookeeper-test \
+    --network host \
+    zookeeper:3.6
+
+docker run \
+    -td \
+    --rm  \
     -v /tmp/hstream-test-data:/data/store \
     --name hstore-test \
     --network host \
@@ -24,4 +31,6 @@ docker run \
   --name hserver-test \
   --network host \
   hstreamdb/hstream:${DEFAULT_HSTREAM_DOCKER_TAG} \
-  hstream-server --port 6570 --store-config /data/store/logdevice.conf
+  hstream-server --port 6570 --store-config /data/store/logdevice.conf --log-level debug
+
+

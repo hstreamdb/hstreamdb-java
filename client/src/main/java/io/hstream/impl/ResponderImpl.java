@@ -1,44 +1,38 @@
 package io.hstream.impl;
 
-import io.grpc.StatusRuntimeException;
-import io.hstream.RecordId;
+import io.grpc.stub.StreamObserver;
 import io.hstream.Responder;
-import io.hstream.internal.CommittedOffset;
-import io.hstream.internal.HStreamApiGrpc;
-import io.hstream.util.GrpcUtils;
+import io.hstream.internal.RecordId;
+import io.hstream.internal.StreamingFetchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ResponderImpl implements Responder {
   private static final Logger logger = LoggerFactory.getLogger(ResponderImpl.class);
 
-  private final HStreamApiGrpc.HStreamApiBlockingStub blockingStub;
   private final String subscriptionId;
+  private final String consumerId;
   private final RecordId recordId;
+  private final StreamObserver<StreamingFetchRequest> requestStream;
 
   public ResponderImpl(
-      HStreamApiGrpc.HStreamApiBlockingStub blockingStub,
       String subscriptionId,
+      StreamObserver<StreamingFetchRequest> requestStream,
+      String consumerId,
       RecordId recordId) {
-    this.blockingStub = blockingStub;
     this.subscriptionId = subscriptionId;
+    this.requestStream = requestStream;
+    this.consumerId = consumerId;
     this.recordId = recordId;
   }
 
   @Override
   public void ack() {
-    CommittedOffset committedOffset =
-        CommittedOffset.newBuilder()
+    StreamingFetchRequest request =
+        StreamingFetchRequest.newBuilder()
             .setSubscriptionId(subscriptionId)
-            .setOffset(GrpcUtils.recordIdToGrpc(recordId))
+            .addAckIds(recordId)
             .build();
-
-    try {
-      blockingStub.commitOffset(committedOffset);
-    } catch (StatusRuntimeException e) {
-      logger.error("commit offset failed: {}", e);
-      throw new RuntimeException(e);
-    }
-    logger.info("committed offset {} for subscription {}", recordId, subscriptionId);
+    requestStream.onNext(request);
   }
 }
