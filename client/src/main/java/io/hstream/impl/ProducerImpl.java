@@ -59,6 +59,7 @@ public class ProducerImpl implements Producer {
   @Override
   public RecordId write(byte[] rawRecord) {
     CompletableFuture<List<RecordId>> future = writeRawRecordsAsync(List.of(rawRecord));
+    logger.info("wait for write future");
     return future.join().get(0);
   }
 
@@ -152,7 +153,8 @@ public class ProducerImpl implements Producer {
 
           @Override
           public void onError(Throwable t) {
-            throw new HStreamDBClientException(t);
+            logger.error("write rawRecord error", t);
+            completableFuture.completeExceptionally(t);
           }
 
           @Override

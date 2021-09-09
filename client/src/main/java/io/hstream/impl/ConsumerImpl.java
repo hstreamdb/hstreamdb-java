@@ -103,6 +103,8 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                   ConsumerImpl.this.consumerName,
                   ConsumerImpl.this.subscriptionId,
                   t);
+
+              notifyFailed(t);
             } else {
               logger.error(
                   "consumer {} receive records from subscription {} error: {}",
@@ -110,8 +112,6 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                   ConsumerImpl.this.subscriptionId,
                   t);
             }
-
-            notifyFailed(t);
           }
 
           @Override
@@ -141,12 +141,16 @@ public class ConsumerImpl extends AbstractService implements Consumer {
     new Thread(
             () -> {
               executorService.shutdown();
+              logger.info("run shutdown done");
               try {
-                executorService.awaitTermination(10, TimeUnit.MINUTES);
+                executorService.awaitTermination(10, TimeUnit.SECONDS);
+                logger.info("await terminate done");
               } catch (InterruptedException e) {
                 logger.warn("wait timeout, consumer {} will be closed", consumerName);
               }
+              logger.info("ready to notify stop");
               notifyStopped();
+              logger.info("notify stop done");
             })
         .start();
   }

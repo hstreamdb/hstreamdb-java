@@ -26,7 +26,6 @@ docker run \
 
 docker run \
   -td \
-  --rm \
   -v /tmp/hstream-test-data:/data/store \
   --name hserver-test \
   --network host \
