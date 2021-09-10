@@ -15,11 +15,16 @@ jobs:
     steps:
       - name: Test secrets 
         run: |  
-          echo ${{ secrets.OSSRH_USERNAME }} | wc -c
-          echo ${{ secrets.OSSRH_TOKEN }} | wc -c
-          echo ${{ secrets.OSSRH_GPG_SECRET_KEY }} | wc -c
-          echo ${{ secrets.OSSRH_GPG_PASSWORD }} | wc -c
+          echo $OSSRH_USERNAME | wc -c
+          echo $OSSRH_TOKEN | wc -c
+          echo $OSSRH_GPG_SECRET_KEY | wc -c
+          echo $OSSRH_GPG_PASSWORD | wc -c
           exit -1 
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          OSSRH_GPG_SECRET_KEY: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+          OSSRH_GPG_PASSWORD: ${{ secrets.OSSRH_GPG_PASSWORD }}
 
   build-and-test:
     needs: pretest 
