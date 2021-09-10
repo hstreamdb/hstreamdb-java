@@ -15,11 +15,11 @@ jobs:
     steps:
       - name: Test secrets 
         run: |  
+          echo $DOCKERHUB_USERNAME
           echo $OSSRH_USERNAME | wc -c
           echo $OSSRH_TOKEN | wc -c
           echo $OSSRH_GPG_SECRET_KEY | wc -c
           echo $OSSRH_GPG_PASSWORD | wc -c
-          echo $DOCKERHUB_USERNAME | wc -c
           exit -1 
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
