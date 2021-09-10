@@ -36,8 +36,9 @@ service HStreamApi {
 
   rpc CreateQueryStream(CreateQueryStreamRequest) returns (CreateQueryStreamResponse) {}
 
-}
+  rpc StreamingFetch(stream StreamingFetchRequest) returns (stream StreamingFetchResponse) {}
 
+}
 
 message AppendRequest {
   string streamName = 1;
@@ -53,6 +54,7 @@ message Subscription {
   string subscriptionId = 1;
   string streamName = 2;
   SubscriptionOffset offset = 3;
+  int32 ackTimeoutSeconds = 4;
 }
 
 message SubscriptionOffset {
@@ -176,4 +178,14 @@ message Query {
   int32 status = 2;
   int64 createdTime = 3;
   string queryText = 4;
+}
+
+message StreamingFetchRequest {
+  string subscriptionId = 1;
+
+  repeated RecordId ack_ids = 2;
+}
+
+message StreamingFetchResponse {
+  repeated ReceivedRecord receivedRecords = 1;
 }

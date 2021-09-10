@@ -12,6 +12,8 @@ public class Subscription {
   /** The offset that indicates the position to start consuming data from the stream */
   private SubscriptionOffset subscriptionOffset;
 
+  private int ackTimeoutSeconds;
+
   /**
    * A constructor for subscriptions
    *
@@ -21,10 +23,14 @@ public class Subscription {
    *     consuming data
    */
   public Subscription(
-      String subscriptionId, String streamName, SubscriptionOffset subscriptionOffset) {
+      String subscriptionId,
+      String streamName,
+      SubscriptionOffset subscriptionOffset,
+      int ackTimeoutSeconds) {
     this.subscriptionId = subscriptionId;
     this.streamName = streamName;
     this.subscriptionOffset = subscriptionOffset;
+    this.ackTimeoutSeconds = ackTimeoutSeconds;
   }
 
   /** get the identifier of the subscription */
@@ -42,6 +48,10 @@ public class Subscription {
     return subscriptionOffset;
   }
 
+  public int getAckTimeoutSeconds() {
+    return ackTimeoutSeconds;
+  }
+
   /** update the identifier of the subscription */
   public void setSubscriptionId(String subscriptionId) {
     this.subscriptionId = subscriptionId;
@@ -57,22 +67,23 @@ public class Subscription {
     this.subscriptionOffset = subscriptionOffset;
   }
 
+  public void setAckTimeoutSeconds(int ackTimeoutSeconds) {
+    this.ackTimeoutSeconds = ackTimeoutSeconds;
+  }
+
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
     Subscription that = (Subscription) o;
-    return Objects.equals(subscriptionId, that.subscriptionId)
-        && Objects.equals(streamName, that.streamName)
-        && Objects.equals(subscriptionOffset, that.subscriptionOffset);
+    return ackTimeoutSeconds == that.ackTimeoutSeconds
+        && subscriptionId.equals(that.subscriptionId)
+        && streamName.equals(that.streamName)
+        && subscriptionOffset.equals(that.subscriptionOffset);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(subscriptionId, streamName, subscriptionOffset);
+    return Objects.hash(subscriptionId, streamName, subscriptionOffset, ackTimeoutSeconds);
   }
 }

@@ -64,6 +64,7 @@ public class GrpcUtils {
         .setSubscriptionId(subscription.getSubscriptionId())
         .setStreamName(subscription.getStreamName())
         .setOffset(subscriptionOffsetToGrpc(subscription.getSubscriptionOffset()))
+        .setAckTimeoutSeconds(subscription.getAckTimeoutSeconds())
         .build();
   }
 
@@ -71,7 +72,8 @@ public class GrpcUtils {
     return new Subscription(
         subscription.getSubscriptionId(),
         subscription.getStreamName(),
-        subscriptionOffsetFromGrpc(subscription.getOffset()));
+        subscriptionOffsetFromGrpc(subscription.getOffset()),
+        subscription.getAckTimeoutSeconds());
   }
 
   public static io.hstream.internal.Stream streamToGrpc(Stream stream) {

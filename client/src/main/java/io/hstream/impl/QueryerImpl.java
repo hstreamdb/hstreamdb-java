@@ -64,7 +64,8 @@ public class QueryerImpl extends AbstractService implements Queryer {
                 new Subscription(
                     STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix,
                     STREAM_QUERY_STREAM_PREFIX + resultStreamNameSuffix,
-                    new SubscriptionOffset(SubscriptionOffset.SpecialOffset.EARLIEST)));
+                    new SubscriptionOffset(SubscriptionOffset.SpecialOffset.EARLIEST),
+                    10));
 
             queryInnerConsumer =
                 client

@@ -76,7 +76,11 @@ public class ClientImpl implements HStreamClient {
 
   @Override
   public List<Subscription> listSubscriptions() {
-    return blockingStub.listSubscriptions(Empty.newBuilder().build()).getSubscriptionList().stream()
+    return blockingStub
+        .withDeadlineAfter(100, TimeUnit.SECONDS)
+        .listSubscriptions(Empty.newBuilder().build())
+        .getSubscriptionList()
+        .stream()
         .map(GrpcUtils::subscriptionFromGrpc)
         .collect(Collectors.toList());
   }
@@ -84,7 +88,7 @@ public class ClientImpl implements HStreamClient {
   @Override
   public void deleteSubscription(String subscriptionId) {
     blockingStub
-        .withDeadlineAfter(1000, TimeUnit.MILLISECONDS)
+        .withDeadlineAfter(100, TimeUnit.SECONDS)
         .deleteSubscription(
             DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build());
     logger.info("delete subscription {} done", subscriptionId);
