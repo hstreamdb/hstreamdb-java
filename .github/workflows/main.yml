@@ -42,6 +42,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Test secrets 
+        run:  echo ${{ secrets.OSSRH_GPG_SECRET_KEY }} | wc -c
+
       - uses: actions/checkout@v2
 
       -
