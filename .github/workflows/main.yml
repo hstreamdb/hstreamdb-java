@@ -8,7 +8,20 @@ on:
     branches: [main, master]
 
 jobs:
+  pretest:
+    environment: ossrh 
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Test secrets 
+        run:  echo ${{ secrets.OSSRH_USERNAME }} | wc -c
+        run:  echo ${{ secrets.OSSRH_TOKEN }} | wc -c
+        run:  echo ${{ secrets.OSSRH_GPG_SECRET_KEY }} | wc -c
+        run:  echo ${{ secrets.OSSRH_GPG_PASSWORD }} | wc -c
+        run:  exit -1 
+
   build-and-test:
+    needs: pretest 
     runs-on: ubuntu-latest
 
     steps:
