@@ -36,3 +36,27 @@ jobs:
       - name: Build and test with Gradle
         run: ./gradlew build 
 
+  publish-snapshot:
+    environment: ossrh 
+    needs: build-and-test 
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+
+      - name: Publish SNAPSHOT version to OSSRH 
+        run: ./gradlew publish 
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          OSSRH_GPG_SECRET_KEY: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+          OSSRH_GPG_PASSWORD: ${{ secrets.OSSRH_GPG_SECRET_PASSWORD }}
