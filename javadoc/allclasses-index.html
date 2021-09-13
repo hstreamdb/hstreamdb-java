@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":2,"i1":2,"i2":1,"i3":2,"i4":2,"i5":2,"i6":2,"i7":2,"i8":2,"i9":2,"i10":1,"i11":1,"i12":8,"i13":8,"i14":8,"i15":8,"i16":1,"i17":1,"i18":2,"i19":2,"i20":1,"i21":2,"i22":2,"i23":1,"i24":2,"i25":2,"i26":2,"i27":2,"i28":1,"i29":2,"i30":2,"i31":2,"i32":2,"i33":4};
+var data = {"i0":2,"i1":1,"i2":2,"i3":2,"i4":2,"i5":2,"i6":2,"i7":1,"i8":1,"i9":8,"i10":8,"i11":8,"i12":8,"i13":1,"i14":1,"i15":2,"i16":1,"i17":2,"i18":1,"i19":2,"i20":2,"i21":2,"i22":1,"i23":2,"i24":2,"i25":2,"i26":4};
 var tabs = {65535:["t0","All Classes"],1:["t1","Interface Summary"],2:["t2","Class Summary"],4:["t3","Enum Summary"],8:["t4","Exception Summary"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -50,8 +50,7 @@ loadScripts(document, 'script');</script>
 <!--   -->
 </a>
 <ul class="navList" title="Navigation">
-<li><a href="index.html">Overview</a></li>
-<li>Package</li>
+<li><a href="io/hstream/package-summary.html">Package</a></li>
 <li>Class</li>
 <li><a href="overview-tree.html">Tree</a></li>
 <li><a href="deprecated-list.html">Deprecated</a></li>
@@ -116,181 +115,150 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </th>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><a href="io/hstream/impl/ClientImpl.html" title="class in io.hstream.impl">ClientImpl</a></td>
-<th class="colLast" scope="row">&nbsp;</th>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><a href="io/hstream/Consumer.html" title="interface in io.hstream">Consumer</a></td>
 <th class="colLast" scope="row">
 <div class="block">The consumer interface of hstream consumer</div>
 </th>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><a href="io/hstream/ConsumerBuilder.html" title="class in io.hstream">ConsumerBuilder</a></td>
 <th class="colLast" scope="row">
 <div class="block">used to construct a consumer</div>
 </th>
 </tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><a href="io/hstream/impl/ConsumerImpl.html" title="class in io.hstream.impl">ConsumerImpl</a></td>
-<th class="colLast" scope="row">&nbsp;</th>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><a href="io/hstream/util/GrpcUtils.html" title="class in io.hstream.util">GrpcUtils</a></td>
-<th class="colLast" scope="row">
-<div class="block">A class of utility functions to convert between the GRPC generated classes and the custom classes
- e.g.</div>
-</th>
-</tr>
-<tr id="i6" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><a href="io/hstream/HArray.html" title="class in io.hstream">HArray</a></td>
 <th class="colLast" scope="row">
 <div class="block">a data structure like array</div>
 </th>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><a href="io/hstream/HArrayBuilder.html" title="class in io.hstream">HArrayBuilder</a></td>
 <th class="colLast" scope="row">
 <div class="block">the <a href="io/hstream/HArray.html" title="class in io.hstream"><code>HArray</code></a> constructor</div>
 </th>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></td>
 <th class="colLast" scope="row">
 <div class="block">the data structure defined by hstream</div>
 </th>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><a href="io/hstream/HRecordBuilder.html" title="class in io.hstream">HRecordBuilder</a></td>
 <th class="colLast" scope="row">
 <div class="block">used to construct a <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a></div>
 </th>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><a href="io/hstream/HRecordReceiver.html" title="interface in io.hstream">HRecordReceiver</a></td>
 <th class="colLast" scope="row">
 <div class="block">the interface that user use to process <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a> received from server</div>
 </th>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></td>
 <th class="colLast" scope="row">
 <div class="block">HstreamClient implement the hstream client, user can use it to interact with server</div>
 </th>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><a href="io/hstream/HStreamDBClientException.html" title="class in io.hstream">HStreamDBClientException</a></td>
 <th class="colLast" scope="row">
 <div class="block">Client exception definition</div>
 </th>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><a href="io/hstream/HStreamDBClientException.ConsumerException.html" title="class in io.hstream">HStreamDBClientException.ConsumerException</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><a href="io/hstream/HStreamDBClientException.InvalidRecordException.html" title="class in io.hstream">HStreamDBClientException.InvalidRecordException</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><a href="io/hstream/HStreamDBClientException.SubscribeException.html" title="class in io.hstream">HStreamDBClientException.SubscribeException</a></td>
 <th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><a href="io/hstream/Observer.html" title="interface in io.hstream">Observer</a>&lt;<a href="io/hstream/Observer.html" title="type parameter in Observer">V</a>&gt;</td>
 <th class="colLast" scope="row">
 <div class="block">Receives notifications from an observable stream of results</div>
 </th>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><a href="io/hstream/Producer.html" title="interface in io.hstream">Producer</a></td>
 <th class="colLast" scope="row">
 <div class="block">the interface of hstream producer</div>
 </th>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><a href="io/hstream/ProducerBuilder.html" title="class in io.hstream">ProducerBuilder</a></td>
 <th class="colLast" scope="row">
 <div class="block">used to construct a producer</div>
 </th>
 </tr>
-<tr id="i19" class="rowColor">
-<td class="colFirst"><a href="io/hstream/impl/ProducerImpl.html" title="class in io.hstream.impl">ProducerImpl</a></td>
-<th class="colLast" scope="row">&nbsp;</th>
-</tr>
-<tr id="i20" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><a href="io/hstream/Queryer.html" title="interface in io.hstream">Queryer</a></td>
 <th class="colLast" scope="row">
 <div class="block">The interface that abstracts behavior of HStream's queryer</div>
 </th>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><a href="io/hstream/QueryerBuilder.html" title="class in io.hstream">QueryerBuilder</a></td>
 <th class="colLast" scope="row">
 <div class="block">Builder used to configure and construct a <a href="io/hstream/Queryer.html" title="interface in io.hstream"><code>Queryer</code></a> instance.</div>
 </th>
 </tr>
-<tr id="i22" class="altColor">
-<td class="colFirst"><a href="io/hstream/impl/QueryerImpl.html" title="class in io.hstream.impl">QueryerImpl</a></td>
-<th class="colLast" scope="row">&nbsp;</th>
-</tr>
-<tr id="i23" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><a href="io/hstream/RawRecordReceiver.html" title="interface in io.hstream">RawRecordReceiver</a></td>
 <th class="colLast" scope="row">
 <div class="block">the interface that user use to process raw record received from server</div>
 </th>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><a href="io/hstream/ReceivedHRecord.html" title="class in io.hstream">ReceivedHRecord</a></td>
 <th class="colLast" scope="row">
 <div class="block">refer to a <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format record</div>
 </th>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><a href="io/hstream/ReceivedRawRecord.html" title="class in io.hstream">ReceivedRawRecord</a></td>
 <th class="colLast" scope="row">
 <div class="block">refer to a raw format record</div>
 </th>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></td>
 <th class="colLast" scope="row">
 <div class="block">A class for storing identification information of data records</div>
 </th>
 </tr>
-<tr id="i27" class="rowColor">
-<td class="colFirst"><a href="io/hstream/util/RecordUtils.html" title="class in io.hstream.util">RecordUtils</a></td>
-<th class="colLast" scope="row">&nbsp;</th>
-</tr>
-<tr id="i28" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><a href="io/hstream/Responder.html" title="interface in io.hstream">Responder</a></td>
 <th class="colLast" scope="row">
 <div class="block">after receiving messages from the server, the interface defines methods related to the response</div>
 </th>
 </tr>
-<tr id="i29" class="rowColor">
-<td class="colFirst"><a href="io/hstream/impl/ResponderImpl.html" title="class in io.hstream.impl">ResponderImpl</a></td>
-<th class="colLast" scope="row">&nbsp;</th>
-</tr>
-<tr id="i30" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></td>
 <th class="colLast" scope="row">
 <div class="block">A class for storing information about streams</div>
 </th>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><a href="io/hstream/Subscription.html" title="class in io.hstream">Subscription</a></td>
 <th class="colLast" scope="row">
 <div class="block">A class for storing information about subscriptions</div>
 </th>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><a href="io/hstream/SubscriptionOffset.html" title="class in io.hstream">SubscriptionOffset</a></td>
 <th class="colLast" scope="row">
 <div class="block">A class with information about subscription offset</div>
 </th>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><a href="io/hstream/SubscriptionOffset.SpecialOffset.html" title="enum in io.hstream">SubscriptionOffset.SpecialOffset</a></td>
 <th class="colLast" scope="row">
 <div class="block">Subscription offsets that can be used</div>
@@ -312,8 +280,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!--   -->
 </a>
 <ul class="navList" title="Navigation">
-<li><a href="index.html">Overview</a></li>
-<li>Package</li>
+<li><a href="io/hstream/package-summary.html">Package</a></li>
 <li>Class</li>
 <li><a href="overview-tree.html">Tree</a></li>
 <li><a href="deprecated-list.html">Deprecated</a></li>
