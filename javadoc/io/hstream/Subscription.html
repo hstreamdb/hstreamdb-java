@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":9};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -86,15 +86,15 @@ loadScripts(document, 'script');</script>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -138,27 +138,24 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<!-- ======== NESTED CLASS SUMMARY ======== -->
 <section role="region">
 <ul class="blockList">
-<li class="blockList"><a id="constructor.summary">
+<li class="blockList"><a id="nested.class.summary">
 <!--   -->
 </a>
-<h3>Constructor Summary</h3>
+<h3>Nested Class Summary</h3>
 <table class="memberSummary">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
-<th class="colFirst" scope="col">Constructor</th>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Class</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,java.lang.String,io.hstream.SubscriptionOffset,int)">Subscription</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;subscriptionId,
-            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamName,
-            <a href="SubscriptionOffset.html" title="class in io.hstream">SubscriptionOffset</a>&nbsp;subscriptionOffset,
-            int&nbsp;ackTimeoutSeconds)</code></th>
-<td class="colLast">
-<div class="block">A constructor for subscriptions</div>
-</td>
+<td class="colFirst"><code>static class&nbsp;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></span></code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -172,7 +169,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -191,23 +188,17 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStreamName()">getStreamName</a></span>()</code></th>
-<td class="colLast">
-<div class="block">get the name of stream being subscribed to</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSubscriptionId()">getSubscriptionId</a></span>()</code></th>
-<td class="colLast">
-<div class="block">get the identifier of the subscription</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="SubscriptionOffset.html" title="class in io.hstream">SubscriptionOffset</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSubscriptionOffset()">getSubscriptionOffset</a></span>()</code></th>
-<td class="colLast">
-<div class="block">get the subscription offset</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>int</code></td>
@@ -215,30 +206,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAckTimeoutSeconds(int)">setAckTimeoutSeconds</a></span>&#8203;(int&nbsp;ackTimeoutSeconds)</code></th>
+<td class="colFirst"><code>static <a href="Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newBuilder()">newBuilder</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setStreamName(java.lang.String)">setStreamName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamName)</code></th>
-<td class="colLast">
-<div class="block">update the name of the stream</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSubscriptionId(java.lang.String)">setSubscriptionId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;subscriptionId)</code></th>
-<td class="colLast">
-<div class="block">update the identifier of the subscription</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSubscriptionOffset(io.hstream.SubscriptionOffset)">setSubscriptionOffset</a></span>&#8203;(<a href="SubscriptionOffset.html" title="class in io.hstream">SubscriptionOffset</a>&nbsp;subscriptionOffset)</code></th>
-<td class="colLast">
-<div class="block">update the subscription offset</div>
-</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -257,36 +227,6 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(java.lang.String,java.lang.String,io.hstream.SubscriptionOffset,int)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>Subscription</h4>
-<pre>public&nbsp;Subscription&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;subscriptionId,
-                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamName,
-                    <a href="SubscriptionOffset.html" title="class in io.hstream">SubscriptionOffset</a>&nbsp;subscriptionOffset,
-                    int&nbsp;ackTimeoutSeconds)</pre>
-<div class="block">A constructor for subscriptions</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>subscriptionId</code> - An identifier for the subscription</dd>
-<dd><code>streamName</code> - The name of the stream being subscribed to</dd>
-<dd><code>subscriptionOffset</code> - A <a href="SubscriptionOffset.html" title="class in io.hstream"><code>SubscriptionOffset</code></a> to indicate the position to start
-     consuming data</dd>
-</dl>
-</li>
-</ul>
-</li>
-</ul>
-</section>
 <!-- ============ METHOD DETAIL ========== -->
 <section role="region">
 <ul class="blockList">
@@ -294,6 +234,19 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="newBuilder()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>newBuilder</h4>
+<pre class="methodSignature">public static&nbsp;<a href="Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a>&nbsp;newBuilder()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><a href="Subscription.Builder.html" title="class in io.hstream"><code>Subscription.Builder</code></a></dd>
+</dl>
+</li>
+</ul>
 <a id="getSubscriptionId()">
 <!--   -->
 </a>
@@ -301,7 +254,6 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>getSubscriptionId</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getSubscriptionId()</pre>
-<div class="block">get the identifier of the subscription</div>
 </li>
 </ul>
 <a id="getStreamName()">
@@ -311,7 +263,6 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>getStreamName</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getStreamName()</pre>
-<div class="block">get the name of stream being subscribed to</div>
 </li>
 </ul>
 <a id="getSubscriptionOffset()">
@@ -321,7 +272,6 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>getSubscriptionOffset</h4>
 <pre class="methodSignature">public&nbsp;<a href="SubscriptionOffset.html" title="class in io.hstream">SubscriptionOffset</a>&nbsp;getSubscriptionOffset()</pre>
-<div class="block">get the subscription offset</div>
 </li>
 </ul>
 <a id="getAckTimeoutSeconds()">
@@ -331,45 +281,6 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>getAckTimeoutSeconds</h4>
 <pre class="methodSignature">public&nbsp;int&nbsp;getAckTimeoutSeconds()</pre>
-</li>
-</ul>
-<a id="setSubscriptionId(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setSubscriptionId</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setSubscriptionId&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;subscriptionId)</pre>
-<div class="block">update the identifier of the subscription</div>
-</li>
-</ul>
-<a id="setStreamName(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setStreamName</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setStreamName&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamName)</pre>
-<div class="block">update the name of the stream</div>
-</li>
-</ul>
-<a id="setSubscriptionOffset(io.hstream.SubscriptionOffset)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setSubscriptionOffset</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setSubscriptionOffset&#8203;(<a href="SubscriptionOffset.html" title="class in io.hstream">SubscriptionOffset</a>&nbsp;subscriptionOffset)</pre>
-<div class="block">update the subscription offset</div>
-</li>
-</ul>
-<a id="setAckTimeoutSeconds(int)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setAckTimeoutSeconds</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setAckTimeoutSeconds&#8203;(int&nbsp;ackTimeoutSeconds)</pre>
 </li>
 </ul>
 <a id="equals(java.lang.Object)">
@@ -448,15 +359,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
