@@ -26,8 +26,6 @@ public class GrpcUtils {
         return io.hstream.internal.SubscriptionOffset.SpecialOffset.EARLIST;
       case LATEST:
         return io.hstream.internal.SubscriptionOffset.SpecialOffset.LATEST;
-      case UNRECOGNIZED:
-        return io.hstream.internal.SubscriptionOffset.SpecialOffset.UNRECOGNIZED;
       default:
         throw new IllegalArgumentException();
     }
@@ -40,8 +38,6 @@ public class GrpcUtils {
         return SubscriptionOffset.SpecialOffset.EARLIEST;
       case LATEST:
         return SubscriptionOffset.SpecialOffset.LATEST;
-      case UNRECOGNIZED:
-        return SubscriptionOffset.SpecialOffset.UNRECOGNIZED;
       default:
         throw new IllegalArgumentException();
     }
@@ -49,14 +45,25 @@ public class GrpcUtils {
 
   public static io.hstream.internal.SubscriptionOffset subscriptionOffsetToGrpc(
       SubscriptionOffset offset) {
-    return io.hstream.internal.SubscriptionOffset.newBuilder()
-        .setSpecialOffset(specialOffsetToGrpc(offset.getSpecialOffset()))
-        .build();
+    if (offset.isSpecialOffset()) {
+      return io.hstream.internal.SubscriptionOffset.newBuilder()
+          .setSpecialOffset(specialOffsetToGrpc(offset.getSpecialOffset()))
+          .build();
+
+    } else {
+      return io.hstream.internal.SubscriptionOffset.newBuilder()
+          .setRecordOffset(recordIdToGrpc(offset.getNormalOffset()))
+          .build();
+    }
   }
 
   public static SubscriptionOffset subscriptionOffsetFromGrpc(
       io.hstream.internal.SubscriptionOffset offset) {
-    return new SubscriptionOffset(specialOffsetFromGrpc(offset.getSpecialOffset()));
+    if (offset.hasRecordOffset()) {
+      return new SubscriptionOffset(recordIdFromGrpc(offset.getRecordOffset()));
+    } else {
+      return new SubscriptionOffset(specialOffsetFromGrpc(offset.getSpecialOffset()));
+    }
   }
 
   public static io.hstream.internal.Subscription subscriptionToGrpc(Subscription subscription) {
@@ -69,11 +76,11 @@ public class GrpcUtils {
   }
 
   public static Subscription subscriptionFromGrpc(io.hstream.internal.Subscription subscription) {
-    return new Subscription(
-        subscription.getSubscriptionId(),
-        subscription.getStreamName(),
-        subscriptionOffsetFromGrpc(subscription.getOffset()),
-        subscription.getAckTimeoutSeconds());
+    return Subscription.newBuilder().subscription(subscription.getSubscriptionId()).stream(
+            subscription.getStreamName())
+        .offset(subscriptionOffsetFromGrpc(subscription.getOffset()))
+        .ackTimeoutSeconds(subscription.getAckTimeoutSeconds())
+        .build();
   }
 
   public static io.hstream.internal.Stream streamToGrpc(Stream stream) {

@@ -1,55 +1,52 @@
 package io.hstream;
 
-import java.util.Objects;
-
-/** A class with information about subscription offset */
 public class SubscriptionOffset {
-  /** Subscription offsets that can be used */
+
   public enum SpecialOffset {
-    /** Start consuming messages from the earliest position in the stream */
     EARLIEST,
-    /**
-     * Ignore the history messages up to the moment of subscription and ead the messages thereafter.
-     */
-    LATEST,
-    UNRECOGNIZED;
+    LATEST;
+  }
+
+  private enum OffsetType {
+    SPECIAL,
+    NORMAL;
   }
 
   private SpecialOffset specialOffset;
+  private RecordId recordId;
+  private OffsetType offsetType;
 
-  /**
-   * A constructor for subscription offset
-   *
-   * @param specialOffset One of the offsets defined in {@link SpecialOffset}
-   */
   public SubscriptionOffset(SpecialOffset specialOffset) {
     this.specialOffset = specialOffset;
+    this.offsetType = OffsetType.SPECIAL;
   }
 
-  /** get the offset */
+  public SubscriptionOffset(RecordId recordId) {
+    this.recordId = recordId;
+    this.offsetType = OffsetType.NORMAL;
+  }
+
+  public boolean isSpecialOffset() {
+    return offsetType.equals(OffsetType.SPECIAL);
+  }
+
+  public boolean isNormalOffset() {
+    return offsetType.equals(OffsetType.NORMAL);
+  }
+
   public SpecialOffset getSpecialOffset() {
-    return specialOffset;
-  }
-
-  /** update the offset */
-  public void setSpecialOffset(SpecialOffset specialOffset) {
-    this.specialOffset = specialOffset;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    if (isSpecialOffset()) {
+      return specialOffset;
+    } else {
+      throw new IllegalStateException("subscriptionOffset is not specialOffset");
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    SubscriptionOffset that = (SubscriptionOffset) o;
-    return specialOffset == that.specialOffset;
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(specialOffset);
+  public RecordId getNormalOffset() {
+    if (isSpecialOffset()) {
+      return recordId;
+    } else {
+      throw new IllegalStateException("subscriptionOffset is not normal offset");
+    }
   }
 }

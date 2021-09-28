@@ -5,24 +5,12 @@ import java.util.Objects;
 /** A class for storing information about subscriptions */
 public class Subscription {
 
-  /** An identifier for the subscription */
   private String subscriptionId;
-  /** The name of the stream being subscribed to */
   private String streamName;
-  /** The offset that indicates the position to start consuming data from the stream */
   private SubscriptionOffset subscriptionOffset;
-
   private int ackTimeoutSeconds;
 
-  /**
-   * A constructor for subscriptions
-   *
-   * @param subscriptionId An identifier for the subscription
-   * @param streamName The name of the stream being subscribed to
-   * @param subscriptionOffset A {@link SubscriptionOffset} to indicate the position to start
-   *     consuming data
-   */
-  public Subscription(
+  private Subscription(
       String subscriptionId,
       String streamName,
       SubscriptionOffset subscriptionOffset,
@@ -33,42 +21,25 @@ public class Subscription {
     this.ackTimeoutSeconds = ackTimeoutSeconds;
   }
 
-  /** get the identifier of the subscription */
+  /** @return {@link Subscription.Builder} */
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
   public String getSubscriptionId() {
     return subscriptionId;
   }
 
-  /** get the name of stream being subscribed to */
   public String getStreamName() {
     return streamName;
   }
 
-  /** get the subscription offset */
   public SubscriptionOffset getSubscriptionOffset() {
     return subscriptionOffset;
   }
 
   public int getAckTimeoutSeconds() {
     return ackTimeoutSeconds;
-  }
-
-  /** update the identifier of the subscription */
-  public void setSubscriptionId(String subscriptionId) {
-    this.subscriptionId = subscriptionId;
-  }
-
-  /** update the name of the stream */
-  public void setStreamName(String streamName) {
-    this.streamName = streamName;
-  }
-
-  /** update the subscription offset */
-  public void setSubscriptionOffset(SubscriptionOffset subscriptionOffset) {
-    this.subscriptionOffset = subscriptionOffset;
-  }
-
-  public void setAckTimeoutSeconds(int ackTimeoutSeconds) {
-    this.ackTimeoutSeconds = ackTimeoutSeconds;
   }
 
   @Override
@@ -85,5 +56,37 @@ public class Subscription {
   @Override
   public int hashCode() {
     return Objects.hash(subscriptionId, streamName, subscriptionOffset, ackTimeoutSeconds);
+  }
+
+  public static class Builder {
+
+    private String subscriptionId;
+    private String streamName;
+    private SubscriptionOffset subscriptionOffset;
+    private int ackTimeoutSeconds;
+
+    public Builder subscription(String subscriptionId) {
+      this.subscriptionId = subscriptionId;
+      return this;
+    }
+
+    public Builder stream(String streamName) {
+      this.streamName = streamName;
+      return this;
+    }
+
+    public Builder offset(SubscriptionOffset subscriptionOffset) {
+      this.subscriptionOffset = subscriptionOffset;
+      return this;
+    }
+
+    public Builder ackTimeoutSeconds(int ackTimeoutSeconds) {
+      this.ackTimeoutSeconds = ackTimeoutSeconds;
+      return this;
+    }
+
+    public Subscription build() {
+      return new Subscription(subscriptionId, streamName, subscriptionOffset, ackTimeoutSeconds);
+    }
   }
 }

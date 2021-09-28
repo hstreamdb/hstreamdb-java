@@ -60,12 +60,14 @@ public class QueryerImpl extends AbstractService implements Queryer {
                 value.getStreamQuery().getId(),
                 value.getQueryStream().getStreamName());
 
-            client.createSubscription(
-                new Subscription(
-                    STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix,
-                    STREAM_QUERY_STREAM_PREFIX + resultStreamNameSuffix,
-                    new SubscriptionOffset(SubscriptionOffset.SpecialOffset.EARLIEST),
-                    10));
+            Subscription subscription =
+                Subscription.newBuilder()
+                    .subscription(STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix)
+                    .stream(STREAM_QUERY_STREAM_PREFIX + resultStreamNameSuffix)
+                    .offset(new SubscriptionOffset(SubscriptionOffset.SpecialOffset.EARLIEST))
+                    .ackTimeoutSeconds(10)
+                    .build();
+            client.createSubscription(subscription);
 
             queryInnerConsumer =
                 client

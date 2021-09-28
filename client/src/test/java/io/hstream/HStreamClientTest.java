@@ -28,11 +28,10 @@ public class HStreamClientTest {
     testSubscriptionId = TEST_SUBSCRIPTION_PREFIX + suffix;
     client.createStream(testStreamName);
     Subscription subscription =
-        new Subscription(
-            testSubscriptionId,
-            testStreamName,
-            new SubscriptionOffset(SubscriptionOffset.SpecialOffset.LATEST),
-            10);
+        Subscription.newBuilder().subscription(testSubscriptionId).stream(testStreamName)
+            .offset(new SubscriptionOffset(SubscriptionOffset.SpecialOffset.LATEST))
+            .ackTimeoutSeconds(10)
+            .build();
     client.createSubscription(subscription);
   }
 
