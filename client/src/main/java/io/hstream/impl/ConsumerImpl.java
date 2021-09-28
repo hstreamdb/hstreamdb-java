@@ -148,6 +148,9 @@ public class ConsumerImpl extends AbstractService implements Consumer {
 
     new Thread(
             () -> {
+              // close the bidistreaming rpc
+              requestStream.onCompleted();
+
               executorService.shutdown();
               logger.info("run shutdown done");
               try {
