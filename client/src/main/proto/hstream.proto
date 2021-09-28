@@ -182,8 +182,8 @@ message Query {
 
 message StreamingFetchRequest {
   string subscriptionId = 1;
-
-  repeated RecordId ack_ids = 2;
+  string consumerName = 2;
+  repeated RecordId ack_ids = 3;
 }
 
 message StreamingFetchResponse {

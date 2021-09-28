@@ -9,6 +9,7 @@ import io.hstream.internal.*;
 import io.hstream.util.GrpcUtils;
 import io.hstream.util.RecordUtils;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
@@ -40,7 +41,11 @@ public class ConsumerImpl extends AbstractService implements Consumer {
       HRecordReceiver hRecordReceiver) {
     this.grpcStub = grpcStub;
     this.grpcBlockingStub = grpcBlockingStub;
-    this.consumerName = consumerName;
+    if (consumerName == null) {
+      this.consumerName = UUID.randomUUID().toString();
+    } else {
+      this.consumerName = consumerName;
+    }
     this.subscriptionId = subscriptionId;
     this.rawRecordReceiver = rawRecordReceiver;
     this.hRecordReceiver = hRecordReceiver;
@@ -127,7 +132,10 @@ public class ConsumerImpl extends AbstractService implements Consumer {
     logger.info("prepare to start consumer");
 
     StreamingFetchRequest initRequest =
-        StreamingFetchRequest.newBuilder().setSubscriptionId(subscriptionId).build();
+        StreamingFetchRequest.newBuilder()
+            .setSubscriptionId(subscriptionId)
+            .setConsumerName(consumerName)
+            .build();
     requestStream.onNext(initRequest);
 
     logger.info("consumer {} started", consumerName);
