@@ -459,4 +459,65 @@ public class HStreamClientTest {
 
     queryer.stopAsync().awaitTerminated();
   }
+
+  @Test
+  @Order(9)
+  public void testConsumerInTurn() throws Exception {
+    final int recordCount = 10;
+    Producer producer = client.newProducer().stream(testStreamName).build();
+    Random random = new Random();
+    for (int i = 0; i < recordCount; ++i) {
+      byte[] rawRecord = new byte[100];
+      random.nextBytes(rawRecord);
+      producer.write(rawRecord);
+    }
+
+    final int maxReceivedCountC1 = 3;
+    CountDownLatch latch1 = new CountDownLatch(1);
+    AtomicInteger c1ReceivedRecordCount = new AtomicInteger(0);
+    Consumer consumer1 =
+        client
+            .newConsumer()
+            .subscription(testSubscriptionId)
+            .name("consumer1")
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  if (c1ReceivedRecordCount.get() < maxReceivedCountC1) {
+                    responder.ack();
+                    if (c1ReceivedRecordCount.incrementAndGet() == maxReceivedCountC1) {
+                      latch1.countDown();
+                    }
+                  }
+                })
+            .build();
+    consumer1.startAsync().awaitRunning();
+    latch1.await();
+    consumer1.stopAsync().awaitTerminated();
+
+    Thread.sleep(3000);
+
+    final int maxReceivedCountC2 = recordCount - maxReceivedCountC1;
+    CountDownLatch latch2 = new CountDownLatch(1);
+    AtomicInteger c2ReceivedRecordCount = new AtomicInteger(0);
+    Consumer consumer2 =
+        client
+            .newConsumer()
+            .subscription(testSubscriptionId)
+            .name("consumer2")
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  if (c2ReceivedRecordCount.get() < maxReceivedCountC2) {
+                    responder.ack();
+                    if (c2ReceivedRecordCount.incrementAndGet() == maxReceivedCountC2) {
+                      latch2.countDown();
+                    }
+                  }
+                })
+            .build();
+    consumer2.startAsync().awaitRunning();
+    latch2.await();
+    consumer2.stopAsync().awaitTerminated();
+
+    Assertions.assertEquals(recordCount, c1ReceivedRecordCount.get() + c2ReceivedRecordCount.get());
+  }
 }
