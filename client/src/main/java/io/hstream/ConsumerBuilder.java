@@ -1,47 +1,14 @@
 package io.hstream;
 
-import io.hstream.impl.ConsumerImpl;
-import io.hstream.internal.HStreamApiGrpc;
+public interface ConsumerBuilder {
 
-/** used to construct a consumer */
-public class ConsumerBuilder {
+  ConsumerBuilder name(String name);
 
-  private HStreamApiGrpc.HStreamApiStub grpcStub;
-  private HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub;
-  private String name;
-  private String subscription;
-  private RawRecordReceiver rawRecordReceiver;
-  private HRecordReceiver hRecordReceiver;
+  ConsumerBuilder subscription(String subscription);
 
-  public ConsumerBuilder(
-      HStreamApiGrpc.HStreamApiStub grpcStub,
-      HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub) {
-    this.grpcStub = grpcStub;
-    this.grpcBlockingStub = grpcBlockingStub;
-  }
+  ConsumerBuilder rawRecordReceiver(RawRecordReceiver rawRecordReceiver);
 
-  public ConsumerBuilder name(String name) {
-    this.name = name;
-    return this;
-  }
+  ConsumerBuilder hRecordReceiver(HRecordReceiver hRecordReceiver);
 
-  public ConsumerBuilder subscription(String subscription) {
-    this.subscription = subscription;
-    return this;
-  }
-
-  public ConsumerBuilder rawRecordReceiver(RawRecordReceiver rawRecordReceiver) {
-    this.rawRecordReceiver = rawRecordReceiver;
-    return this;
-  }
-
-  public ConsumerBuilder hRecordReceiver(HRecordReceiver hRecordReceiver) {
-    this.hRecordReceiver = hRecordReceiver;
-    return this;
-  }
-
-  public Consumer build() {
-    return new ConsumerImpl(
-        grpcStub, grpcBlockingStub, name, subscription, rawRecordReceiver, hRecordReceiver);
-  }
+  Consumer build();
 }

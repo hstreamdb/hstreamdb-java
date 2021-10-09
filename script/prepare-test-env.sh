@@ -2,11 +2,18 @@
 
 set -e
 
-DEFAULT_HSTREAM_DOCKER_TAG="v0.5.2.0"
+DEFAULT_HSTREAM_DOCKER_TAG="v0.5.3.0"
 
 docker pull hstreamdb/hstream:${DEFAULT_HSTREAM_DOCKER_TAG} || true 
 
 mkdir /tmp/hstream-test-data
+
+docker run \
+    -td \
+    --rm  \
+    --name zookeeper-test \
+    --network host \
+    zookeeper:3.6
 
 docker run \
     -td \
@@ -19,9 +26,11 @@ docker run \
 
 docker run \
   -td \
-  --rm \
   -v /tmp/hstream-test-data:/data/store \
   --name hserver-test \
   --network host \
   hstreamdb/hstream:${DEFAULT_HSTREAM_DOCKER_TAG} \
-  hstream-server --port 6570 --store-config /data/store/logdevice.conf
+  hstream-server --port 6570 --store-config /data/store/logdevice.conf --log-level debug
+
+
+

@@ -1,45 +1,26 @@
 package io.hstream;
 
+import io.hstream.impl.HStreamClientBuilderImpl;
 import java.util.List;
 
-/** HstreamClient implement the hstream client, user can use it to interact with server */
+/** HStreamDB Client. */
 public interface HStreamClient extends AutoCloseable {
 
-  /**
-   * a static method use to create a new client.
-   *
-   * @return {@link ClientBuilder}.
-   */
-  static ClientBuilder builder() {
-    return new ClientBuilder();
+  /** @return {@link HStreamClientBuilder}. */
+  static HStreamClientBuilder builder() {
+    return new HStreamClientBuilderImpl();
   }
 
-  /**
-   * create a producer.
-   *
-   * @return the {@link ProducerBuilder}.
-   */
+  /** @return the {@link ProducerBuilder}. */
   ProducerBuilder newProducer();
 
-  /**
-   * create a consumer.
-   *
-   * @return the {@link ConsumerBuilder}.
-   */
+  /** @return the {@link ConsumerBuilder}. */
   ConsumerBuilder newConsumer();
 
-  /**
-   * create a {@link QueryerBuilder}.
-   *
-   * @return the {@link Queryer}.
-   */
+  /** @return the {@link QueryerBuilder}. */
   QueryerBuilder newQueryer();
 
-  /**
-   * Create a stream.
-   *
-   * @param stream the name of stream.
-   */
+  /** @param stream the name of stream. */
   void createStream(String stream);
 
   /**
