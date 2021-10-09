@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":2,"i1":1,"i2":2,"i3":2,"i4":2,"i5":2,"i6":2,"i7":1,"i8":1,"i9":8,"i10":8,"i11":8,"i12":8,"i13":1,"i14":1,"i15":2,"i16":1,"i17":2,"i18":1,"i19":2,"i20":2,"i21":2,"i22":1,"i23":2,"i24":2,"i25":2,"i26":2,"i27":4};
+var data = {"i0":1,"i1":1,"i2":2,"i3":2,"i4":2,"i5":2,"i6":1,"i7":1,"i8":1,"i9":8,"i10":8,"i11":8,"i12":8,"i13":1,"i14":1,"i15":1,"i16":1,"i17":1,"i18":1,"i19":2,"i20":2,"i21":2,"i22":1,"i23":2,"i24":2,"i25":2,"i26":2,"i27":4};
 var tabs = {65535:["t0","All Classes"],1:["t1","Interface Summary"],2:["t2","Class Summary"],4:["t3","Enum Summary"],8:["t4","Exception Summary"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -109,58 +109,54 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><a href="io/hstream/ClientBuilder.html" title="class in io.hstream">ClientBuilder</a></td>
-<th class="colLast" scope="row">
-<div class="block">used to construct a hstream client, which you can use it to interact with hstream server</div>
-</th>
-</tr>
-<tr id="i1" class="rowColor">
 <td class="colFirst"><a href="io/hstream/Consumer.html" title="interface in io.hstream">Consumer</a></td>
 <th class="colLast" scope="row">
 <div class="block">The consumer interface of hstream consumer</div>
 </th>
 </tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><a href="io/hstream/ConsumerBuilder.html" title="class in io.hstream">ConsumerBuilder</a></td>
-<th class="colLast" scope="row">
-<div class="block">used to construct a consumer</div>
-</th>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><a href="io/hstream/ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></td>
+<th class="colLast" scope="row">&nbsp;</th>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><a href="io/hstream/HArray.html" title="class in io.hstream">HArray</a></td>
 <th class="colLast" scope="row">
 <div class="block">a data structure like array</div>
 </th>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><a href="io/hstream/HArrayBuilder.html" title="class in io.hstream">HArrayBuilder</a></td>
 <th class="colLast" scope="row">
 <div class="block">the <a href="io/hstream/HArray.html" title="class in io.hstream"><code>HArray</code></a> constructor</div>
 </th>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></td>
 <th class="colLast" scope="row">
 <div class="block">the data structure defined by hstream</div>
 </th>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><a href="io/hstream/HRecordBuilder.html" title="class in io.hstream">HRecordBuilder</a></td>
 <th class="colLast" scope="row">
 <div class="block">used to construct a <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a></div>
 </th>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><a href="io/hstream/HRecordReceiver.html" title="interface in io.hstream">HRecordReceiver</a></td>
 <th class="colLast" scope="row">
 <div class="block">the interface that user use to process <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a> received from server</div>
 </th>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></td>
 <th class="colLast" scope="row">
-<div class="block">HstreamClient implement the hstream client, user can use it to interact with server</div>
+<div class="block">HStreamDB Client.</div>
 </th>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></td>
+<th class="colLast" scope="row">&nbsp;</th>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><a href="io/hstream/HStreamDBClientException.html" title="class in io.hstream">HStreamDBClientException</a></td>
@@ -193,10 +189,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </th>
 </tr>
 <tr id="i15" class="rowColor">
-<td class="colFirst"><a href="io/hstream/ProducerBuilder.html" title="class in io.hstream">ProducerBuilder</a></td>
-<th class="colLast" scope="row">
-<div class="block">used to construct a producer</div>
-</th>
+<td class="colFirst"><a href="io/hstream/ProducerBuilder.html" title="interface in io.hstream">ProducerBuilder</a></td>
+<th class="colLast" scope="row">&nbsp;</th>
 </tr>
 <tr id="i16" class="altColor">
 <td class="colFirst"><a href="io/hstream/Queryer.html" title="interface in io.hstream">Queryer</a></td>
@@ -205,10 +199,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </th>
 </tr>
 <tr id="i17" class="rowColor">
-<td class="colFirst"><a href="io/hstream/QueryerBuilder.html" title="class in io.hstream">QueryerBuilder</a></td>
-<th class="colLast" scope="row">
-<div class="block">Builder used to configure and construct a <a href="io/hstream/Queryer.html" title="interface in io.hstream"><code>Queryer</code></a> instance.</div>
-</th>
+<td class="colFirst"><a href="io/hstream/QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a></td>
+<th class="colLast" scope="row">&nbsp;</th>
 </tr>
 <tr id="i18" class="altColor">
 <td class="colFirst"><a href="io/hstream/RawRecordReceiver.html" title="interface in io.hstream">RawRecordReceiver</a></td>

@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":6,"i1":6,"i2":6};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -88,13 +88,13 @@ loadScripts(document, 'script');</script>
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -114,52 +114,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <main role="main">
 <div class="header">
 <div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">io.hstream</a></div>
-<h2 title="Class QueryerBuilder" class="title">Class QueryerBuilder</h2>
+<h2 title="Interface QueryerBuilder" class="title">Interface QueryerBuilder</h2>
 </div>
 <div class="contentContainer">
-<ul class="inheritance">
-<li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">java.lang.Object</a></li>
-<li>
-<ul class="inheritance">
-<li>io.hstream.QueryerBuilder</li>
-</ul>
-</li>
-</ul>
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
 <hr>
-<pre>public class <span class="typeNameLabel">QueryerBuilder</span>
-extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
-<div class="block">Builder used to configure and construct a <a href="Queryer.html" title="interface in io.hstream"><code>Queryer</code></a> instance.</div>
+<pre>public interface <span class="typeNameLabel">QueryerBuilder</span></pre>
 </li>
 </ul>
 </div>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Constructor</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(io.hstream.HStreamClient,io.hstream.internal.HStreamApiGrpc.HStreamApiStub)">QueryerBuilder</a></span>&#8203;(<a href="HStreamClient.html" title="interface in io.hstream">HStreamClient</a>&nbsp;client,
-              io.hstream.internal.HStreamApiGrpc.HStreamApiStub&nbsp;grpcStub)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
-</section>
 <!-- ========== METHOD SUMMARY =========== -->
 <section role="region">
 <ul class="blockList">
@@ -168,7 +136,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -182,27 +150,20 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="QueryerBuilder.html" title="class in io.hstream">QueryerBuilder</a></code></td>
+<td class="colFirst"><code><a href="QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resultObserver(io.hstream.Observer)">resultObserver</a></span>&#8203;(<a href="Observer.html" title="interface in io.hstream">Observer</a>&lt;<a href="HRecord.html" title="class in io.hstream">HRecord</a>&gt;&nbsp;resultObserver)</code></th>
 <td class="colLast">
 <div class="block">Set <a href="Observer.html" title="interface in io.hstream"><code>Observer</code></a> for sql results.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="QueryerBuilder.html" title="class in io.hstream">QueryerBuilder</a></code></td>
+<td class="colFirst"><code><a href="QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sql(java.lang.String)">sql</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql)</code></th>
 <td class="colLast">
 <div class="block">Set SQL statement the queryer will execute.</div>
 </td>
 </tr>
 </table>
-<ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
-<!--   -->
-</a>
-<h3>Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></h3>
-<code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang" class="externalLink">clone</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang" class="externalLink">equals</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang" class="externalLink">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang" class="externalLink">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang" class="externalLink">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang" class="externalLink">notify</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang" class="externalLink">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang" class="externalLink">toString</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long,int)" title="class or interface in java.lang" class="externalLink">wait</a></code></li>
-</ul>
 </li>
 </ul>
 </section>
@@ -212,26 +173,6 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(io.hstream.HStreamClient,io.hstream.internal.HStreamApiGrpc.HStreamApiStub)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>QueryerBuilder</h4>
-<pre>public&nbsp;QueryerBuilder&#8203;(<a href="HStreamClient.html" title="interface in io.hstream">HStreamClient</a>&nbsp;client,
-                      io.hstream.internal.HStreamApiGrpc.HStreamApiStub&nbsp;grpcStub)</pre>
-</li>
-</ul>
-</li>
-</ul>
-</section>
 <!-- ============ METHOD DETAIL ========== -->
 <section role="region">
 <ul class="blockList">
@@ -245,13 +186,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>sql</h4>
-<pre class="methodSignature">public&nbsp;<a href="QueryerBuilder.html" title="class in io.hstream">QueryerBuilder</a>&nbsp;sql&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql)</pre>
+<pre class="methodSignature"><a href="QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a>&nbsp;sql&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql)</pre>
 <div class="block">Set SQL statement the queryer will execute.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>sql</code> - SQL statement, only allow statements like "select ... emit changes"</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the <a href="QueryerBuilder.html" title="class in io.hstream"><code>QueryerBuilder</code></a> instance</dd>
+<dd>the <a href="QueryerBuilder.html" title="interface in io.hstream"><code>QueryerBuilder</code></a> instance</dd>
 </dl>
 </li>
 </ul>
@@ -261,13 +202,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>resultObserver</h4>
-<pre class="methodSignature">public&nbsp;<a href="QueryerBuilder.html" title="class in io.hstream">QueryerBuilder</a>&nbsp;resultObserver&#8203;(<a href="Observer.html" title="interface in io.hstream">Observer</a>&lt;<a href="HRecord.html" title="class in io.hstream">HRecord</a>&gt;&nbsp;resultObserver)</pre>
+<pre class="methodSignature"><a href="QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a>&nbsp;resultObserver&#8203;(<a href="Observer.html" title="interface in io.hstream">Observer</a>&lt;<a href="HRecord.html" title="class in io.hstream">HRecord</a>&gt;&nbsp;resultObserver)</pre>
 <div class="block">Set <a href="Observer.html" title="interface in io.hstream"><code>Observer</code></a> for sql results.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>resultObserver</code> - the <a href="Observer.html" title="interface in io.hstream"><code>Observer</code></a> instance</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the <a href="QueryerBuilder.html" title="class in io.hstream"><code>QueryerBuilder</code></a> instance</dd>
+<dd>the <a href="QueryerBuilder.html" title="interface in io.hstream"><code>QueryerBuilder</code></a> instance</dd>
 </dl>
 </li>
 </ul>
@@ -277,7 +218,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockListLast">
 <li class="blockList">
 <h4>build</h4>
-<pre class="methodSignature">public&nbsp;<a href="Queryer.html" title="interface in io.hstream">Queryer</a>&nbsp;build()</pre>
+<pre class="methodSignature"><a href="Queryer.html" title="interface in io.hstream">Queryer</a>&nbsp;build()</pre>
 <div class="block">Construct the final <a href="Queryer.html" title="interface in io.hstream"><code>Queryer</code></a> instance.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -337,13 +278,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

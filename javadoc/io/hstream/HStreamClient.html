@@ -127,7 +127,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public interface <span class="typeNameLabel">HStreamClient</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang" class="externalLink">AutoCloseable</a></pre>
-<div class="block">HstreamClient implement the hstream client, user can use it to interact with server</div>
+<div class="block">HStreamDB Client.</div>
 </li>
 </ul>
 </div>
@@ -149,18 +149,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static <a href="ClientBuilder.html" title="class in io.hstream">ClientBuilder</a></code></td>
+<td class="colFirst"><code>static <a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#builder()">builder</a></span>()</code></th>
-<td class="colLast">
-<div class="block">a static method use to create a new client.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createStream(java.lang.String)">createStream</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;stream)</code></th>
-<td class="colLast">
-<div class="block">Create a stream.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -198,25 +194,19 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </td>
 </tr>
 <tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="ConsumerBuilder.html" title="class in io.hstream">ConsumerBuilder</a></code></td>
+<td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newConsumer()">newConsumer</a></span>()</code></th>
-<td class="colLast">
-<div class="block">create a consumer.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code><a href="ProducerBuilder.html" title="class in io.hstream">ProducerBuilder</a></code></td>
+<td class="colFirst"><code><a href="ProducerBuilder.html" title="interface in io.hstream">ProducerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newProducer()">newProducer</a></span>()</code></th>
-<td class="colLast">
-<div class="block">create a producer.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i9" class="rowColor">
-<td class="colFirst"><code><a href="QueryerBuilder.html" title="class in io.hstream">QueryerBuilder</a></code></td>
+<td class="colFirst"><code><a href="QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newQueryer()">newQueryer</a></span>()</code></th>
-<td class="colLast">
-<div class="block">create a <a href="QueryerBuilder.html" title="class in io.hstream"><code>QueryerBuilder</code></a>.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -248,11 +238,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>builder</h4>
-<pre class="methodSignature">static&nbsp;<a href="ClientBuilder.html" title="class in io.hstream">ClientBuilder</a>&nbsp;builder()</pre>
-<div class="block">a static method use to create a new client.</div>
+<pre class="methodSignature">static&nbsp;<a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;builder()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd><a href="ClientBuilder.html" title="class in io.hstream"><code>ClientBuilder</code></a>.</dd>
+<dd><a href="HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a>.</dd>
 </dl>
 </li>
 </ul>
@@ -262,11 +251,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>newProducer</h4>
-<pre class="methodSignature"><a href="ProducerBuilder.html" title="class in io.hstream">ProducerBuilder</a>&nbsp;newProducer()</pre>
-<div class="block">create a producer.</div>
+<pre class="methodSignature"><a href="ProducerBuilder.html" title="interface in io.hstream">ProducerBuilder</a>&nbsp;newProducer()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the <a href="ProducerBuilder.html" title="class in io.hstream"><code>ProducerBuilder</code></a>.</dd>
+<dd>the <a href="ProducerBuilder.html" title="interface in io.hstream"><code>ProducerBuilder</code></a>.</dd>
 </dl>
 </li>
 </ul>
@@ -276,11 +264,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>newConsumer</h4>
-<pre class="methodSignature"><a href="ConsumerBuilder.html" title="class in io.hstream">ConsumerBuilder</a>&nbsp;newConsumer()</pre>
-<div class="block">create a consumer.</div>
+<pre class="methodSignature"><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a>&nbsp;newConsumer()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the <a href="ConsumerBuilder.html" title="class in io.hstream"><code>ConsumerBuilder</code></a>.</dd>
+<dd>the <a href="ConsumerBuilder.html" title="interface in io.hstream"><code>ConsumerBuilder</code></a>.</dd>
 </dl>
 </li>
 </ul>
@@ -290,11 +277,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>newQueryer</h4>
-<pre class="methodSignature"><a href="QueryerBuilder.html" title="class in io.hstream">QueryerBuilder</a>&nbsp;newQueryer()</pre>
-<div class="block">create a <a href="QueryerBuilder.html" title="class in io.hstream"><code>QueryerBuilder</code></a>.</div>
+<pre class="methodSignature"><a href="QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a>&nbsp;newQueryer()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the <a href="Queryer.html" title="interface in io.hstream"><code>Queryer</code></a>.</dd>
+<dd>the <a href="QueryerBuilder.html" title="interface in io.hstream"><code>QueryerBuilder</code></a>.</dd>
 </dl>
 </li>
 </ul>
@@ -305,7 +291,6 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>createStream</h4>
 <pre class="methodSignature">void&nbsp;createStream&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;stream)</pre>
-<div class="block">Create a stream.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>stream</code> - the name of stream.</dd>
