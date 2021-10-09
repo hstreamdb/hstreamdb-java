@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ClientImpl implements HStreamClient {
+public class HStreamClientImpl implements HStreamClient {
 
-  private static final Logger logger = LoggerFactory.getLogger(ClientImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(HStreamClientImpl.class);
 
   private final ManagedChannel managedChannel;
   private final HStreamApiGrpc.HStreamApiStub stub;
   private final HStreamApiGrpc.HStreamApiBlockingStub blockingStub;
 
-  public ClientImpl(String serviceUrl) {
+  public HStreamClientImpl(String serviceUrl) {
     ManagedChannel channel = ManagedChannelBuilder.forTarget(serviceUrl).usePlaintext().build();
     this.managedChannel = channel;
     this.stub = HStreamApiGrpc.newStub(channel);
@@ -32,17 +32,17 @@ public class ClientImpl implements HStreamClient {
 
   @Override
   public ProducerBuilder newProducer() {
-    return new ProducerBuilder(stub);
+    return new ProducerBuilderImpl(stub);
   }
 
   @Override
   public ConsumerBuilder newConsumer() {
-    return new ConsumerBuilder(stub, blockingStub);
+    return new ConsumerBuilderImpl(stub, blockingStub);
   }
 
   @Override
   public QueryerBuilder newQueryer() {
-    return new QueryerBuilder(this, stub);
+    return new QueryerBuilderImpl(this, stub);
   }
 
   @Override
