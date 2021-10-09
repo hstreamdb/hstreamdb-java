@@ -4,13 +4,13 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.hstream/hstreamdb-java)](https://search.maven.org/artifact/io.hstream/hstreamdb-java)
 [![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/javadoc.svg)](https://javadoc.io/doc/io.hstream/hstreamdb-java)
 [![Snapshot Artifacts](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.hstream/hstreamdb-java.svg)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/hstream/hstreamdb-java/0.5.0-SNAPSHOT/)
-[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.5.0-SNAPSHOT/javadoc.svg)](https://hstreamdb.github.io/hstreamdb-java/javadoc/)
+[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.6.0-SNAPSHOT/javadoc.svg)](https://hstreamdb.github.io/hstreamdb-java/javadoc/)
 
 This is the offical Java client library for [HStreamDB](https://hstream.io/).
 
 **Please use the latest released version.**
 
-**The latest release is v0.4.0, which requires hstream server v0.5.2 .**
+**The latest release is v0.5.0, which requires hstream server v0.5.3 .**
 
 ## Content
 - [Installation](#installation)
@@ -38,7 +38,7 @@ For Maven Users, the library can be included easily like this:
   <dependency>
     <groupId>io.hstream</groupId>
     <artifactId>hstreamdb-java</artifactId>
-    <version>${hstreamdbClient.version}</version>
+    <version>0.5.0</version>
   </dependency>
 </dependencies>
 
@@ -50,7 +50,7 @@ For Gradle Users, the library can be included easily like this:
 
 ```groovy
 
-implementation 'io.hstream:hstreamdb-java:${hstreamdbClientVersion}'
+implementation 'io.hstream:hstreamdb-java:0.5.0'
 
 ```
 
@@ -140,12 +140,15 @@ batchedProducer.flush()
 
 ```java
 // first, create a subscription for the stream
-Subscription subscription =
-    new Subscription(
-        "my_subscription",
-        "test_stream",
-        new SubscriptionOffset(SubscriptionOffset.SpecialOffset.LATEST));
-    client.createSubscription(subscription);
+Subscription subscription = 
+    Subscription
+        .newBuilder()
+        .subscription("my_subscription")
+        .stream("my_stream")
+        .offset(new SubscriptionOffset(SubscriptionOffset.SpecialOffset.LATEST))
+        .ackTimeoutSeconds(600)
+        .build();
+client.createSubscription(subscription);
 
 // second, create a consumer attach to the subscription
 Consumer consumer =
