@@ -1,5 +1,7 @@
 package io.hstream.impl;
 
+import static com.google.common.base.Preconditions.*;
+
 import io.hstream.*;
 import io.hstream.internal.HStreamApiGrpc;
 
@@ -29,6 +31,10 @@ public class QueryerBuilderImpl implements QueryerBuilder {
 
   @Override
   public Queryer build() {
+    checkNotNull(client);
+    checkNotNull(grpcStub);
+    checkNotNull(sql);
+    checkNotNull(resultObserver);
     return new QueryerImpl(client, grpcStub, sql, resultObserver);
   }
 }

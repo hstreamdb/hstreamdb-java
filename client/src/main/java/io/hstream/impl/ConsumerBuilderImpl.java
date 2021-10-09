@@ -1,5 +1,7 @@
 package io.hstream.impl;
 
+import static com.google.common.base.Preconditions.*;
+
 import io.hstream.Consumer;
 import io.hstream.ConsumerBuilder;
 import io.hstream.HRecordReceiver;
@@ -48,6 +50,10 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
 
   @Override
   public Consumer build() {
+    checkNotNull(grpcStub);
+    checkNotNull(grpcBlockingStub);
+    checkNotNull(subscription);
+    checkState(rawRecordReceiver != null || hRecordReceiver != null);
     return new ConsumerImpl(
         grpcStub, grpcBlockingStub, name, subscription, rawRecordReceiver, hRecordReceiver);
   }

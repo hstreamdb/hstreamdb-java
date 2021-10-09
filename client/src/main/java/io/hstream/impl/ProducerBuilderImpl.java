@@ -1,5 +1,7 @@
 package io.hstream.impl;
 
+import static com.google.common.base.Preconditions.*;
+
 import io.hstream.Producer;
 import io.hstream.ProducerBuilder;
 import io.hstream.internal.HStreamApiGrpc;
@@ -38,6 +40,8 @@ public class ProducerBuilderImpl implements ProducerBuilder {
 
   @Override
   public Producer build() {
+    checkNotNull(grpcStub);
+    checkNotNull(streamName);
     return new ProducerImpl(grpcStub, streamName, enableBatch, recordCountLimit);
   }
 }

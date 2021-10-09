@@ -1,5 +1,7 @@
 package io.hstream;
 
+import static com.google.common.base.Preconditions.*;
+
 import java.util.Objects;
 
 /** A class for storing information about subscriptions */
@@ -63,7 +65,7 @@ public class Subscription {
     private String subscriptionId;
     private String streamName;
     private SubscriptionOffset subscriptionOffset;
-    private int ackTimeoutSeconds;
+    private int ackTimeoutSeconds = 600;
 
     public Builder subscription(String subscriptionId) {
       this.subscriptionId = subscriptionId;
@@ -86,6 +88,10 @@ public class Subscription {
     }
 
     public Subscription build() {
+      checkNotNull(subscriptionId);
+      checkNotNull(streamName);
+      checkNotNull(subscriptionOffset);
+      checkState(ackTimeoutSeconds > 0 && ackTimeoutSeconds < 36000);
       return new Subscription(subscriptionId, streamName, subscriptionOffset, ackTimeoutSeconds);
     }
   }
