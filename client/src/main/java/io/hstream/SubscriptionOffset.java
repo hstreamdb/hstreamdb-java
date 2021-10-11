@@ -43,7 +43,7 @@ public class SubscriptionOffset {
   }
 
   public RecordId getNormalOffset() {
-    if (isSpecialOffset()) {
+    if (isNormalOffset()) {
       return recordId;
     } else {
       throw new IllegalStateException("subscriptionOffset is not normal offset");
