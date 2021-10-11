@@ -6,39 +6,18 @@ import java.util.concurrent.CompletableFuture;
 public interface Producer {
 
   /**
-   * Sync method to generate a raw format message.
+   * Write a raw record.
    *
-   * @param rawRecord raw format message.
-   * @return the {@link RecordId} of generated message.
+   * @param rawRecord raw format record.
+   * @return the {@link RecordId} wrapped in a {@link CompletableFuture}.
    */
-  RecordId write(byte[] rawRecord);
+  CompletableFuture<RecordId> write(byte[] rawRecord);
 
   /**
-   * Sync method to generate a {@link HRecord} format message.
+   * Write a {@link HRecord}.
    *
-   * @param hRecord HRecord format message.
-   * @return the {@link RecordId} of generated message.
+   * @param hRecord {@link HRecord}.
+   * @return the {@link RecordId} wrapped in a {@link CompletableFuture}.
    */
-  RecordId write(HRecord hRecord);
-
-  /**
-   * Async method to generate a raw format message.
-   *
-   * @param rawRecord raw format message.
-   * @return the {@link RecordId} of generated message which wrapped in a {@link CompletableFuture}
-   *     object.
-   */
-  CompletableFuture<RecordId> writeAsync(byte[] rawRecord);
-
-  /**
-   * Async method to generate a {@link HRecord} format message.
-   *
-   * @param hRecord HRecord format message.
-   * @return the {@link RecordId} of generated message which wrapped in a {@link CompletableFuture}
-   *     object.
-   */
-  CompletableFuture<RecordId> writeAsync(HRecord hRecord);
-
-  /** Flush buffed message. */
-  void flush();
+  CompletableFuture<RecordId> write(HRecord hRecord);
 }

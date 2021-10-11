@@ -101,27 +101,24 @@ public class HStreamClientTest {
   @Test
   @Order(1)
   public void testWriteRawRecord() throws Exception {
-    CompletableFuture<RecordId> recordIdFuture = new CompletableFuture<>();
+    Producer producer = client.newProducer().stream(testStreamName).build();
+    Random random = new Random();
+    byte[] rawRecord = new byte[100];
+    random.nextBytes(rawRecord);
+    RecordId recordId = producer.write(rawRecord).join();
+
     Consumer consumer =
         client
             .newConsumer()
             .subscription(testSubscriptionId)
             .rawRecordReceiver(
                 (receivedRawRecord, responder) -> {
-                  recordIdFuture.thenAccept(
-                      recordId ->
-                          Assertions.assertEquals(recordId, receivedRawRecord.getRecordId()));
+                  Assertions.assertEquals(recordId, receivedRawRecord.getRecordId());
+                  Assertions.assertEquals(rawRecord, receivedRawRecord.getRawRecord());
                   responder.ack();
                 })
             .build();
     consumer.startAsync().awaitRunning();
-
-    Producer producer = client.newProducer().stream(testStreamName).build();
-    Random random = new Random();
-    byte[] rawRecord = new byte[100];
-    random.nextBytes(rawRecord);
-    RecordId recordId = producer.write(rawRecord);
-    recordIdFuture.complete(recordId);
 
     Thread.sleep(1000);
     consumer.stopAsync().awaitTerminated();
@@ -134,7 +131,7 @@ public class HStreamClientTest {
     Producer producer = client.newProducer().stream(testStreamName).build();
     HRecord hRecord =
         HRecord.newBuilder().put("key1", 10).put("key2", "hello").put("key3", true).build();
-    RecordId recordId = producer.write(hRecord);
+    RecordId recordId = producer.write(hRecord).join();
 
     CountDownLatch countDownLatch = new CountDownLatch(1);
     Consumer consumer =
@@ -143,7 +140,6 @@ public class HStreamClientTest {
             .subscription(testSubscriptionId)
             .hRecordReceiver(
                 (receivedHRecord, responder) -> {
-                  logger.info("receivedHRecord: {}", receivedHRecord.getHRecord());
                   Assertions.assertEquals(recordId, receivedHRecord.getRecordId());
                   countDownLatch.countDown();
                   responder.ack();
@@ -167,7 +163,7 @@ public class HStreamClientTest {
     for (int i = 0; i < count; ++i) {
       byte[] rawRecord = new byte[100];
       random.nextBytes(rawRecord);
-      CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
+      CompletableFuture<RecordId> future = producer.write(rawRecord);
       recordIdFutures[i] = future;
     }
     CompletableFuture.allOf(recordIdFutures).join();
@@ -185,10 +181,10 @@ public class HStreamClientTest {
                   Assertions.assertEquals(
                       recordIdFutures[index.getAndIncrement()].join(),
                       receivedRawRecord.getRecordId());
-                  if (index.get() == count - 1) {
+                  responder.ack();
+                  if (index.get() == count) {
                     latch.countDown();
                   }
-                  responder.ack();
                 })
             .build();
     consumer.startAsync().awaitRunning();
@@ -212,7 +208,7 @@ public class HStreamClientTest {
               for (int i = 0; i < count / 2; ++i) {
                 byte[] rawRecord = new byte[100];
                 random.nextBytes(rawRecord);
-                CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
+                CompletableFuture<RecordId> future = producer.write(rawRecord);
                 recordIdFutures[i] = future;
               }
             });
@@ -223,51 +219,13 @@ public class HStreamClientTest {
               for (int i = count / 2; i < count; ++i) {
                 byte[] rawRecord = new byte[100];
                 random.nextBytes(rawRecord);
-                CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
+                CompletableFuture<RecordId> future = producer.write(rawRecord);
                 recordIdFutures[i] = future;
               }
             });
 
     thread1.start();
     thread2.start();
-
-    AtomicInteger readCount = new AtomicInteger();
-    Consumer consumer =
-        client
-            .newConsumer()
-            .subscription(testSubscriptionId)
-            .rawRecordReceiver(
-                (receivedRawRecord, responder) -> {
-                  readCount.incrementAndGet();
-                  responder.ack();
-                })
-            .build();
-    consumer.startAsync().awaitRunning();
-
-    Thread.sleep(3000);
-    Assertions.assertEquals(count, readCount.get());
-    consumer.stopAsync().awaitTerminated();
-  }
-
-  @Test
-  @Order(5)
-  public void testFlush() throws Exception {
-    Producer producer =
-        client.newProducer().stream(testStreamName).enableBatch().recordCountLimit(100).build();
-    Random random = new Random();
-    final int count = 10;
-    CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
-    for (int i = 0; i < count; ++i) {
-      byte[] rawRecord = new byte[100];
-      random.nextBytes(rawRecord);
-      CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
-      recordIdFutures[i] = future;
-    }
-    producer.flush();
-
-    // CompletableFuture.allOf(recordIdFutures).join();
-
-    logger.info("producer finish");
 
     CountDownLatch latch = new CountDownLatch(1);
     AtomicInteger index = new AtomicInteger();
@@ -280,10 +238,10 @@ public class HStreamClientTest {
                   Assertions.assertEquals(
                       recordIdFutures[index.getAndIncrement()].join(),
                       receivedRawRecord.getRecordId());
-                  if (index.get() == count - 1) {
+                  responder.ack();
+                  if (index.get() == count) {
                     latch.countDown();
                   }
-                  responder.ack();
                 })
             .build();
     consumer.startAsync().awaitRunning();
@@ -292,73 +250,21 @@ public class HStreamClientTest {
     consumer.stopAsync().awaitTerminated();
   }
 
-  // @Disabled
   @Test
-  @Order(6)
-  public void testFlushMultiThread() throws Exception {
-    AtomicInteger readCount = new AtomicInteger();
-    Consumer consumer =
-        client
-            .newConsumer()
-            .subscription(testSubscriptionId)
-            .rawRecordReceiver(
-                (receivedRawRecord, responder) -> {
-                  readCount.incrementAndGet();
-                  responder.ack();
-                })
-            .build();
-    consumer.startAsync().awaitRunning();
-
-    Producer producer =
-        client.newProducer().stream(testStreamName).enableBatch().recordCountLimit(100).build();
-    Random random = new Random();
-    final int count = 10;
-
-    Thread thread1 =
-        new Thread(
-            () -> {
-              for (int i = 0; i < count; ++i) {
-                byte[] rawRecord = new byte[100];
-                random.nextBytes(rawRecord);
-                producer.writeAsync(rawRecord);
-              }
-              producer.flush();
-            });
-
-    Thread thread2 =
-        new Thread(
-            () -> {
-              for (int i = 0; i < count; ++i) {
-                byte[] rawRecord = new byte[100];
-                random.nextBytes(rawRecord);
-                producer.writeAsync(rawRecord);
-              }
-              producer.flush();
-            });
-
-    thread1.start();
-    thread2.start();
-    thread1.join();
-    thread2.join();
-
-    Thread.sleep(5000);
-    consumer.stopAsync().awaitTerminated();
-    Assertions.assertEquals(count * 2, readCount.get());
-  }
-
-  @Test
-  @Order(7)
+  @Order(5)
   public void testConsumerGroup() throws Exception {
     Producer producer = client.newProducer().stream(testStreamName).build();
     Random random = new Random();
     byte[] rawRecord = new byte[100];
-    for (int i = 0; i < 9; ++i) {
+    final int count = 10;
+    for (int i = 0; i < count; ++i) {
       random.nextBytes(rawRecord);
-      producer.write(rawRecord);
+      producer.write(rawRecord).join();
     }
 
     logger.info("write done");
 
+    AtomicInteger readCount = new AtomicInteger();
     Consumer consumer1 =
         client
             .newConsumer()
@@ -367,6 +273,7 @@ public class HStreamClientTest {
             .rawRecordReceiver(
                 (receivedRawRecord, responder) -> {
                   logger.info("consumer-1 recv {}", receivedRawRecord.getRecordId().getBatchId());
+                  readCount.incrementAndGet();
                   responder.ack();
                 })
             .build();
@@ -379,6 +286,7 @@ public class HStreamClientTest {
             .rawRecordReceiver(
                 (receivedRawRecord, responder) -> {
                   logger.info("consumer-2 recv {}", receivedRawRecord.getRecordId().getBatchId());
+                  readCount.incrementAndGet();
                   responder.ack();
                 })
             .build();
@@ -391,6 +299,7 @@ public class HStreamClientTest {
             .rawRecordReceiver(
                 (receivedRawRecord, responder) -> {
                   logger.info("consumer-3 recv {}", receivedRawRecord.getRecordId().getBatchId());
+                  readCount.incrementAndGet();
                   responder.ack();
                 })
             .build();
@@ -406,11 +315,13 @@ public class HStreamClientTest {
     consumer1.stopAsync().awaitTerminated();
     consumer2.stopAsync().awaitTerminated();
     consumer3.stopAsync().awaitTerminated();
+
+    Assertions.assertEquals(count, readCount.get());
   }
 
   @Disabled("wait for fix HS-456")
   @Test
-  @Order(8)
+  @Order(6)
   public void testStreamQuery() throws Exception {
     AtomicInteger receivedCount = new AtomicInteger(0);
     Observer<HRecord> observer =
@@ -460,7 +371,7 @@ public class HStreamClientTest {
   }
 
   @Test
-  @Order(9)
+  @Order(7)
   public void testConsumerInTurn() throws Exception {
     final int recordCount = 10;
     Producer producer = client.newProducer().stream(testStreamName).build();
@@ -468,7 +379,7 @@ public class HStreamClientTest {
     for (int i = 0; i < recordCount; ++i) {
       byte[] rawRecord = new byte[100];
       random.nextBytes(rawRecord);
-      producer.write(rawRecord);
+      producer.write(rawRecord).join();
     }
 
     final int maxReceivedCountC1 = 3;

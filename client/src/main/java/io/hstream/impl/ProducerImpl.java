@@ -5,6 +5,7 @@ import io.hstream.*;
 import io.hstream.internal.AppendRequest;
 import io.hstream.internal.AppendResponse;
 import io.hstream.internal.HStreamApiGrpc;
+import io.hstream.internal.HStreamRecord;
 import io.hstream.util.GrpcUtils;
 import io.hstream.util.RecordUtils;
 import java.util.ArrayList;
@@ -14,8 +15,6 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +29,7 @@ public class ProducerImpl implements Producer {
 
   private final Semaphore semaphore;
   private final Lock lock;
-  private final List<Object> recordBuffer;
+  private final List<HStreamRecord> recordBuffer;
   private final List<CompletableFuture<RecordId>> futures;
 
   public ProducerImpl(
@@ -57,126 +56,62 @@ public class ProducerImpl implements Producer {
   }
 
   @Override
-  public RecordId write(byte[] rawRecord) {
-    CompletableFuture<List<RecordId>> future = writeRawRecordsAsync(List.of(rawRecord));
-    logger.info("wait for write future");
-    return future.join().get(0);
+  public CompletableFuture<RecordId> write(byte[] rawRecord) {
+    HStreamRecord hStreamRecord = RecordUtils.buildHStreamRecordFromRawRecord(rawRecord);
+    return writeInternal(hStreamRecord);
   }
 
   @Override
-  public RecordId write(HRecord hRecord) {
-    CompletableFuture<List<RecordId>> future = writeHRecordsAsync(List.of(hRecord));
-    return future.join().get(0);
+  public CompletableFuture<RecordId> write(HRecord hRecord) {
+    HStreamRecord hStreamRecord = RecordUtils.buildHStreamRecordFromHRecord(hRecord);
+    return writeInternal(hStreamRecord);
   }
 
-  @Override
-  public CompletableFuture<RecordId> writeAsync(byte[] rawRecord) {
+  private CompletableFuture<RecordId> writeInternal(HStreamRecord hStreamRecord) {
     if (!enableBatch) {
-      return writeRawRecordsAsync(List.of(rawRecord)).thenApply(list -> list.get(0));
+      return writeHStreamRecords(List.of(hStreamRecord)).thenApply(recordIds -> recordIds.get(0));
     } else {
-      try {
-        semaphore.acquire();
-      } catch (InterruptedException e) {
-        throw new HStreamDBClientException(e);
-      }
-
-      lock.lock();
-      try {
-        CompletableFuture<RecordId> completableFuture = new CompletableFuture<>();
-        recordBuffer.add(rawRecord);
-        futures.add(completableFuture);
-
-        if (recordBuffer.size() == recordCountLimit) {
-          flush();
-        }
-        return completableFuture;
-      } finally {
-        lock.unlock();
-      }
+      return addToBuffer(hStreamRecord);
     }
   }
 
-  @Override
-  public CompletableFuture<RecordId> writeAsync(HRecord hRecord) {
-    if (!enableBatch) {
-      return writeHRecordsAsync(List.of(hRecord)).thenApply(list -> list.get(0));
-    } else {
-      try {
-        semaphore.acquire();
-      } catch (InterruptedException e) {
-        throw new HStreamDBClientException(e);
-      }
+  private void flush() {
+    lock.lock();
+    try {
+      if (recordBuffer.isEmpty()) {
+        return;
+      } else {
+        final int recordBufferCount = recordBuffer.size();
 
-      lock.lock();
-      try {
-        CompletableFuture<RecordId> completableFuture = new CompletableFuture<>();
-        recordBuffer.add(hRecord);
-        futures.add(completableFuture);
+        logger.info("start flush recordBuffer, current buffer size is: {}", recordBufferCount);
 
-        if (recordBuffer.size() == recordCountLimit) {
-          flush();
-        }
-        return completableFuture;
-      } finally {
-        lock.unlock();
+        writeHStreamRecords(recordBuffer)
+            .thenAccept(
+                recordIds -> {
+                  for (int i = 0; i < recordIds.size(); ++i) {
+                    futures.get(i).complete(recordIds.get(i));
+                  }
+                })
+            .join();
+
+        recordBuffer.clear();
+        futures.clear();
+
+        logger.info("finish clearing record buffer");
+
+        semaphore.release(recordBufferCount);
       }
+    } finally {
+      lock.unlock();
     }
   }
 
-  @Override
-  public void flush() {
-    flushSync();
-  }
-
-  private CompletableFuture<List<RecordId>> writeRawRecordsAsync(List<byte[]> rawRecords) {
-
+  private CompletableFuture<List<RecordId>> writeHStreamRecords(
+      List<HStreamRecord> hStreamRecords) {
     CompletableFuture<List<RecordId>> completableFuture = new CompletableFuture<>();
 
     AppendRequest appendRequest =
-        AppendRequest.newBuilder()
-            .setStreamName(this.stream)
-            .addAllRecords(
-                rawRecords.stream()
-                    .map(rawRecord -> RecordUtils.buildHStreamRecordFromRawRecord(rawRecord))
-                    .collect(Collectors.toList()))
-            .build();
-
-    StreamObserver<AppendResponse> streamObserver =
-        new StreamObserver<>() {
-          @Override
-          public void onNext(AppendResponse appendResponse) {
-            completableFuture.complete(
-                appendResponse.getRecordIdsList().stream()
-                    .map(GrpcUtils::recordIdFromGrpc)
-                    .collect(Collectors.toList()));
-          }
-
-          @Override
-          public void onError(Throwable t) {
-            logger.error("write rawRecord error", t);
-            completableFuture.completeExceptionally(t);
-          }
-
-          @Override
-          public void onCompleted() {}
-        };
-
-    grpcStub.append(appendRequest, streamObserver);
-
-    return completableFuture;
-  }
-
-  private CompletableFuture<List<RecordId>> writeHRecordsAsync(List<HRecord> hRecords) {
-    CompletableFuture<List<RecordId>> completableFuture = new CompletableFuture<>();
-
-    AppendRequest appendRequest =
-        AppendRequest.newBuilder()
-            .setStreamName(this.stream)
-            .addAllRecords(
-                hRecords.stream()
-                    .map(hRecord -> RecordUtils.buildHStreamRecordFromHRecord(hRecord))
-                    .collect(Collectors.toList()))
-            .build();
+        AppendRequest.newBuilder().setStreamName(stream).addAllRecords(hStreamRecords).build();
 
     StreamObserver<AppendResponse> streamObserver =
         new StreamObserver<>() {
@@ -202,52 +137,23 @@ public class ProducerImpl implements Producer {
     return completableFuture;
   }
 
-  private void flushSync() {
+  private CompletableFuture<RecordId> addToBuffer(HStreamRecord hStreamRecord) {
+    try {
+      semaphore.acquire();
+    } catch (InterruptedException e) {
+      throw new HStreamDBClientException(e);
+    }
+
     lock.lock();
     try {
-      if (recordBuffer.isEmpty()) {
-        return;
-      } else {
-        final int recordBufferCount = recordBuffer.size();
+      CompletableFuture<RecordId> completableFuture = new CompletableFuture<>();
+      recordBuffer.add(hStreamRecord);
+      futures.add(completableFuture);
 
-        logger.info("start flush recordBuffer, current buffer size is: {}", recordBufferCount);
-
-        List<ImmutablePair<Integer, byte[]>> rawRecords =
-            IntStream.range(0, recordBufferCount)
-                .filter(index -> recordBuffer.get(index) instanceof byte[])
-                .mapToObj(index -> ImmutablePair.of(index, (byte[]) (recordBuffer.get(index))))
-                .collect(Collectors.toList());
-
-        List<ImmutablePair<Integer, HRecord>> hRecords =
-            IntStream.range(0, recordBufferCount)
-                .filter(index -> recordBuffer.get(index) instanceof HRecord)
-                .mapToObj(index -> ImmutablePair.of(index, (HRecord) (recordBuffer.get(index))))
-                .collect(Collectors.toList());
-
-        List<RecordId> rawRecordIds =
-            writeRawRecordsAsync(
-                    rawRecords.stream().map(pair -> pair.getRight()).collect(Collectors.toList()))
-                .join();
-        List<RecordId> hRecordIds =
-            writeHRecordsAsync(
-                    hRecords.stream().map(ImmutablePair::getRight).collect(Collectors.toList()))
-                .join();
-
-        IntStream.range(0, rawRecords.size())
-            .mapToObj(i -> ImmutablePair.of(i, rawRecords.get(i).getLeft()))
-            .forEach(p -> futures.get(p.getRight()).complete(rawRecordIds.get(p.getLeft())));
-
-        IntStream.range(0, hRecords.size())
-            .mapToObj(i -> ImmutablePair.of(i, hRecords.get(i).getLeft()))
-            .forEach(p -> futures.get(p.getRight()).complete(hRecordIds.get(p.getLeft())));
-
-        recordBuffer.clear();
-        futures.clear();
-
-        logger.info("finish clearing record buffer");
-
-        semaphore.release(recordBufferCount);
+      if (recordBuffer.size() == recordCountLimit) {
+        flush();
       }
+      return completableFuture;
     } finally {
       lock.unlock();
     }
