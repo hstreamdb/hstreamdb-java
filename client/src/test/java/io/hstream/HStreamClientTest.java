@@ -106,21 +106,25 @@ public class HStreamClientTest {
     byte[] rawRecord = new byte[100];
     random.nextBytes(rawRecord);
     RecordId recordId = producer.write(rawRecord).join();
+    logger.info("write record: {}", recordId);
 
+    CountDownLatch latch = new CountDownLatch(1);
     Consumer consumer =
         client
             .newConsumer()
             .subscription(testSubscriptionId)
             .rawRecordReceiver(
                 (receivedRawRecord, responder) -> {
+                  logger.info("recv {}", receivedRawRecord.getRecordId());
                   Assertions.assertEquals(recordId, receivedRawRecord.getRecordId());
-                  Assertions.assertEquals(rawRecord, receivedRawRecord.getRawRecord());
+                  Assertions.assertArrayEquals(rawRecord, receivedRawRecord.getRawRecord());
                   responder.ack();
+                  latch.countDown();
                 })
             .build();
     consumer.startAsync().awaitRunning();
 
-    Thread.sleep(1000);
+    latch.await();
     consumer.stopAsync().awaitTerminated();
   }
 
@@ -141,8 +145,8 @@ public class HStreamClientTest {
             .hRecordReceiver(
                 (receivedHRecord, responder) -> {
                   Assertions.assertEquals(recordId, receivedHRecord.getRecordId());
-                  countDownLatch.countDown();
                   responder.ack();
+                  countDownLatch.countDown();
                 })
             .build();
     consumer.startAsync().awaitRunning();
@@ -227,19 +231,20 @@ public class HStreamClientTest {
     thread1.start();
     thread2.start();
 
+    thread1.join();
+    thread2.join();
+
     CountDownLatch latch = new CountDownLatch(1);
-    AtomicInteger index = new AtomicInteger();
+    AtomicInteger readCount = new AtomicInteger();
     Consumer consumer =
         client
             .newConsumer()
             .subscription(testSubscriptionId)
             .rawRecordReceiver(
                 (receivedRawRecord, responder) -> {
-                  Assertions.assertEquals(
-                      recordIdFutures[index.getAndIncrement()].join(),
-                      receivedRawRecord.getRecordId());
+                  readCount.incrementAndGet();
                   responder.ack();
-                  if (index.get() == count) {
+                  if (readCount.get() == count) {
                     latch.countDown();
                   }
                 })

@@ -57,4 +57,9 @@ public class RecordId {
   public int hashCode() {
     return Objects.hash(batchId, batchIndex);
   }
+
+  @Override
+  public String toString() {
+    return "RecordId{" + "batchId=" + batchId + ", batchIndex=" + batchIndex + '}';
+  }
 }
