@@ -23,6 +23,8 @@ public class HStreamClientImpl implements HStreamClient {
   private final HStreamApiGrpc.HStreamApiStub stub;
   private final HStreamApiGrpc.HStreamApiBlockingStub blockingStub;
 
+  private static final short DEFAULT_STREAM_REPLICATOR = 3;
+
   public HStreamClientImpl(String serviceUrl) {
     ManagedChannel channel = ManagedChannelBuilder.forTarget(serviceUrl).usePlaintext().build();
     this.managedChannel = channel;
@@ -47,8 +49,12 @@ public class HStreamClientImpl implements HStreamClient {
 
   @Override
   public void createStream(String streamName) {
-    Stream stream = new Stream(streamName, 3);
+    createStream(streamName, DEFAULT_STREAM_REPLICATOR);
+  }
 
+  @Override
+  public void createStream(String streamName, short replicationFactor) {
+    Stream stream = new Stream(streamName, replicationFactor);
     blockingStub.createStream(GrpcUtils.streamToGrpc(stream));
   }
 

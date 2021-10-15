@@ -20,8 +20,19 @@ public interface HStreamClient extends AutoCloseable {
   /** @return the {@link QueryerBuilder}. */
   QueryerBuilder newQueryer();
 
-  /** @param stream the name of stream. */
+  /**
+   * create a new stream with 3 replicas.
+   *
+   * @param stream the name of stream.
+   */
   void createStream(String stream);
+
+  /**
+   * create a new stream.
+   *
+   * @param stream the name of stream.
+   */
+  void createStream(String stream, short replicationFactor);
 
   /**
    * Delete specified stream with streamName.
