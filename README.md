@@ -2,7 +2,7 @@
 
 ![Build Status](https://github.com/hstreamdb/hstreamdb-java/actions/workflows/main.yml/badge.svg)
 [![Maven Central](https://img.shields.io/maven-central/v/io.hstream/hstreamdb-java)](https://search.maven.org/artifact/io.hstream/hstreamdb-java)
-[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.5.0/javadoc.svg)](https://javadoc.io/doc/io.hstream/hstreamdb-java/0.5.0)
+[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.5.1/javadoc.svg)](https://javadoc.io/doc/io.hstream/hstreamdb-java/0.5.1)
 [![Snapshot Artifacts](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.hstream/hstreamdb-java.svg)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/hstream/hstreamdb-java/0.5.1-SNAPSHOT/)
 [![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.5.1-SNAPSHOT/javadoc.svg)](https://hstreamdb.github.io/hstreamdb-java/javadoc/)
 
@@ -10,7 +10,7 @@ This is the offical Java client library for [HStreamDB](https://hstream.io/).
 
 **Please use the latest released version.**
 
-**The latest release is v0.5.0, which requires hstream server v0.5.3 .**
+**The latest release is v0.5.1, which requires hstream server v0.5.3 .**
 
 ## Content
 - [Installation](#installation)
@@ -38,7 +38,7 @@ For Maven Users, the library can be included easily like this:
   <dependency>
     <groupId>io.hstream</groupId>
     <artifactId>hstreamdb-java</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1</version>
   </dependency>
 </dependencies>
 
@@ -50,7 +50,7 @@ For Gradle Users, the library can be included easily like this:
 
 ```groovy
 
-implementation 'io.hstream:hstreamdb-java:0.5.0'
+implementation 'io.hstream:hstreamdb-java:0.5.1'
 
 ```
 
@@ -86,6 +86,9 @@ for(Stream stream: client.listStreams()) {
 // create a new stream
 client.createStream("test_stream");
 
+// create a new stream with 5 replicas
+client.createStream("test_stream", 5);
+
 
 // delete a stream
 client.deleteStream("test_stream");
@@ -98,24 +101,18 @@ client.deleteStream("test_stream");
 
 Producer producer = client.newProducer().stream("test_stream").build();
 
-// write raw records synchronously
+// write raw records
 Random random = new Random();
 byte[] rawRecord = new byte[100];
 random.nextBytes(rawRecord);
-RecordId recordId = producer.write(rawRecord);
+CompletableFuture<RecordId> future = producer.write(rawRecord);
 
-// write raw records asynchronously
-CompletableFuture<RecordId> future = producer.writeAsync(rawRecord);
-
-// write hRecords synchronously
+// write hRecords
 HRecord hRecord = HRecord.newBuilder()
         .put("key1", 10)
         .put("key2", "hello")
         .put("key3", true)
         .build();
-RecordId recordId = producer.write(hRecord);
-
-// write hRecords asynchronously
 CompletableFuture<RecordId> future = producer.write(hRecord);
 
 // buffered writes
@@ -126,9 +123,8 @@ Producer batchedProducer = client.newProducer()
         .build();
 for(int i = 0; i < 1000; ++i) {
     random.nextBytes(rawRecord);
-    batchedProducer.writeAsync(rawRecord);
+    batchedProducer.write(rawRecord);
 }
-batchedProducer.flush()
 
 
 ```
