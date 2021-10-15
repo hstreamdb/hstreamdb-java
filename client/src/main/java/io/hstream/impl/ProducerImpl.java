@@ -86,11 +86,18 @@ public class ProducerImpl implements Producer {
         logger.info("start flush recordBuffer, current buffer size is: {}", recordBufferCount);
 
         writeHStreamRecords(recordBuffer)
-            .thenAccept(
-                recordIds -> {
-                  for (int i = 0; i < recordIds.size(); ++i) {
-                    futures.get(i).complete(recordIds.get(i));
+            .handle(
+                (recordIds, exception) -> {
+                  if (exception == null) {
+                    for (int i = 0; i < recordIds.size(); ++i) {
+                      futures.get(i).complete(recordIds.get(i));
+                    }
+                  } else {
+                    for (int i = 0; i < futures.size(); ++i) {
+                      futures.get(i).completeExceptionally(exception);
+                    }
                   }
+                  return null;
                 })
             .join();
 
@@ -125,7 +132,8 @@ public class ProducerImpl implements Producer {
 
           @Override
           public void onError(Throwable t) {
-            throw new HStreamDBClientException(t);
+            logger.warn("write records error: ", t);
+            completableFuture.completeExceptionally(new HStreamDBClientException(t));
           }
 
           @Override
