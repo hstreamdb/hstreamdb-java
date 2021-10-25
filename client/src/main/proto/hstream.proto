@@ -38,6 +38,12 @@ service HStreamApi {
 
   rpc StreamingFetch(stream StreamingFetchRequest) returns (stream StreamingFetchResponse) {}
 
+  rpc DescribeCluster(google.protobuf.Empty) returns (DescribeClusterResponse) {}
+
+  rpc LookupStream(LookupStreamRequest) returns (LookupStreamResponse) {}
+
+  rpc LookupSubscription(LookupSubscriptionRequest) returns (LookupSubscriptionResponse) {}
+
 }
 
 message AppendRequest {
@@ -188,4 +194,34 @@ message StreamingFetchRequest {
 
 message StreamingFetchResponse {
   repeated ReceivedRecord receivedRecords = 1;
+}
+
+message DescribeClusterResponse {
+  string protocolVersion = 1;
+  string serverVersion = 2;
+  repeated ServerNode serverNodes = 3;
+}
+
+message ServerNode {
+  uint32 id = 1;
+  string host = 2;
+  uint32 port = 3;
+}
+
+message LookupStreamRequest {
+  string streamName = 1;
+}
+
+message LookupStreamResponse {
+  string streamName = 1;
+  ServerNode serverNode = 2;
+}
+
+message LookupSubscriptionRequest {
+  string subscriptionId = 1;
+}
+
+message LookupSubscriptionResponse {
+  string subscriptionId = 1;
+  ServerNode serverNode = 2;
 }

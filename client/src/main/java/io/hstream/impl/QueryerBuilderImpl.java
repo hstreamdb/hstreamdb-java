@@ -3,18 +3,22 @@ package io.hstream.impl;
 import static com.google.common.base.Preconditions.*;
 
 import io.hstream.*;
-import io.hstream.internal.HStreamApiGrpc;
+import java.util.List;
 
 public class QueryerBuilderImpl implements QueryerBuilder {
 
-  private HStreamClient client;
-  private HStreamApiGrpc.HStreamApiStub grpcStub;
+  private final HStreamClient client;
+  private final List<String> serverUrls;
+  private final ChannelProvider channelProvider;
+
   private String sql;
   private Observer<HRecord> resultObserver;
 
-  public QueryerBuilderImpl(HStreamClient client, HStreamApiGrpc.HStreamApiStub grpcStub) {
+  public QueryerBuilderImpl(
+      HStreamClient client, List<String> serverUrls, ChannelProvider channelProvider) {
     this.client = client;
-    this.grpcStub = grpcStub;
+    this.serverUrls = serverUrls;
+    this.channelProvider = channelProvider;
   }
 
   @Override
@@ -31,10 +35,8 @@ public class QueryerBuilderImpl implements QueryerBuilder {
 
   @Override
   public Queryer build() {
-    checkNotNull(client);
-    checkNotNull(grpcStub);
     checkNotNull(sql);
     checkNotNull(resultObserver);
-    return new QueryerImpl(client, grpcStub, sql, resultObserver);
+    return new QueryerImpl(client, serverUrls, channelProvider, sql, resultObserver);
   }
 }

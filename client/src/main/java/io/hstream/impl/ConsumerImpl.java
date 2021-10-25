@@ -3,6 +3,7 @@ package io.hstream.impl;
 import com.google.common.util.concurrent.AbstractService;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.protobuf.InvalidProtocolBufferException;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
 import io.hstream.internal.*;
@@ -18,29 +19,34 @@ import org.slf4j.LoggerFactory;
 public class ConsumerImpl extends AbstractService implements Consumer {
   private static final Logger logger = LoggerFactory.getLogger(ConsumerImpl.class);
 
-  private HStreamApiGrpc.HStreamApiStub grpcStub;
-  private HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub;
-  private String consumerName;
-  private String subscriptionId;
-  private RawRecordReceiver rawRecordReceiver;
-  private HRecordReceiver hRecordReceiver;
+  private final List<String> serverUrls;
+  private final ChannelProvider channelProvider;
+
+  private final String consumerName;
+  private final String subscriptionId;
+  private final RawRecordReceiver rawRecordReceiver;
+  private final HRecordReceiver hRecordReceiver;
 
   private ExecutorService executorService;
+
+  private HStreamApiGrpc.HStreamApiStub fetchStub;
 
   private final StreamObserver<StreamingFetchResponse> responseStream;
   private final StreamObserver<StreamingFetchRequest> requestStream;
 
-  private final AtomicBoolean inited = new AtomicBoolean(false);
+  private final AtomicBoolean isInitialized = new AtomicBoolean(false);
 
   public ConsumerImpl(
-      HStreamApiGrpc.HStreamApiStub grpcStub,
-      HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub,
+      List<String> serverUrls,
+      ChannelProvider channelProvider,
       String consumerName,
       String subscriptionId,
       RawRecordReceiver rawRecordReceiver,
       HRecordReceiver hRecordReceiver) {
-    this.grpcStub = grpcStub;
-    this.grpcBlockingStub = grpcBlockingStub;
+
+    this.serverUrls = serverUrls;
+    this.channelProvider = channelProvider;
+
     if (consumerName == null) {
       this.consumerName = UUID.randomUUID().toString();
     } else {
@@ -54,11 +60,12 @@ public class ConsumerImpl extends AbstractService implements Consumer {
         Executors.newSingleThreadExecutor(
             new ThreadFactoryBuilder().setNameFormat("receiver-running-pool-%d").build());
 
+    fetchStub = createFetchStub();
     responseStream =
         new StreamObserver<StreamingFetchResponse>() {
           @Override
           public void onNext(StreamingFetchResponse value) {
-            if (inited.compareAndSet(false, true)) {
+            if (isInitialized.compareAndSet(false, true)) {
               // notifyStarted();
             }
 
@@ -102,7 +109,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
 
           @Override
           public void onError(Throwable t) {
-            if (inited.compareAndSet(false, true)) {
+            if (isInitialized.compareAndSet(false, true)) {
               logger.error(
                   "consumer {} attach to subscription {} error: {}",
                   ConsumerImpl.this.consumerName,
@@ -123,7 +130,19 @@ public class ConsumerImpl extends AbstractService implements Consumer {
           public void onCompleted() {}
         };
 
-    this.requestStream = grpcStub.streamingFetch(responseStream);
+    this.requestStream = fetchStub.streamingFetch(responseStream);
+  }
+
+  private HStreamApiGrpc.HStreamApiStub createFetchStub() {
+    ServerNode serverNode =
+        HStreamApiGrpc.newBlockingStub(
+                ManagedChannelBuilder.forTarget(serverUrls.get(0)).usePlaintext().build())
+            .lookupSubscription(
+                LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build())
+            .getServerNode();
+
+    String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
+    return HStreamApiGrpc.newStub(channelProvider.get(serverUrl));
   }
 
   @Override

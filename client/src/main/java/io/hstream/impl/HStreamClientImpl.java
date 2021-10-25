@@ -2,13 +2,12 @@ package io.hstream.impl;
 
 import com.google.protobuf.Empty;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import io.hstream.*;
-import io.hstream.internal.DeleteStreamRequest;
-import io.hstream.internal.DeleteSubscriptionRequest;
-import io.hstream.internal.HStreamApiGrpc;
-import io.hstream.internal.ListStreamsResponse;
+import io.hstream.Stream;
+import io.hstream.Subscription;
+import io.hstream.internal.*;
 import io.hstream.util.GrpcUtils;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -19,32 +18,44 @@ public class HStreamClientImpl implements HStreamClient {
 
   private static final Logger logger = LoggerFactory.getLogger(HStreamClientImpl.class);
 
-  private final ManagedChannel managedChannel;
-  private final HStreamApiGrpc.HStreamApiStub stub;
-  private final HStreamApiGrpc.HStreamApiBlockingStub blockingStub;
-
   private static final short DEFAULT_STREAM_REPLICATOR = 3;
 
-  public HStreamClientImpl(String serviceUrl) {
-    ManagedChannel channel = ManagedChannelBuilder.forTarget(serviceUrl).usePlaintext().build();
-    this.managedChannel = channel;
-    this.stub = HStreamApiGrpc.newStub(channel);
-    this.blockingStub = HStreamApiGrpc.newBlockingStub(channel);
+  private final ChannelProvider channelProvider;
+  private final List<String> bootstrapServerUrls;
+  private final List<String> initializedServerUrls;
+
+  private HStreamApiGrpc.HStreamApiBlockingStub blockingStub;
+
+  public HStreamClientImpl(List<String> bootstrapServerUrls) {
+    this.bootstrapServerUrls = bootstrapServerUrls;
+    channelProvider = new ChannelProvider();
+
+    ManagedChannel channel = channelProvider.get(bootstrapServerUrls.get(0));
+    blockingStub = HStreamApiGrpc.newBlockingStub(channel);
+    DescribeClusterResponse describeClusterResponse =
+        blockingStub.describeCluster(Empty.newBuilder().build());
+    List<ServerNode> serverNodes = describeClusterResponse.getServerNodesList();
+    initializedServerUrls = new ArrayList<>(serverNodes.size());
+    for (ServerNode serverNode : serverNodes) {
+      String host = serverNode.getHost();
+      int port = serverNode.getPort();
+      initializedServerUrls.add(host + ":" + port);
+    }
   }
 
   @Override
   public ProducerBuilder newProducer() {
-    return new ProducerBuilderImpl(stub);
+    return new ProducerBuilderImpl(initializedServerUrls, channelProvider);
   }
 
   @Override
   public ConsumerBuilder newConsumer() {
-    return new ConsumerBuilderImpl(stub, blockingStub);
+    return new ConsumerBuilderImpl(initializedServerUrls, channelProvider);
   }
 
   @Override
   public QueryerBuilder newQueryer() {
-    return new QueryerBuilderImpl(this, stub);
+    return new QueryerBuilderImpl(this, initializedServerUrls, channelProvider);
   }
 
   @Override
@@ -101,7 +112,7 @@ public class HStreamClientImpl implements HStreamClient {
   }
 
   @Override
-  public void close() throws Exception {
-    managedChannel.shutdownNow();
+  public void close() {
+    channelProvider.close();
   }
 }
