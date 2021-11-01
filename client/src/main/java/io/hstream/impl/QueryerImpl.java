@@ -3,10 +3,11 @@ package io.hstream.impl;
 import com.google.common.util.concurrent.AbstractService;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
-import io.hstream.internal.CreateQueryStreamRequest;
-import io.hstream.internal.CreateQueryStreamResponse;
-import io.hstream.internal.HStreamApiGrpc;
+import io.hstream.Subscription;
+import io.hstream.SubscriptionOffset;
+import io.hstream.internal.*;
 import io.hstream.internal.Stream;
+import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,10 @@ public class QueryerImpl extends AbstractService implements Queryer {
   private static final String STREAM_QUERY_SUBSCRIPTION_PREFIX = "STREAM-QUERY-";
 
   private final HStreamClient client;
-  private final HStreamApiGrpc.HStreamApiStub grpcStub;
+  private final List<String> serverUrls;
+  private final ChannelProvider channelProvider;
+
+  private HStreamApiGrpc.HStreamApiStub queryStub;
   private final String sql;
   private final Observer<HRecord> resultObserver;
 
@@ -28,13 +32,21 @@ public class QueryerImpl extends AbstractService implements Queryer {
 
   public QueryerImpl(
       HStreamClient client,
-      HStreamApiGrpc.HStreamApiStub grpcStub,
+      List<String> serverUrls,
+      ChannelProvider channelProvider,
       String sql,
       Observer<HRecord> resultObserver) {
     this.client = client;
-    this.grpcStub = grpcStub;
+    this.serverUrls = serverUrls;
+    this.channelProvider = channelProvider;
     this.sql = sql;
     this.resultObserver = resultObserver;
+
+    queryStub = createQueryStub();
+  }
+
+  private HStreamApiGrpc.HStreamApiStub createQueryStub() {
+    return HStreamApiGrpc.newStub(channelProvider.get(serverUrls.get(0)));
   }
 
   @Override
@@ -50,7 +62,7 @@ public class QueryerImpl extends AbstractService implements Queryer {
                     .build())
             .setQueryStatements(sql)
             .build();
-    grpcStub.createQueryStream(
+    queryStub.createQueryStream(
         createQueryStreamRequest,
         new StreamObserver<CreateQueryStreamResponse>() {
           @Override

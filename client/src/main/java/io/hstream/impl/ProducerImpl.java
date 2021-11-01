@@ -1,11 +1,10 @@
 package io.hstream.impl;
 
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
-import io.hstream.internal.AppendRequest;
-import io.hstream.internal.AppendResponse;
-import io.hstream.internal.HStreamApiGrpc;
-import io.hstream.internal.HStreamRecord;
+import io.hstream.RecordId;
+import io.hstream.internal.*;
 import io.hstream.util.GrpcUtils;
 import io.hstream.util.RecordUtils;
 import java.util.ArrayList;
@@ -22,7 +21,8 @@ public class ProducerImpl implements Producer {
 
   private static final Logger logger = LoggerFactory.getLogger(ProducerImpl.class);
 
-  private final HStreamApiGrpc.HStreamApiStub grpcStub;
+  private final List<String> serverUrls;
+  private final ChannelProvider channelProvider;
   private final String stream;
   private final boolean enableBatch;
   private final int recordCountLimit;
@@ -32,12 +32,17 @@ public class ProducerImpl implements Producer {
   private final List<HStreamRecord> recordBuffer;
   private final List<CompletableFuture<RecordId>> futures;
 
+  private HStreamApiGrpc.HStreamApiStub appendStub;
+
   public ProducerImpl(
-      HStreamApiGrpc.HStreamApiStub stub,
+      List<String> serverUrls,
+      ChannelProvider channelProvider,
       String stream,
       boolean enableBatch,
       int recordCountLimit) {
-    this.grpcStub = stub;
+
+    this.serverUrls = serverUrls;
+    this.channelProvider = channelProvider;
     this.stream = stream;
     this.enableBatch = enableBatch;
     this.recordCountLimit = recordCountLimit;
@@ -53,6 +58,19 @@ public class ProducerImpl implements Producer {
       this.recordBuffer = null;
       this.futures = null;
     }
+
+    appendStub = createAppendStub();
+  }
+
+  private synchronized HStreamApiGrpc.HStreamApiStub createAppendStub() {
+    ServerNode serverNode =
+        HStreamApiGrpc.newBlockingStub(
+                ManagedChannelBuilder.forTarget(serverUrls.get(0)).usePlaintext().build())
+            .lookupStream(LookupStreamRequest.newBuilder().setStreamName(stream).build())
+            .getServerNode();
+
+    String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
+    return HStreamApiGrpc.newStub(channelProvider.get(serverUrl));
   }
 
   @Override
@@ -69,7 +87,18 @@ public class ProducerImpl implements Producer {
 
   private CompletableFuture<RecordId> writeInternal(HStreamRecord hStreamRecord) {
     if (!enableBatch) {
-      return writeHStreamRecords(List.of(hStreamRecord)).thenApply(recordIds -> recordIds.get(0));
+      CompletableFuture<RecordId> future = new CompletableFuture<>();
+      writeHStreamRecords(List.of(hStreamRecord))
+          .handle(
+              (recordIds, exception) -> {
+                if (exception == null) {
+                  future.complete(recordIds.get(0));
+                } else {
+                  future.completeExceptionally(exception);
+                }
+                return null;
+              });
+      return future;
     } else {
       return addToBuffer(hStreamRecord);
     }
@@ -140,7 +169,7 @@ public class ProducerImpl implements Producer {
           public void onCompleted() {}
         };
 
-    grpcStub.append(appendRequest, streamObserver);
+    appendStub.append(appendRequest, streamObserver);
 
     return completableFuture;
   }

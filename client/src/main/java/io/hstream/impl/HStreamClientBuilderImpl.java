@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.*;
 
 import io.hstream.HStreamClient;
 import io.hstream.HStreamClientBuilder;
+import java.util.List;
 
 public class HStreamClientBuilderImpl implements HStreamClientBuilder {
 
@@ -18,6 +19,11 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
   @Override
   public HStreamClient build() {
     checkNotNull(serviceUrl);
-    return new HStreamClientImpl(serviceUrl);
+    List<String> serverUrls = parseServerUrls(serviceUrl);
+    return new HStreamClientImpl(serverUrls);
+  }
+
+  private List<String> parseServerUrls(String url) {
+    return List.of(url.strip().split(","));
   }
 }

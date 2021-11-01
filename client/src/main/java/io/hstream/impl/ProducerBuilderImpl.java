@@ -4,11 +4,9 @@ import static com.google.common.base.Preconditions.*;
 
 import io.hstream.Producer;
 import io.hstream.ProducerBuilder;
-import io.hstream.internal.HStreamApiGrpc;
+import java.util.List;
 
 public class ProducerBuilderImpl implements ProducerBuilder {
-
-  private HStreamApiGrpc.HStreamApiStub grpcStub;
 
   private String streamName;
 
@@ -16,8 +14,12 @@ public class ProducerBuilderImpl implements ProducerBuilder {
 
   private int recordCountLimit = 1;
 
-  public ProducerBuilderImpl(HStreamApiGrpc.HStreamApiStub stub) {
-    this.grpcStub = stub;
+  private final List<String> serverUrls;
+  private final ChannelProvider channelProvider;
+
+  public ProducerBuilderImpl(List<String> serverUrls, ChannelProvider channelProvider) {
+    this.serverUrls = serverUrls;
+    this.channelProvider = channelProvider;
   }
 
   @Override
@@ -40,8 +42,7 @@ public class ProducerBuilderImpl implements ProducerBuilder {
 
   @Override
   public Producer build() {
-    checkNotNull(grpcStub);
     checkNotNull(streamName);
-    return new ProducerImpl(grpcStub, streamName, enableBatch, recordCountLimit);
+    return new ProducerImpl(serverUrls, channelProvider, streamName, enableBatch, recordCountLimit);
   }
 }

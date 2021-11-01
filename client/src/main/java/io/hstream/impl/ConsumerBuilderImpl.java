@@ -6,22 +6,21 @@ import io.hstream.Consumer;
 import io.hstream.ConsumerBuilder;
 import io.hstream.HRecordReceiver;
 import io.hstream.RawRecordReceiver;
-import io.hstream.internal.HStreamApiGrpc;
+import java.util.List;
 
 public class ConsumerBuilderImpl implements ConsumerBuilder {
 
-  private HStreamApiGrpc.HStreamApiStub grpcStub;
-  private HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub;
+  private final List<String> serverUrls;
+  private final ChannelProvider channelProvider;
+
   private String name;
   private String subscription;
   private RawRecordReceiver rawRecordReceiver;
   private HRecordReceiver hRecordReceiver;
 
-  public ConsumerBuilderImpl(
-      HStreamApiGrpc.HStreamApiStub grpcStub,
-      HStreamApiGrpc.HStreamApiBlockingStub grpcBlockingStub) {
-    this.grpcStub = grpcStub;
-    this.grpcBlockingStub = grpcBlockingStub;
+  public ConsumerBuilderImpl(List<String> serverUrls, ChannelProvider channelProvider) {
+    this.serverUrls = serverUrls;
+    this.channelProvider = channelProvider;
   }
 
   @Override
@@ -50,11 +49,9 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
 
   @Override
   public Consumer build() {
-    checkNotNull(grpcStub);
-    checkNotNull(grpcBlockingStub);
     checkNotNull(subscription);
     checkState(rawRecordReceiver != null || hRecordReceiver != null);
     return new ConsumerImpl(
-        grpcStub, grpcBlockingStub, name, subscription, rawRecordReceiver, hRecordReceiver);
+        serverUrls, channelProvider, name, subscription, rawRecordReceiver, hRecordReceiver);
   }
 }
