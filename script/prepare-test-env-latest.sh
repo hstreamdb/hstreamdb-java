@@ -30,6 +30,6 @@ docker run \
   --name hserver-test \
   --network host \
   hstreamdb/hstream:${DEFAULT_HSTREAM_DOCKER_TAG} \
-  hstream-server --port 6570 --store-config /data/store/logdevice.conf --log-level debug
+  hstream-server --port 6570 --store-config /data/store/logdevice.conf --server-id 0 --log-level debug
 
 
