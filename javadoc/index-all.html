@@ -97,7 +97,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/Responder.html#ack()">ack()</a></span> - Method in interface io.hstream.<a href="io/hstream/Responder.html" title="interface in io.hstream">Responder</a></dt>
 <dd>
-<div class="block">used to respond server when receive messages.</div>
+<div class="block">Acknowledges that the message has been successfully processed.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.Builder.html#ackTimeoutSeconds(int)">ackTimeoutSeconds(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></dt>
 <dd>&nbsp;</dd>
@@ -149,21 +149,23 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><a href="io/hstream/Consumer.html" title="interface in io.hstream"><span class="typeNameLink">Consumer</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">The consumer interface of hstream consumer</div>
+<div class="block">The interface for the HStream consumer.</div>
 </dd>
 <dt><a href="io/hstream/ConsumerBuilder.html" title="interface in io.hstream"><span class="typeNameLink">ConsumerBuilder</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A builder for <a href="io/hstream/Consumer.html" title="interface in io.hstream"><code>Consumer</code></a>s.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamDBClientException.ConsumerException.html#%3Cinit%3E(java.lang.String)">ConsumerException(String)</a></span> - Constructor for exception io.hstream.<a href="io/hstream/HStreamDBClientException.ConsumerException.html" title="class in io.hstream">HStreamDBClientException.ConsumerException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamDBClientException.ConsumerException.html#%3Cinit%3E(java.lang.String,java.lang.Throwable)">ConsumerException(String, Throwable)</a></span> - Constructor for exception io.hstream.<a href="io/hstream/HStreamDBClientException.ConsumerException.html" title="class in io.hstream">HStreamDBClientException.ConsumerException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#createStream(java.lang.String)">createStream(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
-<div class="block">create a new stream with 3 replicas.</div>
+<div class="block">Create a new stream with 3 replicas.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#createStream(java.lang.String,short)">createStream(String, short)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
-<div class="block">create a new stream.</div>
+<div class="block">Create a new stream.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#createSubscription(io.hstream.Subscription)">createSubscription(Subscription)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
@@ -177,11 +179,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#deleteStream(java.lang.String)">deleteStream(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
-<div class="block">Delete specified stream with streamName.</div>
+<div class="block">Delete the specified stream with streamName.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#deleteSubscription(java.lang.String)">deleteSubscription(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
-<div class="block">Delete specified subscription with subscriptionId.</div>
+<div class="block">Delete the specified subscription with subscriptionId.</div>
 </dd>
 </dl>
 <a id="I:E">
@@ -208,13 +210,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.html#getAckTimeoutSeconds()">getAckTimeoutSeconds()</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.html" title="class in io.hstream">Subscription</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#getBatchId()">getBatchId()</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
-<dd>
-<div class="block">get the unique identification number of the data record</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#getBatchIndex()">getBatchIndex()</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
-<dd>
-<div class="block">get the index of the data record in its own batch</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArray.html#getBoolean(int)">getBoolean(int)</a></span> - Method in class io.hstream.<a href="io/hstream/HArray.html" title="class in io.hstream">HArray</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#getBoolean(java.lang.String)">getBoolean(String)</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
@@ -254,15 +252,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/ReceivedRawRecord.html#getRecordId()">getRecordId()</a></span> - Method in class io.hstream.<a href="io/hstream/ReceivedRawRecord.html" title="class in io.hstream">ReceivedRawRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#getReplicationFactor()">getReplicationFactor()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
-<dd>
-<div class="block">get the replication factor of the stream</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/SubscriptionOffset.html#getSpecialOffset()">getSpecialOffset()</a></span> - Method in class io.hstream.<a href="io/hstream/SubscriptionOffset.html" title="class in io.hstream">SubscriptionOffset</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#getStreamName()">getStreamName()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
-<dd>
-<div class="block">get the name of the stream</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.html#getStreamName()">getStreamName()</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.html" title="class in io.hstream">Subscription</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArray.html#getString(int)">getString(int)</a></span> - Method in class io.hstream.<a href="io/hstream/HArray.html" title="class in io.hstream">HArray</a></dt>
@@ -281,13 +275,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><a href="io/hstream/HArray.html" title="class in io.hstream"><span class="typeNameLink">HArray</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">a data structure like array</div>
+<div class="block">A data structure like array</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArray.html#%3Cinit%3E(com.google.protobuf.ListValue)">HArray(ListValue)</a></span> - Constructor for class io.hstream.<a href="io/hstream/HArray.html" title="class in io.hstream">HArray</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/HArrayBuilder.html" title="class in io.hstream"><span class="typeNameLink">HArrayBuilder</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">the <a href="io/hstream/HArray.html" title="class in io.hstream"><code>HArray</code></a> constructor</div>
+<div class="block">A builder for <a href="io/hstream/HArray.html" title="class in io.hstream"><code>HArray</code></a>s.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArrayBuilder.html#%3Cinit%3E()">HArrayBuilder()</a></span> - Constructor for class io.hstream.<a href="io/hstream/HArrayBuilder.html" title="class in io.hstream">HArrayBuilder</a></dt>
 <dd>&nbsp;</dd>
@@ -299,13 +293,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/HRecord.html" title="class in io.hstream"><span class="typeNameLink">HRecord</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">the data structure defined by hstream</div>
+<div class="block">A data structure like json object.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#%3Cinit%3E(com.google.protobuf.Struct)">HRecord(Struct)</a></span> - Constructor for class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/HRecordBuilder.html" title="class in io.hstream"><span class="typeNameLink">HRecordBuilder</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">used to construct a <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a></div>
+<div class="block">A builder for <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a>s.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecordBuilder.html#%3Cinit%3E()">HRecordBuilder()</a></span> - Constructor for class io.hstream.<a href="io/hstream/HRecordBuilder.html" title="class in io.hstream">HRecordBuilder</a></dt>
 <dd>&nbsp;</dd>
@@ -313,14 +307,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/HRecordReceiver.html" title="interface in io.hstream"><span class="typeNameLink">HRecordReceiver</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">the interface that user use to process <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a> received from server</div>
+<div class="block">This interface can be implemented by users of <a href="io/hstream/Consumer.html" title="interface in io.hstream"><code>Consumer</code></a> to receive <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a>s.</div>
 </dd>
 <dt><a href="io/hstream/HStreamClient.html" title="interface in io.hstream"><span class="typeNameLink">HStreamClient</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">HStreamDB Client.</div>
+<div class="block">A client for the HStreamDB.</div>
 </dd>
 <dt><a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream"><span class="typeNameLink">HStreamClientBuilder</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A builder for <a href="io/hstream/HStreamClient.html" title="interface in io.hstream"><code>HStreamClient</code></a>s.</div>
+</dd>
 <dt><a href="io/hstream/HStreamDBClientException.html" title="class in io.hstream"><span class="typeNameLink">HStreamDBClientException</span></a> - Exception in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
 <div class="block">Client exception definition</div>
@@ -363,11 +359,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#listStreams()">listStreams()</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
-<div class="block">Return all created <a href="io/hstream/Stream.html" title="class in io.hstream"><code>Stream</code></a>.</div>
+<div class="block">List all streams.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#listSubscriptions()">listSubscriptions()</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
-<div class="block">Return all created <a href="io/hstream/Subscription.html" title="class in io.hstream"><code>Subscription</code></a>.</div>
+<div class="block">List all subscriptions.</div>
 </dd>
 </dl>
 <a id="I:N">
@@ -397,7 +393,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><a href="io/hstream/Observer.html" title="interface in io.hstream"><span class="typeNameLink">Observer</span></a>&lt;<a href="io/hstream/Observer.html" title="type parameter in Observer">V</a>&gt; - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">Receives notifications from an observable stream of results</div>
+<div class="block">An object used to receive results of a <a href="io/hstream/Queryer.html" title="interface in io.hstream"><code>Queryer</code></a>.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.Builder.html#offset(io.hstream.SubscriptionOffset)">offset(SubscriptionOffset)</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></dt>
 <dd>&nbsp;</dd>
@@ -421,18 +417,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecordReceiver.html#processHRecord(io.hstream.ReceivedHRecord,io.hstream.Responder)">processHRecord(ReceivedHRecord, Responder)</a></span> - Method in interface io.hstream.<a href="io/hstream/HRecordReceiver.html" title="interface in io.hstream">HRecordReceiver</a></dt>
 <dd>
-<div class="block">used to consume <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format message.</div>
+<div class="block">Used to receive <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format message.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RawRecordReceiver.html#processRawRecord(io.hstream.ReceivedRawRecord,io.hstream.Responder)">processRawRecord(ReceivedRawRecord, Responder)</a></span> - Method in interface io.hstream.<a href="io/hstream/RawRecordReceiver.html" title="interface in io.hstream">RawRecordReceiver</a></dt>
 <dd>
-<div class="block">used to consume raw format record.</div>
+<div class="block">Used to consume raw format record.</div>
 </dd>
 <dt><a href="io/hstream/Producer.html" title="interface in io.hstream"><span class="typeNameLink">Producer</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">the interface of hstream producer</div>
+<div class="block">The interface for the HStream producer.</div>
 </dd>
 <dt><a href="io/hstream/ProducerBuilder.html" title="interface in io.hstream"><span class="typeNameLink">ProducerBuilder</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A builder for <a href="io/hstream/Producer.html" title="interface in io.hstream"><code>Producer</code></a>s.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecordBuilder.html#put(java.lang.String,boolean)">put(String, boolean)</a></span> - Method in class io.hstream.<a href="io/hstream/HRecordBuilder.html" title="class in io.hstream">HRecordBuilder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecordBuilder.html#put(java.lang.String,double)">put(String, double)</a></span> - Method in class io.hstream.<a href="io/hstream/HRecordBuilder.html" title="class in io.hstream">HRecordBuilder</a></dt>
@@ -451,10 +449,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><a href="io/hstream/Queryer.html" title="interface in io.hstream"><span class="typeNameLink">Queryer</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">The interface that abstracts behavior of HStream's queryer</div>
+<div class="block">An object used to execute a streaming sql.</div>
 </dd>
 <dt><a href="io/hstream/QueryerBuilder.html" title="interface in io.hstream"><span class="typeNameLink">QueryerBuilder</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A builder for <a href="io/hstream/Queryer.html" title="interface in io.hstream"><code>Queryer</code></a>s.</div>
+</dd>
 </dl>
 <a id="I:R">
 <!--   -->
@@ -465,17 +465,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/RawRecordReceiver.html" title="interface in io.hstream"><span class="typeNameLink">RawRecordReceiver</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">the interface that user use to process raw record received from server</div>
+<div class="block">This interface can be implemented by users of <a href="io/hstream/Consumer.html" title="interface in io.hstream"><code>Consumer</code></a> to receive raw records.</div>
 </dd>
 <dt><a href="io/hstream/ReceivedHRecord.html" title="class in io.hstream"><span class="typeNameLink">ReceivedHRecord</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">refer to a <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format record</div>
+<div class="block">An object that represents a received <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format record.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ReceivedHRecord.html#%3Cinit%3E(io.hstream.RecordId,io.hstream.HRecord)">ReceivedHRecord(RecordId, HRecord)</a></span> - Constructor for class io.hstream.<a href="io/hstream/ReceivedHRecord.html" title="class in io.hstream">ReceivedHRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/ReceivedRawRecord.html" title="class in io.hstream"><span class="typeNameLink">ReceivedRawRecord</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">refer to a raw format record</div>
+<div class="block">An object that represents a received raw record.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ReceivedRawRecord.html#%3Cinit%3E(io.hstream.RecordId,byte%5B%5D)">ReceivedRawRecord(RecordId, byte[])</a></span> - Constructor for class io.hstream.<a href="io/hstream/ReceivedRawRecord.html" title="class in io.hstream">ReceivedRawRecord</a></dt>
 <dd>&nbsp;</dd>
@@ -483,15 +483,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/RecordId.html" title="class in io.hstream"><span class="typeNameLink">RecordId</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">A class for storing identification information of data records</div>
+<div class="block">An object represents the id of received record.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#%3Cinit%3E(long,int)">RecordId(long, int)</a></span> - Constructor for class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
-<dd>
-<div class="block">A constructor for RecordId</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><a href="io/hstream/Responder.html" title="interface in io.hstream"><span class="typeNameLink">Responder</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">after receiving messages from the server, the interface defines methods related to the response</div>
+<div class="block">An object used to send acks to the HStream servers.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/QueryerBuilder.html#resultObserver(io.hstream.Observer)">resultObserver(Observer&lt;HRecord&gt;)</a></span> - Method in interface io.hstream.<a href="io/hstream/QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a></dt>
 <dd>
@@ -506,21 +504,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClientBuilder.html#serviceUrl(java.lang.String)">serviceUrl(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#setBatchId(long)">setBatchId(long)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
-<dd>
-<div class="block">update the identification number</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#setBatchIndex(int)">setBatchIndex(int)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
-<dd>
-<div class="block">update the data record index</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#setReplicationFactor(int)">setReplicationFactor(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
-<dd>
-<div class="block">update the replication factor of the stream</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#setStreamName(java.lang.String)">setStreamName(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
-<dd>
-<div class="block">update the name of the stream</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArray.html#size()">size()</a></span> - Method in class io.hstream.<a href="io/hstream/HArray.html" title="class in io.hstream">HArray</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/QueryerBuilder.html#sql(java.lang.String)">sql(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a></dt>
@@ -532,13 +522,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.Builder.html#stream(java.lang.String)">stream(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/Stream.html" title="class in io.hstream"><span class="typeNameLink">Stream</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
-<dd>
-<div class="block">A class for storing information about streams</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#%3Cinit%3E(java.lang.String,int)">Stream(String, int)</a></span> - Constructor for class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
-<dd>
-<div class="block">a constructor for a real-time data stream</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamDBClientException.SubscribeException.html#%3Cinit%3E(java.lang.String)">SubscribeException(String)</a></span> - Constructor for exception io.hstream.<a href="io/hstream/HStreamDBClientException.SubscribeException.html" title="class in io.hstream">HStreamDBClientException.SubscribeException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamDBClientException.SubscribeException.html#%3Cinit%3E(java.lang.String,java.lang.Throwable)">SubscribeException(String, Throwable)</a></span> - Constructor for exception io.hstream.<a href="io/hstream/HStreamDBClientException.SubscribeException.html" title="class in io.hstream">HStreamDBClientException.SubscribeException</a></dt>
@@ -548,9 +534,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.Builder.html#subscription(java.lang.String)">subscription(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/Subscription.html" title="class in io.hstream"><span class="typeNameLink">Subscription</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
-<dd>
-<div class="block">A class for storing information about subscriptions</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><a href="io/hstream/Subscription.Builder.html" title="class in io.hstream"><span class="typeNameLink">Subscription.Builder</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/SubscriptionOffset.html" title="class in io.hstream"><span class="typeNameLink">SubscriptionOffset</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>

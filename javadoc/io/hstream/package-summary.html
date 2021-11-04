@@ -106,65 +106,73 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="Consumer.html" title="interface in io.hstream">Consumer</a></th>
 <td class="colLast">
-<div class="block">The consumer interface of hstream consumer</div>
+<div class="block">The interface for the HStream consumer.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A builder for <a href="Consumer.html" title="interface in io.hstream"><code>Consumer</code></a>s.</div>
+</td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="HRecordReceiver.html" title="interface in io.hstream">HRecordReceiver</a></th>
 <td class="colLast">
-<div class="block">the interface that user use to process <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a> received from server</div>
+<div class="block">This interface can be implemented by users of <a href="Consumer.html" title="interface in io.hstream"><code>Consumer</code></a> to receive <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a>s.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="HStreamClient.html" title="interface in io.hstream">HStreamClient</a></th>
 <td class="colLast">
-<div class="block">HStreamDB Client.</div>
+<div class="block">A client for the HStreamDB.</div>
 </td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A builder for <a href="HStreamClient.html" title="interface in io.hstream"><code>HStreamClient</code></a>s.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="Observer.html" title="interface in io.hstream">Observer</a>&lt;V&gt;</th>
 <td class="colLast">
-<div class="block">Receives notifications from an observable stream of results</div>
+<div class="block">An object used to receive results of a <a href="Queryer.html" title="interface in io.hstream"><code>Queryer</code></a>.</div>
 </td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="Producer.html" title="interface in io.hstream">Producer</a></th>
 <td class="colLast">
-<div class="block">the interface of hstream producer</div>
+<div class="block">The interface for the HStream producer.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="ProducerBuilder.html" title="interface in io.hstream">ProducerBuilder</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A builder for <a href="Producer.html" title="interface in io.hstream"><code>Producer</code></a>s.</div>
+</td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="Queryer.html" title="interface in io.hstream">Queryer</a></th>
 <td class="colLast">
-<div class="block">The interface that abstracts behavior of HStream's queryer</div>
+<div class="block">An object used to execute a streaming sql.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">A builder for <a href="Queryer.html" title="interface in io.hstream"><code>Queryer</code></a>s.</div>
+</td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="RawRecordReceiver.html" title="interface in io.hstream">RawRecordReceiver</a></th>
 <td class="colLast">
-<div class="block">the interface that user use to process raw record received from server</div>
+<div class="block">This interface can be implemented by users of <a href="Consumer.html" title="interface in io.hstream"><code>Consumer</code></a> to receive raw records.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="Responder.html" title="interface in io.hstream">Responder</a></th>
 <td class="colLast">
-<div class="block">after receiving messages from the server, the interface defines methods related to the response</div>
+<div class="block">An object used to send acks to the HStream servers.</div>
 </td>
 </tr>
 </tbody>
@@ -181,56 +189,52 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="HArray.html" title="class in io.hstream">HArray</a></th>
 <td class="colLast">
-<div class="block">a data structure like array</div>
+<div class="block">A data structure like array</div>
 </td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="HArrayBuilder.html" title="class in io.hstream">HArrayBuilder</a></th>
 <td class="colLast">
-<div class="block">the <a href="HArray.html" title="class in io.hstream"><code>HArray</code></a> constructor</div>
+<div class="block">A builder for <a href="HArray.html" title="class in io.hstream"><code>HArray</code></a>s.</div>
 </td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="HRecord.html" title="class in io.hstream">HRecord</a></th>
 <td class="colLast">
-<div class="block">the data structure defined by hstream</div>
+<div class="block">A data structure like json object.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="HRecordBuilder.html" title="class in io.hstream">HRecordBuilder</a></th>
 <td class="colLast">
-<div class="block">used to construct a <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a></div>
+<div class="block">A builder for <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a>s.</div>
 </td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="ReceivedHRecord.html" title="class in io.hstream">ReceivedHRecord</a></th>
 <td class="colLast">
-<div class="block">refer to a <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format record</div>
+<div class="block">An object that represents a received <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format record.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="ReceivedRawRecord.html" title="class in io.hstream">ReceivedRawRecord</a></th>
 <td class="colLast">
-<div class="block">refer to a raw format record</div>
+<div class="block">An object that represents a received raw record.</div>
 </td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="RecordId.html" title="class in io.hstream">RecordId</a></th>
 <td class="colLast">
-<div class="block">A class for storing identification information of data records</div>
+<div class="block">An object represents the id of received record.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="Stream.html" title="class in io.hstream">Stream</a></th>
-<td class="colLast">
-<div class="block">A class for storing information about streams</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="Subscription.html" title="class in io.hstream">Subscription</a></th>
-<td class="colLast">
-<div class="block">A class for storing information about subscriptions</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></th>

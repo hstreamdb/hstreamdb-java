@@ -127,7 +127,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public interface <span class="typeNameLabel">HStreamClient</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang" class="externalLink">AutoCloseable</a></pre>
-<div class="block">HStreamDB Client.</div>
+<div class="block">A client for the HStreamDB.</div>
 </li>
 </ul>
 </div>
@@ -157,7 +157,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createStream(java.lang.String)">createStream</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;stream)</code></th>
 <td class="colLast">
-<div class="block">create a new stream with 3 replicas.</div>
+<div class="block">Create a new stream with 3 replicas.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -165,7 +165,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createStream(java.lang.String,short)">createStream</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;stream,
             short&nbsp;replicationFactor)</code></th>
 <td class="colLast">
-<div class="block">create a new stream.</div>
+<div class="block">Create a new stream.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -179,28 +179,28 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#deleteStream(java.lang.String)">deleteStream</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;stream)</code></th>
 <td class="colLast">
-<div class="block">Delete specified stream with streamName.</div>
+<div class="block">Delete the specified stream with streamName.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#deleteSubscription(java.lang.String)">deleteSubscription</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;subscriptionId)</code></th>
 <td class="colLast">
-<div class="block">Delete specified subscription with subscriptionId.</div>
+<div class="block">Delete the specified subscription with subscriptionId.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Stream.html" title="class in io.hstream">Stream</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listStreams()">listStreams</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Return all created <a href="Stream.html" title="class in io.hstream"><code>Stream</code></a>.</div>
+<div class="block">List all streams.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Subscription.html" title="class in io.hstream">Subscription</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listSubscriptions()">listSubscriptions</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Return all created <a href="Subscription.html" title="class in io.hstream"><code>Subscription</code></a>.</div>
+<div class="block">List all subscriptions.</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
@@ -251,7 +251,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">static&nbsp;<a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;builder()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd><a href="HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a>.</dd>
+<dd>a <a href="HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -264,7 +264,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature"><a href="ProducerBuilder.html" title="interface in io.hstream">ProducerBuilder</a>&nbsp;newProducer()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the <a href="ProducerBuilder.html" title="interface in io.hstream"><code>ProducerBuilder</code></a>.</dd>
+<dd>a <a href="ProducerBuilder.html" title="interface in io.hstream"><code>ProducerBuilder</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -277,7 +277,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature"><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a>&nbsp;newConsumer()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the <a href="ConsumerBuilder.html" title="interface in io.hstream"><code>ConsumerBuilder</code></a>.</dd>
+<dd>a <a href="ConsumerBuilder.html" title="interface in io.hstream"><code>ConsumerBuilder</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -290,7 +290,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature"><a href="QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a>&nbsp;newQueryer()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the <a href="QueryerBuilder.html" title="interface in io.hstream"><code>QueryerBuilder</code></a>.</dd>
+<dd>a <a href="QueryerBuilder.html" title="interface in io.hstream"><code>QueryerBuilder</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -301,10 +301,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>createStream</h4>
 <pre class="methodSignature">void&nbsp;createStream&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;stream)</pre>
-<div class="block">create a new stream with 3 replicas.</div>
+<div class="block">Create a new stream with 3 replicas.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>stream</code> - the name of stream.</dd>
+<dd><code>stream</code> - the name of stream</dd>
 </dl>
 </li>
 </ul>
@@ -316,10 +316,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>createStream</h4>
 <pre class="methodSignature">void&nbsp;createStream&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;stream,
                   short&nbsp;replicationFactor)</pre>
-<div class="block">create a new stream.</div>
+<div class="block">Create a new stream.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>stream</code> - the name of stream.</dd>
+<dd><code>stream</code> - the name of stream</dd>
 </dl>
 </li>
 </ul>
@@ -330,10 +330,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>deleteStream</h4>
 <pre class="methodSignature">void&nbsp;deleteStream&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;stream)</pre>
-<div class="block">Delete specified stream with streamName.</div>
+<div class="block">Delete the specified stream with streamName.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>stream</code> - the name of stream.</dd>
+<dd><code>stream</code> - the name of stream</dd>
 </dl>
 </li>
 </ul>
@@ -344,10 +344,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>listStreams</h4>
 <pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Stream.html" title="class in io.hstream">Stream</a>&gt;&nbsp;listStreams()</pre>
-<div class="block">Return all created <a href="Stream.html" title="class in io.hstream"><code>Stream</code></a>.</div>
+<div class="block">List all streams.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the list of created streams.</dd>
+<dd>a list of <a href="Stream.html" title="class in io.hstream"><code>Stream</code></a>s</dd>
 </dl>
 </li>
 </ul>
@@ -361,7 +361,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Create a new Subscription.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>subscription</code> - <a href="Subscription.html" title="class in io.hstream"><code>Subscription</code></a>.</dd>
+<dd><code>subscription</code> - <a href="Subscription.html" title="class in io.hstream"><code>Subscription</code></a></dd>
 </dl>
 </li>
 </ul>
@@ -372,10 +372,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>listSubscriptions</h4>
 <pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Subscription.html" title="class in io.hstream">Subscription</a>&gt;&nbsp;listSubscriptions()</pre>
-<div class="block">Return all created <a href="Subscription.html" title="class in io.hstream"><code>Subscription</code></a>.</div>
+<div class="block">List all subscriptions.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the list of created Subscriptions.</dd>
+<dd>a list of <a href="Subscription.html" title="class in io.hstream"><code>Subscription</code></a>s.</dd>
 </dl>
 </li>
 </ul>
@@ -386,10 +386,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>deleteSubscription</h4>
 <pre class="methodSignature">void&nbsp;deleteSubscription&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;subscriptionId)</pre>
-<div class="block">Delete specified subscription with subscriptionId.</div>
+<div class="block">Delete the specified subscription with subscriptionId.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>subscriptionId</code> - the id of the subscription to be deleted.</dd>
+<dd><code>subscriptionId</code> - the id of the subscription to be deleted</dd>
 </dl>
 </li>
 </ul>

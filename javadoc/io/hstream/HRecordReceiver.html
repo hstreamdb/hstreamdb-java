@@ -122,7 +122,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <hr>
 <pre>public interface <span class="typeNameLabel">HRecordReceiver</span></pre>
-<div class="block">the interface that user use to process <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a> received from server</div>
+<div class="block">This interface can be implemented by users of <a href="Consumer.html" title="interface in io.hstream"><code>Consumer</code></a> to receive <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a>s.</div>
 </li>
 </ul>
 </div>
@@ -148,7 +148,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#processHRecord(io.hstream.ReceivedHRecord,io.hstream.Responder)">processHRecord</a></span>&#8203;(<a href="ReceivedHRecord.html" title="class in io.hstream">ReceivedHRecord</a>&nbsp;receivedHRecord,
               <a href="Responder.html" title="interface in io.hstream">Responder</a>&nbsp;responder)</code></th>
 <td class="colLast">
-<div class="block">used to consume <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format message.</div>
+<div class="block">Used to receive <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format message.</div>
 </td>
 </tr>
 </table>
@@ -176,11 +176,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h4>processHRecord</h4>
 <pre class="methodSignature">void&nbsp;processHRecord&#8203;(<a href="ReceivedHRecord.html" title="class in io.hstream">ReceivedHRecord</a>&nbsp;receivedHRecord,
                     <a href="Responder.html" title="interface in io.hstream">Responder</a>&nbsp;responder)</pre>
-<div class="block">used to consume <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format message.</div>
+<div class="block">Used to receive <a href="HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format message.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>receivedHRecord</code> - <a href="ReceivedHRecord.html" title="class in io.hstream"><code>ReceivedHRecord</code></a> received from producer</dd>
-<dd><code>responder</code> - <a href="Responder.html" title="interface in io.hstream"><code>Responder</code></a> used to ack producer when received message.</dd>
+<dd><code>responder</code> - <a href="Responder.html" title="interface in io.hstream"><code>Responder</code></a> used to ack producer when received message</dd>
 </dl>
 </li>
 </ul>
