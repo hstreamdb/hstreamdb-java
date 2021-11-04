@@ -3,7 +3,7 @@ package io.hstream;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Struct;
 
-/** the data structure defined by hstream */
+/** A data structure like json object. */
 public class HRecord {
 
   private Struct delegate;

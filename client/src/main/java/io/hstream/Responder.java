@@ -1,10 +1,8 @@
 package io.hstream;
 
-/**
- * after receiving messages from the server, the interface defines methods related to the response
- */
+/** An object used to send acks to the HStream servers. */
 public interface Responder {
 
-  /** used to respond server when receive messages. */
+  /** Acknowledges that the message has been successfully processed. */
   void ack();
 }

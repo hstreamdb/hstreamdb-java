@@ -1,5 +1,6 @@
 package io.hstream;
 
+/** A builder for {@link Consumer}s. */
 public interface ConsumerBuilder {
 
   ConsumerBuilder name(String name);

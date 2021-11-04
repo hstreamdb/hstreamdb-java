@@ -2,5 +2,5 @@ package io.hstream;
 
 import com.google.common.util.concurrent.Service;
 
-/** The interface that abstracts behavior of HStream's queryer */
+/** An object used to execute a streaming sql. */
 public interface Queryer extends Service {}

@@ -1,5 +1,6 @@
 package io.hstream;
 
+/** A builder for {@link Queryer}s. */
 public interface QueryerBuilder {
 
   /**

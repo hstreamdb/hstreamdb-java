@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.*;
 
 import java.util.Objects;
 
-/** A class for storing information about subscriptions */
 public class Subscription {
 
   private String subscriptionId;

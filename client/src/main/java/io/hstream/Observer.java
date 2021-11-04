@@ -1,6 +1,6 @@
 package io.hstream;
 
-/** Receives notifications from an observable stream of results */
+/** An object used to receive results of a {@link Queryer}. */
 public interface Observer<V> {
 
   /**

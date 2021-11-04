@@ -3,7 +3,7 @@ package io.hstream;
 import com.google.protobuf.Struct;
 import com.google.protobuf.util.Values;
 
-/** used to construct a {@link HRecord} */
+/** A builder for {@link io.hstream.HRecord}s. */
 public class HRecordBuilder {
 
   private Struct.Builder structBuilder;

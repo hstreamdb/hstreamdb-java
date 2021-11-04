@@ -3,69 +3,69 @@ package io.hstream;
 import io.hstream.impl.HStreamClientBuilderImpl;
 import java.util.List;
 
-/** HStreamDB Client. */
+/** A client for the HStreamDB. */
 public interface HStreamClient extends AutoCloseable {
 
-  /** @return {@link HStreamClientBuilder}. */
+  /** @return a {@link HStreamClientBuilder} */
   static HStreamClientBuilder builder() {
     return new HStreamClientBuilderImpl();
   }
 
-  /** @return the {@link ProducerBuilder}. */
+  /** @return a {@link ProducerBuilder} */
   ProducerBuilder newProducer();
 
-  /** @return the {@link ConsumerBuilder}. */
+  /** @return a {@link ConsumerBuilder} */
   ConsumerBuilder newConsumer();
 
-  /** @return the {@link QueryerBuilder}. */
+  /** @return a {@link QueryerBuilder} */
   QueryerBuilder newQueryer();
 
   /**
-   * create a new stream with 3 replicas.
+   * Create a new stream with 3 replicas.
    *
-   * @param stream the name of stream.
+   * @param stream the name of stream
    */
   void createStream(String stream);
 
   /**
-   * create a new stream.
+   * Create a new stream.
    *
-   * @param stream the name of stream.
+   * @param stream the name of stream
    */
   void createStream(String stream, short replicationFactor);
 
   /**
-   * Delete specified stream with streamName.
+   * Delete the specified stream with streamName.
    *
-   * @param stream the name of stream.
+   * @param stream the name of stream
    */
   void deleteStream(String stream);
 
   /**
-   * Return all created {@link Stream}.
+   * List all streams.
    *
-   * @return the list of created streams.
+   * @return a list of {@link Stream}s
    */
   List<Stream> listStreams();
 
   /**
    * Create a new Subscription.
    *
-   * @param subscription {@link Subscription}.
+   * @param subscription {@link Subscription}
    */
   void createSubscription(Subscription subscription);
 
   /**
-   * Return all created {@link Subscription}.
+   * List all subscriptions.
    *
-   * @return the list of created Subscriptions.
+   * @return a list of {@link Subscription}s.
    */
   List<Subscription> listSubscriptions();
 
   /**
-   * Delete specified subscription with subscriptionId.
+   * Delete the specified subscription with subscriptionId.
    *
-   * @param subscriptionId the id of the subscription to be deleted.
+   * @param subscriptionId the id of the subscription to be deleted
    */
   void deleteSubscription(String subscriptionId);
 }

@@ -1,13 +1,16 @@
 package io.hstream;
 
-/** the interface that user use to process {@link HRecord} received from server */
+/**
+ * This interface can be implemented by users of {@link io.hstream.Consumer} to receive {@link
+ * HRecord}s.
+ */
 public interface HRecordReceiver {
 
   /**
-   * used to consume {@link HRecord} format message.
+   * Used to receive {@link HRecord} format message.
    *
    * @param receivedHRecord {@link ReceivedHRecord} received from producer
-   * @param responder {@link Responder} used to ack producer when received message.
+   * @param responder {@link Responder} used to ack producer when received message
    */
   void processHRecord(ReceivedHRecord receivedHRecord, Responder responder);
 }

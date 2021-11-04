@@ -1,6 +1,6 @@
 package io.hstream;
 
-/** refer to a {@link HRecord} format record */
+/** An object that represents a received {@link HRecord} format record. */
 public class ReceivedHRecord {
 
   private RecordId recordId;
