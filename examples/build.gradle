@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.hstream:hstreamdb-java:0.5.1'
+    implementation 'io.hstream:hstreamdb-java:0.6.0'
 }
 
 application {

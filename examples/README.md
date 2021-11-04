@@ -2,14 +2,14 @@
 
 ## Prerequisites 
 
-- hstreamdb server [v0.5.3.0](https://hub.docker.com/layers/hstreamdb/hstream/v0.5.3.0/images/sha256-afe3cf3bc5c62fb5085664a124f7f91b48f47967f6397b369494a3f53f51cd1b?context=explore)
-- hstreamdb-java [v0.5.1](https://search.maven.org/artifact/io.hstream/hstreamdb-java/0.5.1/jar) 
+- hstreamdb server [v0.6.0.0](https://hub.docker.com/layers/hstreamdb/hstream/v0.6.0/images/sha256-8502a7e4d609becc1d6f998f59f38a2785f878795a6ed8c81be8b38d0aed3109?context=explore)
+- hstreamdb-java [v0.6.0](https://search.maven.org/artifact/io.hstream/hstreamdb-java/0.6.0/jar) 
 
 ## Examples
 
-- [CreateStreamExample.java](examples/src/main/java/io/hstream/example/CreateStreamExample.java) - How to create a stream
-- [CreateSubscriptionExample.java](examples/src/main/java/io/hstream/example/CreateSubscriptionExample.java) - How to create a subscription
-- [ProducerExample.java](examples/src/main/java/io/hstream/example/ProducerExample.java) - How to produce messages to a stream
-- [ConsumerExample.java](examples/src/main/java/io/hstream/example/ConsumerExample.java) - How to consume messages from a subscription
-- [StreamQueryExample.java](app/src/main/java/io/hstream/example/StreamQueryExample.java) - How to use SQL commands to query data from streams
+- [CreateStreamExample.java](src/main/java/io/hstream/example/CreateStreamExample.java) - How to create a stream
+- [CreateSubscriptionExample.java](src/main/java/io/hstream/example/CreateSubscriptionExample.java) - How to create a subscription
+- [ProducerExample.java](src/main/java/io/hstream/example/ProducerExample.java) - How to produce messages to a stream
+- [ConsumerExample.java](src/main/java/io/hstream/example/ConsumerExample.java) - How to consume messages from a subscription
+- [StreamQueryExample.java](src/main/java/io/hstream/example/StreamQueryExample.java) - How to use SQL commands to query data from streams
 
