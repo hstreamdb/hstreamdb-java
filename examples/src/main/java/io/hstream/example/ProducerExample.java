@@ -1,7 +1,6 @@
 package io.hstream.example;
 
 import io.hstream.*;
-
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
