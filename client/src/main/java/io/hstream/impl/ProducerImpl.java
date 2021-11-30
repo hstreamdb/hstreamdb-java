@@ -32,7 +32,7 @@ public class ProducerImpl implements Producer {
   private final List<HStreamRecord> recordBuffer;
   private final List<CompletableFuture<RecordId>> futures;
 
-  private HStreamApiGrpc.HStreamApiStub appendStub;
+  // private HStreamApiGrpc.HStreamApiStub appendStub;
 
   public ProducerImpl(
       List<String> serverUrls,
@@ -59,15 +59,26 @@ public class ProducerImpl implements Producer {
       this.futures = null;
     }
 
-    appendStub = createAppendStub();
+    // appendStub = createAppendStub();
   }
 
   private synchronized HStreamApiGrpc.HStreamApiStub createAppendStub() {
     ServerNode serverNode =
         HStreamApiGrpc.newBlockingStub(
-                ManagedChannelBuilder.forTarget(serverUrls.get(0)).usePlaintext().build())
+                channelProvider.get(serverUrls.get(0)))
             .lookupStream(LookupStreamRequest.newBuilder().setStreamName(stream).build())
             .getServerNode();
+
+    String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
+    return HStreamApiGrpc.newStub(channelProvider.get(serverUrl));
+  }
+
+  private synchronized HStreamApiGrpc.HStreamApiStub createAppendStub(String key) {
+    ServerNode serverNode =
+            HStreamApiGrpc.newBlockingStub(
+                    channelProvider.get(serverUrls.get(0)))
+                    .lookupStream(LookupStreamRequest.newBuilder().setStreamName(stream).setPartitionKey(key).build())
+                    .getServerNode();
 
     String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
     return HStreamApiGrpc.newStub(channelProvider.get(serverUrl));
@@ -82,6 +93,12 @@ public class ProducerImpl implements Producer {
   @Override
   public CompletableFuture<RecordId> write(HRecord hRecord) {
     HStreamRecord hStreamRecord = RecordUtils.buildHStreamRecordFromHRecord(hRecord);
+    return writeInternal(hStreamRecord);
+  }
+
+  @Override
+  public CompletableFuture<RecordId> write(Record record) {
+    HStreamRecord hStreamRecord = RecordUtils.buildHStreamRecordFromRecord(record);
     return writeInternal(hStreamRecord);
   }
 
@@ -169,7 +186,7 @@ public class ProducerImpl implements Producer {
           public void onCompleted() {}
         };
 
-    appendStub.append(appendRequest, streamObserver);
+    createAppendStub(hStreamRecords.get(0).getHeader().getKey()).append(appendRequest, streamObserver);
 
     return completableFuture;
   }

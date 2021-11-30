@@ -20,4 +20,6 @@ public interface Producer {
    * @return the {@link RecordId} wrapped in a {@link CompletableFuture}
    */
   CompletableFuture<RecordId> write(HRecord hRecord);
+
+  CompletableFuture<RecordId> write(Record record);
 }

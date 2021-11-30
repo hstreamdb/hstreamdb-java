@@ -210,11 +210,14 @@ message ServerNode {
 
 message LookupStreamRequest {
   string streamName = 1;
+  string partitionKey = 2;
 }
 
 message LookupStreamResponse {
   string streamName = 1;
-  ServerNode serverNode = 2;
+  string partitionKey = 2;
+  ServerNode serverNode = 3;
+
 }
 
 message LookupSubscriptionRequest {
