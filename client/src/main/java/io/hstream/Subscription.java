@@ -1,6 +1,7 @@
 package io.hstream;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.util.Objects;
 
@@ -8,17 +9,11 @@ public class Subscription {
 
   private String subscriptionId;
   private String streamName;
-  private SubscriptionOffset subscriptionOffset;
   private int ackTimeoutSeconds;
 
-  private Subscription(
-      String subscriptionId,
-      String streamName,
-      SubscriptionOffset subscriptionOffset,
-      int ackTimeoutSeconds) {
+  private Subscription(String subscriptionId, String streamName, int ackTimeoutSeconds) {
     this.subscriptionId = subscriptionId;
     this.streamName = streamName;
-    this.subscriptionOffset = subscriptionOffset;
     this.ackTimeoutSeconds = ackTimeoutSeconds;
   }
 
@@ -35,10 +30,6 @@ public class Subscription {
     return streamName;
   }
 
-  public SubscriptionOffset getSubscriptionOffset() {
-    return subscriptionOffset;
-  }
-
   public int getAckTimeoutSeconds() {
     return ackTimeoutSeconds;
   }
@@ -50,20 +41,18 @@ public class Subscription {
     Subscription that = (Subscription) o;
     return ackTimeoutSeconds == that.ackTimeoutSeconds
         && subscriptionId.equals(that.subscriptionId)
-        && streamName.equals(that.streamName)
-        && subscriptionOffset.equals(that.subscriptionOffset);
+        && streamName.equals(that.streamName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(subscriptionId, streamName, subscriptionOffset, ackTimeoutSeconds);
+    return Objects.hash(subscriptionId, streamName, ackTimeoutSeconds);
   }
 
   public static class Builder {
 
     private String subscriptionId;
     private String streamName;
-    private SubscriptionOffset subscriptionOffset;
     private int ackTimeoutSeconds = 600;
 
     public Builder subscription(String subscriptionId) {
@@ -76,11 +65,6 @@ public class Subscription {
       return this;
     }
 
-    public Builder offset(SubscriptionOffset subscriptionOffset) {
-      this.subscriptionOffset = subscriptionOffset;
-      return this;
-    }
-
     public Builder ackTimeoutSeconds(int ackTimeoutSeconds) {
       this.ackTimeoutSeconds = ackTimeoutSeconds;
       return this;
@@ -89,9 +73,8 @@ public class Subscription {
     public Subscription build() {
       checkNotNull(subscriptionId);
       checkNotNull(streamName);
-      checkNotNull(subscriptionOffset);
       checkState(ackTimeoutSeconds > 0 && ackTimeoutSeconds < 36000);
-      return new Subscription(subscriptionId, streamName, subscriptionOffset, ackTimeoutSeconds);
+      return new Subscription(subscriptionId, streamName, ackTimeoutSeconds);
     }
   }
 }
