@@ -1,6 +1,5 @@
 package io.hstream.impl;
 
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
 import io.hstream.RecordId;
@@ -64,8 +63,7 @@ public class ProducerImpl implements Producer {
 
   private synchronized HStreamApiGrpc.HStreamApiStub createAppendStub() {
     ServerNode serverNode =
-        HStreamApiGrpc.newBlockingStub(
-                channelProvider.get(serverUrls.get(0)))
+        HStreamApiGrpc.newBlockingStub(channelProvider.get(serverUrls.get(0)))
             .lookupStream(LookupStreamRequest.newBuilder().setStreamName(stream).build())
             .getServerNode();
 
@@ -75,10 +73,10 @@ public class ProducerImpl implements Producer {
 
   private synchronized HStreamApiGrpc.HStreamApiStub createAppendStub(String key) {
     ServerNode serverNode =
-            HStreamApiGrpc.newBlockingStub(
-                    channelProvider.get(serverUrls.get(0)))
-                    .lookupStream(LookupStreamRequest.newBuilder().setStreamName(stream).setPartitionKey(key).build())
-                    .getServerNode();
+        HStreamApiGrpc.newBlockingStub(channelProvider.get(serverUrls.get(0)))
+            .lookupStream(
+                LookupStreamRequest.newBuilder().setStreamName(stream).setPartitionKey(key).build())
+            .getServerNode();
 
     String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
     return HStreamApiGrpc.newStub(channelProvider.get(serverUrl));
@@ -186,7 +184,8 @@ public class ProducerImpl implements Producer {
           public void onCompleted() {}
         };
 
-    createAppendStub(hStreamRecords.get(0).getHeader().getKey()).append(appendRequest, streamObserver);
+    createAppendStub(hStreamRecords.get(0).getHeader().getKey())
+        .append(appendRequest, streamObserver);
 
     return completableFuture;
   }

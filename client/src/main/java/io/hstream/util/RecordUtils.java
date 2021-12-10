@@ -42,15 +42,14 @@ public class RecordUtils {
 
   public static HStreamRecord buildHStreamRecordFromRecord(Record record) {
     HStreamRecordHeader header =
-            HStreamRecordHeader
-                    .newBuilder()
-                    .setFlag(HStreamRecordHeader.Flag.RAW)
-                    .setKey(record.getKey())
-                    .build();
-    return HStreamRecord.newBuilder()
-            .setHeader(header)
-            .setPayload(ByteString.copyFrom(record.getRawRecord()))
+        HStreamRecordHeader.newBuilder()
+            .setFlag(HStreamRecordHeader.Flag.RAW)
+            .setKey(record.getKey())
             .build();
+    return HStreamRecord.newBuilder()
+        .setHeader(header)
+        .setPayload(ByteString.copyFrom(record.getRawRecord()))
+        .build();
   }
 
   public static byte[] parseRawRecordFromHStreamRecord(HStreamRecord hStreamRecord) {

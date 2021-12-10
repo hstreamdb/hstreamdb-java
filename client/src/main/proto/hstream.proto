@@ -42,6 +42,8 @@ service HStreamApi {
 
   rpc LookupStream(LookupStreamRequest) returns (LookupStreamResponse) {}
 
+  rpc WatchSubscription(WatchSubscriptionRequest) returns (WatchSubscriptionResponse) {}
+
   rpc LookupSubscription(LookupSubscriptionRequest) returns (LookupSubscriptionResponse) {}
 
 }
@@ -59,20 +61,7 @@ message AppendResponse {
 message Subscription {
   string subscriptionId = 1;
   string streamName = 2;
-  SubscriptionOffset offset = 3;
-  int32 ackTimeoutSeconds = 4;
-}
-
-message SubscriptionOffset {
-  enum SpecialOffset {
-    EARLIST = 0;
-    LATEST = 1;
-  }
-
-  oneof offset {
-    SpecialOffset specialOffset = 1;
-    RecordId recordOffset = 2;
-  }
+  int32 ackTimeoutSeconds = 3;
 }
 
 message SubscribeRequest {
@@ -188,8 +177,9 @@ message Query {
 
 message StreamingFetchRequest {
   string subscriptionId = 1;
-  string consumerName = 2;
-  repeated RecordId ack_ids = 3;
+  string partitionKey = 2;
+  string consumerName = 3;
+  repeated RecordId ackedRecordIds = 4;
 }
 
 message StreamingFetchResponse {
@@ -222,9 +212,33 @@ message LookupStreamResponse {
 
 message LookupSubscriptionRequest {
   string subscriptionId = 1;
+  string partitionKey = 2;
+  string consumerName = 3;
 }
 
 message LookupSubscriptionResponse {
   string subscriptionId = 1;
-  ServerNode serverNode = 2;
+  string partitionKey = 2;
+  ServerNode serverNode = 3;
+}
+
+message WatchSubscriptionRequest {
+  string subscriptionId = 1;
+  string consumerName = 2;
+}
+
+message WatchSubscriptionResponse {
+  message SubscriptionChangeAdd {
+    string partitionKey = 1;
+  }
+
+  message SubscriptionChangeRemove {
+    string partitionKey = 1;
+  }
+
+  string subscriptionId = 1;
+  oneof change {
+    SubscriptionChangeAdd changeAdd = 7;
+    SubscriptionChangeAdd changeRemove = 8;
+  }
 }

@@ -31,7 +31,7 @@ public class ResponderImpl implements Responder {
     StreamingFetchRequest request =
         StreamingFetchRequest.newBuilder()
             .setSubscriptionId(subscriptionId)
-            .addAckIds(recordId)
+            .addAckedRecordIds(recordId)
             .build();
     requestStream.onNext(request);
   }
