@@ -5,13 +5,29 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
-import io.hstream.*;
-import io.hstream.internal.*;
+import io.hstream.Consumer;
+import io.hstream.HRecord;
+import io.hstream.HRecordReceiver;
+import io.hstream.HStreamDBClientException;
+import io.hstream.RawRecordReceiver;
+import io.hstream.ReceivedHRecord;
+import io.hstream.ReceivedRawRecord;
+import io.hstream.Responder;
+import io.hstream.internal.HStreamApiGrpc;
+import io.hstream.internal.HStreamApiGrpc.HStreamApiStub;
+import io.hstream.internal.HStreamRecord;
+import io.hstream.internal.LookupSubscriptionRequest;
+import io.hstream.internal.ReceivedRecord;
+import io.hstream.internal.ServerNode;
+import io.hstream.internal.StreamingFetchRequest;
+import io.hstream.internal.StreamingFetchResponse;
 import io.hstream.util.GrpcUtils;
 import io.hstream.util.RecordUtils;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +42,10 @@ public class ConsumerImpl extends AbstractService implements Consumer {
   private final String subscriptionId;
   private final RawRecordReceiver rawRecordReceiver;
   private final HRecordReceiver hRecordReceiver;
-
-  private ExecutorService executorService;
-
-  private HStreamApiGrpc.HStreamApiStub fetchStub;
-
   private final StreamObserver<StreamingFetchResponse> responseStream;
   private final StreamObserver<StreamingFetchRequest> requestStream;
-
   private final AtomicBoolean isInitialized = new AtomicBoolean(false);
+  private ExecutorService executorService;
 
   public ConsumerImpl(
       List<String> serverUrls,
@@ -60,7 +71,6 @@ public class ConsumerImpl extends AbstractService implements Consumer {
         Executors.newSingleThreadExecutor(
             new ThreadFactoryBuilder().setNameFormat("receiver-running-pool-%d").build());
 
-    fetchStub = createFetchStub();
     responseStream =
         new StreamObserver<StreamingFetchResponse>() {
           @Override
@@ -130,19 +140,56 @@ public class ConsumerImpl extends AbstractService implements Consumer {
           public void onCompleted() {}
         };
 
-    this.requestStream = fetchStub.streamingFetch(responseStream);
+    boolean retryStatus = false;
+    StreamObserver<StreamingFetchRequest> ret = null;
+    for (int retryAcc = 0; retryAcc < serverUrls.size() && !retryStatus; retryAcc++) {
+      logger.info("begin streamingFetch");
+      try {
+        ServerNode serverNode =
+            HStreamApiGrpc.newBlockingStub(
+                    ManagedChannelBuilder.forTarget(serverUrls.get(retryAcc))
+                        .usePlaintext()
+                        .build())
+                .lookupSubscription(
+                    LookupSubscriptionRequest.newBuilder()
+                        .setSubscriptionId(subscriptionId)
+                        .build())
+                .getServerNode();
+        String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
+        HStreamApiStub fetchStub = HStreamApiGrpc.newStub(channelProvider.get(serverUrl));
+        ret = fetchStub.streamingFetch(responseStream);
+        retryStatus = true;
+      } catch (Exception e) {
+        logger.warn("retry because of " + e + ", " + "serverUrls = " + serverUrls.get(retryAcc));
+        if (!(retryAcc + 1 < serverUrls.size())) {
+          logger.error("retry failed, " + "retryAcc = " + retryAcc, e);
+          throw e;
+        }
+      }
+    }
+    logger.info("end streamingFetch");
+    this.requestStream = ret;
   }
 
-  private HStreamApiGrpc.HStreamApiStub createFetchStub() {
-    ServerNode serverNode =
-        HStreamApiGrpc.newBlockingStub(
-                ManagedChannelBuilder.forTarget(serverUrls.get(0)).usePlaintext().build())
-            .lookupSubscription(
-                LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build())
-            .getServerNode();
+  private static ReceivedRawRecord toReceivedRawRecord(ReceivedRecord receivedRecord) {
+    try {
+      HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
+      byte[] rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord);
+      return new ReceivedRawRecord(
+          GrpcUtils.recordIdFromGrpc(receivedRecord.getRecordId()), rawRecord);
+    } catch (InvalidProtocolBufferException e) {
+      throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
+    }
+  }
 
-    String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
-    return HStreamApiGrpc.newStub(channelProvider.get(serverUrl));
+  private static ReceivedHRecord toReceivedHRecord(ReceivedRecord receivedRecord) {
+    try {
+      HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
+      HRecord hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord);
+      return new ReceivedHRecord(GrpcUtils.recordIdFromGrpc(receivedRecord.getRecordId()), hRecord);
+    } catch (InvalidProtocolBufferException e) {
+      throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
+    }
   }
 
   @Override
@@ -183,30 +230,5 @@ public class ConsumerImpl extends AbstractService implements Consumer {
               logger.info("notify stop done");
             })
         .start();
-  }
-
-  private static ReceivedRawRecord toReceivedRawRecord(ReceivedRecord receivedRecord) {
-    try {
-      HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
-      byte[] rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord);
-      ReceivedRawRecord receivedRawRecord =
-          new ReceivedRawRecord(
-              GrpcUtils.recordIdFromGrpc(receivedRecord.getRecordId()), rawRecord);
-      return receivedRawRecord;
-    } catch (InvalidProtocolBufferException e) {
-      throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
-    }
-  }
-
-  private static ReceivedHRecord toReceivedHRecord(ReceivedRecord receivedRecord) {
-    try {
-      HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
-      HRecord hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord);
-      ReceivedHRecord receivedHRecord =
-          new ReceivedHRecord(GrpcUtils.recordIdFromGrpc(receivedRecord.getRecordId()), hRecord);
-      return receivedHRecord;
-    } catch (InvalidProtocolBufferException e) {
-      throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
-    }
   }
 }

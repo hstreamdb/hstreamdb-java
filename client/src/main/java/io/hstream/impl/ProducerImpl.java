@@ -2,9 +2,17 @@ package io.hstream.impl;
 
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
-import io.hstream.*;
+import io.hstream.HRecord;
+import io.hstream.HStreamDBClientException;
+import io.hstream.Producer;
 import io.hstream.RecordId;
-import io.hstream.internal.*;
+import io.hstream.internal.AppendRequest;
+import io.hstream.internal.AppendResponse;
+import io.hstream.internal.HStreamApiGrpc;
+import io.hstream.internal.HStreamApiGrpc.HStreamApiStub;
+import io.hstream.internal.HStreamRecord;
+import io.hstream.internal.LookupStreamRequest;
+import io.hstream.internal.ServerNode;
 import io.hstream.util.GrpcUtils;
 import io.hstream.util.RecordUtils;
 import java.util.ArrayList;
@@ -32,8 +40,6 @@ public class ProducerImpl implements Producer {
   private final List<HStreamRecord> recordBuffer;
   private final List<CompletableFuture<RecordId>> futures;
 
-  private HStreamApiGrpc.HStreamApiStub appendStub;
-
   public ProducerImpl(
       List<String> serverUrls,
       ChannelProvider channelProvider,
@@ -58,19 +64,6 @@ public class ProducerImpl implements Producer {
       this.recordBuffer = null;
       this.futures = null;
     }
-
-    appendStub = createAppendStub();
-  }
-
-  private synchronized HStreamApiGrpc.HStreamApiStub createAppendStub() {
-    ServerNode serverNode =
-        HStreamApiGrpc.newBlockingStub(
-                ManagedChannelBuilder.forTarget(serverUrls.get(0)).usePlaintext().build())
-            .lookupStream(LookupStreamRequest.newBuilder().setStreamName(stream).build())
-            .getServerNode();
-
-    String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
-    return HStreamApiGrpc.newStub(channelProvider.get(serverUrl));
   }
 
   @Override
@@ -169,7 +162,31 @@ public class ProducerImpl implements Producer {
           public void onCompleted() {}
         };
 
-    appendStub.append(appendRequest, streamObserver);
+    boolean retryStatus = false;
+    for (int retryAcc = 0; retryAcc < serverUrls.size() && !retryStatus; retryAcc++) {
+      logger.info("begin append");
+      try {
+        ServerNode serverNode =
+            HStreamApiGrpc.newBlockingStub(
+                    ManagedChannelBuilder.forTarget(serverUrls.get(retryAcc))
+                        .usePlaintext()
+                        .build())
+                .lookupStream(LookupStreamRequest.newBuilder().setStreamName(stream).build())
+                .getServerNode();
+        String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
+        HStreamApiStub appendStub = HStreamApiGrpc.newStub(channelProvider.get(serverUrl));
+        appendStub.append(appendRequest, streamObserver);
+        retryStatus = true;
+      } catch (Exception e) {
+        logger.warn(
+            "retry because of " + e.toString() + ", " + "serverUrls = " + serverUrls.get(retryAcc));
+        if (!(retryAcc + 1 < serverUrls.size())) {
+          logger.error("retry failed, " + "retryAcc = " + String.valueOf(retryAcc), e);
+          throw e;
+        }
+      }
+    }
+    logger.info("end append");
 
     return completableFuture;
   }
