@@ -11,8 +11,6 @@ import io.hstream.Subscription;
 import io.hstream.SubscriptionOffset;
 import io.hstream.internal.CreateQueryStreamRequest;
 import io.hstream.internal.CreateQueryStreamResponse;
-import io.hstream.internal.HStreamApiGrpc;
-import io.hstream.internal.HStreamApiGrpc.HStreamApiStub;
 import io.hstream.internal.Stream;
 import java.util.List;
 import java.util.UUID;
@@ -63,75 +61,60 @@ public class QueryerImpl extends AbstractService implements Queryer {
             .setQueryStatements(sql)
             .build();
 
-    boolean retryStatus = false;
-    for (int retryAcc = 0; retryAcc < serverUrls.size() && !retryStatus; retryAcc++) {
-      logger.info("begin createQueryStream");
-      try {
-        HStreamApiStub queryStub =
-            HStreamApiGrpc.newStub(channelProvider.get(serverUrls.get(retryAcc)));
-        queryStub.createQueryStream(
-            createQueryStreamRequest,
-            new StreamObserver<CreateQueryStreamResponse>() {
-              @Override
-              public void onNext(CreateQueryStreamResponse value) {
-                logger.info(
-                    "query [{}] created, related result stream is [{}]",
-                    value.getStreamQuery().getId(),
-                    value.getQueryStream().getStreamName());
+    new Retry(serverUrls, logger)
+        .withRetries(
+            (stub) -> {
+              stub.createQueryStream(
+                  createQueryStreamRequest,
+                  new StreamObserver<CreateQueryStreamResponse>() {
+                    @Override
+                    public void onNext(CreateQueryStreamResponse value) {
+                      logger.info(
+                          "query [{}] created, related result stream is [{}]",
+                          value.getStreamQuery().getId(),
+                          value.getQueryStream().getStreamName());
 
-                Subscription subscription =
-                    Subscription.newBuilder()
-                        .subscription(STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix)
-                        .stream(STREAM_QUERY_STREAM_PREFIX + resultStreamNameSuffix)
-                        .offset(new SubscriptionOffset(SubscriptionOffset.SpecialOffset.EARLIEST))
-                        .ackTimeoutSeconds(10)
-                        .build();
-                client.createSubscription(subscription);
+                      Subscription subscription =
+                          Subscription.newBuilder()
+                              .subscription(
+                                  STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix)
+                              .stream(STREAM_QUERY_STREAM_PREFIX + resultStreamNameSuffix)
+                              .offset(
+                                  new SubscriptionOffset(SubscriptionOffset.SpecialOffset.EARLIEST))
+                              .ackTimeoutSeconds(10)
+                              .build();
+                      client.createSubscription(subscription);
 
-                queryInnerConsumer =
-                    client
-                        .newConsumer()
-                        .subscription(STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix)
-                        .hRecordReceiver(
-                            (receivedHRecord, responder) -> {
-                              try {
-                                resultObserver.onNext(receivedHRecord.getHRecord());
-                                responder.ack();
-                              } catch (Throwable t) {
-                                resultObserver.onError(t);
-                              }
-                            })
-                        .build();
-                queryInnerConsumer.startAsync().awaitRunning();
+                      queryInnerConsumer =
+                          client
+                              .newConsumer()
+                              .subscription(
+                                  STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix)
+                              .hRecordReceiver(
+                                  (receivedHRecord, responder) -> {
+                                    try {
+                                      resultObserver.onNext(receivedHRecord.getHRecord());
+                                      responder.ack();
+                                    } catch (Throwable t) {
+                                      resultObserver.onError(t);
+                                    }
+                                  })
+                              .build();
+                      queryInnerConsumer.startAsync().awaitRunning();
 
-                notifyStarted();
-              }
+                      notifyStarted();
+                    }
 
-              @Override
-              public void onError(Throwable t) {
-                logger.error("creating stream query happens error: ", t);
-                notifyFailed(t);
-              }
+                    @Override
+                    public void onError(Throwable t) {
+                      logger.error("creating stream query happens error: ", t);
+                      notifyFailed(t);
+                    }
 
-              @Override
-              public void onCompleted() {}
+                    @Override
+                    public void onCompleted() {}
+                  });
             });
-        retryStatus = true;
-      } catch (Exception e) {
-        logger.warn(
-            "retry because of "
-                + e
-                + ", "
-                + "serverUrl = "
-                + serverUrls.get(retryAcc)
-                + " retryAcc = "
-                + retryAcc);
-        if (!(retryAcc + 1 < serverUrls.size())) {
-          logger.error("retry failed, " + "retryAcc = " + retryAcc, e);
-          throw e;
-        }
-      }
-    }
   }
 
   @Override

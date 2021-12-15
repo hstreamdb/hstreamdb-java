@@ -30,9 +30,9 @@ public class Retry {
     channelProvider = new ChannelProvider();
   }
 
-  public void withRetriesStream(Retryable xs, String stream) {
-    logger.info(
-        "begin " + Thread.currentThread().getStackTrace()[2].getMethodName() + " with retry");
+  public void withRetriesStream(String stream, Retryable xs) {
+    final String logMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+    logger.info("begin " + logMethodName + " with retry");
     boolean retryStatus = false;
     for (int retryAcc = 0; retryAcc < serverUrls.size() && !retryStatus; retryAcc++) {
       try {
@@ -63,11 +63,12 @@ public class Retry {
         }
       }
     }
+    logger.info("end " + logMethodName + " with retry");
   }
 
-  public void withRetriesSubscription(Retryable xs, String subscriptionId) {
-    logger.info(
-        "begin " + Thread.currentThread().getStackTrace()[2].getMethodName() + " with retry");
+  public void withRetriesSubscription(String subscriptionId, Retryable xs) {
+    final String logMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+    logger.info("begin " + logMethodName + " with retry");
     boolean retryStatus = false;
     for (int retryAcc = 0; retryAcc < serverUrls.size() && !retryStatus; retryAcc++) {
       try {
@@ -101,11 +102,12 @@ public class Retry {
         }
       }
     }
+    logger.info("end " + logMethodName + " with retry");
   }
 
   public void withRetriesBlocking(RetryableBlocking xs) {
-    logger.info(
-        "begin " + Thread.currentThread().getStackTrace()[2].getMethodName() + " with retry");
+    final String logMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+    logger.info("begin " + logMethodName + " with retry");
     boolean retryStatus = false;
     for (int retryAcc = 0; retryAcc < serverUrls.size() && !retryStatus; retryAcc++) {
       try {
@@ -129,5 +131,34 @@ public class Retry {
         }
       }
     }
+    logger.info("end " + logMethodName + " with retry");
+  }
+
+  public void withRetries(Retryable xs) {
+    final String logMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+    logger.info("begin " + logMethodName + " with retry");
+    boolean retryStatus = false;
+    for (int retryAcc = 0; retryAcc < serverUrls.size() && !retryStatus; retryAcc++) {
+      try {
+        HStreamApiStub stub = HStreamApiGrpc.newStub(channelProvider.get(serverUrls.get(retryAcc)));
+
+        xs.exec(stub);
+        retryStatus = true;
+      } catch (Exception e) {
+        logger.warn(
+            "retry because of "
+                + e
+                + ", "
+                + "serverUrl = "
+                + serverUrls.get(retryAcc)
+                + " retryAcc = "
+                + retryAcc);
+        if (!(retryAcc + 1 < serverUrls.size())) {
+          logger.error("retry failed, " + "retryAcc = " + retryAcc, e);
+          throw e;
+        }
+      }
+    }
+    logger.info("end " + logMethodName + " with retry");
   }
 }

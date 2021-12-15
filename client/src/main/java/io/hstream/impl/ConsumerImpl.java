@@ -3,7 +3,6 @@ package io.hstream.impl;
 import com.google.common.util.concurrent.AbstractService;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import io.hstream.Consumer;
 import io.hstream.HRecord;
@@ -13,12 +12,8 @@ import io.hstream.RawRecordReceiver;
 import io.hstream.ReceivedHRecord;
 import io.hstream.ReceivedRawRecord;
 import io.hstream.Responder;
-import io.hstream.internal.HStreamApiGrpc;
-import io.hstream.internal.HStreamApiGrpc.HStreamApiStub;
 import io.hstream.internal.HStreamRecord;
-import io.hstream.internal.LookupSubscriptionRequest;
 import io.hstream.internal.ReceivedRecord;
-import io.hstream.internal.ServerNode;
 import io.hstream.internal.StreamingFetchRequest;
 import io.hstream.internal.StreamingFetchResponse;
 import io.hstream.util.GrpcUtils;
@@ -29,6 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +41,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
   private final StreamObserver<StreamingFetchResponse> responseStream;
   private final StreamObserver<StreamingFetchRequest> requestStream;
   private final AtomicBoolean isInitialized = new AtomicBoolean(false);
-  private ExecutorService executorService;
+  private final ExecutorService executorService;
 
   public ConsumerImpl(
       List<String> serverUrls,
@@ -140,42 +136,14 @@ public class ConsumerImpl extends AbstractService implements Consumer {
           public void onCompleted() {}
         };
 
-    boolean retryStatus = false;
-    StreamObserver<StreamingFetchRequest> ret = null;
-    for (int retryAcc = 0; retryAcc < serverUrls.size() && !retryStatus; retryAcc++) {
-      logger.info("begin streamingFetch");
-      try {
-        ServerNode serverNode =
-            HStreamApiGrpc.newBlockingStub(
-                    ManagedChannelBuilder.forTarget(serverUrls.get(retryAcc))
-                        .usePlaintext()
-                        .build())
-                .lookupSubscription(
-                    LookupSubscriptionRequest.newBuilder()
-                        .setSubscriptionId(subscriptionId)
-                        .build())
-                .getServerNode();
-        String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
-        HStreamApiStub fetchStub = HStreamApiGrpc.newStub(channelProvider.get(serverUrl));
-        ret = fetchStub.streamingFetch(responseStream);
-        retryStatus = true;
-      } catch (Exception e) {
-        logger.warn(
-            "retry because of "
-                + e
-                + ", "
-                + "serverUrl = "
-                + serverUrls.get(retryAcc)
-                + " retryAcc = "
-                + retryAcc);
-        if (!(retryAcc + 1 < serverUrls.size())) {
-          logger.error("retry failed, " + "retryAcc = " + retryAcc, e);
-          throw e;
-        }
-      }
-    }
-    logger.info("end streamingFetch");
-    this.requestStream = ret;
+    AtomicReference<StreamObserver<StreamingFetchRequest>> requestStream = new AtomicReference<>();
+    new Retry(serverUrls, logger)
+        .withRetriesSubscription(
+            subscriptionId,
+            (stub) -> {
+              requestStream.set(stub.streamingFetch(responseStream));
+            });
+    this.requestStream = requestStream.get();
   }
 
   private static ReceivedRawRecord toReceivedRawRecord(ReceivedRecord receivedRecord) {
