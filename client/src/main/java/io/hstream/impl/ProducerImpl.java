@@ -179,7 +179,13 @@ public class ProducerImpl implements Producer {
         retryStatus = true;
       } catch (Exception e) {
         logger.warn(
-            "retry because of " + e.toString() + ", " + "serverUrls = " + serverUrls.get(retryAcc));
+            "retry because of "
+                + e.toString()
+                + ", "
+                + "serverUrl = "
+                + serverUrls.get(retryAcc)
+                + " retryAcc = "
+                + retryAcc);
         if (!(retryAcc + 1 < serverUrls.size())) {
           logger.error("retry failed, " + "retryAcc = " + String.valueOf(retryAcc), e);
           throw e;

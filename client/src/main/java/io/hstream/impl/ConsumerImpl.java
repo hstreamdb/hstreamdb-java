@@ -160,7 +160,14 @@ public class ConsumerImpl extends AbstractService implements Consumer {
         ret = fetchStub.streamingFetch(responseStream);
         retryStatus = true;
       } catch (Exception e) {
-        logger.warn("retry because of " + e + ", " + "serverUrls = " + serverUrls.get(retryAcc));
+        logger.warn(
+            "retry because of "
+                + e
+                + ", "
+                + "serverUrl = "
+                + serverUrls.get(retryAcc)
+                + " retryAcc = "
+                + retryAcc);
         if (!(retryAcc + 1 < serverUrls.size())) {
           logger.error("retry failed, " + "retryAcc = " + retryAcc, e);
           throw e;
