@@ -3,14 +3,14 @@
 ![Build Status](https://github.com/hstreamdb/hstreamdb-java/actions/workflows/main.yml/badge.svg)
 [![Maven Central](https://img.shields.io/maven-central/v/io.hstream/hstreamdb-java)](https://search.maven.org/artifact/io.hstream/hstreamdb-java)
 [![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.6.1/javadoc.svg)](https://javadoc.io/doc/io.hstream/hstreamdb-java/0.6.1)
-[![Snapshot Artifacts](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.hstream/hstreamdb-java.svg)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/hstream/hstreamdb-java/0.6.0-SNAPSHOT/)
-[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.6.0-SNAPSHOT/javadoc.svg)](https://hstreamdb.github.io/hstreamdb-java/javadoc/)
+[![Snapshot Artifacts](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.hstream/hstreamdb-java.svg)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/hstream/hstreamdb-java/0.6.2-SNAPSHOT/)
+[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.6.2-SNAPSHOT/javadoc.svg)](https://hstreamdb.github.io/hstreamdb-java/javadoc/)
 
 This is the offical Java client library for [HStreamDB](https://hstream.io/).
 
 **Please use the latest released version.**
 
-**The latest release is v0.6.1, which requires hstream server v0.6.1 .**
+**The latest release is v0.6.1, which requires hstream server v0.6.0 .**
 
 ## Content
 - [Installation](#installation)
