@@ -2,7 +2,7 @@
 
 set -e
 
-DEFAULT_HSTREAM_DOCKER_TAG="v0.5.3.0"
+DEFAULT_HSTREAM_DOCKER_TAG="v0.6.0"
 
 docker pull hstreamdb/hstream:${DEFAULT_HSTREAM_DOCKER_TAG} || true 
 
@@ -30,7 +30,8 @@ docker run \
   --name hserver-test \
   --network host \
   hstreamdb/hstream:${DEFAULT_HSTREAM_DOCKER_TAG} \
-  hstream-server --port 6570 --store-config /data/store/logdevice.conf --log-level debug
+  hstream-server --port 6570 --store-config /data/store/logdevice.conf --server-id 0 --log-level debug
+
 
 
 

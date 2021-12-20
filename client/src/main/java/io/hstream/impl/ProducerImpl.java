@@ -1,6 +1,5 @@
 package io.hstream.impl;
 
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
 import io.hstream.RecordId;
@@ -64,8 +63,7 @@ public class ProducerImpl implements Producer {
 
   private synchronized HStreamApiGrpc.HStreamApiStub createAppendStub() {
     ServerNode serverNode =
-        HStreamApiGrpc.newBlockingStub(
-                ManagedChannelBuilder.forTarget(serverUrls.get(0)).usePlaintext().build())
+        HStreamApiGrpc.newBlockingStub(channelProvider.get(serverUrls.get(0)))
             .lookupStream(LookupStreamRequest.newBuilder().setStreamName(stream).build())
             .getServerNode();
 

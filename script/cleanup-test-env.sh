@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-set -e
+## set -e
 
 docker stop hstore-test
 docker stop hserver-test
