@@ -3,7 +3,6 @@ package io.hstream.impl;
 import com.google.common.util.concurrent.AbstractService;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.protobuf.InvalidProtocolBufferException;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
 import io.hstream.internal.*;
@@ -135,8 +134,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
 
   private HStreamApiGrpc.HStreamApiStub createFetchStub() {
     ServerNode serverNode =
-        HStreamApiGrpc.newBlockingStub(
-                ManagedChannelBuilder.forTarget(serverUrls.get(0)).usePlaintext().build())
+        HStreamApiGrpc.newBlockingStub(channelProvider.get(serverUrls.get(0)))
             .lookupSubscription(
                 LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build())
             .getServerNode();
