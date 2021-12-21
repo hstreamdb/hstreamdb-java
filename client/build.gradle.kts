@@ -134,7 +134,7 @@ publishing {
             val snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             // def releasesRepoUrl = layout.buildDirectory.dir('repos/releases')
             // def snapshotsRepoUrl = layout.buildDirectory.dir('repos/snapshots')
-            val url = if(version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+            url = uri(if(version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
             credentials {
                 username = if(project.hasProperty("ossrhUsername")) project.property("ossrhUsername") as String? else System.getenv("OSSRH_USERNAME")
                 password = if(project.hasProperty("ossrhPassword")) project.property("ossrhPassword") as String? else System.getenv("OSSRH_TOKEN")
