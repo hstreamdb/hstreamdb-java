@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.*;
 import io.hstream.Producer;
 import io.hstream.ProducerBuilder;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ProducerBuilderImpl implements ProducerBuilder {
 
@@ -14,10 +15,10 @@ public class ProducerBuilderImpl implements ProducerBuilder {
 
   private int recordCountLimit = 1;
 
-  private final List<String> serverUrls;
+  private final AtomicReference<List<String>> serverUrls;
   private final ChannelProvider channelProvider;
 
-  public ProducerBuilderImpl(List<String> serverUrls, ChannelProvider channelProvider) {
+  public ProducerBuilderImpl(AtomicReference<List<String>> serverUrls, ChannelProvider channelProvider) {
     this.serverUrls = serverUrls;
     this.channelProvider = channelProvider;
   }
@@ -43,6 +44,6 @@ public class ProducerBuilderImpl implements ProducerBuilder {
   @Override
   public Producer build() {
     checkNotNull(streamName);
-    return new ProducerImpl(serverUrls, channelProvider, streamName, enableBatch, recordCountLimit);
+    return new ProducerKtImpl(serverUrls, channelProvider, streamName, enableBatch, recordCountLimit);
   }
 }
