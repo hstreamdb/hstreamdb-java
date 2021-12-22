@@ -6,12 +6,27 @@ import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.HStreamApiGrpcKt
 import io.hstream.util.GrpcUtils
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
 
 class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
 
-    val channelProvider = ChannelProvider()
-    private val clusterServerUrls: AtomicReference<List<String>> = AtomicReference(null)
+    companion object ConnectionManager {
+        val channelProvider = ChannelProvider()
+        val clusterServerUrls: AtomicReference<List<String>> = AtomicReference(null)
+
+        fun <Resp> unaryCallAsync(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
+            return unaryCallAsync(clusterServerUrls, channelProvider, call)
+        }
+
+        fun <Resp> unaryCall(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
+            return unaryCall(clusterServerUrls, channelProvider, call)
+        }
+
+        suspend fun <Resp> unaryCallCoroutine(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
+            return unaryCallCoroutine(clusterServerUrls, channelProvider, call)
+        }
+    }
 
     init {
 
@@ -37,11 +52,11 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
     }
 
     override fun newConsumer(): ConsumerBuilder {
-        TODO("Not yet implemented")
+        return ConsumerBuilderImpl()
     }
 
     override fun newQueryer(): QueryerBuilder {
-        TODO("Not yet implemented")
+        return QueryerBuilderImpl(this, clusterServerUrls.get(), channelProvider)
     }
 
     override fun createStream(stream: String?) {
@@ -52,33 +67,30 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
         checkNotNull(stream)
         check(replicationFactor in 1..15)
 
-        unaryCallBlocking { it.createStream(GrpcUtils.streamToGrpc(Stream(stream, replicationFactor.toInt()))) }
+        unaryCall { it.createStream(GrpcUtils.streamToGrpc(Stream(stream, replicationFactor.toInt()))) }
     }
 
     override fun deleteStream(stream: String?) {
 
         val deleteStreamRequest = DeleteStreamRequest.newBuilder().setStreamName(stream).build();
-        unaryCallBlocking { it.deleteStream(deleteStreamRequest) }
+        unaryCall { it.deleteStream(deleteStreamRequest) }
     }
 
     override fun listStreams(): List<Stream> {
-        val listStreamsResponse = unaryCallBlocking { it.listStreams(Empty.getDefaultInstance()) }
+        val listStreamsResponse = unaryCall { it.listStreams(Empty.getDefaultInstance()) }
         return listStreamsResponse.streamsList.map(GrpcUtils::streamFromGrpc)
     }
 
     override fun createSubscription(subscription: Subscription?) {
-        unaryCallBlocking { it.createSubscription(GrpcUtils.subscriptionToGrpc(subscription)) }
+        unaryCall { it.createSubscription(GrpcUtils.subscriptionToGrpc(subscription)) }
     }
 
     override fun listSubscriptions(): List<Subscription> {
-        return unaryCallBlocking { it.listSubscriptions(Empty.getDefaultInstance()).subscriptionList.map(GrpcUtils::subscriptionFromGrpc) }
+        return unaryCall { it.listSubscriptions(Empty.getDefaultInstance()).subscriptionList.map(GrpcUtils::subscriptionFromGrpc) }
     }
 
     override fun deleteSubscription(subscriptionId: String?) {
-        return unaryCallBlocking { it.deleteSubscription(DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()) }
+        return unaryCall { it.deleteSubscription(DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()) }
     }
 
-    fun <Resp> unaryCallBlocking(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
-        return unaryCall(clusterServerUrls, channelProvider, call)
-    }
 }
