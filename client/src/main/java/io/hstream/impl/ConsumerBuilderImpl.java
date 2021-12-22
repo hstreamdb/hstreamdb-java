@@ -6,22 +6,14 @@ import io.hstream.Consumer;
 import io.hstream.ConsumerBuilder;
 import io.hstream.HRecordReceiver;
 import io.hstream.RawRecordReceiver;
-import java.util.List;
+import java.util.UUID;
 
 public class ConsumerBuilderImpl implements ConsumerBuilder {
-
-  private final List<String> serverUrls;
-  private final ChannelProvider channelProvider;
 
   private String name;
   private String subscription;
   private RawRecordReceiver rawRecordReceiver;
   private HRecordReceiver hRecordReceiver;
-
-  public ConsumerBuilderImpl(List<String> serverUrls, ChannelProvider channelProvider) {
-    this.serverUrls = serverUrls;
-    this.channelProvider = channelProvider;
-  }
 
   @Override
   public ConsumerBuilder name(String name) {
@@ -51,7 +43,10 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
   public Consumer build() {
     checkNotNull(subscription);
     checkState(rawRecordReceiver != null || hRecordReceiver != null);
-    return new ConsumerImpl(
-        serverUrls, channelProvider, name, subscription, rawRecordReceiver, hRecordReceiver);
+    if (name == null) {
+      name = UUID.randomUUID().toString();
+    }
+    checkNotNull(name);
+    return new ConsumerKtImpl(name, subscription, rawRecordReceiver, hRecordReceiver);
   }
 }

@@ -20,7 +20,7 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
   public HStreamClient build() {
     checkNotNull(serviceUrl);
     List<String> serverUrls = parseServerUrls(serviceUrl);
-    return new HStreamClientImpl(serverUrls);
+    return new HStreamClientKtImpl(serverUrls);
   }
 
   private List<String> parseServerUrls(String url) {
