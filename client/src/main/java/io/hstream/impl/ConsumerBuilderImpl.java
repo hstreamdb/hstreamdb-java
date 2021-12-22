@@ -6,7 +6,6 @@ import io.hstream.Consumer;
 import io.hstream.ConsumerBuilder;
 import io.hstream.HRecordReceiver;
 import io.hstream.RawRecordReceiver;
-
 import java.util.UUID;
 
 public class ConsumerBuilderImpl implements ConsumerBuilder {
@@ -44,11 +43,10 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
   public Consumer build() {
     checkNotNull(subscription);
     checkState(rawRecordReceiver != null || hRecordReceiver != null);
-    if(name == null) {
+    if (name == null) {
       name = UUID.randomUUID().toString();
     }
     checkNotNull(name);
-    return new ConsumerKtImpl(
-        name, subscription, rawRecordReceiver, hRecordReceiver);
+    return new ConsumerKtImpl(name, subscription, rawRecordReceiver, hRecordReceiver);
   }
 }

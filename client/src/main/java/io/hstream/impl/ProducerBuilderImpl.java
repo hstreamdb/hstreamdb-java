@@ -18,7 +18,8 @@ public class ProducerBuilderImpl implements ProducerBuilder {
   private final AtomicReference<List<String>> serverUrls;
   private final ChannelProvider channelProvider;
 
-  public ProducerBuilderImpl(AtomicReference<List<String>> serverUrls, ChannelProvider channelProvider) {
+  public ProducerBuilderImpl(
+      AtomicReference<List<String>> serverUrls, ChannelProvider channelProvider) {
     this.serverUrls = serverUrls;
     this.channelProvider = channelProvider;
   }
@@ -44,6 +45,7 @@ public class ProducerBuilderImpl implements ProducerBuilder {
   @Override
   public Producer build() {
     checkNotNull(streamName);
-    return new ProducerKtImpl(serverUrls, channelProvider, streamName, enableBatch, recordCountLimit);
+    return new ProducerKtImpl(
+        serverUrls, channelProvider, streamName, enableBatch, recordCountLimit);
   }
 }
