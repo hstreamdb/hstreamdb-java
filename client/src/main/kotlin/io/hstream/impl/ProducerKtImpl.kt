@@ -1,12 +1,13 @@
 package io.hstream.impl
 
-import java.util.concurrent.CompletableFuture
-import io.grpc.stub.StreamObserver
 import io.hstream.HRecord
 import io.hstream.HStreamDBClientException
 import io.hstream.Producer
 import io.hstream.RecordId
-import io.hstream.internal.*
+import io.hstream.internal.AppendRequest
+import io.hstream.internal.HStreamApiGrpcKt
+import io.hstream.internal.HStreamRecord
+import io.hstream.internal.LookupStreamRequest
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -14,20 +15,17 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.future
 import org.slf4j.LoggerFactory
-import java.util.stream.Collectors
-import java.lang.InterruptedException
-import java.util.ArrayList
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.Lock
 import java.util.concurrent.locks.ReentrantLock
 
 class ProducerKtImpl(
-        private val serverUrlsRef: AtomicReference<List<String>>,
-        private val channelProvider: ChannelProvider,
-        private val stream: String,
-        private val enableBatch: Boolean,
-        private val recordCountLimit: Int) : Producer {
+    private val stream: String,
+    private val enableBatch: Boolean,
+    private val recordCountLimit: Int
+) : Producer {
     private var semaphore: Semaphore? = null
     private var lock: Lock? = null
     private var recordBuffer: MutableList<HStreamRecord>? = null
@@ -44,7 +42,7 @@ class ProducerKtImpl(
     }
 
     private fun lookupServerUrl(): String {
-        return unaryCall(serverUrlsRef, channelProvider) {
+        return HStreamClientKtImpl.unaryCall {
             val serverNode = it.lookupStream(LookupStreamRequest.newBuilder().setStreamName(stream).build()).serverNode
             return@unaryCall "${serverNode.host}:${serverNode.port}"
         }
@@ -67,15 +65,14 @@ class ProducerKtImpl(
     private fun writeInternal(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
         return if (!enableBatch) {
             val future = CompletableFuture<RecordId>()
-            writeHStreamRecords(java.util.List.of(hStreamRecord))
-                    .handle<Any?> { recordIds: List<RecordId>, exception: Throwable? ->
-                        if (exception == null) {
-                            future.complete(recordIds[0])
-                        } else {
-                            future.completeExceptionally(exception)
-                        }
-                        null
+            writeHStreamRecords(listOf(hStreamRecord))
+                .handle<Any?> { recordIds: List<RecordId>, exception: Throwable? ->
+                    if (exception == null) {
+                        future.complete(recordIds[0])
+                    } else {
+                        future.completeExceptionally(exception)
                     }
+                }
             future
         } else {
             addToBuffer(hStreamRecord)
@@ -91,19 +88,19 @@ class ProducerKtImpl(
                 val recordBufferCount = recordBuffer!!.size
                 logger.info("start flush recordBuffer, current buffer size is: {}", recordBufferCount)
                 writeHStreamRecords(recordBuffer)
-                        .handle<Any?> { recordIds: List<RecordId>, exception: Throwable? ->
-                            if (exception == null) {
-                                for (i in recordIds.indices) {
-                                    futures!![i].complete(recordIds[i])
-                                }
-                            } else {
-                                for (i in futures!!.indices) {
-                                    futures!![i].completeExceptionally(exception)
-                                }
+                    .handle<Any?> { recordIds: List<RecordId>, exception: Throwable? ->
+                        if (exception == null) {
+                            for (i in recordIds.indices) {
+                                futures!![i].complete(recordIds[i])
                             }
-                            null
+                        } else {
+                            for (i in futures!!.indices) {
+                                futures!![i].completeExceptionally(exception)
+                            }
                         }
-                        .join()
+                        null
+                    }
+                    .join()
                 recordBuffer!!.clear()
                 futures!!.clear()
                 logger.info("finish clearing record buffer")
@@ -114,18 +111,19 @@ class ProducerKtImpl(
         }
     }
 
-    private suspend fun appendWithRetry(appendRequest: AppendRequest, tryTimes: Int) : List<RecordId>{
+    private suspend fun appendWithRetry(appendRequest: AppendRequest, tryTimes: Int): List<RecordId> {
         check(tryTimes > 0)
         var serverUrl = serverUrlRef.get()
-        if(serverUrl == null) {
+        if (serverUrl == null) {
             refreshServerUrl()
             serverUrl = serverUrlRef.get()
         }
         checkNotNull(serverUrl)
         try {
-            return HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(serverUrl)).append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
+            return HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
+                .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
         } catch (e: Exception) {
-            if(tryTimes == 1) {
+            if (tryTimes == 1) {
                 throw e
             } else {
                 delay(1000)
@@ -137,9 +135,10 @@ class ProducerKtImpl(
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun writeHStreamRecords(
-            hStreamRecords: List<HStreamRecord>?): CompletableFuture<List<RecordId>> {
+        hStreamRecords: List<HStreamRecord>?
+    ): CompletableFuture<List<RecordId>> {
         val appendRequest = AppendRequest.newBuilder().setStreamName(stream).addAllRecords(hStreamRecords).build()
-        return GlobalScope.future { appendWithRetry(appendRequest, 3)}
+        return GlobalScope.future { appendWithRetry(appendRequest, 3) }
     }
 
     private fun addToBuffer(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {

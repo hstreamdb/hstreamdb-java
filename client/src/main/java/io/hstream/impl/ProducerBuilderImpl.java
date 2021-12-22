@@ -45,7 +45,6 @@ public class ProducerBuilderImpl implements ProducerBuilder {
   @Override
   public Producer build() {
     checkNotNull(streamName);
-    return new ProducerKtImpl(
-        serverUrls, channelProvider, streamName, enableBatch, recordCountLimit);
+    return new ProducerKtImpl(streamName, enableBatch, recordCountLimit);
   }
 }
