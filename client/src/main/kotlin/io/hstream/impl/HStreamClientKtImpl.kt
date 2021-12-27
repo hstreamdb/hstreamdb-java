@@ -1,7 +1,12 @@
 package io.hstream.impl
 
 import com.google.protobuf.Empty
-import io.hstream.*
+import io.hstream.ConsumerBuilder
+import io.hstream.HStreamClient
+import io.hstream.ProducerBuilder
+import io.hstream.QueryerBuilder
+import io.hstream.Stream
+import io.hstream.Subscription
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.HStreamApiGrpcKt
@@ -30,7 +35,10 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
 
     init {
 
-        val describeClusterResponse = unaryCallWithCurrentUrls(bootstrapServerUrls, channelProvider) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
+        val describeClusterResponse = unaryCallWithCurrentUrls(
+            bootstrapServerUrls,
+            channelProvider
+        ) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
         val serverNodes = describeClusterResponse.serverNodesList
         val serverUrls: ArrayList<String> = ArrayList(serverNodes.size)
         clusterServerUrls.compareAndSet(null, serverUrls)
@@ -39,16 +47,14 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
             val port = serverNode.port
             serverUrls.add("$host:$port")
         }
-
     }
-
 
     override fun close() {
         channelProvider.close()
     }
 
     override fun newProducer(): ProducerBuilder {
-        return ProducerBuilderImpl(clusterServerUrls, channelProvider);
+        return ProducerBuilderImpl(clusterServerUrls, channelProvider)
     }
 
     override fun newConsumer(): ConsumerBuilder {
@@ -60,19 +66,28 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
     }
 
     override fun createStream(stream: String?) {
-        createStream(stream, 1);
+        createStream(stream, 1)
     }
 
     override fun createStream(stream: String?, replicationFactor: Short) {
         checkNotNull(stream)
         check(replicationFactor in 1..15)
 
-        unaryCall { it.createStream(GrpcUtils.streamToGrpc(Stream(stream, replicationFactor.toInt()))) }
+        unaryCall {
+            it.createStream(
+                GrpcUtils.streamToGrpc(
+                    Stream(
+                        stream,
+                        replicationFactor.toInt()
+                    )
+                )
+            )
+        }
     }
 
     override fun deleteStream(stream: String?) {
 
-        val deleteStreamRequest = DeleteStreamRequest.newBuilder().setStreamName(stream).build();
+        val deleteStreamRequest = DeleteStreamRequest.newBuilder().setStreamName(stream).build()
         unaryCall { it.deleteStream(deleteStreamRequest) }
     }
 
@@ -86,11 +101,18 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
     }
 
     override fun listSubscriptions(): List<Subscription> {
-        return unaryCall { it.listSubscriptions(Empty.getDefaultInstance()).subscriptionList.map(GrpcUtils::subscriptionFromGrpc) }
+        return unaryCall {
+            it.listSubscriptions(Empty.getDefaultInstance()).subscriptionList.map(
+                GrpcUtils::subscriptionFromGrpc
+            )
+        }
     }
 
     override fun deleteSubscription(subscriptionId: String?) {
-        return unaryCall { it.deleteSubscription(DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()) }
+        return unaryCall {
+            it.deleteSubscription(
+                DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()
+            )
+        }
     }
-
 }

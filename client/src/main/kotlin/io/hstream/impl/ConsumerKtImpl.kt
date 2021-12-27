@@ -3,8 +3,18 @@ package io.hstream.impl
 import com.google.common.util.concurrent.AbstractService
 import com.google.protobuf.InvalidProtocolBufferException
 import io.grpc.Status
-import io.hstream.*
-import io.hstream.internal.*
+import io.hstream.Consumer
+import io.hstream.HRecordReceiver
+import io.hstream.HStreamDBClientException
+import io.hstream.RawRecordReceiver
+import io.hstream.ReceivedHRecord
+import io.hstream.ReceivedRawRecord
+import io.hstream.internal.HStreamApiGrpcKt
+import io.hstream.internal.HStreamRecord
+import io.hstream.internal.LookupSubscriptionRequest
+import io.hstream.internal.ReceivedRecord
+import io.hstream.internal.StreamingFetchRequest
+import io.hstream.internal.StreamingFetchResponse
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
 import kotlinx.coroutines.GlobalScope
@@ -19,10 +29,11 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class ConsumerKtImpl(
-        private val consumerName: String,
-        private val subscriptionId: String,
-        private val rawRecordReceiver: RawRecordReceiver?,
-        private val hRecordReceiver: HRecordReceiver?) : AbstractService(), Consumer {
+    private val consumerName: String,
+    private val subscriptionId: String,
+    private val rawRecordReceiver: RawRecordReceiver?,
+    private val hRecordReceiver: HRecordReceiver?
+) : AbstractService(), Consumer {
     private lateinit var serverUrl: String
     private val ackFlow = MutableSharedFlow<StreamingFetchRequest>()
     private lateinit var streamingFetchFuture: CompletableFuture<Unit>
@@ -31,7 +42,9 @@ class ConsumerKtImpl(
     private suspend fun streamingFetchWithRetry(requestFlow: Flow<StreamingFetchRequest>) {
         if (!isRunning) return
         check(serverUrl != null)
-        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
+        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(
+            HStreamClientKtImpl.channelProvider.get(serverUrl)
+        )
         try {
             stub.streamingFetch(requestFlow).collect {
                 process(it)
@@ -39,10 +52,13 @@ class ConsumerKtImpl(
         } catch (e: Exception) {
             logger.error("streamingFetch error: ", e)
             val status = Status.fromThrowable(e)
-            if(status == Status.UNAVAILABLE) {
+            if (status == Status.UNAVAILABLE) {
                 delay(3000)
                 serverUrl = HStreamClientKtImpl.unaryCallCoroutine {
-                    val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
+                    val serverNode = it.lookupSubscription(
+                        LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId)
+                            .build()
+                    ).serverNode
                     return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
                 }
                 streamingFetchWithRetry(requestFlow)
@@ -60,7 +76,8 @@ class ConsumerKtImpl(
         val receivedRecords = value.receivedRecordsList
         for (receivedRecord in receivedRecords) {
             val responder = ResponderImpl(
-                    subscriptionId, ackFlow, consumerName, receivedRecord.recordId)
+                subscriptionId, ackFlow, consumerName, receivedRecord.recordId
+            )
 
             executorService.submit {
                 if (!isRunning) {
@@ -70,20 +87,23 @@ class ConsumerKtImpl(
                 if (RecordUtils.isRawRecord(receivedRecord)) {
                     logger.info("ready to process rawRecord")
                     try {
-                        rawRecordReceiver!!.processRawRecord(toReceivedRawRecord(receivedRecord), responder)
+                        rawRecordReceiver!!.processRawRecord(
+                            toReceivedRawRecord(receivedRecord),
+                            responder
+                        )
                         logger.info("process rawRecord {} done", receivedRecord.recordId)
                     } catch (e: Exception) {
                         logger.error("process rawRecord error", e)
                     }
                 } else {
-                    logger.info("ready to process hrecord");
+                    logger.info("ready to process hrecord")
                     try {
                         hRecordReceiver!!.processHRecord(
-                                toReceivedHRecord(receivedRecord), responder);
+                            toReceivedHRecord(receivedRecord), responder
+                        )
                         logger.info("process hRecord {} done", receivedRecord.recordId)
-
                     } catch (e: Exception) {
-                        logger.error("process hrecord error", e);
+                        logger.error("process hrecord error", e)
                     }
                 }
             }
@@ -92,7 +112,9 @@ class ConsumerKtImpl(
 
     private fun lookupServerUrl(): String {
         return HStreamClientKtImpl.unaryCall {
-            val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
+            val serverNode = it.lookupSubscription(
+                LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()
+            ).serverNode
             return@unaryCall "${serverNode.host}:${serverNode.port}"
         }
     }
@@ -108,13 +130,13 @@ class ConsumerKtImpl(
             notifyStarted()
             streamingFetchFuture = GlobalScope.future { streamingFetchWithRetry(ackFlow) }
             // wait until stub.streamingFetch called
-            while(ackFlow.subscriptionCount.value == 0) {
+            while (ackFlow.subscriptionCount.value == 0) {
                 Thread.sleep(100)
             }
             val initRequest = StreamingFetchRequest.newBuilder()
-                    .setSubscriptionId(subscriptionId)
-                    .setConsumerName(consumerName)
-                    .build()
+                .setSubscriptionId(subscriptionId)
+                .setConsumerName(consumerName)
+                .build()
             GlobalScope.future { ackFlow.emit(initRequest) }.join()
             logger.info("consumer {} is started", consumerName)
         }.start()
@@ -137,7 +159,7 @@ class ConsumerKtImpl(
             notifyStopped()
             logger.info("consumer {} is stopped", consumerName)
         }
-                .start()
+            .start()
     }
 
     companion object {
@@ -147,9 +169,13 @@ class ConsumerKtImpl(
                 val hStreamRecord = HStreamRecord.parseFrom(receivedRecord.record)
                 val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord)
                 ReceivedRawRecord(
-                        GrpcUtils.recordIdFromGrpc(receivedRecord.recordId), rawRecord)
+                    GrpcUtils.recordIdFromGrpc(receivedRecord.recordId), rawRecord
+                )
             } catch (e: InvalidProtocolBufferException) {
-                throw HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e)
+                throw HStreamDBClientException.InvalidRecordException(
+                    "parse HStreamRecord error",
+                    e
+                )
             }
         }
 
@@ -159,9 +185,11 @@ class ConsumerKtImpl(
                 val hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord)
                 ReceivedHRecord(GrpcUtils.recordIdFromGrpc(receivedRecord.recordId), hRecord)
             } catch (e: InvalidProtocolBufferException) {
-                throw HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e)
+                throw HStreamDBClientException.InvalidRecordException(
+                    "parse HStreamRecord error",
+                    e
+                )
             }
         }
     }
-
 }

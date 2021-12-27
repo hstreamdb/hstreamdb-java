@@ -1,0 +1,35 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: init
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+
+      - name: lint
+        uses: megalinter/megalinter@v5
+        env:
+          DISABLE: COPYPASTE,SPELL
+
+      - name: Archive production artifacts
+        if: ${{ success() }} || ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: MegaLinter reports
+          path: |
+            report
+            mega-linter.log

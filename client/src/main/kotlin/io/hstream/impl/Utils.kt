@@ -32,9 +32,9 @@ suspend fun refreshClusterInfo(serverUrls: List<String>, channelProvider: Channe
         val serverNodes = resp.serverNodesList
         val newServerUrls: ArrayList<String> = ArrayList(serverNodes.size)
         for (serverNode in serverNodes) {
-            val host = serverNode.host;
-            val port = serverNode.port;
-            newServerUrls.add("$host:$port");
+            val host = serverNode.host
+            val port = serverNode.port
+            newServerUrls.add("$host:$port")
         }
         return@unaryCallWithCurrentUrlsCoroutine newServerUrls
     }
@@ -54,7 +54,6 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
         } else {
             throw e
         }
-
     }
 }
 
@@ -62,7 +61,6 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
 fun <Resp> unaryCallAsync(urlsRef: AtomicReference<List<String>>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
     return GlobalScope.future { unaryCallCoroutine(urlsRef, channelProvider, call) }
 }
-
 
 fun <Resp> unaryCall(urls: AtomicReference<List<String>>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
     return unaryCallAsync(urls, channelProvider, call).join()
@@ -79,5 +77,5 @@ fun <Resp> unaryCallWithCurrentUrls(urls: List<String>, channelProvider: Channel
 
 @OptIn(DelicateCoroutinesApi::class)
 fun <Resp> unaryCallSimpleAsync(url: String, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
-    return GlobalScope.future { call(HStreamApiCoroutineStub(channelProvider.get(url)))}
+    return GlobalScope.future { call(HStreamApiCoroutineStub(channelProvider.get(url))) }
 }

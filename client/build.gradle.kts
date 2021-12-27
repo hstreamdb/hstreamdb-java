@@ -29,6 +29,8 @@ java {
     }
 }
 
+val ktlint by configurations.creating
+
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
 
@@ -55,12 +57,17 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2")
 
+    ktlint("com.pinterest:ktlint:0.43.2") {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+        }
+    }
 }
 
 tasks.test {
     useJUnitPlatform()
     testLogging {
-        outputs.upToDateWhen {false}
+        outputs.upToDateWhen { false }
         showStandardStreams = true
     }
 }
@@ -130,33 +137,67 @@ publishing {
     }
     repositories {
         maven {
-            val releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            val releasesRepoUrl =
+                "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
             val snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             // def releasesRepoUrl = layout.buildDirectory.dir('repos/releases')
             // def snapshotsRepoUrl = layout.buildDirectory.dir('repos/snapshots')
-            url = uri(if(version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+            url = uri(
+                if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+            )
             credentials {
-                username = if(project.hasProperty("ossrhUsername")) project.property("ossrhUsername") as String? else System.getenv("OSSRH_USERNAME")
-                password = if(project.hasProperty("ossrhPassword")) project.property("ossrhPassword") as String? else System.getenv("OSSRH_TOKEN")
+                username =
+                    if (project.hasProperty("ossrhUsername")) project.property("ossrhUsername") as String? else System.getenv(
+                        "OSSRH_USERNAME"
+                    )
+                password =
+                    if (project.hasProperty("ossrhPassword")) project.property("ossrhPassword") as String? else System.getenv(
+                        "OSSRH_TOKEN"
+                    )
             }
         }
     }
 }
 
 signing {
-    if(project.hasProperty("signing.keyId")) {
-      sign(publishing.publications["mavenJava"])
+    if (project.hasProperty("signing.keyId")) {
+        sign(publishing.publications["mavenJava"])
     } else {
-      val signingKey = System.getenv("OSSRH_GPG_SECRET_KEY")
-      val signingPassword = System.getenv("OSSRH_GPG_PASSWORD")
-      useInMemoryPgpKeys(signingKey, signingPassword)
-      sign(publishing.publications["mavenJava"])
+        val signingKey = System.getenv("OSSRH_GPG_SECRET_KEY")
+        val signingPassword = System.getenv("OSSRH_GPG_PASSWORD")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(publishing.publications["mavenJava"])
     }
 }
 
-
 tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
-    (options as StandardJavadocDocletOptions).links("https://docs.oracle.com/en/java/javase/11/docs/api/", "https://javadoc.io/doc/com.google.guava/guava/latest/")
+    (options as StandardJavadocDocletOptions).links(
+        "https://docs.oracle.com/en/java/javase/11/docs/api/",
+        "https://javadoc.io/doc/com.google.guava/guava/latest/"
+    )
     exclude("io/hstream/impl/**", "io/hstream/util/**")
+}
+
+val outputDir = "${project.buildDir}/reports/ktlint/"
+val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
+
+val ktlintCheck by tasks.creating(JavaExec::class) {
+    inputs.files(inputFiles)
+    outputs.dir(outputDir)
+
+    description = "Check Kotlin code style."
+    classpath = ktlint
+    main = "com.pinterest.ktlint.Main"
+    args = listOf("src/**/*.kt")
+}
+
+val ktlintFormat by tasks.creating(JavaExec::class) {
+    inputs.files(inputFiles)
+    outputs.dir(outputDir)
+
+    description = "Fix Kotlin code style deviations."
+    classpath = ktlint
+    main = "com.pinterest.ktlint.Main"
+    args = listOf("-F", "src/**/*.kt")
 }
