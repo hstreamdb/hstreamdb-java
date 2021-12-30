@@ -66,7 +66,13 @@ class ProducerKtImpl(
         return if (!enableBatch) {
             val future = CompletableFuture<RecordId>()
             writeHStreamRecords(listOf(hStreamRecord))
-                .handle<Any?> { recordIds: List<RecordId>, exception: Throwable? ->
+                // WARNING: Do not explicitly mark the type of 'recordIds'!
+                //          The first argument of handle is of type 'List<RecordId>!'.
+                //          If it is explicitly marked as 'List<RecordId>', a producer
+                //          will throw an exception but can not be handled because of
+                //          inconsistent type when it exhausts its retry times. This
+                //          causes the whole program to be stuck forever.
+                .handle<Any?> { recordIds, exception: Throwable? ->
                     if (exception == null) {
                         future.complete(recordIds[0])
                     } else {
@@ -88,7 +94,13 @@ class ProducerKtImpl(
                 val recordBufferCount = recordBuffer!!.size
                 logger.info("start flush recordBuffer, current buffer size is: {}", recordBufferCount)
                 writeHStreamRecords(recordBuffer)
-                    .handle<Any?> { recordIds: List<RecordId>, exception: Throwable? ->
+                    // WARNING: Do not explicitly mark the type of 'recordIds'!
+                    //          The first argument of handle is of type 'List<RecordId>!'.
+                    //          If it is explicitly marked as 'List<RecordId>', a producer
+                    //          will throw an exception but can not be handled because of
+                    //          inconsistent type when it exhausts its retry times. This
+                    //          causes the whole program to be stuck forever.
+                    .handle<Any?> { recordIds, exception: Throwable? ->
                         if (exception == null) {
                             for (i in recordIds.indices) {
                                 futures!![i].complete(recordIds[i])
