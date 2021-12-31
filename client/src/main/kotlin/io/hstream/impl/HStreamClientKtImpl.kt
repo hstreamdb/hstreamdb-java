@@ -6,10 +6,13 @@ import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.HStreamApiGrpcKt
 import io.hstream.util.GrpcUtils
+import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
 
 class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
+
+    private val logger = LoggerFactory.getLogger(HStreamClientKtImpl::class.java)
 
     companion object ConnectionManager {
         val channelProvider = ChannelProvider()
@@ -30,6 +33,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
 
     init {
 
+        logger.info("bootstrapServerUrls: {}", bootstrapServerUrls)
         val describeClusterResponse = unaryCallWithCurrentUrls(bootstrapServerUrls, channelProvider) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
         val serverNodes = describeClusterResponse.serverNodesList
         val serverUrls: ArrayList<String> = ArrayList(serverNodes.size)
@@ -37,6 +41,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
         for (serverNode in serverNodes) {
             val host = serverNode.host
             val port = serverNode.port
+            logger.info("serverUrl: {}", "$host:$port")
             serverUrls.add("$host:$port")
         }
 
