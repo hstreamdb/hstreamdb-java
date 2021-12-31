@@ -3,7 +3,7 @@ package io.hstream;
 import java.util.Objects;
 
 /** An object represents the id of received record. */
-public class RecordId {
+public class RecordId implements Comparable<RecordId> {
 
   private long batchId;
   private int batchIndex;
@@ -49,5 +49,14 @@ public class RecordId {
   @Override
   public String toString() {
     return "RecordId{" + "batchId=" + batchId + ", batchIndex=" + batchIndex + '}';
+  }
+
+  @Override
+  public int compareTo(RecordId o) {
+    if (batchId == o.batchId) {
+      return Integer.compare(batchIndex, o.batchIndex);
+    } else {
+      return Long.compare(batchId, o.batchId);
+    }
   }
 }

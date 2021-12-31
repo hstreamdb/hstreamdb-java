@@ -6,15 +6,21 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.future
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
 
+val logger: Logger = LoggerFactory.getLogger("kt-coroutine-utils")
+
 suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
+    logger.info("unaryCallWithCurrentUrl urls are {}", serverUrls)
     for (i in serverUrls.indices) {
         val stub = HStreamApiCoroutineStub(channelProvider.get(serverUrls[i]))
         try {
             return call(stub)
         } catch (e: Exception) {
+            logger.warn("unaryCallWithCurrentUrl with url {} error", serverUrls[i], e)
             if (i == serverUrls.size - 1) {
                 throw e
             }
@@ -27,6 +33,7 @@ suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, c
 }
 
 suspend fun refreshClusterInfo(serverUrls: List<String>, channelProvider: ChannelProvider): List<String> {
+    logger.info("refresh cluster info with urls: {}", serverUrls)
     return unaryCallWithCurrentUrlsCoroutine(serverUrls, channelProvider) {
         val resp = it.describeCluster(Empty.getDefaultInstance())
         val serverNodes = resp.serverNodesList
@@ -44,9 +51,12 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
     val urls = urlsRef.get()
     check(urls.isNotEmpty())
 
+    logger.info("unary call, urls are {}", urls)
+
     try {
         return call(HStreamApiCoroutineStub(channelProvider.get(urls[0])))
     } catch (e: Exception) {
+        logger.warn("unary call error for url: {}", urls[0], e)
         if (urls.size > 1) {
             val newServerUrls = refreshClusterInfo(urls.subList(1, urls.size), channelProvider)
             urlsRef.compareAndSet(urls, newServerUrls)

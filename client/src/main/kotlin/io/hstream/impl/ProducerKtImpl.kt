@@ -49,7 +49,9 @@ class ProducerKtImpl(
     }
 
     private fun refreshServerUrl() {
+        logger.info("producer will refreshServerUrl, current url is {}", serverUrlRef.get())
         serverUrlRef.set(lookupServerUrl())
+        logger.info("producer refreshed serverUrl, now url is {}", serverUrlRef.get())
     }
 
     override fun write(rawRecord: ByteArray): CompletableFuture<RecordId> {
@@ -66,7 +68,13 @@ class ProducerKtImpl(
         return if (!enableBatch) {
             val future = CompletableFuture<RecordId>()
             writeHStreamRecords(listOf(hStreamRecord))
-                .handle<Any?> { recordIds: List<RecordId>, exception: Throwable? ->
+                // WARNING: Do not explicitly mark the type of 'recordIds'!
+                //          The first argument of handle is of type 'List<RecordId>!'.
+                //          If it is explicitly marked as 'List<RecordId>', a producer
+                //          will throw an exception but can not be handled because of
+                //          inconsistent type when it exhausts its retry times. This
+                //          causes the whole program to be stuck forever.
+                .handle<Any?> { recordIds, exception: Throwable? ->
                     if (exception == null) {
                         future.complete(recordIds[0])
                     } else {
@@ -88,7 +96,13 @@ class ProducerKtImpl(
                 val recordBufferCount = recordBuffer!!.size
                 logger.info("start flush recordBuffer, current buffer size is: {}", recordBufferCount)
                 writeHStreamRecords(recordBuffer)
-                    .handle<Any?> { recordIds: List<RecordId>, exception: Throwable? ->
+                    // WARNING: Do not explicitly mark the type of 'recordIds'!
+                    //          The first argument of handle is of type 'List<RecordId>!'.
+                    //          If it is explicitly marked as 'List<RecordId>', a producer
+                    //          will throw an exception but can not be handled because of
+                    //          inconsistent type when it exhausts its retry times. This
+                    //          causes the whole program to be stuck forever.
+                    .handle<Any?> { recordIds, exception: Throwable? ->
                         if (exception == null) {
                             for (i in recordIds.indices) {
                                 futures!![i].complete(recordIds[i])
@@ -119,11 +133,13 @@ class ProducerKtImpl(
             serverUrl = serverUrlRef.get()
         }
         checkNotNull(serverUrl)
+        logger.info("appendWithRetry tryTimes is {}, serverUrl is {}", tryTimes, serverUrl)
         try {
             return HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
                 .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
         } catch (e: Exception) {
             if (tryTimes == 1) {
+                logger.warn("appendWithRetry finish with error", e)
                 throw e
             } else {
                 delay(1000)
