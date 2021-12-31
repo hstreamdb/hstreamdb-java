@@ -42,9 +42,7 @@ class ConsumerKtImpl(
     private suspend fun streamingFetchWithRetry(requestFlow: Flow<StreamingFetchRequest>) {
         if (!isRunning) return
         check(serverUrl != null)
-        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(
-            HStreamClientKtImpl.channelProvider.get(serverUrl)
-        )
+        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
         try {
             stub.streamingFetch(requestFlow).collect {
                 process(it)
@@ -52,13 +50,17 @@ class ConsumerKtImpl(
         } catch (e: Exception) {
             logger.error("streamingFetch error: ", e)
             val status = Status.fromThrowable(e)
-            if (status == Status.UNAVAILABLE) {
+            // WARNING: Use status.code to make comparison because 'Status' contains
+            //          extra information which varies from objects to objects.
+
+            // 'status example':     Status{code=UNAVAILABLE, description=Connection closed
+            //                       after GOAWAY. HTTP/2 error code: NO_ERROR, debug data:
+            //                       Server shutdown, cause=null}
+            // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
+            if (status.code == Status.UNAVAILABLE.code) {
                 delay(3000)
                 serverUrl = HStreamClientKtImpl.unaryCallCoroutine {
-                    val serverNode = it.lookupSubscription(
-                        LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId)
-                            .build()
-                    ).serverNode
+                    val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
                     return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
                 }
                 streamingFetchWithRetry(requestFlow)
@@ -87,10 +89,7 @@ class ConsumerKtImpl(
                 if (RecordUtils.isRawRecord(receivedRecord)) {
                     logger.info("ready to process rawRecord")
                     try {
-                        rawRecordReceiver!!.processRawRecord(
-                            toReceivedRawRecord(receivedRecord),
-                            responder
-                        )
+                        rawRecordReceiver!!.processRawRecord(toReceivedRawRecord(receivedRecord), responder)
                         logger.info("process rawRecord {} done", receivedRecord.recordId)
                     } catch (e: Exception) {
                         logger.error("process rawRecord error", e)
@@ -112,9 +111,7 @@ class ConsumerKtImpl(
 
     private fun lookupServerUrl(): String {
         return HStreamClientKtImpl.unaryCall {
-            val serverNode = it.lookupSubscription(
-                LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()
-            ).serverNode
+            val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
             return@unaryCall "${serverNode.host}:${serverNode.port}"
         }
     }
@@ -172,10 +169,7 @@ class ConsumerKtImpl(
                     GrpcUtils.recordIdFromGrpc(receivedRecord.recordId), rawRecord
                 )
             } catch (e: InvalidProtocolBufferException) {
-                throw HStreamDBClientException.InvalidRecordException(
-                    "parse HStreamRecord error",
-                    e
-                )
+                throw HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e)
             }
         }
 
@@ -185,10 +179,7 @@ class ConsumerKtImpl(
                 val hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord)
                 ReceivedHRecord(GrpcUtils.recordIdFromGrpc(receivedRecord.recordId), hRecord)
             } catch (e: InvalidProtocolBufferException) {
-                throw HStreamDBClientException.InvalidRecordException(
-                    "parse HStreamRecord error",
-                    e
-                )
+                throw HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e)
             }
         }
     }
