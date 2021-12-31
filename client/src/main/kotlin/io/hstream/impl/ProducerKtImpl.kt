@@ -49,7 +49,9 @@ class ProducerKtImpl(
     }
 
     private fun refreshServerUrl() {
+        logger.info("producer will refreshServerUrl, current url is {}", serverUrlRef.get())
         serverUrlRef.set(lookupServerUrl())
+        logger.info("producer refreshed serverUrl, now url is {}", serverUrlRef.get())
     }
 
     override fun write(rawRecord: ByteArray): CompletableFuture<RecordId> {
@@ -131,11 +133,13 @@ class ProducerKtImpl(
             serverUrl = serverUrlRef.get()
         }
         checkNotNull(serverUrl)
+        logger.info("appendWithRetry tryTimes is {}, serverUrl is {}", tryTimes, serverUrl)
         try {
             return HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
                 .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
         } catch (e: Exception) {
             if (tryTimes == 1) {
+                logger.warn("appendWithRetry finish with error", e)
                 throw e
             } else {
                 delay(1000)
