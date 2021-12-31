@@ -39,7 +39,14 @@ class ConsumerKtImpl(
         } catch (e: Exception) {
             logger.error("streamingFetch error: ", e)
             val status = Status.fromThrowable(e)
-            if(status == Status.UNAVAILABLE) {
+            // WARNING: Use status.code to make comparison because 'Status' contains
+            //          extra information which varies from objects to objects.
+
+            // 'status example':     Status{code=UNAVAILABLE, description=Connection closed
+            //                       after GOAWAY. HTTP/2 error code: NO_ERROR, debug data:
+            //                       Server shutdown, cause=null}
+            // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
+            if(status.code == Status.UNAVAILABLE.code) {
                 delay(3000)
                 serverUrl = HStreamClientKtImpl.unaryCallCoroutine {
                     val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
