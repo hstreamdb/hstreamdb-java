@@ -1,7 +1,12 @@
 package io.hstream.impl
 
 import com.google.protobuf.Empty
-import io.hstream.*
+import io.hstream.ConsumerBuilder
+import io.hstream.HStreamClient
+import io.hstream.ProducerBuilder
+import io.hstream.QueryerBuilder
+import io.hstream.Stream
+import io.hstream.Subscription
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.HStreamApiGrpcKt
@@ -44,16 +49,14 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
             logger.info("serverUrl: {}", "$host:$port")
             serverUrls.add("$host:$port")
         }
-
     }
-
 
     override fun close() {
         channelProvider.close()
     }
 
     override fun newProducer(): ProducerBuilder {
-        return ProducerBuilderImpl(clusterServerUrls, channelProvider);
+        return ProducerBuilderImpl(clusterServerUrls, channelProvider)
     }
 
     override fun newConsumer(): ConsumerBuilder {
@@ -65,7 +68,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
     }
 
     override fun createStream(stream: String?) {
-        createStream(stream, 1);
+        createStream(stream, 1)
     }
 
     override fun createStream(stream: String?, replicationFactor: Short) {
@@ -77,7 +80,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
 
     override fun deleteStream(stream: String?) {
 
-        val deleteStreamRequest = DeleteStreamRequest.newBuilder().setStreamName(stream).build();
+        val deleteStreamRequest = DeleteStreamRequest.newBuilder().setStreamName(stream).build()
         unaryCall { it.deleteStream(deleteStreamRequest) }
     }
 
@@ -97,5 +100,4 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
     override fun deleteSubscription(subscriptionId: String?) {
         return unaryCall { it.deleteSubscription(DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()) }
     }
-
 }
