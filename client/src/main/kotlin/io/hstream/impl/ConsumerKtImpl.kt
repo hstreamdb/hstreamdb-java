@@ -18,11 +18,13 @@ import io.hstream.internal.StreamingFetchResponse
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.future.future
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
@@ -44,8 +46,24 @@ class ConsumerKtImpl(
         check(serverUrl != null)
         val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
         try {
-            stub.streamingFetch(requestFlow).collect {
-                process(it)
+            // Send a init request when connecting to a new node.
+            val initRequest = StreamingFetchRequest.newBuilder()
+                .setSubscriptionId(subscriptionId)
+                .setConsumerName(consumerName)
+                .build()
+            // wait until stub.streamingFetch called
+            coroutineScope {
+                launch {
+                    while (ackFlow.subscriptionCount.value == 0) {
+                        delay(100)
+                    }
+                    ackFlow.emit(initRequest)
+                }
+                launch {
+                    stub.streamingFetch(requestFlow).collect {
+                        process(it)
+                    }
+                }
             }
         } catch (e: Exception) {
             logger.error("streamingFetch error: ", e)
@@ -126,15 +144,6 @@ class ConsumerKtImpl(
             refreshServerUrl()
             notifyStarted()
             streamingFetchFuture = GlobalScope.future { streamingFetchWithRetry(ackFlow) }
-            // wait until stub.streamingFetch called
-            while (ackFlow.subscriptionCount.value == 0) {
-                Thread.sleep(100)
-            }
-            val initRequest = StreamingFetchRequest.newBuilder()
-                .setSubscriptionId(subscriptionId)
-                .setConsumerName(consumerName)
-                .build()
-            GlobalScope.future { ackFlow.emit(initRequest) }.join()
             logger.info("consumer {} is started", consumerName)
         }.start()
     }
