@@ -42,13 +42,14 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
         val describeClusterResponse = unaryCallWithCurrentUrls(bootstrapServerUrls, channelProvider) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
         val serverNodes = describeClusterResponse.serverNodesList
         val serverUrls: ArrayList<String> = ArrayList(serverNodes.size)
-        clusterServerUrls.compareAndSet(null, serverUrls)
+        clusterServerUrls.set(serverUrls)
         for (serverNode in serverNodes) {
             val host = serverNode.host
             val port = serverNode.port
             logger.info("serverUrl: {}", "$host:$port")
             serverUrls.add("$host:$port")
         }
+        logger.info("clusterServerUrls: {}", clusterServerUrls.get())
     }
 
     override fun close() {
