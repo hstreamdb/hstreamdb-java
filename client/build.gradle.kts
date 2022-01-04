@@ -57,12 +57,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2")
-
-    // ktlint("com.pinterest:ktlint:0.43.2") {
-    //     attributes {
-    //         attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
-    //     }
-    // }
 }
 
 tasks.test {
