@@ -142,7 +142,7 @@ class ProducerKtImpl(
                 logger.warn("appendWithRetry finish with error", e)
                 throw e
             } else {
-                delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS)
+                delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                 refreshServerUrl()
                 return appendWithRetry(appendRequest, tryTimes - 1)
             }
