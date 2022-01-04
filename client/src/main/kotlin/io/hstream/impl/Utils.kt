@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicReference
 val logger: Logger = LoggerFactory.getLogger("kt-coroutine-utils")
 
 suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
+    check(serverUrls.isNotEmpty())
     logger.info("unaryCallWithCurrentUrl urls are {}", serverUrls)
     for (i in serverUrls.indices) {
         val stub = HStreamApiCoroutineStub(channelProvider.get(serverUrls[i]))
@@ -58,8 +59,11 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
     } catch (e: Exception) {
         logger.warn("unary call error for url: {}", urls[0], e)
         if (urls.size > 1) {
+            logger.info("before refreshClusterInfo, urls are {}", urls)
             val newServerUrls = refreshClusterInfo(urls.subList(1, urls.size), channelProvider)
-            urlsRef.compareAndSet(urls, newServerUrls)
+            // urlsRef.compareAndSet(urls, newServerUrls)
+            urlsRef.set(newServerUrls)
+            logger.info("after refreshClusterInfo, urls are {}", urlsRef.get())
             return unaryCallWithCurrentUrlsCoroutine(urlsRef.get(), channelProvider, call)
         } else {
             throw e
