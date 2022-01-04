@@ -142,7 +142,7 @@ class ProducerKtImpl(
                 logger.warn("appendWithRetry finish with error", e)
                 throw e
             } else {
-                delay(1000)
+                delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS)
                 refreshServerUrl()
                 return appendWithRetry(appendRequest, tryTimes - 1)
             }
@@ -154,7 +154,7 @@ class ProducerKtImpl(
         hStreamRecords: List<HStreamRecord>?
     ): CompletableFuture<List<RecordId>> {
         val appendRequest = AppendRequest.newBuilder().setStreamName(stream).addAllRecords(hStreamRecords).build()
-        return GlobalScope.future { appendWithRetry(appendRequest, 3) }
+        return GlobalScope.future { appendWithRetry(appendRequest, DefaultSettings.APPEND_RETRY_MAX_TIMES) }
     }
 
     private fun addToBuffer(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {

@@ -25,7 +25,7 @@ suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, c
                 throw e
             }
 
-            delay(1000)
+            delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
         }
     }
 

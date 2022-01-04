@@ -58,7 +58,7 @@ class ConsumerKtImpl(
             //                       Server shutdown, cause=null}
             // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
             if (status.code == Status.UNAVAILABLE.code) {
-                delay(3000)
+                delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                 serverUrl = HStreamClientKtImpl.unaryCallCoroutine {
                     val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
                     return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
