@@ -17,13 +17,11 @@ import io.hstream.internal.StreamingFetchRequest
 import io.hstream.internal.StreamingFetchResponse
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.future.future
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
@@ -143,7 +141,7 @@ class ConsumerKtImpl(
             logger.info("consumer {} is starting", consumerName)
             refreshServerUrl()
             notifyStarted()
-            streamingFetchFuture = GlobalScope.future { streamingFetchWithRetry(ackFlow) }
+            streamingFetchFuture = futureForIO { streamingFetchWithRetry(ackFlow) }
             logger.info("consumer {} is started", consumerName)
         }.start()
     }
