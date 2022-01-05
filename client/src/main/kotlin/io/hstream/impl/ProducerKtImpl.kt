@@ -11,7 +11,6 @@ import io.hstream.internal.LookupStreamRequest
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.future
 import org.slf4j.LoggerFactory
@@ -154,7 +153,7 @@ class ProducerKtImpl(
         hStreamRecords: List<HStreamRecord>?
     ): CompletableFuture<List<RecordId>> {
         val appendRequest = AppendRequest.newBuilder().setStreamName(stream).addAllRecords(hStreamRecords).build()
-        return GlobalScope.future { appendWithRetry(appendRequest, DefaultSettings.APPEND_RETRY_MAX_TIMES) }
+        return futureForIO { appendWithRetry(appendRequest, DefaultSettings.APPEND_RETRY_MAX_TIMES) }
     }
 
     private fun addToBuffer(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {

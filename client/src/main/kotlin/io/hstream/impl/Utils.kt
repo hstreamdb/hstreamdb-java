@@ -2,7 +2,9 @@ package io.hstream.impl
 
 import com.google.protobuf.Empty
 import io.hstream.internal.HStreamApiGrpcKt.HStreamApiCoroutineStub
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.future
@@ -71,25 +73,27 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
     }
 }
 
-@OptIn(DelicateCoroutinesApi::class)
 fun <Resp> unaryCallAsync(urlsRef: AtomicReference<List<String>>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
-    return GlobalScope.future { unaryCallCoroutine(urlsRef, channelProvider, call) }
+    return futureForIO { unaryCallCoroutine(urlsRef, channelProvider, call) }
 }
 
 fun <Resp> unaryCall(urls: AtomicReference<List<String>>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
     return unaryCallAsync(urls, channelProvider, call).join()
 }
 
-@OptIn(DelicateCoroutinesApi::class)
 fun <Resp> unaryCallWithCurrentUrlsAsync(urls: List<String>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
-    return GlobalScope.future { unaryCallWithCurrentUrlsCoroutine(urls, channelProvider, call) }
+    return futureForIO { unaryCallWithCurrentUrlsCoroutine(urls, channelProvider, call) }
 }
 
 fun <Resp> unaryCallWithCurrentUrls(urls: List<String>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
     return unaryCallWithCurrentUrlsAsync(urls, channelProvider, call).join()
 }
 
-@OptIn(DelicateCoroutinesApi::class)
 fun <Resp> unaryCallSimpleAsync(url: String, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
-    return GlobalScope.future { call(HStreamApiCoroutineStub(channelProvider.get(url))) }
+    return futureForIO { call(HStreamApiCoroutineStub(channelProvider.get(url))) }
+}
+
+@OptIn(DelicateCoroutinesApi::class)
+fun <T> futureForIO(block: suspend CoroutineScope.() -> T): CompletableFuture<T> {
+    return GlobalScope.future(context = Dispatchers.IO, block = block)
 }
