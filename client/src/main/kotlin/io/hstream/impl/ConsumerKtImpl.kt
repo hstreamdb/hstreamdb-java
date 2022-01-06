@@ -125,21 +125,28 @@ class ConsumerKtImpl(
         }
     }
 
-    private fun lookupServerUrl(): String {
-        return HStreamClientKtImpl.unaryCall {
+    private suspend fun lookupServerUrl(): String {
+        return HStreamClientKtImpl.unaryCallCoroutine {
             val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
-            return@unaryCall "${serverNode.host}:${serverNode.port}"
+            return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
         }
     }
 
-    private fun refreshServerUrl() {
+    private suspend fun refreshServerUrl() {
         serverUrl = lookupServerUrl()
+    }
+
+    private fun refreshServerUrlBlocked() {
+        serverUrl = HStreamClientKtImpl.unaryCallBlocked {
+            val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
+            return@unaryCallBlocked "${serverNode.host}:${serverNode.port}"
+        }
     }
 
     public override fun doStart() {
         Thread {
             logger.info("consumer {} is starting", consumerName)
-            refreshServerUrl()
+            refreshServerUrlBlocked()
             notifyStarted()
             streamingFetchFuture = futureForIO { streamingFetchWithRetry(ackFlow) }
             logger.info("consumer {} is started", consumerName)

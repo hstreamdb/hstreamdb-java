@@ -10,7 +10,6 @@ import io.hstream.internal.HStreamRecord
 import io.hstream.internal.LookupStreamRequest
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.future
 import org.slf4j.LoggerFactory
@@ -40,14 +39,14 @@ class ProducerKtImpl(
         }
     }
 
-    private fun lookupServerUrl(): String {
-        return HStreamClientKtImpl.unaryCall {
+    private suspend fun lookupServerUrl(): String {
+        return HStreamClientKtImpl.unaryCallCoroutine {
             val serverNode = it.lookupStream(LookupStreamRequest.newBuilder().setStreamName(stream).build()).serverNode
-            return@unaryCall "${serverNode.host}:${serverNode.port}"
+            return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
         }
     }
 
-    private fun refreshServerUrl() {
+    private suspend fun refreshServerUrl() {
         logger.info("producer will refreshServerUrl, current url is {}", serverUrlRef.get())
         serverUrlRef.set(lookupServerUrl())
         logger.info("producer refreshed serverUrl, now url is {}", serverUrlRef.get())
@@ -148,7 +147,6 @@ class ProducerKtImpl(
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun writeHStreamRecords(
         hStreamRecords: List<HStreamRecord>?
     ): CompletableFuture<List<RecordId>> {

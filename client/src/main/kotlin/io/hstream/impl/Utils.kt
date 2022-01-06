@@ -1,17 +1,20 @@
 package io.hstream.impl
 
+import com.google.common.util.concurrent.MoreExecutors
 import com.google.protobuf.Empty
 import io.hstream.internal.HStreamApiGrpcKt.HStreamApiCoroutineStub
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.future
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.coroutines.CoroutineContext
 
 val logger: Logger = LoggerFactory.getLogger("kt-coroutine-utils")
 
@@ -63,7 +66,6 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
         if (urls.size > 1) {
             logger.info("before refreshClusterInfo, urls are {}", urls)
             val newServerUrls = refreshClusterInfo(urls.subList(1, urls.size), channelProvider)
-            // urlsRef.compareAndSet(urls, newServerUrls)
             urlsRef.set(newServerUrls)
             logger.info("after refreshClusterInfo, urls are {}", urlsRef.get())
             return unaryCallWithCurrentUrlsCoroutine(urlsRef.get(), channelProvider, call)
@@ -77,8 +79,9 @@ fun <Resp> unaryCallAsync(urlsRef: AtomicReference<List<String>>, channelProvide
     return futureForIO { unaryCallCoroutine(urlsRef, channelProvider, call) }
 }
 
-fun <Resp> unaryCall(urls: AtomicReference<List<String>>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
-    return unaryCallAsync(urls, channelProvider, call).join()
+// warning: this method will block current thread. Don not call this in suspend functions, use unaryCallCoroutine instead!
+fun <Resp> unaryCallBlocked(urlsRef: AtomicReference<List<String>>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
+    return futureForIO(MoreExecutors.directExecutor().asCoroutineDispatcher()) { unaryCallCoroutine(urlsRef, channelProvider, call) }.join()
 }
 
 fun <Resp> unaryCallWithCurrentUrlsAsync(urls: List<String>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
@@ -89,11 +92,7 @@ fun <Resp> unaryCallWithCurrentUrls(urls: List<String>, channelProvider: Channel
     return unaryCallWithCurrentUrlsAsync(urls, channelProvider, call).join()
 }
 
-fun <Resp> unaryCallSimpleAsync(url: String, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
-    return futureForIO { call(HStreamApiCoroutineStub(channelProvider.get(url))) }
-}
-
 @OptIn(DelicateCoroutinesApi::class)
-fun <T> futureForIO(block: suspend CoroutineScope.() -> T): CompletableFuture<T> {
-    return GlobalScope.future(context = Dispatchers.IO, block = block)
+fun <T> futureForIO(context: CoroutineContext = Dispatchers.Default, block: suspend CoroutineScope.() -> T): CompletableFuture<T> {
+    return GlobalScope.future(context = context, block = block)
 }

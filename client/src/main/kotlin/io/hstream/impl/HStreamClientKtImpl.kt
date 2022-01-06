@@ -27,8 +27,9 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
             return unaryCallAsync(clusterServerUrls, channelProvider, call)
         }
 
-        fun <Resp> unaryCall(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
-            return unaryCall(clusterServerUrls, channelProvider, call)
+        // warning: this method will block current thread. Don not call this in suspend functions, use unaryCallCoroutine instead!
+        fun <Resp> unaryCallBlocked(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
+            return unaryCallBlocked(clusterServerUrls, channelProvider, call)
         }
 
         suspend fun <Resp> unaryCallCoroutine(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
@@ -76,29 +77,29 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
         checkNotNull(stream)
         check(replicationFactor in 1..15)
 
-        unaryCall { it.createStream(GrpcUtils.streamToGrpc(Stream(stream, replicationFactor.toInt()))) }
+        unaryCallBlocked { it.createStream(GrpcUtils.streamToGrpc(Stream(stream, replicationFactor.toInt()))) }
     }
 
     override fun deleteStream(stream: String?) {
 
         val deleteStreamRequest = DeleteStreamRequest.newBuilder().setStreamName(stream).build()
-        unaryCall { it.deleteStream(deleteStreamRequest) }
+        unaryCallBlocked { it.deleteStream(deleteStreamRequest) }
     }
 
     override fun listStreams(): List<Stream> {
-        val listStreamsResponse = unaryCall { it.listStreams(Empty.getDefaultInstance()) }
+        val listStreamsResponse = unaryCallBlocked { it.listStreams(Empty.getDefaultInstance()) }
         return listStreamsResponse.streamsList.map(GrpcUtils::streamFromGrpc)
     }
 
     override fun createSubscription(subscription: Subscription?) {
-        unaryCall { it.createSubscription(GrpcUtils.subscriptionToGrpc(subscription)) }
+        unaryCallBlocked { it.createSubscription(GrpcUtils.subscriptionToGrpc(subscription)) }
     }
 
     override fun listSubscriptions(): List<Subscription> {
-        return unaryCall { it.listSubscriptions(Empty.getDefaultInstance()).subscriptionList.map(GrpcUtils::subscriptionFromGrpc) }
+        return unaryCallBlocked { it.listSubscriptions(Empty.getDefaultInstance()).subscriptionList.map(GrpcUtils::subscriptionFromGrpc) }
     }
 
     override fun deleteSubscription(subscriptionId: String?) {
-        return unaryCall { it.deleteSubscription(DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()) }
+        return unaryCallBlocked { it.deleteSubscription(DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()) }
     }
 }
