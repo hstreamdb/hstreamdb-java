@@ -39,7 +39,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
 
     init {
 
-        logger.info("bootstrapServerUrls: {}", bootstrapServerUrls)
+        logger.info("client init with bootstrapServerUrls [{}]", bootstrapServerUrls)
         val describeClusterResponse = unaryCallWithCurrentUrls(bootstrapServerUrls, channelProvider) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
         val serverNodes = describeClusterResponse.serverNodesList
         val serverUrls: ArrayList<String> = ArrayList(serverNodes.size)
@@ -47,10 +47,9 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
         for (serverNode in serverNodes) {
             val host = serverNode.host
             val port = serverNode.port
-            logger.info("serverUrl: {}", "$host:$port")
             serverUrls.add("$host:$port")
         }
-        logger.info("clusterServerUrls: {}", clusterServerUrls.get())
+        logger.info("update clusterServerUrls to [{}]", clusterServerUrls.get())
     }
 
     override fun close() {

@@ -49,9 +49,9 @@ class ProducerKtImpl(
     }
 
     private suspend fun refreshServerUrl() {
-        logger.info("producer will refreshServerUrl, current url is {}", serverUrlRef.get())
+        logger.info("producer will refreshServerUrl, current url is [{}]", serverUrlRef.get())
         serverUrlRef.set(lookupServerUrl())
-        logger.info("producer refreshed serverUrl, now url is {}", serverUrlRef.get())
+        logger.info("producer refreshed serverUrl, now url is [{}]", serverUrlRef.get())
     }
 
     override fun write(rawRecord: ByteArray): CompletableFuture<RecordId> {
@@ -94,7 +94,7 @@ class ProducerKtImpl(
                 return
             } else {
                 val recordBufferCount = recordBuffer!!.size
-                logger.info("start flush recordBuffer, current buffer size is: {}", recordBufferCount)
+                logger.info("ready to flush recordBuffer, current buffer size is [{}]", recordBufferCount)
                 writeHStreamRecords(recordBuffer)
                     // WARNING: Do not explicitly mark the type of 'recordIds'!
                     //          The first argument of handle is of type 'List<RecordId>!'.
@@ -117,7 +117,7 @@ class ProducerKtImpl(
                     .join()
                 recordBuffer!!.clear()
                 futures!!.clear()
-                logger.info("finish clearing record buffer")
+                logger.info("flush the record buffer successfully")
                 semaphore!!.release(recordBufferCount)
             }
         } finally {
@@ -133,11 +133,12 @@ class ProducerKtImpl(
             serverUrl = serverUrlRef.get()
         }
         checkNotNull(serverUrl)
-        logger.info("appendWithRetry tryTimes is {}, serverUrl is {}", tryTimes, serverUrl)
+        logger.info("try append with serverUrl [{}], current left tryTimes is [{}]", serverUrl, tryTimes)
         try {
             return HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
                 .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
         } catch (e: StatusRuntimeException) {
+            logger.error("append with serverUrl [{}] error", serverUrl, e)
             val status = Status.fromThrowable(e)
             if (status.code == Status.UNAVAILABLE.code && tryTimes > 1) {
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)

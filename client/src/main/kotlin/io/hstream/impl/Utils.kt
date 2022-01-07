@@ -19,22 +19,23 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.CoroutineContext
 
-val logger: Logger = LoggerFactory.getLogger("kt-coroutine-utils")
+val logger: Logger = LoggerFactory.getLogger("io.hstream.impl.Utils")
 
 suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
     check(serverUrls.isNotEmpty())
-    logger.info("unaryCallWithCurrentUrl urls are {}", serverUrls)
+    logger.debug("call unaryCallWithCurrentUrlsCoroutine with urls [{}]", serverUrls)
     for (i in serverUrls.indices) {
         val stub = HStreamApiCoroutineStub(channelProvider.get(serverUrls[i]))
         try {
             return call(stub)
         } catch (e: StatusRuntimeException) {
-            logger.warn("unaryCallWithCurrentUrl with url {} error", serverUrls[i], e)
+            logger.error("call unary rpc with url [{}] error", serverUrls[i], e)
             val status = Status.fromThrowable(e)
             if (status.code == Status.UNAVAILABLE.code) {
                 if (i == serverUrls.size - 1) {
                     throw HStreamDBClientException(e)
                 } else {
+                    logger.info("unary rpc will be retried with url [{}]", serverUrls[i + 1])
                     delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                     continue
                 }
@@ -48,7 +49,7 @@ suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, c
 }
 
 suspend fun refreshClusterInfo(serverUrls: List<String>, channelProvider: ChannelProvider): List<String> {
-    logger.info("refresh cluster info with urls: {}", serverUrls)
+    logger.info("ready to refresh cluster info with urls [{}]", serverUrls)
     return unaryCallWithCurrentUrlsCoroutine(serverUrls, channelProvider) {
         val resp = it.describeCluster(Empty.getDefaultInstance())
         val serverNodes = resp.serverNodesList
@@ -58,6 +59,7 @@ suspend fun refreshClusterInfo(serverUrls: List<String>, channelProvider: Channe
             val port = serverNode.port
             newServerUrls.add("$host:$port")
         }
+        logger.info("refreshClusterInfo gets new urls [{}]", serverUrls)
         return@unaryCallWithCurrentUrlsCoroutine newServerUrls
     }
 }
@@ -66,18 +68,16 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
     val urls = urlsRef.get()
     check(urls.isNotEmpty())
 
-    logger.info("unary call, urls are {}", urls)
+    logger.debug("unary rpc with urls [{}]", urls)
 
     try {
         return call(HStreamApiCoroutineStub(channelProvider.get(urls[0])))
     } catch (e: StatusRuntimeException) {
-        logger.warn("unary call error for url: {}", urls[0], e)
+        logger.error("unary rpc error with url [{}]", urls[0], e)
         val status = Status.fromThrowable(e)
         if (status.code == Status.UNAVAILABLE.code && urls.size > 1) {
-            logger.info("before refreshClusterInfo, urls are {}", urls)
             val newServerUrls = refreshClusterInfo(urls.subList(1, urls.size), channelProvider)
             urlsRef.set(newServerUrls)
-            logger.info("after refreshClusterInfo, urls are {}", urlsRef.get())
             return unaryCallWithCurrentUrlsCoroutine(urlsRef.get(), channelProvider, call)
         } else {
             throw HStreamDBClientException(e)
