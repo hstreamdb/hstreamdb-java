@@ -2,6 +2,9 @@ package io.hstream.impl
 
 import com.google.common.util.concurrent.MoreExecutors
 import com.google.protobuf.Empty
+import io.grpc.Status
+import io.grpc.StatusRuntimeException
+import io.hstream.HStreamDBClientException
 import io.hstream.internal.HStreamApiGrpcKt.HStreamApiCoroutineStub
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -25,13 +28,19 @@ suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, c
         val stub = HStreamApiCoroutineStub(channelProvider.get(serverUrls[i]))
         try {
             return call(stub)
-        } catch (e: Exception) {
+        } catch (e: StatusRuntimeException) {
             logger.warn("unaryCallWithCurrentUrl with url {} error", serverUrls[i], e)
-            if (i == serverUrls.size - 1) {
-                throw e
+            val status = Status.fromThrowable(e)
+            if (status.code == Status.UNAVAILABLE.code) {
+                if (i == serverUrls.size - 1) {
+                    throw HStreamDBClientException(e)
+                } else {
+                    delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
+                    continue
+                }
+            } else {
+                throw HStreamDBClientException(e)
             }
-
-            delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
         }
     }
 
@@ -61,16 +70,17 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
 
     try {
         return call(HStreamApiCoroutineStub(channelProvider.get(urls[0])))
-    } catch (e: Exception) {
+    } catch (e: StatusRuntimeException) {
         logger.warn("unary call error for url: {}", urls[0], e)
-        if (urls.size > 1) {
+        val status = Status.fromThrowable(e)
+        if (status.code == Status.UNAVAILABLE.code && urls.size > 1) {
             logger.info("before refreshClusterInfo, urls are {}", urls)
             val newServerUrls = refreshClusterInfo(urls.subList(1, urls.size), channelProvider)
             urlsRef.set(newServerUrls)
             logger.info("after refreshClusterInfo, urls are {}", urlsRef.get())
             return unaryCallWithCurrentUrlsCoroutine(urlsRef.get(), channelProvider, call)
         } else {
-            throw e
+            throw HStreamDBClientException(e)
         }
     }
 }
