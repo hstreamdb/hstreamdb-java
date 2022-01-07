@@ -3,6 +3,7 @@ package io.hstream.impl
 import com.google.common.util.concurrent.AbstractService
 import com.google.protobuf.InvalidProtocolBufferException
 import io.grpc.Status
+import io.grpc.StatusRuntimeException
 import io.hstream.Consumer
 import io.hstream.HRecordReceiver
 import io.hstream.HStreamDBClientException
@@ -44,14 +45,14 @@ class ConsumerKtImpl(
         check(serverUrl != null)
         val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
         try {
-            // Send a init request when connecting to a new node.
+            // send an empty ack request to trigger streamingFetch.
             val initRequest = StreamingFetchRequest.newBuilder()
                 .setSubscriptionId(subscriptionId)
                 .setConsumerName(consumerName)
                 .build()
-            // wait until stub.streamingFetch called
             coroutineScope {
                 launch {
+                    // wait until stub.streamingFetch called
                     while (ackFlow.subscriptionCount.value == 0) {
                         delay(100)
                     }
@@ -63,8 +64,7 @@ class ConsumerKtImpl(
                     }
                 }
             }
-        } catch (e: Exception) {
-            logger.error("streamingFetch error: ", e)
+        } catch (e: StatusRuntimeException) {
             val status = Status.fromThrowable(e)
             // WARNING: Use status.code to make comparison because 'Status' contains
             //          extra information which varies from objects to objects.
@@ -74,14 +74,13 @@ class ConsumerKtImpl(
             //                       Server shutdown, cause=null}
             // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
             if (status.code == Status.UNAVAILABLE.code) {
+                logger.warn("streamingFetch failed：", e)
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                serverUrl = HStreamClientKtImpl.unaryCallCoroutine {
-                    val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
-                    return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
-                }
+                refreshServerUrl()
                 streamingFetchWithRetry(requestFlow)
             } else {
-                throw e
+                logger.error("streamingFetch error:", e)
+                notifyFailed(HStreamDBClientException(e))
             }
         }
     }
@@ -145,11 +144,16 @@ class ConsumerKtImpl(
 
     public override fun doStart() {
         Thread {
-            logger.info("consumer {} is starting", consumerName)
-            refreshServerUrlBlocked()
-            notifyStarted()
-            streamingFetchFuture = futureForIO { streamingFetchWithRetry(ackFlow) }
-            logger.info("consumer {} is started", consumerName)
+            try {
+                logger.info("consumer {} is starting", consumerName)
+                refreshServerUrlBlocked()
+                notifyStarted()
+                streamingFetchFuture = futureForIO { streamingFetchWithRetry(ackFlow) }
+                logger.info("consumer {} is started", consumerName)
+            } catch (e: Exception) {
+                logger.error("consumer {} failed to start", consumerName, e)
+                notifyFailed(HStreamDBClientException(e))
+            }
         }.start()
     }
 
