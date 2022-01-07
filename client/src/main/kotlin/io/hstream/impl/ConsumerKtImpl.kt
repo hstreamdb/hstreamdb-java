@@ -49,9 +49,9 @@ class ConsumerKtImpl(
                 .setSubscriptionId(subscriptionId)
                 .setConsumerName(consumerName)
                 .build()
-            // wait until stub.streamingFetch called
             coroutineScope {
                 launch {
+                    // wait until stub.streamingFetch called
                     while (ackFlow.subscriptionCount.value == 0) {
                         delay(100)
                     }
@@ -75,13 +75,10 @@ class ConsumerKtImpl(
             // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
             if (status.code == Status.UNAVAILABLE.code) {
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                serverUrl = HStreamClientKtImpl.unaryCallCoroutine {
-                    val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
-                    return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
-                }
+                refreshServerUrl()
                 streamingFetchWithRetry(requestFlow)
             } else {
-                throw e
+                notifyFailed(HStreamDBClientException(e))
             }
         }
     }
@@ -145,11 +142,16 @@ class ConsumerKtImpl(
 
     public override fun doStart() {
         Thread {
-            logger.info("consumer {} is starting", consumerName)
-            refreshServerUrlBlocked()
-            notifyStarted()
-            streamingFetchFuture = futureForIO { streamingFetchWithRetry(ackFlow) }
-            logger.info("consumer {} is started", consumerName)
+            try {
+                logger.info("consumer {} is starting", consumerName)
+                refreshServerUrlBlocked()
+                notifyStarted()
+                streamingFetchFuture = futureForIO { streamingFetchWithRetry(ackFlow) }
+                logger.info("consumer {} is started", consumerName)
+            } catch (e: Exception) {
+                logger.error("consumer {} failed to start", consumerName, e)
+                notifyFailed(HStreamDBClientException(e))
+            }
         }.start()
     }
 
