@@ -3,6 +3,7 @@ package io.hstream.impl
 import com.google.common.util.concurrent.AbstractService
 import com.google.protobuf.InvalidProtocolBufferException
 import io.grpc.Status
+import io.grpc.StatusRuntimeException
 import io.hstream.Consumer
 import io.hstream.HRecordReceiver
 import io.hstream.HStreamDBClientException
@@ -44,7 +45,7 @@ class ConsumerKtImpl(
         check(serverUrl != null)
         val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
         try {
-            // Send a init request when connecting to a new node.
+            // send an empty ack request to trigger streamingFetch.
             val initRequest = StreamingFetchRequest.newBuilder()
                 .setSubscriptionId(subscriptionId)
                 .setConsumerName(consumerName)
@@ -63,8 +64,7 @@ class ConsumerKtImpl(
                     }
                 }
             }
-        } catch (e: Exception) {
-            logger.error("streamingFetch error: ", e)
+        } catch (e: StatusRuntimeException) {
             val status = Status.fromThrowable(e)
             // WARNING: Use status.code to make comparison because 'Status' contains
             //          extra information which varies from objects to objects.
@@ -74,10 +74,12 @@ class ConsumerKtImpl(
             //                       Server shutdown, cause=null}
             // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
             if (status.code == Status.UNAVAILABLE.code) {
+                logger.warn("streamingFetch failed：", e)
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                 refreshServerUrl()
                 streamingFetchWithRetry(requestFlow)
             } else {
+                logger.error("streamingFetch error:", e)
                 notifyFailed(HStreamDBClientException(e))
             }
         }
