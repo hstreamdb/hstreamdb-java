@@ -65,6 +65,7 @@ class ConsumerKtImpl(
                 }
             }
         } catch (e: StatusRuntimeException) {
+            logger.error("streamingFetch error:", e)
             val status = Status.fromThrowable(e)
             // WARNING: Use status.code to make comparison because 'Status' contains
             //          extra information which varies from objects to objects.
@@ -74,12 +75,10 @@ class ConsumerKtImpl(
             //                       Server shutdown, cause=null}
             // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
             if (status.code == Status.UNAVAILABLE.code) {
-                logger.warn("streamingFetch failed：", e)
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                 refreshServerUrl()
                 streamingFetchWithRetry(requestFlow)
             } else {
-                logger.error("streamingFetch error:", e)
                 notifyFailed(HStreamDBClientException(e))
             }
         }
@@ -102,22 +101,22 @@ class ConsumerKtImpl(
                 }
 
                 if (RecordUtils.isRawRecord(receivedRecord)) {
-                    logger.info("ready to process rawRecord")
+                    logger.debug("consumer [{}] ready to process rawRecord [{}]", consumerName, receivedRecord.recordId)
                     try {
                         rawRecordReceiver!!.processRawRecord(toReceivedRawRecord(receivedRecord), responder)
-                        logger.info("process rawRecord {} done", receivedRecord.recordId)
+                        logger.debug("consumer [{}] processes rawRecord [{}] done", consumerName, receivedRecord.recordId)
                     } catch (e: Exception) {
-                        logger.error("process rawRecord error", e)
+                        logger.error("consumer [{}] processes rawRecord [{}] error", consumerName, receivedRecord.recordId, e)
                     }
                 } else {
-                    logger.info("ready to process hrecord")
+                    logger.debug("consumer [{}] ready to process hRecord [{}]", consumerName, receivedRecord.recordId)
                     try {
                         hRecordReceiver!!.processHRecord(
                             toReceivedHRecord(receivedRecord), responder
                         )
-                        logger.info("process hRecord {} done", receivedRecord.recordId)
+                        logger.debug("consumer [{}] processes hRecord [{}] done", consumerName, receivedRecord.recordId)
                     } catch (e: Exception) {
-                        logger.error("process hrecord error", e)
+                        logger.error("consumer [{}] processes hRecord [{}] error", consumerName, receivedRecord.recordId, e)
                     }
                 }
             }
@@ -145,13 +144,13 @@ class ConsumerKtImpl(
     public override fun doStart() {
         Thread {
             try {
-                logger.info("consumer {} is starting", consumerName)
+                logger.info("consumer [{}] is starting", consumerName)
                 refreshServerUrlBlocked()
                 notifyStarted()
                 streamingFetchFuture = futureForIO { streamingFetchWithRetry(ackFlow) }
-                logger.info("consumer {} is started", consumerName)
+                logger.info("consumer [{}] is started", consumerName)
             } catch (e: Exception) {
-                logger.error("consumer {} failed to start", consumerName, e)
+                logger.error("consumer [{}] failed to start", consumerName, e)
                 notifyFailed(HStreamDBClientException(e))
             }
         }.start()
@@ -159,20 +158,18 @@ class ConsumerKtImpl(
 
     public override fun doStop() {
         Thread {
-            logger.info("consumer {} is stopping", consumerName)
+            logger.info("consumer [{}] is stopping", consumerName)
 
             streamingFetchFuture.cancel(true)
             executorService.shutdown()
-            logger.info("run shutdown done")
             try {
-                executorService.awaitTermination(10, TimeUnit.SECONDS)
-                logger.info("await terminate done")
+                executorService.awaitTermination(30, TimeUnit.SECONDS)
             } catch (e: InterruptedException) {
-                logger.warn("wait timeout, consumer {} will be closed", consumerName)
+                logger.warn("consumer [{}] waits inner executor to be closed timeout", consumerName)
             }
 
             notifyStopped()
-            logger.info("consumer {} is stopped", consumerName)
+            logger.info("consumer [{}] is stopped", consumerName)
         }
             .start()
     }
