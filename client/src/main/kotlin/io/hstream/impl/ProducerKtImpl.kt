@@ -1,5 +1,7 @@
 package io.hstream.impl
 
+import io.grpc.Status
+import io.grpc.StatusRuntimeException
 import io.hstream.HRecord
 import io.hstream.HStreamDBClientException
 import io.hstream.Producer
@@ -135,14 +137,14 @@ class ProducerKtImpl(
         try {
             return HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
                 .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
-        } catch (e: Exception) {
-            if (tryTimes == 1) {
-                logger.warn("appendWithRetry finish with error", e)
-                throw e
-            } else {
+        } catch (e: StatusRuntimeException) {
+            val status = Status.fromThrowable(e)
+            if (status.code == Status.UNAVAILABLE.code && tryTimes > 1) {
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                 refreshServerUrl()
                 return appendWithRetry(appendRequest, tryTimes - 1)
+            } else {
+                throw HStreamDBClientException(e)
             }
         }
     }
