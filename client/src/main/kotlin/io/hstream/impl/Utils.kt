@@ -79,15 +79,20 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
 
     try {
         return call(HStreamApiCoroutineStub(channelProvider.get(urls[0])))
-    } catch (e: StatusRuntimeException) {
-        logger.error("unary rpc error with url [{}]", urls[0], e)
-        val status = Status.fromThrowable(e)
-        if (status.code == Status.UNAVAILABLE.code && urls.size > 1) {
-            val newServerUrls = refreshClusterInfo(urls.subList(1, urls.size), channelProvider)
-            urlsRef.set(newServerUrls)
-            return unaryCallWithCurrentUrlsCoroutine(urlsRef.get(), channelProvider, call)
-        } else {
-            throw HStreamDBClientException(e)
+    } catch (e: Exception) {
+        when (e) {
+            is StatusException, is StatusRuntimeException -> {
+                logger.error("unary rpc error with url [{}]", urls[0], e)
+                val status = Status.fromThrowable(e)
+                if (status.code == Status.UNAVAILABLE.code && urls.size > 1) {
+                    val newServerUrls = refreshClusterInfo(urls.subList(1, urls.size), channelProvider)
+                    urlsRef.set(newServerUrls)
+                    return unaryCallWithCurrentUrlsCoroutine(urlsRef.get(), channelProvider, call)
+                } else {
+                    throw HStreamDBClientException(e)
+                }
+            }
+            else -> throw e
         }
     }
 }
