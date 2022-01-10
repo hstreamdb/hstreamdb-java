@@ -3,6 +3,7 @@ package io.hstream.impl
 import com.google.common.util.concurrent.MoreExecutors
 import com.google.protobuf.Empty
 import io.grpc.Status
+import io.grpc.StatusException
 import io.grpc.StatusRuntimeException
 import io.hstream.HStreamDBClientException
 import io.hstream.internal.HStreamApiGrpcKt.HStreamApiCoroutineStub
@@ -28,19 +29,25 @@ suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, c
         val stub = HStreamApiCoroutineStub(channelProvider.get(serverUrls[i]))
         try {
             return call(stub)
-        } catch (e: StatusRuntimeException) {
-            logger.error("call unary rpc with url [{}] error", serverUrls[i], e)
-            val status = Status.fromThrowable(e)
-            if (status.code == Status.UNAVAILABLE.code) {
-                if (i == serverUrls.size - 1) {
-                    throw HStreamDBClientException(e)
-                } else {
-                    logger.info("unary rpc will be retried with url [{}]", serverUrls[i + 1])
-                    delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                    continue
+        } catch (e: Exception) {
+            // Note: a failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
+            when (e) {
+                is StatusException, is StatusRuntimeException -> {
+                    logger.error("call unary rpc with url [{}] error", serverUrls[i], e)
+                    val status = Status.fromThrowable(e)
+                    if (status.code == Status.UNAVAILABLE.code) {
+                        if (i == serverUrls.size - 1) {
+                            throw HStreamDBClientException(e)
+                        } else {
+                            logger.info("unary rpc will be retried with url [{}]", serverUrls[i + 1])
+                            delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
+                            continue
+                        }
+                    } else {
+                        throw HStreamDBClientException(e)
+                    }
                 }
-            } else {
-                throw HStreamDBClientException(e)
+                else -> throw e
             }
         }
     }

@@ -1,6 +1,7 @@
 package io.hstream.impl
 
 import io.grpc.Status
+import io.grpc.StatusException
 import io.grpc.StatusRuntimeException
 import io.hstream.HRecord
 import io.hstream.HStreamDBClientException
@@ -137,15 +138,21 @@ class ProducerKtImpl(
         try {
             return HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
                 .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
-        } catch (e: StatusRuntimeException) {
-            logger.error("append with serverUrl [{}] error", serverUrl, e)
-            val status = Status.fromThrowable(e)
-            if (status.code == Status.UNAVAILABLE.code && tryTimes > 1) {
-                delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                refreshServerUrl()
-                return appendWithRetry(appendRequest, tryTimes - 1)
-            } else {
-                throw HStreamDBClientException(e)
+        } catch (e: Exception) {
+            // Note: a failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
+            when (e) {
+                is StatusException, is StatusRuntimeException -> {
+                    logger.error("append with serverUrl [{}] error", serverUrl, e)
+                    val status = Status.fromThrowable(e)
+                    if (status.code == Status.UNAVAILABLE.code && tryTimes > 1) {
+                        delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
+                        refreshServerUrl()
+                        return appendWithRetry(appendRequest, tryTimes - 1)
+                    } else {
+                        throw HStreamDBClientException(e)
+                    }
+                }
+                else -> throw e
             }
         }
     }
