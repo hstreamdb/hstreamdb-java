@@ -3,6 +3,7 @@ package io.hstream.impl
 import com.google.common.util.concurrent.AbstractService
 import com.google.protobuf.InvalidProtocolBufferException
 import io.grpc.Status
+import io.grpc.StatusException
 import io.grpc.StatusRuntimeException
 import io.hstream.Consumer
 import io.hstream.HRecordReceiver
@@ -64,22 +65,28 @@ class ConsumerKtImpl(
                     }
                 }
             }
-        } catch (e: StatusRuntimeException) {
-            logger.error("streamingFetch error:", e)
-            val status = Status.fromThrowable(e)
-            // WARNING: Use status.code to make comparison because 'Status' contains
-            //          extra information which varies from objects to objects.
+        } catch (e: Exception) {
+            // Note: a failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
+            when (e) {
+                is StatusException, is StatusRuntimeException -> {
+                    logger.error("streamingFetch error:", e)
+                    val status = Status.fromThrowable(e)
+                    // WARNING: Use status.code to make comparison because 'Status' contains
+                    //          extra information which varies from objects to objects.
 
-            // 'status example':     Status{code=UNAVAILABLE, description=Connection closed
-            //                       after GOAWAY. HTTP/2 error code: NO_ERROR, debug data:
-            //                       Server shutdown, cause=null}
-            // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
-            if (status.code == Status.UNAVAILABLE.code) {
-                delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                refreshServerUrl()
-                streamingFetchWithRetry(requestFlow)
-            } else {
-                notifyFailed(HStreamDBClientException(e))
+                    // 'status example':     Status{code=UNAVAILABLE, description=Connection closed
+                    //                       after GOAWAY. HTTP/2 error code: NO_ERROR, debug data:
+                    //                       Server shutdown, cause=null}
+                    // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
+                    if (status.code == Status.UNAVAILABLE.code) {
+                        delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
+                        refreshServerUrl()
+                        streamingFetchWithRetry(requestFlow)
+                    } else {
+                        notifyFailed(HStreamDBClientException(e))
+                    }
+                }
+                else -> throw e
             }
         }
     }
