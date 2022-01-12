@@ -23,32 +23,34 @@ import kotlin.coroutines.CoroutineContext
 val logger: Logger = LoggerFactory.getLogger("io.hstream.impl.Utils")
 
 suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
+    // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
+    //       This function is for handling them.
+    suspend fun handleGRPCException(i: Int, e: Throwable) {
+        logger.error("call unary rpc with url [{}] error", serverUrls[i], e)
+        val status = Status.fromThrowable(e)
+        if (status.code == Status.UNAVAILABLE.code) {
+            if (i == serverUrls.size - 1) {
+                throw HStreamDBClientException(e)
+            } else {
+                logger.info("unary rpc will be retried with url [{}]", serverUrls[i + 1])
+                delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
+                return
+            }
+        } else {
+            throw HStreamDBClientException(e)
+        }
+    }
+
     check(serverUrls.isNotEmpty())
     logger.debug("call unaryCallWithCurrentUrlsCoroutine with urls [{}]", serverUrls)
     for (i in serverUrls.indices) {
         val stub = HStreamApiCoroutineStub(channelProvider.get(serverUrls[i]))
         try {
             return call(stub)
-        } catch (e: Exception) {
-            // Note: a failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
-            when (e) {
-                is StatusException, is StatusRuntimeException -> {
-                    logger.error("call unary rpc with url [{}] error", serverUrls[i], e)
-                    val status = Status.fromThrowable(e)
-                    if (status.code == Status.UNAVAILABLE.code) {
-                        if (i == serverUrls.size - 1) {
-                            throw HStreamDBClientException(e)
-                        } else {
-                            logger.info("unary rpc will be retried with url [{}]", serverUrls[i + 1])
-                            delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                            continue
-                        }
-                    } else {
-                        throw HStreamDBClientException(e)
-                    }
-                }
-                else -> throw e
-            }
+        } catch (e: StatusException) {
+            handleGRPCException(i, e)
+        } catch (e: StatusRuntimeException) {
+            handleGRPCException(i, e)
         }
     }
 
@@ -72,6 +74,20 @@ suspend fun refreshClusterInfo(serverUrls: List<String>, channelProvider: Channe
 }
 
 suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
+    // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
+    //       This function is for handling them.
+    suspend fun handleGRPCException(urls: List<String>, e: Throwable): Resp {
+        logger.error("unary rpc error with url [{}]", urls[0], e)
+        val status = Status.fromThrowable(e)
+        if (status.code == Status.UNAVAILABLE.code && urls.size > 1) {
+            val newServerUrls = refreshClusterInfo(urls.subList(1, urls.size), channelProvider)
+            urlsRef.set(newServerUrls)
+            return unaryCallWithCurrentUrlsCoroutine(urlsRef.get(), channelProvider, call)
+        } else {
+            throw HStreamDBClientException(e)
+        }
+    }
+
     val urls = urlsRef.get()
     check(urls.isNotEmpty())
 
@@ -79,21 +95,10 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
 
     try {
         return call(HStreamApiCoroutineStub(channelProvider.get(urls[0])))
-    } catch (e: Exception) {
-        when (e) {
-            is StatusException, is StatusRuntimeException -> {
-                logger.error("unary rpc error with url [{}]", urls[0], e)
-                val status = Status.fromThrowable(e)
-                if (status.code == Status.UNAVAILABLE.code && urls.size > 1) {
-                    val newServerUrls = refreshClusterInfo(urls.subList(1, urls.size), channelProvider)
-                    urlsRef.set(newServerUrls)
-                    return unaryCallWithCurrentUrlsCoroutine(urlsRef.get(), channelProvider, call)
-                } else {
-                    throw HStreamDBClientException(e)
-                }
-            }
-            else -> throw e
-        }
+    } catch (e: StatusException) {
+        return handleGRPCException(urls, e)
+    } catch (e: StatusRuntimeException) {
+        return handleGRPCException(urls, e)
     }
 }
 
