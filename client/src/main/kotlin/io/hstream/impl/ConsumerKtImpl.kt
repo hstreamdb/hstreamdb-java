@@ -58,6 +58,9 @@ class ConsumerKtImpl(
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                 refreshServerUrl()
                 streamingFetchWithRetry(requestFlow)
+            } else if (status.code == Status.CANCELLED.code) {
+                notifyStopped()
+                logger.info("consumer [{}] is stopped", consumerName)
             } else {
                 notifyFailed(HStreamDBClientException(e))
             }
