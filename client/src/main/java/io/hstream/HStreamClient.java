@@ -12,7 +12,12 @@ public interface HStreamClient extends AutoCloseable {
   }
 
   /** @return a {@link ProducerBuilder} */
+  @Deprecated
   ProducerBuilder newProducer();
+
+  Producer newProducer(String stream);
+
+  BufferedProducerBuilder newBufferedProducer(String stream);
 
   /** @return a {@link ConsumerBuilder} */
   ConsumerBuilder newConsumer();

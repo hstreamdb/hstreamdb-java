@@ -1,12 +1,7 @@
 package io.hstream.impl
 
 import com.google.protobuf.Empty
-import io.hstream.ConsumerBuilder
-import io.hstream.HStreamClient
-import io.hstream.ProducerBuilder
-import io.hstream.QueryerBuilder
-import io.hstream.Stream
-import io.hstream.Subscription
+import io.hstream.*
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.HStreamApiGrpcKt
@@ -58,6 +53,16 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
 
     override fun newProducer(): ProducerBuilder {
         return ProducerBuilderImpl(clusterServerUrls, channelProvider)
+    }
+
+    override fun newProducer(stream: String?): Producer {
+        checkNotNull(stream)
+        return ProducerKtImpl(stream)
+    }
+
+    override fun newBufferedProducer(stream: String?): BufferedProducerBuilder {
+        checkNotNull(stream)
+        return BufferedProducerBuilderImpl(stream)
     }
 
     override fun newConsumer(): ConsumerBuilder {

@@ -7,6 +7,7 @@ import io.hstream.ProducerBuilder;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+@Deprecated
 public class ProducerBuilderImpl implements ProducerBuilder {
 
   private String streamName;
@@ -45,6 +46,10 @@ public class ProducerBuilderImpl implements ProducerBuilder {
   @Override
   public Producer build() {
     checkNotNull(streamName);
-    return new ProducerKtImpl(streamName, enableBatch, recordCountLimit);
+    if (enableBatch) {
+      recordCountLimit = Math.max(recordCountLimit, 1);
+      return new BufferedProducerKtImpl(streamName, recordCountLimit, -1, -1);
+    }
+    return new ProducerKtImpl(streamName);
   }
 }

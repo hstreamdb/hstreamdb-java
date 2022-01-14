@@ -14,33 +14,12 @@ import io.hstream.internal.LookupStreamRequest
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.future.future
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Semaphore
 import java.util.concurrent.atomic.AtomicReference
-import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.ReentrantLock
 
-class ProducerKtImpl(
-    private val stream: String,
-    private val enableBatch: Boolean,
-    private val recordCountLimit: Int
-) : Producer {
-    private var semaphore: Semaphore? = null
-    private var lock: Lock? = null
-    private var recordBuffer: MutableList<HStreamRecord>? = null
-    private var futures: MutableList<CompletableFuture<RecordId>>? = null
+open class ProducerKtImpl(private val stream: String) : Producer {
     private val serverUrlRef: AtomicReference<String> = AtomicReference(null)
-
-    init {
-        if (enableBatch) {
-            semaphore = Semaphore(recordCountLimit)
-            lock = ReentrantLock()
-            recordBuffer = ArrayList(recordCountLimit)
-            futures = ArrayList(recordCountLimit)
-        }
-    }
 
     private suspend fun lookupServerUrl(): String {
         return HStreamClientKtImpl.unaryCallCoroutine {
@@ -65,65 +44,23 @@ class ProducerKtImpl(
         return writeInternal(hStreamRecord)
     }
 
-    private fun writeInternal(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
-        return if (!enableBatch) {
-            val future = CompletableFuture<RecordId>()
-            writeHStreamRecords(listOf(hStreamRecord))
-                // WARNING: Do not explicitly mark the type of 'recordIds'!
-                //          The first argument of handle is of type 'List<RecordId>!'.
-                //          If it is explicitly marked as 'List<RecordId>', a producer
-                //          will throw an exception but can not be handled because of
-                //          inconsistent type when it exhausts its retry times. This
-                //          causes the whole program to be stuck forever.
-                .handle<Any?> { recordIds, exception: Throwable? ->
-                    if (exception == null) {
-                        future.complete(recordIds[0])
-                    } else {
-                        future.completeExceptionally(exception)
-                    }
+    protected open fun writeInternal(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
+        val future = CompletableFuture<RecordId>()
+        writeHStreamRecords(listOf(hStreamRecord))
+            // WARNING: Do not explicitly mark the type of 'recordIds'!
+            //          The first argument of handle is of type 'List<RecordId>!'.
+            //          If it is explicitly marked as 'List<RecordId>', a producer
+            //          will throw an exception but can not be handled because of
+            //          inconsistent type when it exhausts its retry times. This
+            //          causes the whole program to be stuck forever.
+            .handle<Any?> { recordIds, exception: Throwable? ->
+                if (exception == null) {
+                    future.complete(recordIds[0])
+                } else {
+                    future.completeExceptionally(exception)
                 }
-            future
-        } else {
-            addToBuffer(hStreamRecord)
-        }
-    }
-
-    private fun flush() {
-        lock!!.lock()
-        try {
-            if (recordBuffer!!.isEmpty()) {
-                return
-            } else {
-                val recordBufferCount = recordBuffer!!.size
-                logger.info("ready to flush recordBuffer, current buffer size is [{}]", recordBufferCount)
-                writeHStreamRecords(recordBuffer)
-                    // WARNING: Do not explicitly mark the type of 'recordIds'!
-                    //          The first argument of handle is of type 'List<RecordId>!'.
-                    //          If it is explicitly marked as 'List<RecordId>', a producer
-                    //          will throw an exception but can not be handled because of
-                    //          inconsistent type when it exhausts its retry times. This
-                    //          causes the whole program to be stuck forever.
-                    .handle<Any?> { recordIds, exception: Throwable? ->
-                        if (exception == null) {
-                            for (i in recordIds.indices) {
-                                futures!![i].complete(recordIds[i])
-                            }
-                        } else {
-                            for (i in futures!!.indices) {
-                                futures!![i].completeExceptionally(exception)
-                            }
-                        }
-                        null
-                    }
-                    .join()
-                recordBuffer!!.clear()
-                futures!!.clear()
-                logger.info("flush the record buffer successfully")
-                semaphore!!.release(recordBufferCount)
             }
-        } finally {
-            lock!!.unlock()
-        }
+        return future
     }
 
     private suspend fun appendWithRetry(appendRequest: AppendRequest, tryTimes: Int): List<RecordId> {
@@ -157,31 +94,11 @@ class ProducerKtImpl(
         }
     }
 
-    private fun writeHStreamRecords(
+    protected fun writeHStreamRecords(
         hStreamRecords: List<HStreamRecord>?
     ): CompletableFuture<List<RecordId>> {
         val appendRequest = AppendRequest.newBuilder().setStreamName(stream).addAllRecords(hStreamRecords).build()
         return futureForIO { appendWithRetry(appendRequest, DefaultSettings.APPEND_RETRY_MAX_TIMES) }
-    }
-
-    private fun addToBuffer(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
-        try {
-            semaphore!!.acquire()
-        } catch (e: InterruptedException) {
-            throw HStreamDBClientException(e)
-        }
-        lock!!.lock()
-        return try {
-            val completableFuture = CompletableFuture<RecordId>()
-            recordBuffer!!.add(hStreamRecord)
-            futures!!.add(completableFuture)
-            if (recordBuffer!!.size == recordCountLimit) {
-                flush()
-            }
-            completableFuture
-        } finally {
-            lock!!.unlock()
-        }
     }
 
     companion object {
