@@ -12,12 +12,10 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
   private int maxBytesSize = 4096;
 
   public BufferedProducerBuilderImpl(String streamName) {
-      this.streamName = streamName;
+    this.streamName = streamName;
   }
 
-  /**
-   * @param recordCountLimit default value is 100, it can NOT be less than 1
-   */
+  /** @param recordCountLimit default value is 100, it can NOT be less than 1 */
   @Override
   public BufferedProducerBuilder recordCountLimit(int recordCountLimit) {
     this.recordCountLimit = recordCountLimit;
@@ -25,7 +23,8 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
   }
 
   /**
-   * @param flushIntervalMs set flushIntervalMs(milliseconds) > 0 to enable timed based flush strategy
+   * @param flushIntervalMs set flushIntervalMs(milliseconds) > 0 to enable timed based flush
+   *     strategy
    */
   @Override
   public BufferedProducerBuilder flushIntervalMs(long flushIntervalMs) {
@@ -33,9 +32,7 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
     return this;
   }
 
-  /**
-   * @param maxBytesSize default value is 4K(4096)
-   */
+  /** @param maxBytesSize default value is 4K(4096) */
   @Override
   public BufferedProducerBuilder maxBytesSize(int maxBytesSize) {
     this.maxBytesSize = maxBytesSize;

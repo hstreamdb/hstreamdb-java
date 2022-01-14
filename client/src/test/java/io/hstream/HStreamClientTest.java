@@ -200,10 +200,8 @@ public class HStreamClientTest {
   @Test
   @Order(4)
   public void testWriteBatchRawRecordMultiThread() throws Exception {
-    BufferedProducer producer = client.newBufferedProducer(testStreamName)
-            .recordCountLimit(10)
-            .flushIntervalMs(10)
-            .build();
+    BufferedProducer producer =
+        client.newBufferedProducer(testStreamName).recordCountLimit(10).flushIntervalMs(10).build();
     Random random = new Random();
     final int count = 100;
     CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
@@ -443,99 +441,99 @@ public class HStreamClientTest {
   @Test
   @Order(8)
   public void testWriteBatchRawRecordBasedTimer() throws Exception {
-      BufferedProducer producer = client.newBufferedProducer(testStreamName)
-              .recordCountLimit(100)
-              .flushIntervalMs(100)
-              .build();
-      Random random = new Random();
-      final int count = 10;
-      CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
-      for (int i = 0; i < count; ++i) {
-          byte[] rawRecord = new byte[100];
-          random.nextBytes(rawRecord);
-          CompletableFuture<RecordId> future = producer.write(rawRecord);
-          recordIdFutures[i] = future;
-      }
-      CompletableFuture.allOf(recordIdFutures).join();
+    BufferedProducer producer =
+        client
+            .newBufferedProducer(testStreamName)
+            .recordCountLimit(100)
+            .flushIntervalMs(100)
+            .build();
+    Random random = new Random();
+    final int count = 10;
+    CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
+    for (int i = 0; i < count; ++i) {
+      byte[] rawRecord = new byte[100];
+      random.nextBytes(rawRecord);
+      CompletableFuture<RecordId> future = producer.write(rawRecord);
+      recordIdFutures[i] = future;
+    }
+    CompletableFuture.allOf(recordIdFutures).join();
 
-      logger.info("producer finish");
-      producer.close();
+    logger.info("producer finish");
+    producer.close();
 
-      CountDownLatch latch = new CountDownLatch(1);
-      AtomicInteger index = new AtomicInteger();
-      Consumer consumer =
-              client
-                      .newConsumer()
-                      .subscription(testSubscriptionId)
-                      .rawRecordReceiver(
-                              (receivedRawRecord, responder) -> {
-                                  Assertions.assertEquals(
-                                          recordIdFutures[index.getAndIncrement()].join(),
-                                          receivedRawRecord.getRecordId());
-                                  responder.ack();
-                                  if (index.get() == count) {
-                                      latch.countDown();
-                                  }
-                              })
-                      .build();
-      consumer.startAsync().awaitRunning();
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicInteger index = new AtomicInteger();
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(testSubscriptionId)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  Assertions.assertEquals(
+                      recordIdFutures[index.getAndIncrement()].join(),
+                      receivedRawRecord.getRecordId());
+                  responder.ack();
+                  if (index.get() == count) {
+                    latch.countDown();
+                  }
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
 
-      latch.await();
-      consumer.stopAsync().awaitTerminated();
+    latch.await();
+    consumer.stopAsync().awaitTerminated();
   }
 
   @Test
   @Order(9)
   public void testWriteBatchRawRecordBasedBytesSize() throws Exception {
-      BufferedProducer producer = client.newBufferedProducer(testStreamName)
-              .recordCountLimit(100)
-              .maxBytesSize(4096)
-              .build();
-      Random random = new Random();
-      final int count = 42;
-      CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
-      for (int i = 0; i < count; ++i) {
-          byte[] rawRecord = new byte[100];
-          random.nextBytes(rawRecord);
-          CompletableFuture<RecordId> future = producer.write(rawRecord);
-          recordIdFutures[i] = future;
-      }
-      for (int i = 0; i < count - 1; ++i) {
-          recordIdFutures[i].join();
-      }
+    BufferedProducer producer =
+        client.newBufferedProducer(testStreamName).recordCountLimit(100).maxBytesSize(4096).build();
+    Random random = new Random();
+    final int count = 42;
+    CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
+    for (int i = 0; i < count; ++i) {
+      byte[] rawRecord = new byte[100];
+      random.nextBytes(rawRecord);
+      CompletableFuture<RecordId> future = producer.write(rawRecord);
+      recordIdFutures[i] = future;
+    }
+    for (int i = 0; i < count - 1; ++i) {
+      recordIdFutures[i].join();
+    }
 
-      try {
-          recordIdFutures[41].get(3, TimeUnit.SECONDS);
-          assert false;
-      } catch (TimeoutException ignored) {
-      }
-      producer.flush();
-      producer.close();
-      recordIdFutures[41].join();
+    try {
+      recordIdFutures[41].get(3, TimeUnit.SECONDS);
+      assert false;
+    } catch (TimeoutException ignored) {
+    }
+    producer.flush();
+    producer.close();
+    recordIdFutures[41].join();
 
-      logger.info("producer finish");
-      producer.close();
+    logger.info("producer finish");
+    producer.close();
 
-      CountDownLatch latch = new CountDownLatch(1);
-      AtomicInteger index = new AtomicInteger();
-      Consumer consumer =
-              client
-                      .newConsumer()
-                      .subscription(testSubscriptionId)
-                      .rawRecordReceiver(
-                              (receivedRawRecord, responder) -> {
-                                  Assertions.assertEquals(
-                                          recordIdFutures[index.getAndIncrement()].join(),
-                                          receivedRawRecord.getRecordId());
-                                  responder.ack();
-                                  if (index.get() == count) {
-                                      latch.countDown();
-                                  }
-                              })
-                      .build();
-      consumer.startAsync().awaitRunning();
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicInteger index = new AtomicInteger();
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(testSubscriptionId)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  Assertions.assertEquals(
+                      recordIdFutures[index.getAndIncrement()].join(),
+                      receivedRawRecord.getRecordId());
+                  responder.ack();
+                  if (index.get() == count) {
+                    latch.countDown();
+                  }
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
 
-      latch.await();
-      consumer.stopAsync().awaitTerminated();
+    latch.await();
+    consumer.stopAsync().awaitTerminated();
   }
 }
