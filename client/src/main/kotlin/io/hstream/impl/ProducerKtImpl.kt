@@ -64,6 +64,20 @@ open class ProducerKtImpl(private val stream: String) : Producer {
     }
 
     private suspend fun appendWithRetry(appendRequest: AppendRequest, tryTimes: Int): List<RecordId> {
+        // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
+        //       This function is for handling them.
+        suspend fun handleGRPCException(serverUrl: String, e: Throwable): List<RecordId> {
+            logger.error("append with serverUrl [{}] error", serverUrl, e)
+            val status = Status.fromThrowable(e)
+            if (status.code == Status.UNAVAILABLE.code && tryTimes > 1) {
+                delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
+                refreshServerUrl()
+                return appendWithRetry(appendRequest, tryTimes - 1)
+            } else {
+                throw HStreamDBClientException(e)
+            }
+        }
+
         check(tryTimes > 0)
         var serverUrl = serverUrlRef.get()
         if (serverUrl == null) {
@@ -75,22 +89,10 @@ open class ProducerKtImpl(private val stream: String) : Producer {
         try {
             return HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
                 .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
-        } catch (e: Exception) {
-            // Note: a failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
-            when (e) {
-                is StatusException, is StatusRuntimeException -> {
-                    logger.error("append with serverUrl [{}] error", serverUrl, e)
-                    val status = Status.fromThrowable(e)
-                    if (status.code == Status.UNAVAILABLE.code && tryTimes > 1) {
-                        delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                        refreshServerUrl()
-                        return appendWithRetry(appendRequest, tryTimes - 1)
-                    } else {
-                        throw HStreamDBClientException(e)
-                    }
-                }
-                else -> throw e
-            }
+        } catch (e: StatusException) {
+            return handleGRPCException(serverUrl, e)
+        } catch (e: StatusRuntimeException) {
+            return handleGRPCException(serverUrl, e)
         }
     }
 

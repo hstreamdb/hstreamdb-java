@@ -42,6 +42,30 @@ class ConsumerKtImpl(
     private val executorService = Executors.newSingleThreadExecutor()
 
     private suspend fun streamingFetchWithRetry(requestFlow: Flow<StreamingFetchRequest>) {
+        // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
+        //       This function is for handling them.
+        suspend fun handleGRPCException(e: Throwable) {
+            logger.error("streamingFetch error:", e)
+            val status = Status.fromThrowable(e)
+            // WARNING: Use status.code to make comparison because 'Status' contains
+            //          extra information which varies from objects to objects.
+
+            // 'status example':     Status{code=UNAVAILABLE, description=Connection closed
+            //                       after GOAWAY. HTTP/2 error code: NO_ERROR, debug data:
+            //                       Server shutdown, cause=null}
+            // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
+            if (status.code == Status.UNAVAILABLE.code) {
+                delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
+                refreshServerUrl()
+                streamingFetchWithRetry(requestFlow)
+            } else if (status.code == Status.CANCELLED.code) {
+                notifyStopped()
+                logger.info("consumer [{}] is stopped", consumerName)
+            } else {
+                notifyFailed(HStreamDBClientException(e))
+            }
+        }
+
         if (!isRunning) return
         check(serverUrl != null)
         val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
@@ -65,29 +89,10 @@ class ConsumerKtImpl(
                     }
                 }
             }
-        } catch (e: Exception) {
-            // Note: a failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
-            when (e) {
-                is StatusException, is StatusRuntimeException -> {
-                    logger.error("streamingFetch error:", e)
-                    val status = Status.fromThrowable(e)
-                    // WARNING: Use status.code to make comparison because 'Status' contains
-                    //          extra information which varies from objects to objects.
-
-                    // 'status example':     Status{code=UNAVAILABLE, description=Connection closed
-                    //                       after GOAWAY. HTTP/2 error code: NO_ERROR, debug data:
-                    //                       Server shutdown, cause=null}
-                    // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
-                    if (status.code == Status.UNAVAILABLE.code) {
-                        delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                        refreshServerUrl()
-                        streamingFetchWithRetry(requestFlow)
-                    } else {
-                        notifyFailed(HStreamDBClientException(e))
-                    }
-                }
-                else -> throw e
-            }
+        } catch (e: StatusException) {
+            handleGRPCException(e)
+        } catch (e: StatusRuntimeException) {
+            handleGRPCException(e)
         }
     }
 
