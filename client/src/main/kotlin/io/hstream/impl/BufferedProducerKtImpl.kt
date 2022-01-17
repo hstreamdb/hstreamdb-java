@@ -10,7 +10,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import org.slf4j.LoggerFactory
-import java.io.Closeable
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Semaphore
 
@@ -19,7 +18,7 @@ class BufferedProducerKtImpl(
     private val recordCountLimit: Int,
     private val flushIntervalMs: Long,
     private val maxBytesSize: Int,
-) : ProducerKtImpl(stream), Closeable, BufferedProducer {
+) : ProducerKtImpl(stream), BufferedProducer {
     private var semaphore: Semaphore = Semaphore(recordCountLimit)
     private var lock: Mutex = Mutex()
     private var recordBuffer: MutableList<HStreamRecord> = ArrayList(recordCountLimit)
@@ -115,11 +114,13 @@ class BufferedProducerKtImpl(
                 delay(flushIntervalMs)
                 flush()
             }
-            flush()
         }
     }
 
     override fun close() {
+        if (!closed) {
+            flush()
+        }
         closed = true
     }
 
