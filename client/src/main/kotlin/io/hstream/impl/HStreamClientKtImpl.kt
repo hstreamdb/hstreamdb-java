@@ -4,7 +4,6 @@ import com.google.protobuf.Empty
 import io.hstream.BufferedProducerBuilder
 import io.hstream.ConsumerBuilder
 import io.hstream.HStreamClient
-import io.hstream.Producer
 import io.hstream.ProducerBuilder
 import io.hstream.QueryerBuilder
 import io.hstream.Stream
@@ -59,17 +58,11 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
     }
 
     override fun newProducer(): ProducerBuilder {
-        return ProducerBuilderImpl(clusterServerUrls, channelProvider)
+        return ProducerBuilderImpl()
     }
 
-    override fun newProducer(stream: String?): Producer {
-        checkNotNull(stream)
-        return ProducerKtImpl(stream)
-    }
-
-    override fun newBufferedProducer(stream: String?): BufferedProducerBuilder {
-        checkNotNull(stream)
-        return BufferedProducerBuilderImpl(stream)
+    override fun newBufferedProducer(): BufferedProducerBuilder {
+        return BufferedProducerBuilderImpl()
     }
 
     override fun newConsumer(): ConsumerBuilder {

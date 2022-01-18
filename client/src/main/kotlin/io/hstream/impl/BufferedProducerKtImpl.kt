@@ -6,31 +6,38 @@ import io.hstream.RecordId
 import io.hstream.internal.HStreamRecord
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import org.slf4j.LoggerFactory
+import java.lang.Exception
+import java.util.LinkedList
+import java.util.Queue
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Semaphore
+import kotlin.collections.ArrayList
 
 class BufferedProducerKtImpl(
     stream: String,
     private val recordCountLimit: Int,
     private val flushIntervalMs: Long,
     private val maxBytesSize: Int,
+    private val throwExceptionIfFull: Boolean
 ) : ProducerKtImpl(stream), BufferedProducer {
-    private var semaphore: Semaphore = Semaphore(recordCountLimit)
     private var lock: Mutex = Mutex()
     private var recordBuffer: MutableList<HStreamRecord> = ArrayList(recordCountLimit)
     private var futures: MutableList<CompletableFuture<RecordId>> = ArrayList(recordCountLimit)
+    private var waitQueue: Queue<CompletableFuture<Unit>> = LinkedList()
 
     @Volatile
     private var closed: Boolean = false
+    private var timerJob: Job? = null
     private var bytesSize: Int = 0
 
     init {
         if (flushIntervalMs > 0) {
-            runTimer()
+            timerJob = runTimer()
         }
     }
 
@@ -38,81 +45,75 @@ class BufferedProducerKtImpl(
         if (closed) {
             throw HStreamDBClientException("BufferedProducer is closed")
         }
-        return addToBuffer(hStreamRecord)
-    }
 
-    override fun flush() {
-        futureForIO { lock.lock() }.join()
-        try {
-            if (recordBuffer.isEmpty()) {
-                return
-            } else {
-                val recordBufferCount = recordBuffer.size
-                logger.info("ready to flush recordBuffer, current buffer size is [{}]", recordBufferCount)
-                super.writeHStreamRecords(recordBuffer)
-                    // WARNING: Do not explicitly mark the type of 'recordIds'!
-                    //          The first argument of handle is of type 'List<RecordId>!'.
-                    //          If it is explicitly marked as 'List<RecordId>', a producer
-                    //          will throw an exception but can not be handled because of
-                    //          inconsistent type when it exhausts its retry times. This
-                    //          causes the whole program to be stuck forever.
-                    .handle<Any?> { recordIds, exception: Throwable? ->
-                        if (exception == null) {
-                            for (i in recordIds.indices) {
-                                futures[i].complete(recordIds[i])
-                            }
-                        } else {
-                            for (i in futures.indices) {
-                                futures[i].completeExceptionally(exception)
-                            }
-                        }
-                        null
-                    }
-                    .join()
-                recordBuffer.clear()
-                futures.clear()
-                bytesSize = 0
-                logger.info("flush the record buffer successfully")
-                semaphore.release(recordBufferCount)
+        runBlocking { lock.lock() }
+
+        if (isFull()) {
+            if (throwExceptionIfFull) {
+                throw HStreamDBClientException("buffer is full")
             }
-        } finally {
+            val future = CompletableFuture<Unit>()
+            waitQueue.add(future)
             lock.unlock()
+            future.join()
+            return writeInternal(hStreamRecord)
         }
-    }
 
-    private fun addToBuffer(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
-        try {
-            semaphore.acquire()
-        } catch (e: InterruptedException) {
-            throw HStreamDBClientException(e)
-        }
-        futureForIO { lock.lock() }.join()
-
-        var needFlush = false
         val completableFuture = CompletableFuture<RecordId>()
-        try {
-            recordBuffer.add(hStreamRecord)
-            futures.add(completableFuture)
-            bytesSize += hStreamRecord.payload.size()
-            if (recordBuffer.size == recordCountLimit) {
-                needFlush = true
-            } else if (maxBytesSize >= 0 && bytesSize > maxBytesSize) {
-                needFlush = true
-            }
-        } finally {
-            lock.unlock()
-        }
+        recordBuffer.add(hStreamRecord)
+        futures.add(completableFuture)
+        bytesSize += hStreamRecord.payload.size()
+        val needFlush = isFull()
+        lock.unlock()
         if (needFlush) {
-            flush()
+            flushScope.launch {
+                flushInternal()
+            }
         }
         return completableFuture
     }
 
-    private fun runTimer() {
-        timerScope.launch {
+    override fun flush() {
+        runBlocking { flushInternal() }
+    }
+
+    private suspend fun flushInternal() {
+        lock.lock()
+        try {
+            if (recordBuffer.isEmpty()) {
+                return
+            }
+            val recordBufferCount = recordBuffer.size
+            logger.info("ready to flush recordBuffer, current buffer size is [{}]", recordBufferCount)
+            val ids = super.writeHStreamRecords(recordBuffer)
+            for (i in ids.indices) {
+                futures[i].complete(ids[i])
+            }
+            logger.info("flush the record buffer successfully")
+        } catch (e: Exception) {
+            for (i in futures.indices) {
+                futures[i].completeExceptionally(e)
+            }
+        } finally {
+            recordBuffer.clear()
+            futures.clear()
+            bytesSize = 0
+            for (it in waitQueue) {
+                it.complete(Unit)
+            }
+            lock.unlock()
+        }
+    }
+
+    private fun isFull(): Boolean {
+        return (recordBuffer.size == recordCountLimit) || maxBytesSize >= 0 && bytesSize > maxBytesSize
+    }
+
+    private fun runTimer(): Job {
+        return timerScope.launch {
             while (!closed) {
                 delay(flushIntervalMs)
-                flush()
+                flushInternal()
             }
         }
     }
@@ -121,11 +122,13 @@ class BufferedProducerKtImpl(
         if (!closed) {
             flush()
         }
+        timerJob?.cancel()
         closed = true
     }
 
     companion object {
         private val logger = LoggerFactory.getLogger(ProducerKtImpl::class.java)
         private val timerScope = CoroutineScope(Dispatchers.Default)
+        private val flushScope = CoroutineScope(Dispatchers.Default)
     }
 }

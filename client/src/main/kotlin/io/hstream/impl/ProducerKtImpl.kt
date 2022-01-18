@@ -46,7 +46,7 @@ open class ProducerKtImpl(private val stream: String) : Producer {
 
     protected open fun writeInternal(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
         val future = CompletableFuture<RecordId>()
-        writeHStreamRecords(listOf(hStreamRecord))
+        futureForIO { writeHStreamRecords(listOf(hStreamRecord)) }
             // WARNING: Do not explicitly mark the type of 'recordIds'!
             //          The first argument of handle is of type 'List<RecordId>!'.
             //          If it is explicitly marked as 'List<RecordId>', a producer
@@ -96,11 +96,11 @@ open class ProducerKtImpl(private val stream: String) : Producer {
         }
     }
 
-    protected fun writeHStreamRecords(
+    protected suspend fun writeHStreamRecords(
         hStreamRecords: List<HStreamRecord>?
-    ): CompletableFuture<List<RecordId>> {
+    ): List<RecordId> {
         val appendRequest = AppendRequest.newBuilder().setStreamName(stream).addAllRecords(hStreamRecords).build()
-        return futureForIO { appendWithRetry(appendRequest, DefaultSettings.APPEND_RETRY_MAX_TIMES) }
+        return appendWithRetry(appendRequest, DefaultSettings.APPEND_RETRY_MAX_TIMES)
     }
 
     companion object {

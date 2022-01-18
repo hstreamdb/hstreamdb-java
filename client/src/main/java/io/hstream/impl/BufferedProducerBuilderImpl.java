@@ -2,17 +2,20 @@ package io.hstream.impl;
 
 import io.hstream.BufferedProducer;
 import io.hstream.BufferedProducerBuilder;
+import io.hstream.HStreamDBClientException;
 
 public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
 
-  private final String streamName;
-
+  private String streamName;
   private int recordCountLimit = 100;
-  private long flushIntervalMs = -1;
+  private long flushIntervalMs = 100;
   private int maxBytesSize = 4096;
+  private boolean throwExceptionIfFull = false;
 
-  public BufferedProducerBuilderImpl(String streamName) {
+  @Override
+  public BufferedProducerBuilder stream(String streamName) {
     this.streamName = streamName;
+    return this;
   }
 
   /** @param recordCountLimit default value is 100, it can NOT be less than 1 */
@@ -23,8 +26,8 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
   }
 
   /**
-   * @param flushIntervalMs set flushIntervalMs(milliseconds) > 0 to enable timed based flush
-   *     strategy
+   * @param flushIntervalMs default value is 100ms, if flushIntervalMs <= 0, disables timed based
+   *     flush strategy.
    */
   @Override
   public BufferedProducerBuilder flushIntervalMs(long flushIntervalMs) {
@@ -32,7 +35,9 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
     return this;
   }
 
-  /** @param maxBytesSize default value is 4K(4096) */
+  /**
+   * @param maxBytesSize default value is 4K(4096), if maxBytesSize <= 0, does not limit bytes size
+   */
   @Override
   public BufferedProducerBuilder maxBytesSize(int maxBytesSize) {
     this.maxBytesSize = maxBytesSize;
@@ -40,8 +45,20 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
   }
 
   @Override
+  public BufferedProducerBuilder throwExceptionIfFull(boolean throwExceptionIfFull) {
+    this.throwExceptionIfFull = throwExceptionIfFull;
+    return this;
+  }
+
+  @Override
   public BufferedProducer build() {
-    recordCountLimit = Math.max(recordCountLimit, 1);
-    return new BufferedProducerKtImpl(streamName, recordCountLimit, flushIntervalMs, maxBytesSize);
+    if (recordCountLimit < 1) {
+      throw new HStreamDBClientException(
+          String.format(
+              "build buffedProducer failed, recordCountLimit(%d) can NOT be less than 1",
+              recordCountLimit));
+    }
+    return new BufferedProducerKtImpl(
+        streamName, recordCountLimit, flushIntervalMs, maxBytesSize, throwExceptionIfFull);
   }
 }

@@ -103,7 +103,7 @@ public class HStreamClientTest {
   @Test
   @Order(1)
   public void testWriteRawRecord() throws Exception {
-    Producer producer = client.newProducer(testStreamName);
+    Producer producer = client.newProducer().stream(testStreamName).build();
     Random random = new Random();
     byte[] rawRecord = new byte[100];
     random.nextBytes(rawRecord);
@@ -134,7 +134,7 @@ public class HStreamClientTest {
   @Order(2)
   public void testWriteHRecord() throws Exception {
 
-    Producer producer = client.newProducer(testStreamName);
+    Producer producer = client.newProducer().stream(testStreamName).build();
     HRecord hRecord =
         HRecord.newBuilder().put("key1", 10).put("key2", "hello").put("key3", true).build();
     RecordId recordId = producer.write(hRecord).join();
@@ -160,7 +160,8 @@ public class HStreamClientTest {
   @Test
   @Order(3)
   public void testWriteBatchRawRecord() throws Exception {
-    Producer producer = client.newBufferedProducer(testStreamName).recordCountLimit(10).build();
+    BufferedProducer producer =
+        client.newBufferedProducer().stream(testStreamName).recordCountLimit(10).build();
     Random random = new Random();
     final int count = 100;
     CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
@@ -170,6 +171,7 @@ public class HStreamClientTest {
       CompletableFuture<RecordId> future = producer.write(rawRecord);
       recordIdFutures[i] = future;
     }
+    producer.close();
     CompletableFuture.allOf(recordIdFutures).join();
 
     logger.info("producer finish");
@@ -201,7 +203,10 @@ public class HStreamClientTest {
   @Order(4)
   public void testWriteBatchRawRecordMultiThread() throws Exception {
     BufferedProducer producer =
-        client.newBufferedProducer(testStreamName).recordCountLimit(10).flushIntervalMs(10).build();
+        client.newBufferedProducer().stream(testStreamName)
+            .recordCountLimit(10)
+            .flushIntervalMs(10)
+            .build();
     Random random = new Random();
     final int count = 100;
     CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
@@ -260,7 +265,7 @@ public class HStreamClientTest {
   @Test
   @Order(5)
   public void testConsumerGroup() throws Exception {
-    Producer producer = client.newProducer(testStreamName);
+    Producer producer = client.newProducer().stream(testStreamName).build();
     Random random = new Random();
     byte[] rawRecord = new byte[100];
     final int count = 10;
@@ -359,7 +364,7 @@ public class HStreamClientTest {
 
     logger.info("begin to write");
 
-    Producer producer = client.newProducer(testStreamName);
+    Producer producer = client.newProducer().stream(testStreamName).build();
     HRecord hRecord1 = HRecord.newBuilder().put("temperature", 29).put("humidity", 20).build();
     HRecord hRecord2 = HRecord.newBuilder().put("temperature", 34).put("humidity", 21).build();
     HRecord hRecord3 = HRecord.newBuilder().put("temperature", 35).put("humidity", 22).build();
@@ -381,7 +386,7 @@ public class HStreamClientTest {
   @Order(7)
   public void testConsumerInTurn() throws Exception {
     final int recordCount = 10;
-    Producer producer = client.newProducer(testStreamName);
+    Producer producer = client.newProducer().stream(testStreamName).build();
     Random random = new Random();
     for (int i = 0; i < recordCount; ++i) {
       byte[] rawRecord = new byte[100];
@@ -442,8 +447,7 @@ public class HStreamClientTest {
   @Order(8)
   public void testWriteBatchRawRecordBasedTimer() throws Exception {
     BufferedProducer producer =
-        client
-            .newBufferedProducer(testStreamName)
+        client.newBufferedProducer().stream(testStreamName)
             .recordCountLimit(100)
             .flushIntervalMs(100)
             .build();
@@ -488,7 +492,11 @@ public class HStreamClientTest {
   @Order(9)
   public void testWriteBatchRawRecordBasedBytesSize() throws Exception {
     BufferedProducer producer =
-        client.newBufferedProducer(testStreamName).recordCountLimit(100).maxBytesSize(4096).build();
+        client.newBufferedProducer().stream(testStreamName)
+            .recordCountLimit(100)
+            .flushIntervalMs(-1)
+            .maxBytesSize(4096)
+            .build();
     Random random = new Random();
     final int count = 42;
     CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
@@ -507,12 +515,10 @@ public class HStreamClientTest {
       assert false;
     } catch (TimeoutException ignored) {
     }
-    producer.flush();
     producer.close();
     recordIdFutures[41].join();
 
     logger.info("producer finish");
-    producer.close();
 
     CountDownLatch latch = new CountDownLatch(1);
     AtomicInteger index = new AtomicInteger();
