@@ -13,7 +13,10 @@ import io.hstream.internal.HStreamRecord
 import io.hstream.internal.LookupStreamRequest
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
@@ -46,20 +49,14 @@ open class ProducerKtImpl(private val stream: String) : Producer {
 
     protected open fun writeInternal(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
         val future = CompletableFuture<RecordId>()
-        futureForIO { writeHStreamRecords(listOf(hStreamRecord)) }
-            // WARNING: Do not explicitly mark the type of 'recordIds'!
-            //          The first argument of handle is of type 'List<RecordId>!'.
-            //          If it is explicitly marked as 'List<RecordId>', a producer
-            //          will throw an exception but can not be handled because of
-            //          inconsistent type when it exhausts its retry times. This
-            //          causes the whole program to be stuck forever.
-            .handle<Any?> { recordIds, exception: Throwable? ->
-                if (exception == null) {
-                    future.complete(recordIds[0])
-                } else {
-                    future.completeExceptionally(exception)
-                }
+        writeRecordScope.launch {
+            try {
+                val ids = writeHStreamRecords(listOf(hStreamRecord))
+                future.complete(ids[0])
+            } catch (e: Throwable) {
+                future.completeExceptionally(e)
             }
+        }
         return future
     }
 
@@ -105,5 +102,6 @@ open class ProducerKtImpl(private val stream: String) : Producer {
 
     companion object {
         private val logger = LoggerFactory.getLogger(ProducerKtImpl::class.java)
+        private val writeRecordScope = CoroutineScope(Dispatchers.Default)
     }
 }

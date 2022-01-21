@@ -6,8 +6,8 @@ import java.io.Closeable;
 public interface BufferedProducer extends Producer, Closeable {
 
   /** explicitly flush buffered records. */
-  public void flush();
+  void flush();
 
   /** closes the buffered producer, will call flush() first */
-  public void close();
+  void close();
 }
