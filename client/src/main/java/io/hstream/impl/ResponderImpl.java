@@ -11,16 +11,19 @@ public class ResponderImpl implements Responder {
   private static final Logger logger = LoggerFactory.getLogger(ResponderImpl.class);
 
   private final String subscriptionId;
+  private final String orderingKey;
   private final String consumerId;
   private final RecordId recordId;
   private final StreamObserver<StreamingFetchRequest> requestStream;
 
   public ResponderImpl(
       String subscriptionId,
+      String orderingKey,
       StreamObserver<StreamingFetchRequest> requestStream,
       String consumerId,
       RecordId recordId) {
     this.subscriptionId = subscriptionId;
+    this.orderingKey = orderingKey;
     this.requestStream = requestStream;
     this.consumerId = consumerId;
     this.recordId = recordId;
@@ -31,7 +34,8 @@ public class ResponderImpl implements Responder {
     StreamingFetchRequest request =
         StreamingFetchRequest.newBuilder()
             .setSubscriptionId(subscriptionId)
-            .addAckedRecordIds(recordId)
+            .setOrderingKey(orderingKey)
+            .addAckIds(recordId)
             .build();
     requestStream.onNext(request);
   }

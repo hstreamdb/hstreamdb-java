@@ -74,18 +74,18 @@ public class ConsumerImpl extends AbstractService implements Consumer {
           public void onNext(WatchSubscriptionResponse value) {
             if (value.getChangeCase().getNumber()
                 == WatchSubscriptionResponse.ChangeCase.CHANGEADD.getNumber()) {
-              var partitionKey = value.getChangeAdd().getPartitionKey();
+              var partitionKey = value.getChangeAdd().getOrderingKey();
+              logger.info("watch recv changeAdd for key {}", partitionKey);
               // call lookup, then streamingFetch
               HStreamApiGrpc.newStub(channelProvider.get(serverUrls.get(0)))
-                  .lookupSubscription(
-                      LookupSubscriptionRequest.newBuilder()
+                  .lookupSubscriptionWithOrderingKey(
+                      LookupSubscriptionWithOrderingKeyRequest.newBuilder()
                           .setSubscriptionId(subscriptionId)
-                          .setPartitionKey(partitionKey)
-                          .setConsumerName(consumerName)
+                          .setOrderingKey(partitionKey)
                           .build(),
-                      new StreamObserver<LookupSubscriptionResponse>() {
+                      new StreamObserver<LookupSubscriptionWithOrderingKeyResponse>() {
                         @Override
-                        public void onNext(LookupSubscriptionResponse value) {
+                        public void onNext(LookupSubscriptionWithOrderingKeyResponse value) {
                           ServerNode serverNode = value.getServerNode();
                           String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
                           StreamObserver<StreamingFetchRequest> requestStreamObserver =
@@ -105,6 +105,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                                             Responder responder =
                                                 new ResponderImpl(
                                                     subscriptionId,
+                                                    partitionKey,
                                                     requestStreams.get(partitionKey),
                                                     consumerName,
                                                     receivedRecord.getRecordId());
@@ -164,7 +165,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                           StreamingFetchRequest initRequest =
                               StreamingFetchRequest.newBuilder()
                                   .setSubscriptionId(subscriptionId)
-                                  .setPartitionKey(partitionKey)
+                                  .setOrderingKey(partitionKey)
                                   .setConsumerName(consumerName)
                                   .build();
                           requestStreamObserver.onNext(initRequest);
@@ -189,8 +190,9 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                 "consumer {} can not watch subscription {}, error: {}",
                 consumerName,
                 subscriptionId,
-                t.getMessage());
-            notifyFailed(t);
+                t.getMessage(),
+                t);
+            // notifyFailed(t);
           }
 
           @Override

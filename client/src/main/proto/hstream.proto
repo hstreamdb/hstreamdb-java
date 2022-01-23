@@ -42,9 +42,12 @@ service HStreamApi {
 
   rpc LookupStream(LookupStreamRequest) returns (LookupStreamResponse) {}
 
-  rpc WatchSubscription(WatchSubscriptionRequest) returns (WatchSubscriptionResponse) {}
-
   rpc LookupSubscription(LookupSubscriptionRequest) returns (LookupSubscriptionResponse) {}
+
+  rpc WatchSubscription(WatchSubscriptionRequest) returns (stream WatchSubscriptionResponse) {}
+
+  rpc LookupSubscriptionWithOrderingKey(LookupSubscriptionWithOrderingKeyRequest) returns (LookupSubscriptionWithOrderingKeyResponse) {}
+
 
 }
 
@@ -177,9 +180,10 @@ message Query {
 
 message StreamingFetchRequest {
   string subscriptionId = 1;
-  string partitionKey = 2;
-  string consumerName = 3;
-  repeated RecordId ackedRecordIds = 4;
+  string consumerName = 2;
+  string orderingKey = 3;
+
+  repeated RecordId ackIds = 4;
 }
 
 message StreamingFetchResponse {
@@ -200,25 +204,32 @@ message ServerNode {
 
 message LookupStreamRequest {
   string streamName = 1;
-  string partitionKey = 2;
+  string orderingKey = 2;
 }
 
 message LookupStreamResponse {
   string streamName = 1;
-  string partitionKey = 2;
+  string orderingKey = 2;
   ServerNode serverNode = 3;
-
 }
 
 message LookupSubscriptionRequest {
   string subscriptionId = 1;
-  string partitionKey = 2;
-  string consumerName = 3;
 }
 
 message LookupSubscriptionResponse {
   string subscriptionId = 1;
-  string partitionKey = 2;
+  ServerNode serverNode = 2;
+}
+
+message LookupSubscriptionWithOrderingKeyRequest {
+  string subscriptionId = 1;
+  string orderingKey = 2;
+}
+
+message LookupSubscriptionWithOrderingKeyResponse {
+  string subscriptionId = 1;
+  string orderingKey = 2;
   ServerNode serverNode = 3;
 }
 
@@ -228,17 +239,17 @@ message WatchSubscriptionRequest {
 }
 
 message WatchSubscriptionResponse {
-  message SubscriptionChangeAdd {
-    string partitionKey = 1;
+  message SubscriptionAdd {
+    string orderingKey = 1;
   }
 
-  message SubscriptionChangeRemove {
-    string partitionKey = 1;
+  message SubscriptionRemove {
+    string orderingKey = 1;
   }
 
   string subscriptionId = 1;
   oneof change {
-    SubscriptionChangeAdd changeAdd = 7;
-    SubscriptionChangeAdd changeRemove = 8;
+    SubscriptionAdd changeAdd = 7;
+    SubscriptionRemove changeRemove = 8;
   }
 }

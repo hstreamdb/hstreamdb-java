@@ -75,7 +75,7 @@ public class ProducerImpl implements Producer {
     ServerNode serverNode =
         HStreamApiGrpc.newBlockingStub(channelProvider.get(serverUrls.get(0)))
             .lookupStream(
-                LookupStreamRequest.newBuilder().setStreamName(stream).setPartitionKey(key).build())
+                LookupStreamRequest.newBuilder().setStreamName(stream).setOrderingKey(key).build())
             .getServerNode();
 
     String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
