@@ -59,8 +59,7 @@ class ConsumerKtImpl(
                 refreshServerUrl()
                 streamingFetchWithRetry(requestFlow)
             } else if (status.code == Status.CANCELLED.code) {
-                notifyStopped()
-                logger.info("consumer [{}] is stopped", consumerName)
+                // this means consumer closed actively, and do nothing here
             } else {
                 notifyFailed(HStreamDBClientException(e))
             }
