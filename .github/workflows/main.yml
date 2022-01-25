@@ -34,7 +34,7 @@ jobs:
         run: ./gradlew ktlintCheck
 
       - name: Prepare test env
-        run:  script/prepare-test-env-latest.sh
+        run:  script/prepare-test-env.sh
 
       - name: Build and test with Gradle
         run: ./gradlew build 
