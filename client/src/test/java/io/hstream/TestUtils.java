@@ -106,14 +106,12 @@ public class TestUtils {
       Logger logger,
       HStreamClient client,
       String subscription,
-      String name,
       List<String> records,
       CountDownLatch latch,
       ReentrantLock lock) {
     return client
         .newConsumer()
         .subscription(subscription)
-        .name(name)
         .rawRecordReceiver(
             (receivedRawRecord, responder) -> {
               logger.info("### Read 1 record, id={}.", receivedRawRecord.getRecordId());
@@ -140,7 +138,7 @@ public class TestUtils {
   }
 
   public static <T> HashSet<String> conjectureKeysOfConsumer(
-      HashMap<String, ArrayList<T>> writeRec, ArrayList<T> readRec) {
+      HashMap<String, List<T>> writeRec, List<T> readRec) {
     HashSet<String> result = new HashSet<>();
     for (String key : writeRec.keySet()) {
       var valuesOfThisKey = writeRec.get(key);
