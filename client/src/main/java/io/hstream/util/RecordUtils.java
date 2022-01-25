@@ -6,6 +6,7 @@ import com.google.protobuf.Struct;
 import com.google.protobuf.util.JsonFormat;
 import io.hstream.*;
 import io.hstream.Record;
+import io.hstream.impl.DefaultSettings;
 import io.hstream.internal.HStreamRecord;
 import io.hstream.internal.HStreamRecordHeader;
 import io.hstream.internal.ReceivedRecord;
@@ -19,7 +20,10 @@ public class RecordUtils {
 
   public static HStreamRecord buildHStreamRecordFromRawRecord(byte[] rawRecord) {
     HStreamRecordHeader header =
-        HStreamRecordHeader.newBuilder().setFlag(HStreamRecordHeader.Flag.RAW).build();
+        HStreamRecordHeader.newBuilder()
+            .setFlag(HStreamRecordHeader.Flag.RAW)
+            .setKey(DefaultSettings.DEFAULT_ORDERING_KEY)
+            .build();
     return HStreamRecord.newBuilder()
         .setHeader(header)
         .setPayload(ByteString.copyFrom(rawRecord))
@@ -29,7 +33,10 @@ public class RecordUtils {
   public static HStreamRecord buildHStreamRecordFromHRecord(HRecord hRecord) {
     try {
       HStreamRecordHeader header =
-          HStreamRecordHeader.newBuilder().setFlag(HStreamRecordHeader.Flag.JSON).build();
+          HStreamRecordHeader.newBuilder()
+              .setFlag(HStreamRecordHeader.Flag.JSON)
+              .setKey(DefaultSettings.DEFAULT_ORDERING_KEY)
+              .build();
       String json = JsonFormat.printer().print(hRecord.getDelegate());
       logger.debug("hrecord to json: {}", json);
       return HStreamRecord.newBuilder()

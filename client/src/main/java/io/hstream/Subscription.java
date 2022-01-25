@@ -10,10 +10,7 @@ public class Subscription {
   private String streamName;
   private int ackTimeoutSeconds;
 
-  private Subscription(
-      String subscriptionId,
-      String streamName,
-      int ackTimeoutSeconds) {
+  private Subscription(String subscriptionId, String streamName, int ackTimeoutSeconds) {
     this.subscriptionId = subscriptionId;
     this.streamName = streamName;
     this.ackTimeoutSeconds = ackTimeoutSeconds;

@@ -16,14 +16,12 @@ import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.atomic.AtomicReference
 import kotlin.collections.HashMap
 
 open class ProducerKtImpl(private val stream: String) : Producer {
@@ -44,6 +42,7 @@ open class ProducerKtImpl(private val stream: String) : Producer {
                 .build()
             val serverNode = it.lookupStream(req).serverNode
             server = "${serverNode.host}:${serverNode.port}"
+            logger.info("TMP, key:$orderingKey, server:$server")
             serverUrlsLock.withLock {
                 serverUrls[orderingKey] = server
             }

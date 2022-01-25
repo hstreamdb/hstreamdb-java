@@ -22,6 +22,8 @@ import io.hstream.internal.WatchSubscriptionRequest
 import io.hstream.internal.WatchSubscriptionResponse
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -64,20 +66,23 @@ class ConsumerKtImpl(
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                 streamingFetchWithRetry(requestFlow, watchServer, orderingKey)
             } else if (status.code == Status.CANCELLED.code) {
-                notifyStopped()
-                logger.info("consumer [{}] is stopped", consumerName)
+//                notifyStopped()
+                logger.info("fetcher [$orderingKey] is canceled")
             } else {
-                notifyFailed(HStreamDBClientException(e))
+                logger.info("TMP notifyFailed")
+//                notifyFailed(HStreamDBClientException(e))
+                logger.info("TMP notifyFailed end")
             }
         }
 
         if (!isRunning) return
-        val server = lookupSubscriptionWithOrderingKey(orderingKey, watchServer)
+        val server = lookupSubscriptionWithOrderingKey(watchServer, orderingKey)
         val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(server))
         try {
             // send an empty ack request to trigger streamingFetch.
             val initRequest = StreamingFetchRequest.newBuilder()
                 .setSubscriptionId(subscriptionId)
+                .setOrderingKey(orderingKey)
                 .setConsumerName(consumerName)
                 .build()
             coroutineScope {
@@ -90,7 +95,8 @@ class ConsumerKtImpl(
                 }
                 launch {
                     stub.streamingFetch(requestFlow).collect {
-                        process(requestFlow, it)
+                        logger.info("TMP, recv:${it.getReceivedRecords(0).recordId}")
+                        process(requestFlow, it, orderingKey)
                     }
                 }
             }
@@ -108,28 +114,41 @@ class ConsumerKtImpl(
             .setSubscriptionId(subscriptionId)
             .setConsumerName(consumerName)
             .build()
-        stub.watchSubscription(req).collect {
+        try {
+            logger.info("watching subscription, server:$server")
             val fetchers = HashMap<String, Job>()
             val fetcherFlows = HashMap<String, Flow<StreamingFetchRequest>>()
-            if (it.changeCase == WatchSubscriptionResponse.ChangeCase.CHANGEADD) {
-                val key = it.changeAdd.orderingKey
-                coroutineScope {
+            stub.watchSubscription(req).collect {
+                if (it.changeCase == WatchSubscriptionResponse.ChangeCase.CHANGEADD) {
+                    val key = it.changeAdd.orderingKey
+                    if (fetchers.containsKey(key)) {
+                        logger.info("add fetcher failed, existed fetcher for orderingKey:$key")
+                        return@collect
+                    }
+                    logger.info("add fetcher: $key")
                     val flow = MutableSharedFlow<StreamingFetchRequest>()
                     fetcherFlows[key] = flow
-                    fetchers[key] = launch {
-                        streamingFetchWithRetry(flow, server, key)
+                    fetchers[key] = fetchScope.launch {
+                        // TODO: whether remove job and flow after finishing
+                        try {
+                            streamingFetchWithRetry(flow, server, key)
+                        } finally {
+                            logger.info("fetcher ended")
+                        }
                     }
+                } else {
+                    val key = it.changeRemove.orderingKey
+                    logger.info("remove fetcher: $key")
+                    val job = fetchers.remove(key)
+                    fetcherFlows.remove(key)
+                    job?.cancel()
                 }
-            } else {
-                val key = it.changeRemove.orderingKey
-                val job = fetchers.remove(key)
-                fetcherFlows.remove(key)
-                if (job == null) {
-                    logger.error("watching key not found: {}", key)
-                    return@collect
-                }
-                job.cancel()
             }
+            logger.info("TMP aaaaaaaaaaaaaaaaaaaaa")
+        } catch (e: Throwable) {
+            // TODO: retry
+            logger.error("watch subscription error: ${e.message}")
+            throw e
         }
     }
 
@@ -152,7 +171,11 @@ class ConsumerKtImpl(
         }
     }
 
-    private fun process(requestFlow: MutableSharedFlow<StreamingFetchRequest>, value: StreamingFetchResponse) {
+    private fun process(
+        requestFlow: MutableSharedFlow<StreamingFetchRequest>,
+        value: StreamingFetchResponse,
+        orderingKey: String
+    ) {
         if (!isRunning) {
             return
         }
@@ -160,7 +183,7 @@ class ConsumerKtImpl(
         val receivedRecords = value.receivedRecordsList
         for (receivedRecord in receivedRecords) {
             val responder = ResponderImpl(
-                subscriptionId, requestFlow, consumerName, receivedRecord.recordId
+                subscriptionId, requestFlow, consumerName, receivedRecord.recordId, orderingKey
             )
 
             executorService.submit {
@@ -223,7 +246,8 @@ class ConsumerKtImpl(
         Thread {
             logger.info("consumer [{}] is stopping", consumerName)
 
-            watchFuture.cancel(true)
+            watchFuture.cancel(false)
+            logger.info("TMP canceled watchFuture")
             executorService.shutdown()
             try {
                 executorService.awaitTermination(30, TimeUnit.SECONDS)
@@ -239,6 +263,7 @@ class ConsumerKtImpl(
 
     companion object {
         private val logger = LoggerFactory.getLogger(ConsumerKtImpl::class.java)
+        private val fetchScope = CoroutineScope(Dispatchers.Default)
         private fun toReceivedRawRecord(receivedRecord: ReceivedRecord): ReceivedRawRecord {
             return try {
                 val hStreamRecord = HStreamRecord.parseFrom(receivedRecord.record)
