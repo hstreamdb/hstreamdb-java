@@ -6,5 +6,5 @@ public class DefaultSettings {
 
   public static final int APPEND_RETRY_MAX_TIMES = 5;
 
-  public static final String DEFAULT_ORDERING_KEY = "ABC";
+  public static final String DEFAULT_ORDERING_KEY = "";
 }
