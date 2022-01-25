@@ -2,7 +2,7 @@
 
 set -e
 
-DEFAULT_HSTREAM_DOCKER_TAG="v0.6.0"
+DEFAULT_HSTREAM_DOCKER_TAG="v0.6.6"
 
 docker pull hstreamdb/hstream:${DEFAULT_HSTREAM_DOCKER_TAG} || true 
 
