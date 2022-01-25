@@ -322,6 +322,9 @@ public class HStreamClientTest07 {
     for (var thisValue : writeRes.values()) {
       writeResAsSet.addAll(thisValue);
     }
+    HashSet<Integer> diffSet = new HashSet<>(writeResAsSet);
+    diffSet.removeAll(readRes);
+    logger.info("Difference between write and read: {}", diffSet);
     Assertions.assertEquals(new HashSet<>(readRes), writeResAsSet);
   }
 
