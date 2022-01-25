@@ -40,7 +40,7 @@ public class RecordUtils {
     }
   }
 
-  public static HStreamRecord buildHStreamRecordFromRecord(Record record) {
+  public static HStreamRecord buildHStreamRecordFromRecord(io.hstream.Record record) {
     HStreamRecordHeader header =
         HStreamRecordHeader.newBuilder()
             .setFlag(HStreamRecordHeader.Flag.RAW)

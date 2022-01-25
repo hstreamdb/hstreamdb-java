@@ -95,7 +95,7 @@ public class ProducerImpl implements Producer {
   }
 
   @Override
-  public CompletableFuture<RecordId> write(Record record) {
+  public CompletableFuture<RecordId> write(io.hstream.Record record) {
     HStreamRecord hStreamRecord = RecordUtils.buildHStreamRecordFromRecord(record);
     return writeInternal(hStreamRecord);
   }
