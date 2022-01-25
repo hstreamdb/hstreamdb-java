@@ -5,6 +5,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'signing'
+    id "com.diffplug.spotless" version "6.2.0"
 }
 
 group = 'io.hstream'
@@ -39,7 +40,7 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
     testLogging {
-        outputs.upToDateWhen {false}
+        outputs.upToDateWhen { false }
         showStandardStreams = true
     }
 }
@@ -119,13 +120,13 @@ publishing {
 }
 
 signing {
-    if(project.hasProperty('signing.keyId')) {
-      sign publishing.publications.mavenJava
+    if (project.hasProperty('signing.keyId')) {
+        sign publishing.publications.mavenJava
     } else {
-      def signingKey = System.getenv("OSSRH_GPG_SECRET_KEY")
-      def signingPassword = System.getenv("OSSRH_GPG_PASSWORD")
-      useInMemoryPgpKeys(signingKey, signingPassword)
-      sign publishing.publications.mavenJava
+        def signingKey = System.getenv("OSSRH_GPG_SECRET_KEY")
+        def signingPassword = System.getenv("OSSRH_GPG_PASSWORD")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications.mavenJava
     }
 }
 
@@ -140,4 +141,10 @@ javadoc {
 
     exclude 'io/hstream/impl/**'
     exclude 'io/hstream/util/**'
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
 }
