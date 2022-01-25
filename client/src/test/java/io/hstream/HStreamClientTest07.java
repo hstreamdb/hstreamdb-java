@@ -2,11 +2,12 @@ package io.hstream;
 
 import static io.hstream.TestUtils.*;
 
+import com.google.common.collect.Iterables;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -314,12 +315,14 @@ public class HStreamClientTest07 {
 
     logger.info("===== Read Stats ======");
     logger.info("{}", readRes);
-    Collections.sort(readRes);
-    logger.info("sorted: {}", readRes);
     logger.info("Total Read = {}", readRes.size());
 
-    Assertions.assertEquals(recordCount, totalWrite);
-    Assertions.assertEquals(totalWrite, readRes.size());
+    // Every item written to the database is read out
+    HashSet<Integer> writeResAsSet = new HashSet<>();
+    for (var thisValue : writeRes.values()) {
+      writeResAsSet.addAll(thisValue);
+    }
+    Assertions.assertEquals(new HashSet<>(readRes), writeResAsSet);
   }
 
   @Test
@@ -337,7 +340,7 @@ public class HStreamClientTest07 {
     var lock = new ReentrantLock();
     Consumer consumer =
         createConsumerCollectStringPayload(
-            logger, hStreamClient, subscription, "test-consumer", readRes, notify, lock);
+            logger, hStreamClient, subscription, readRes, notify, lock);
     consumer.startAsync().awaitRunning();
 
     // Write
@@ -346,8 +349,79 @@ public class HStreamClientTest07 {
     HashMap<String, List<String>> writeRes = new HashMap<>();
     for (int i = 0; i < recordCount; ++i) {
       var key = "key-" + rand.nextInt(shardCount);
-      var res = doProduce(producer, 1, 1, key);
-      logger.info("=== Write to {}, size={}.", key, res.size());
+      var res = doProduce(producer, 32, 1, key);
+      logger.info("=== Write to {}, num={}.", key, res.size());
+      if (writeRes.containsKey(key)) {
+        writeRes.get(key).addAll(res);
+      } else {
+        writeRes.put(key, new ArrayList<>(res));
+      }
+    }
+    notify.await(20, TimeUnit.SECONDS);
+    consumer.stopAsync().awaitTerminated();
+
+    // Analisis
+    logger.info("===== Write Stats =====");
+    int totalWrite = 0;
+    for (String key : writeRes.keySet()) {
+      var thisValue = writeRes.get(key);
+      logger.info("{}: Len={}", key, thisValue.size());
+      totalWrite += thisValue.size();
+    }
+    logger.info("Total Write = {}", totalWrite);
+
+    logger.info("===== Read Stats ======");
+    logger.info("Total Read = {}", readRes.size());
+
+    // 1. Every item written to the database is read out
+    HashSet<String> writeResAsSet = new HashSet<>();
+    for (var thisValue : writeRes.values()) {
+      writeResAsSet.addAll(thisValue);
+    }
+    Assertions.assertEquals(new HashSet<>(readRes), writeResAsSet);
+
+    // 2. Order property: messages read from a certain key preserve the order
+    //    when they were written to it
+    Assertions.assertEquals(shardCount, writeRes.size());
+    for (String key : writeRes.keySet()) {
+      Assertions.assertTrue(isSkippedSublist(writeRes.get(key), readRes));
+    }
+  }
+
+  @Test
+  void shardBalance() throws Exception {
+    // Prepare env
+    HStreamClient hStreamClient = HStreamClient.builder().serviceUrl(serviceUrl).build();
+    var stream = randStream(hStreamClient);
+    final String subscription = randSubscription(hStreamClient, stream);
+    int shardCount = 10;
+    int recordCount = 100;
+    int consumerCount = 7;
+
+    // Read
+    List<List<String>> readRes = new ArrayList<List<String>>();
+    for (int i = 0; i < consumerCount; ++i) {
+      readRes.add(new ArrayList<>());
+    }
+    CountDownLatch notify = new CountDownLatch(recordCount);
+    var lock = new ReentrantLock();
+    ArrayList<Consumer> consumers = new ArrayList<>();
+    for (int i = 0; i < consumerCount; ++i) {
+      Consumer consumer =
+          createConsumerCollectStringPayload(
+              logger, hStreamClient, subscription, readRes.get(i), notify, lock);
+      consumers.add(consumer);
+      consumer.startAsync().awaitRunning();
+    }
+
+    // Write
+    Producer producer = hStreamClient.newProducer().stream(stream).build();
+    Random rand = new Random();
+    HashMap<String, List<String>> writeRes = new HashMap<>();
+    for (int i = 0; i < recordCount; ++i) {
+      var key = "key-" + rand.nextInt(shardCount);
+      var res = doProduce(producer, 32, 1, key);
+      logger.info("=== Write to {}, num={}.", key, res.size());
       if (writeRes.containsKey(key)) {
         writeRes.get(key).addAll(res);
       } else {
@@ -356,12 +430,69 @@ public class HStreamClientTest07 {
     }
 
     notify.await(20, TimeUnit.SECONDS);
-    consumer.stopAsync().awaitTerminated();
+    consumers.forEach(c -> c.stopAsync().awaitTerminated());
 
-    Assertions.assertEquals(shardCount, writeRes.size());
+    // Analisis
+    // Write part
+    logger.info("===== Write Stats =====");
+    int totalWrite = 0;
     for (String key : writeRes.keySet()) {
-      logger.info("Key: {}; Write: {}; Read: {}", key, writeRes.get(key), readRes);
-      Assertions.assertTrue(isSkippedSublist(writeRes.get(key), readRes));
+      var thisValue = writeRes.get(key);
+      logger.info("{}: Len={}", key, thisValue.size());
+      totalWrite += thisValue.size();
+    }
+    logger.info("Total Write = {}", totalWrite);
+
+    // Read part
+    logger.info("===== Read Stats ======");
+    int totalRead = 0;
+    for (int i = 0; i < consumerCount; ++i) {
+      var thisValue = readRes.get(i);
+      logger.info("Consumer {}: Len={}", i, thisValue.size());
+      totalRead += thisValue.size();
+    }
+    logger.info("Total Read = {}", totalRead);
+
+    // Keys balancing part
+    logger.info("===== Keys Stats =====");
+
+    List<HashSet<String>> ownedKeysByConsumers = new ArrayList<>();
+    HashSet<String> unionOfKeys = new HashSet<>();
+    for (int i = 0; i < consumerCount; ++i) {
+      HashSet<String> ownedKeys = conjectureKeysOfConsumer(writeRes, readRes.get(i));
+      ownedKeysByConsumers.add(ownedKeys);
+      logger.info("Consumer {}: {}", i, ownedKeys);
+      // 1. When consumer number <= key number, every consumer owns at least 1 key
+      Assertions.assertFalse(ownedKeys.isEmpty());
+      Iterables.addAll(unionOfKeys, ownedKeys);
+    }
+    logger.info("All allocated keys: {}", unionOfKeys);
+
+    // 2. Every item written to the database is read out
+    HashSet<String> writeResAsSet = new HashSet<>();
+    HashSet<String> readResAsSet = new HashSet<>();
+    for (var thisValue : writeRes.values()) {
+      writeResAsSet.addAll(thisValue);
+    }
+    for (var thisValue : readRes) {
+      readResAsSet.addAll(thisValue);
+    }
+    Assertions.assertEquals(readResAsSet, writeResAsSet);
+
+    // 3. Assert the union of keys all consumers own is equal to all keys
+    HashSet<String> expectedKeys = new HashSet<>();
+    for (int i = 0; i < shardCount; ++i) {
+      expectedKeys.add("key-" + i);
+    }
+
+    Assertions.assertEquals(unionOfKeys, expectedKeys);
+    // 4. Assert the keys any two consumers own is disjoint
+    for (int i = 0; i < consumerCount; ++i) {
+      for (int j = 0; j < i; j++) {
+        HashSet<String> intersection = new HashSet<String>(ownedKeysByConsumers.get(i));
+        intersection.retainAll(ownedKeysByConsumers.get(j));
+        Assertions.assertEquals(intersection, new HashSet<>());
+      }
     }
   }
 }
