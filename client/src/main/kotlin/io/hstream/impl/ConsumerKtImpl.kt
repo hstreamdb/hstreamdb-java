@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
@@ -66,12 +67,9 @@ class ConsumerKtImpl(
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                 streamingFetchWithRetry(requestFlow, watchServer, orderingKey)
             } else if (status.code == Status.CANCELLED.code) {
-//                notifyStopped()
                 logger.info("fetcher [$orderingKey] is canceled")
             } else {
-                logger.info("TMP notifyFailed")
-//                notifyFailed(HStreamDBClientException(e))
-                logger.info("TMP notifyFailed end")
+                logger.info("fetcher [$orderingKey] failed")
             }
         }
 
@@ -95,7 +93,6 @@ class ConsumerKtImpl(
                 }
                 launch {
                     stub.streamingFetch(requestFlow).collect {
-                        logger.info("TMP, recv:${it.getReceivedRecords(0).recordId}")
                         process(requestFlow, it, orderingKey)
                     }
                 }
@@ -144,7 +141,6 @@ class ConsumerKtImpl(
                     job?.cancel()
                 }
             }
-            logger.info("TMP aaaaaaaaaaaaaaaaaaaaa")
         } catch (e: Throwable) {
             // TODO: retry
             logger.error("watch subscription error: ${e.message}")
@@ -247,7 +243,6 @@ class ConsumerKtImpl(
             logger.info("consumer [{}] is stopping", consumerName)
 
             watchFuture.cancel(false)
-            logger.info("TMP canceled watchFuture")
             executorService.shutdown()
             try {
                 executorService.awaitTermination(30, TimeUnit.SECONDS)

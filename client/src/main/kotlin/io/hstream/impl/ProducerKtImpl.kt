@@ -42,7 +42,6 @@ open class ProducerKtImpl(private val stream: String) : Producer {
                 .build()
             val serverNode = it.lookupStream(req).serverNode
             server = "${serverNode.host}:${serverNode.port}"
-            logger.info("TMP, key:$orderingKey, server:$server")
             serverUrlsLock.withLock {
                 serverUrls[orderingKey] = server
             }

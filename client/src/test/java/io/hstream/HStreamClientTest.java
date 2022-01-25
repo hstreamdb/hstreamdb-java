@@ -39,8 +39,8 @@ public class HStreamClientTest {
 
   @AfterEach
   public void cleanUp() {
-//    TestUtils.deleteAllSubscriptions(client);
-//    client.deleteStream(testStreamName);
+    //    TestUtils.deleteAllSubscriptions(client);
+    //    client.deleteStream(testStreamName);
   }
 
   public static ArrayList<RecordId> doProduceAndGatherRid(
@@ -57,20 +57,20 @@ public class HStreamClientTest {
     return rids;
   }
 
-    public static ArrayList<RecordId> doProduceWithKey(
-            Producer producer, int payloadSize, int recordsNums, String key) {
-        var rids = new ArrayList<RecordId>();
-        Random rand = new Random();
-        byte[] rRec = new byte[payloadSize];
-        var writes = new ArrayList<CompletableFuture<RecordId>>();
-        for (int i = 0; i < recordsNums; i++) {
-            rand.nextBytes(rRec);
-            Record record = Record.newBuilder().rawRecord(rRec).key(key).build();
-            writes.add(producer.write(record));
-        }
-        writes.forEach(w -> rids.add(w.join()));
-        return rids;
+  public static ArrayList<RecordId> doProduceWithKey(
+      Producer producer, int payloadSize, int recordsNums, String key) {
+    var rids = new ArrayList<RecordId>();
+    Random rand = new Random();
+    byte[] rRec = new byte[payloadSize];
+    var writes = new ArrayList<CompletableFuture<RecordId>>();
+    for (int i = 0; i < recordsNums; i++) {
+      rand.nextBytes(rRec);
+      Record record = Record.newBuilder().rawRecord(rRec).key(key).build();
+      writes.add(producer.write(record));
     }
+    writes.forEach(w -> rids.add(w.join()));
+    return rids;
+  }
 
   // @Test
   // public void testReceiverException() throws Exception {
@@ -136,7 +136,7 @@ public class HStreamClientTest {
     Random random = new Random();
     byte[] rawRecord = new byte[100];
     random.nextBytes(rawRecord);
-//    Record record = Record.newBuilder().rawRecord(rawRecord).key("KQ").build();
+    //    Record record = Record.newBuilder().rawRecord(rawRecord).key("KQ").build();
     RecordId recordId = producer.write(rawRecord).join();
     logger.info("write record: {}", recordId);
 
@@ -404,6 +404,7 @@ public class HStreamClientTest {
     queryer.stopAsync().awaitTerminated();
   }
 
+  @Disabled
   @Test
   @Order(7)
   public void testConsumerInTurn() throws Exception {
@@ -566,7 +567,7 @@ public class HStreamClientTest {
             .flushIntervalMs(100)
             .build();
     final int count = 10;
-    doProduceWithKey(producer, 100, count/ 2, "K1");
+    doProduceWithKey(producer, 100, count / 2, "K1");
     doProduceWithKey(producer, 100, count / 2, "K2");
 
     logger.info("producer finish");
@@ -581,7 +582,7 @@ public class HStreamClientTest {
             .rawRecordReceiver(
                 (receivedRawRecord, responder) -> {
                   responder.ack();
-                    index.incrementAndGet();
+                  index.incrementAndGet();
                   logger.info("ack for {}, idx:{}", receivedRawRecord.getRecordId(), index.get());
                   if (index.get() == count) {
                     latch.countDown();
