@@ -1,16 +1,16 @@
 package io.hstream;
 
-import java.util.List;
-import java.util.UUID;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 
 public class TestUtils {
@@ -39,27 +39,25 @@ public class TestUtils {
     return streamName;
   }
 
-  public static String randSubscription(
-    HStreamClient c, String streamName) {
+  public static String randSubscription(HStreamClient c, String streamName) {
     String subscriptionName = "test_subscription_" + randText();
     Subscription subscription =
         Subscription.newBuilder().subscription(subscriptionName).stream(streamName)
-            .ackTimeoutSeconds(5)
+            .ackTimeoutSeconds(60)
             .build();
     c.createSubscription(subscription);
     return subscriptionName;
   }
 
-  public static ArrayList<String> doProduce(Producer producer, int payloadSize, int recordsNums, String key) {
+  public static ArrayList<String> doProduce(
+      Producer producer, int payloadSize, int recordsNums, String key) {
     Random rand = new Random();
     byte[] rRec = new byte[payloadSize];
     var records = new ArrayList<String>();
     var xs = new CompletableFuture[recordsNums];
     for (int i = 0; i < recordsNums; i++) {
       rand.nextBytes(rRec);
-      Record recordToWrite = Record.newBuilder().key(key)
-          .rawRecord(rRec)
-          .build();
+      Record recordToWrite = Record.newBuilder().key(key).rawRecord(rRec).build();
       records.add(Arrays.toString(rRec));
       xs[i] = producer.write(recordToWrite);
     }
@@ -68,13 +66,15 @@ public class TestUtils {
   }
 
   public static RecordId produceIntegerAndGatherRid(Producer producer, int data, String key) {
-      Record recordToWrite = Record.newBuilder().key(key)
-          .rawRecord(Integer.toString(data).getBytes(StandardCharsets.UTF_8))
-          .build();
-      return producer.write(recordToWrite).join();
+    Record recordToWrite =
+        Record.newBuilder()
+            .key(key)
+            .rawRecord(Integer.toString(data).getBytes(StandardCharsets.UTF_8))
+            .build();
+    return producer.write(recordToWrite).join();
   }
 
-public static Consumer createConsumerCollectIntegerPayload(
+  public static Consumer createConsumerCollectIntegerPayload(
       Logger logger,
       HStreamClient client,
       String subscription,
@@ -86,9 +86,15 @@ public static Consumer createConsumerCollectIntegerPayload(
         .subscription(subscription)
         .rawRecordReceiver(
             (receivedRawRecord, responder) -> {
-              logger.info("### Read 1 record, id={}, value={}.", receivedRawRecord.getRecordId(), Integer.parseInt(new String(receivedRawRecord.getRawRecord(), StandardCharsets.UTF_8)));
+              logger.info(
+                  "### Read 1 record, id={}, value={}.",
+                  receivedRawRecord.getRecordId(),
+                  Integer.parseInt(
+                      new String(receivedRawRecord.getRawRecord(), StandardCharsets.UTF_8)));
               lock.lock();
-              records.add(Integer.parseInt(new String(receivedRawRecord.getRawRecord(), StandardCharsets.UTF_8)));
+              records.add(
+                  Integer.parseInt(
+                      new String(receivedRawRecord.getRawRecord(), StandardCharsets.UTF_8)));
               lock.unlock();
               responder.ack();
               latch.countDown();
@@ -121,28 +127,29 @@ public static Consumer createConsumerCollectIntegerPayload(
   }
 
   public static <T> boolean isSkippedSublist(List<T> sub, List<T> whole) {
-        List<T> wholeVar = new ArrayList<>(whole);
-        for (int i = 0; i < sub.size(); ++i) {
-            int index = wholeVar.indexOf(sub.get(i));
-            if (index < 0) {
-                return false;
-            } else {
-                wholeVar = wholeVar.subList(index, wholeVar.size());
-            }
-        }
-        return true;
+    List<T> wholeVar = new ArrayList<>(whole);
+    for (int i = 0; i < sub.size(); ++i) {
+      int index = wholeVar.indexOf(sub.get(i));
+      if (index < 0) {
+        return false;
+      } else {
+        wholeVar = wholeVar.subList(index, wholeVar.size());
+      }
+    }
+    return true;
   }
 
-  public static <T> HashSet<String> conjectureKeysOfConsumer(HashMap<String, ArrayList<T>> writeRec, ArrayList<T> readRec) {
-        HashSet<String> result = new HashSet<>();
-        for(String key : writeRec.keySet()) {
-            var valuesOfThisKey = writeRec.get(key);
-            for(T item : readRec) {
-                if(valuesOfThisKey.contains(item)) {
-                    result.add(key);
-                }
-            }
+  public static <T> HashSet<String> conjectureKeysOfConsumer(
+      HashMap<String, ArrayList<T>> writeRec, ArrayList<T> readRec) {
+    HashSet<String> result = new HashSet<>();
+    for (String key : writeRec.keySet()) {
+      var valuesOfThisKey = writeRec.get(key);
+      for (T item : readRec) {
+        if (valuesOfThisKey.contains(item)) {
+          result.add(key);
         }
-        return result;
+      }
+    }
+    return result;
   }
 }

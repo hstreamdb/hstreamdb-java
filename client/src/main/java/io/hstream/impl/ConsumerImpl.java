@@ -8,6 +8,7 @@ import io.hstream.*;
 import io.hstream.internal.*;
 import io.hstream.util.GrpcUtils;
 import io.hstream.util.RecordUtils;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,6 +16,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +73,9 @@ public class ConsumerImpl extends AbstractService implements Consumer {
     StreamObserver<WatchSubscriptionResponse> observer =
         new StreamObserver<WatchSubscriptionResponse>() {
 
+          Lock fetchLock = new ReentrantLock();
+          HashSet<String> keySet = new HashSet<>();
+
           @Override
           public void onNext(WatchSubscriptionResponse value) {
             if (value.getChangeCase().getNumber()
@@ -86,6 +92,18 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                       new StreamObserver<LookupSubscriptionWithOrderingKeyResponse>() {
                         @Override
                         public void onNext(LookupSubscriptionWithOrderingKeyResponse value) {
+                          fetchLock.lock();
+                          try {
+                            if (keySet.contains(value.getOrderingKey())) {
+                              logger.info("watch will skip changeAdd for key {}", partitionKey);
+                              return;
+                            } else {
+                              keySet.add(value.getOrderingKey());
+                            }
+
+                          } finally {
+                            fetchLock.unlock();
+                          }
                           ServerNode serverNode = value.getServerNode();
                           String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
                           StreamObserver<StreamingFetchRequest> requestStreamObserver =
