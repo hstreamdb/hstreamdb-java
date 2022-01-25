@@ -20,6 +20,15 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static io.hstream.TestUtils.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Assertions;
+
 public class HStreamClientTest07 {
 
   private static final Logger logger = LoggerFactory.getLogger(HStreamClientTest07.class);
