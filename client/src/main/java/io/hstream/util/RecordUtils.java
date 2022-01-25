@@ -5,6 +5,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
 import com.google.protobuf.util.JsonFormat;
 import io.hstream.*;
+import io.hstream.Record;
 import io.hstream.internal.HStreamRecord;
 import io.hstream.internal.HStreamRecordHeader;
 import io.hstream.internal.ReceivedRecord;
@@ -38,6 +39,19 @@ public class RecordUtils {
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("hrecord to json error", e);
     }
+  }
+
+  public static HStreamRecord buildHStreamRecordFromRecord(Record record) {
+    HStreamRecord hStreamRecord =
+        record.isRawRecord()
+            ? buildHStreamRecordFromRawRecord(record.getRawRecord())
+            : buildHStreamRecordFromHRecord(record.getHRecord());
+    if (record.getKey() == null) {
+      return hStreamRecord;
+    }
+    HStreamRecordHeader newHeader =
+        HStreamRecordHeader.newBuilder(hStreamRecord.getHeader()).setKey(record.getKey()).build();
+    return HStreamRecord.newBuilder(hStreamRecord).setHeader(newHeader).build();
   }
 
   public static byte[] parseRawRecordFromHStreamRecord(HStreamRecord hStreamRecord) {

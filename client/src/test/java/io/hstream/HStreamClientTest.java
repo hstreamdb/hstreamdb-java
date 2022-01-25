@@ -32,7 +32,6 @@ public class HStreamClientTest {
     client.createStream(testStreamName);
     Subscription subscription =
         Subscription.newBuilder().subscription(testSubscriptionId).stream(testStreamName)
-            .offset(new SubscriptionOffset(SubscriptionOffset.SpecialOffset.LATEST))
             .ackTimeoutSeconds(10)
             .build();
     client.createSubscription(subscription);

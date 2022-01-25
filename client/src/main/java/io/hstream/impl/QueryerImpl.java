@@ -4,7 +4,6 @@ import com.google.common.util.concurrent.AbstractService;
 import io.grpc.stub.StreamObserver;
 import io.hstream.*;
 import io.hstream.Subscription;
-import io.hstream.SubscriptionOffset;
 import io.hstream.internal.*;
 import io.hstream.internal.Stream;
 import java.util.List;
@@ -76,7 +75,6 @@ public class QueryerImpl extends AbstractService implements Queryer {
                 Subscription.newBuilder()
                     .subscription(STREAM_QUERY_SUBSCRIPTION_PREFIX + resultStreamNameSuffix)
                     .stream(STREAM_QUERY_STREAM_PREFIX + resultStreamNameSuffix)
-                    .offset(new SubscriptionOffset(SubscriptionOffset.SpecialOffset.EARLIEST))
                     .ackTimeoutSeconds(10)
                     .build();
             client.createSubscription(subscription);

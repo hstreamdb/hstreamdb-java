@@ -14,11 +14,15 @@ import io.hstream.ReceivedRawRecord
 import io.hstream.internal.HStreamApiGrpcKt
 import io.hstream.internal.HStreamRecord
 import io.hstream.internal.LookupSubscriptionRequest
+import io.hstream.internal.LookupSubscriptionWithOrderingKeyRequest
 import io.hstream.internal.ReceivedRecord
 import io.hstream.internal.StreamingFetchRequest
 import io.hstream.internal.StreamingFetchResponse
+import io.hstream.internal.WatchSubscriptionRequest
+import io.hstream.internal.WatchSubscriptionResponse
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -36,12 +40,14 @@ class ConsumerKtImpl(
     private val rawRecordReceiver: RawRecordReceiver?,
     private val hRecordReceiver: HRecordReceiver?
 ) : AbstractService(), Consumer {
-    private lateinit var serverUrl: String
-    private val ackFlow = MutableSharedFlow<StreamingFetchRequest>()
-    private lateinit var streamingFetchFuture: CompletableFuture<Unit>
+    private lateinit var watchFuture: CompletableFuture<Unit>
     private val executorService = Executors.newSingleThreadExecutor()
 
-    private suspend fun streamingFetchWithRetry(requestFlow: Flow<StreamingFetchRequest>) {
+    private suspend fun streamingFetchWithRetry(
+        requestFlow: MutableSharedFlow<StreamingFetchRequest>,
+        watchServer: String,
+        orderingKey: String
+    ) {
         // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
         //       This function is for handling them.
         suspend fun handleGRPCException(e: Throwable) {
@@ -56,8 +62,7 @@ class ConsumerKtImpl(
             // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
             if (status.code == Status.UNAVAILABLE.code) {
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                refreshServerUrl()
-                streamingFetchWithRetry(requestFlow)
+                streamingFetchWithRetry(requestFlow, watchServer, orderingKey)
             } else if (status.code == Status.CANCELLED.code) {
                 notifyStopped()
                 logger.info("consumer [{}] is stopped", consumerName)
@@ -67,8 +72,8 @@ class ConsumerKtImpl(
         }
 
         if (!isRunning) return
-        check(serverUrl != null)
-        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
+        val server = lookupSubscriptionWithOrderingKey(orderingKey, watchServer)
+        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(server))
         try {
             // send an empty ack request to trigger streamingFetch.
             val initRequest = StreamingFetchRequest.newBuilder()
@@ -78,14 +83,14 @@ class ConsumerKtImpl(
             coroutineScope {
                 launch {
                     // wait until stub.streamingFetch called
-                    while (ackFlow.subscriptionCount.value == 0) {
+                    while (requestFlow.subscriptionCount.value == 0) {
                         delay(100)
                     }
-                    ackFlow.emit(initRequest)
+                    requestFlow.emit(initRequest)
                 }
                 launch {
                     stub.streamingFetch(requestFlow).collect {
-                        process(it)
+                        process(requestFlow, it)
                     }
                 }
             }
@@ -96,7 +101,58 @@ class ConsumerKtImpl(
         }
     }
 
-    private fun process(value: StreamingFetchResponse) {
+    private suspend fun watchSubscription() {
+        val server = lookupSubscription()
+        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(server))
+        val req = WatchSubscriptionRequest.newBuilder()
+            .setSubscriptionId(subscriptionId)
+            .setConsumerName(consumerName)
+            .build()
+        stub.watchSubscription(req).collect {
+            val fetchers = HashMap<String, Job>()
+            val fetcherFlows = HashMap<String, Flow<StreamingFetchRequest>>()
+            if (it.changeCase == WatchSubscriptionResponse.ChangeCase.CHANGEADD) {
+                val key = it.changeAdd.orderingKey
+                coroutineScope {
+                    val flow = MutableSharedFlow<StreamingFetchRequest>()
+                    fetcherFlows[key] = flow
+                    fetchers[key] = launch {
+                        streamingFetchWithRetry(flow, server, key)
+                    }
+                }
+            } else {
+                val key = it.changeRemove.orderingKey
+                val job = fetchers.remove(key)
+                fetcherFlows.remove(key)
+                if (job == null) {
+                    logger.error("watching key not found: {}", key)
+                    return@collect
+                }
+                job.cancel()
+            }
+        }
+    }
+
+    private suspend fun lookupSubscriptionWithOrderingKey(watchServer: String, orderingKey: String): String {
+        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(watchServer))
+        val req = LookupSubscriptionWithOrderingKeyRequest.newBuilder()
+            .setSubscriptionId(subscriptionId)
+            .setOrderingKey(orderingKey)
+            .build()
+        val res = stub.lookupSubscriptionWithOrderingKey(req)
+        return "${res.serverNode.host}:${res.serverNode.port}"
+    }
+
+    private suspend fun lookupSubscription(): String {
+        return HStreamClientKtImpl.unaryCallCoroutine {
+            val serverNode = it.lookupSubscription(
+                LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()
+            ).serverNode
+            return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
+        }
+    }
+
+    private fun process(requestFlow: MutableSharedFlow<StreamingFetchRequest>, value: StreamingFetchResponse) {
         if (!isRunning) {
             return
         }
@@ -104,7 +160,7 @@ class ConsumerKtImpl(
         val receivedRecords = value.receivedRecordsList
         for (receivedRecord in receivedRecords) {
             val responder = ResponderImpl(
-                subscriptionId, ackFlow, consumerName, receivedRecord.recordId
+                subscriptionId, requestFlow, consumerName, receivedRecord.recordId
             )
 
             executorService.submit {
@@ -116,9 +172,18 @@ class ConsumerKtImpl(
                     logger.debug("consumer [{}] ready to process rawRecord [{}]", consumerName, receivedRecord.recordId)
                     try {
                         rawRecordReceiver!!.processRawRecord(toReceivedRawRecord(receivedRecord), responder)
-                        logger.debug("consumer [{}] processes rawRecord [{}] done", consumerName, receivedRecord.recordId)
+                        logger.debug(
+                            "consumer [{}] processes rawRecord [{}] done",
+                            consumerName,
+                            receivedRecord.recordId
+                        )
                     } catch (e: Exception) {
-                        logger.error("consumer [{}] processes rawRecord [{}] error", consumerName, receivedRecord.recordId, e)
+                        logger.error(
+                            "consumer [{}] processes rawRecord [{}] error",
+                            consumerName,
+                            receivedRecord.recordId,
+                            e
+                        )
                     }
                 } else {
                     logger.debug("consumer [{}] ready to process hRecord [{}]", consumerName, receivedRecord.recordId)
@@ -128,28 +193,15 @@ class ConsumerKtImpl(
                         )
                         logger.debug("consumer [{}] processes hRecord [{}] done", consumerName, receivedRecord.recordId)
                     } catch (e: Exception) {
-                        logger.error("consumer [{}] processes hRecord [{}] error", consumerName, receivedRecord.recordId, e)
+                        logger.error(
+                            "consumer [{}] processes hRecord [{}] error",
+                            consumerName,
+                            receivedRecord.recordId,
+                            e
+                        )
                     }
                 }
             }
-        }
-    }
-
-    private suspend fun lookupServerUrl(): String {
-        return HStreamClientKtImpl.unaryCallCoroutine {
-            val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
-            return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
-        }
-    }
-
-    private suspend fun refreshServerUrl() {
-        serverUrl = lookupServerUrl()
-    }
-
-    private fun refreshServerUrlBlocked() {
-        serverUrl = HStreamClientKtImpl.unaryCallBlocked {
-            val serverNode = it.lookupSubscription(LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()).serverNode
-            return@unaryCallBlocked "${serverNode.host}:${serverNode.port}"
         }
     }
 
@@ -157,9 +209,8 @@ class ConsumerKtImpl(
         Thread {
             try {
                 logger.info("consumer [{}] is starting", consumerName)
-                refreshServerUrlBlocked()
                 notifyStarted()
-                streamingFetchFuture = futureForIO { streamingFetchWithRetry(ackFlow) }
+                watchFuture = futureForIO { watchSubscription() }
                 logger.info("consumer [{}] is started", consumerName)
             } catch (e: Exception) {
                 logger.error("consumer [{}] failed to start", consumerName, e)
@@ -172,7 +223,7 @@ class ConsumerKtImpl(
         Thread {
             logger.info("consumer [{}] is stopping", consumerName)
 
-            streamingFetchFuture.cancel(true)
+            watchFuture.cancel(true)
             executorService.shutdown()
             try {
                 executorService.awaitTermination(30, TimeUnit.SECONDS)
