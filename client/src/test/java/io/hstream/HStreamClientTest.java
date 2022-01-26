@@ -7,7 +7,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +16,6 @@ public class HStreamClientTest {
 
   private static final Logger logger = LoggerFactory.getLogger(HStreamClientTest.class);
   private static final String serviceUrl = "localhost:6570";
-  private static final String TEST_STREAM_PREFIX = "TEST_STREAM_";
-  private static final String TEST_SUBSCRIPTION_PREFIX = "TEST_SUB_";
   private HStreamClient client;
   private String testStreamName;
   private String testSubscriptionId;
@@ -26,22 +23,14 @@ public class HStreamClientTest {
   @BeforeEach
   public void setUp() {
     client = HStreamClient.builder().serviceUrl(serviceUrl).build();
-    String suffix = RandomStringUtils.randomAlphanumeric(10);
-    testStreamName = TEST_STREAM_PREFIX + suffix;
-    testSubscriptionId = TEST_SUBSCRIPTION_PREFIX + suffix;
-    client.createStream(testStreamName);
-    Subscription subscription =
-        Subscription.newBuilder().subscription(testSubscriptionId).stream(testStreamName)
-            .offset(new SubscriptionOffset(SubscriptionOffset.SpecialOffset.LATEST))
-            .ackTimeoutSeconds(10)
-            .build();
-    client.createSubscription(subscription);
+    testStreamName = TestUtils.randStream(client);
+    testSubscriptionId = TestUtils.randSubscription(client, testStreamName);
   }
 
   @AfterEach
   public void cleanUp() {
-    TestUtils.deleteAllSubscriptions(client);
-    client.deleteStream(testStreamName);
+    //    TestUtils.deleteAllSubscriptions(client);
+    //    client.deleteStream(testStreamName);
   }
 
   public static ArrayList<RecordId> doProduceAndGatherRid(
@@ -53,6 +42,21 @@ public class HStreamClientTest {
     for (int i = 0; i < recordsNums; i++) {
       rand.nextBytes(rRec);
       writes.add(producer.write(rRec));
+    }
+    writes.forEach(w -> rids.add(w.join()));
+    return rids;
+  }
+
+  public static ArrayList<RecordId> doProduceWithKey(
+      Producer producer, int payloadSize, int recordsNums, String key) {
+    var rids = new ArrayList<RecordId>();
+    Random rand = new Random();
+    byte[] rRec = new byte[payloadSize];
+    var writes = new ArrayList<CompletableFuture<RecordId>>();
+    for (int i = 0; i < recordsNums; i++) {
+      rand.nextBytes(rRec);
+      Record record = Record.newBuilder().rawRecord(rRec).key(key).build();
+      writes.add(producer.write(record));
     }
     writes.forEach(w -> rids.add(w.join()));
     return rids;
@@ -122,6 +126,7 @@ public class HStreamClientTest {
     Random random = new Random();
     byte[] rawRecord = new byte[100];
     random.nextBytes(rawRecord);
+    //    Record record = Record.newBuilder().rawRecord(rawRecord).key("KQ").build();
     RecordId recordId = producer.write(rawRecord).join();
     logger.info("write record: {}", recordId);
 
@@ -389,6 +394,7 @@ public class HStreamClientTest {
     queryer.stopAsync().awaitTerminated();
   }
 
+  @Disabled
   @Test
   @Order(7)
   public void testConsumerInTurn() throws Exception {
@@ -531,6 +537,43 @@ public class HStreamClientTest {
                       recordIdFutures[index.getAndIncrement()].join(),
                       receivedRawRecord.getRecordId());
                   responder.ack();
+                  if (index.get() == count) {
+                    latch.countDown();
+                  }
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
+
+    latch.await();
+    consumer.stopAsync().awaitTerminated();
+  }
+
+  @Test
+  @Order(8)
+  public void testOrderingKeyBatch() throws Exception {
+    BufferedProducer producer =
+        client.newBufferedProducer().stream(testStreamName)
+            .recordCountLimit(100)
+            .flushIntervalMs(100)
+            .build();
+    final int count = 10;
+    doProduceWithKey(producer, 100, count / 2, "K1");
+    doProduceWithKey(producer, 100, count / 2, "K2");
+
+    logger.info("producer finish");
+    producer.close();
+
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicInteger index = new AtomicInteger();
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(testSubscriptionId)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  responder.ack();
+                  index.incrementAndGet();
+                  logger.info("ack for {}, idx:{}", receivedRawRecord.getRecordId(), index.get());
                   if (index.get() == count) {
                     latch.countDown();
                   }

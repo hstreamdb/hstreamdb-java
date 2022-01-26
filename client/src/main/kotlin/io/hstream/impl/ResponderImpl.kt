@@ -10,13 +10,15 @@ class ResponderImpl(
     private val subscriptionId: String,
     private val ackFlow: MutableSharedFlow<StreamingFetchRequest>,
     private val consumerId: String,
-    private val recordId: RecordId
+    private val recordId: RecordId,
+    private val orderingKey: String
 ) : Responder {
     override fun ack() {
         val request = StreamingFetchRequest.newBuilder()
             .setSubscriptionId(subscriptionId)
             .setConsumerName(consumerId)
             .addAckIds(recordId)
+            .setOrderingKey(orderingKey)
             .build()
         futureForIO { ackFlow.emit(request) }
     }

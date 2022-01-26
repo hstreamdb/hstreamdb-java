@@ -5,6 +5,8 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
 import com.google.protobuf.util.JsonFormat;
 import io.hstream.*;
+import io.hstream.Record;
+import io.hstream.impl.DefaultSettings;
 import io.hstream.internal.HStreamRecord;
 import io.hstream.internal.HStreamRecordHeader;
 import io.hstream.internal.ReceivedRecord;
@@ -18,7 +20,10 @@ public class RecordUtils {
 
   public static HStreamRecord buildHStreamRecordFromRawRecord(byte[] rawRecord) {
     HStreamRecordHeader header =
-        HStreamRecordHeader.newBuilder().setFlag(HStreamRecordHeader.Flag.RAW).build();
+        HStreamRecordHeader.newBuilder()
+            .setFlag(HStreamRecordHeader.Flag.RAW)
+            .setKey(DefaultSettings.DEFAULT_ORDERING_KEY)
+            .build();
     return HStreamRecord.newBuilder()
         .setHeader(header)
         .setPayload(ByteString.copyFrom(rawRecord))
@@ -28,7 +33,10 @@ public class RecordUtils {
   public static HStreamRecord buildHStreamRecordFromHRecord(HRecord hRecord) {
     try {
       HStreamRecordHeader header =
-          HStreamRecordHeader.newBuilder().setFlag(HStreamRecordHeader.Flag.JSON).build();
+          HStreamRecordHeader.newBuilder()
+              .setFlag(HStreamRecordHeader.Flag.JSON)
+              .setKey(DefaultSettings.DEFAULT_ORDERING_KEY)
+              .build();
       String json = JsonFormat.printer().print(hRecord.getDelegate());
       logger.debug("hrecord to json: {}", json);
       return HStreamRecord.newBuilder()
@@ -38,6 +46,19 @@ public class RecordUtils {
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("hrecord to json error", e);
     }
+  }
+
+  public static HStreamRecord buildHStreamRecordFromRecord(Record record) {
+    HStreamRecord hStreamRecord =
+        record.isRawRecord()
+            ? buildHStreamRecordFromRawRecord(record.getRawRecord())
+            : buildHStreamRecordFromHRecord(record.getHRecord());
+    if (record.getKey() == null) {
+      return hStreamRecord;
+    }
+    HStreamRecordHeader newHeader =
+        HStreamRecordHeader.newBuilder(hStreamRecord.getHeader()).setKey(record.getKey()).build();
+    return HStreamRecord.newBuilder(hStreamRecord).setHeader(newHeader).build();
   }
 
   public static byte[] parseRawRecordFromHStreamRecord(HStreamRecord hStreamRecord) {
