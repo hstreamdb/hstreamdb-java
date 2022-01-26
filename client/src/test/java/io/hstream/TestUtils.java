@@ -43,7 +43,7 @@ public class TestUtils {
     String subscriptionName = "test_subscription_" + randText();
     Subscription subscription =
         Subscription.newBuilder().subscription(subscriptionName).stream(streamName)
-            .ackTimeoutSeconds(60)
+            .ackTimeoutSeconds(6000)
             .build();
     c.createSubscription(subscription);
     return subscriptionName;
@@ -69,6 +69,14 @@ public class TestUtils {
     Record recordToWrite =
         Record.newBuilder()
             .key(key)
+            .rawRecord(Integer.toString(data).getBytes(StandardCharsets.UTF_8))
+            .build();
+    return producer.write(recordToWrite).join();
+  }
+
+  public static RecordId produceIntegerAndGatherRid(Producer producer, int data) {
+    Record recordToWrite =
+        Record.newBuilder()
             .rawRecord(Integer.toString(data).getBytes(StandardCharsets.UTF_8))
             .build();
     return producer.write(recordToWrite).join();
