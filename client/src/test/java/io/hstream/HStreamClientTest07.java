@@ -74,6 +74,7 @@ public class HStreamClientTest07 {
   }
 
   @Test
+  @RepeatedTest(1)
   void readTest() throws Exception {
     var streamName = newStreamName();
     var subscriptionId = newSubscriptionId();
