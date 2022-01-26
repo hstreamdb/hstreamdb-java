@@ -191,7 +191,8 @@ public class ConsumerImpl extends AbstractService implements Consumer {
 
                         @Override
                         public void onError(Throwable t) {
-                          logger.error("lookupSubscription got error", t);
+                          logger.error("lookupSubscriptionWithOrderingKey got error", t);
+                          t.printStackTrace();
                         }
 
                         @Override
@@ -210,6 +211,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                 subscriptionId,
                 t.getMessage(),
                 t);
+            t.printStackTrace();
             // notifyFailed(t);
           }
 
@@ -220,13 +222,44 @@ public class ConsumerImpl extends AbstractService implements Consumer {
           }
         };
 
-    HStreamApiGrpc.newStub(channelProvider.get(serverUrls.get(0)))
-        .watchSubscription(
-            WatchSubscriptionRequest.newBuilder()
-                .setSubscriptionId(subscriptionId)
-                .setConsumerName(consumerName)
-                .build(),
-            observer);
+      HStreamApiGrpc.newStub(channelProvider.get(serverUrls.get(0)))
+              .lookupSubscription(
+                      LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build(),
+                      new StreamObserver<LookupSubscriptionResponse>() {
+                          @Override
+                          public void onNext(LookupSubscriptionResponse value) {
+                              ServerNode serverNode = value.getServerNode();
+                              String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
+
+                              HStreamApiGrpc.newStub(channelProvider.get(serverUrl))
+                                      .watchSubscription(
+                                              WatchSubscriptionRequest.newBuilder()
+                                                      .setSubscriptionId(subscriptionId)
+                                                      .setConsumerName(consumerName)
+                                                      .build(),
+                                              observer);
+
+                          }
+
+                          @Override
+                          public void onError(Throwable t) {
+                              logger.error(
+                                      "consumer {} lookupSubscription for subscription {}"
+                                              + " error: {}",
+                                      ConsumerImpl.this.consumerName,
+                                      ConsumerImpl.this.subscriptionId,
+                                      t);
+                              t.printStackTrace();
+
+                          }
+
+                          @Override
+                          public void onCompleted() {
+
+                          }
+                      }
+              );
+
     logger.info("consumer {} started", consumerName);
     notifyStarted();
   }
