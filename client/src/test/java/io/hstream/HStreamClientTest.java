@@ -17,8 +17,6 @@ public class HStreamClientTest {
 
   private static final Logger logger = LoggerFactory.getLogger(HStreamClientTest.class);
   private static final String serviceUrl = "localhost:6570";
-  private static final String TEST_STREAM_PREFIX = "TEST_STREAM_";
-  private static final String TEST_SUBSCRIPTION_PREFIX = "TEST_SUB_";
   private HStreamClient client;
   private String testStreamName;
   private String testSubscriptionId;
@@ -26,15 +24,8 @@ public class HStreamClientTest {
   @BeforeEach
   public void setUp() {
     client = HStreamClient.builder().serviceUrl(serviceUrl).build();
-    String suffix = RandomStringUtils.randomAlphanumeric(10);
-    testStreamName = TEST_STREAM_PREFIX + suffix;
-    testSubscriptionId = TEST_SUBSCRIPTION_PREFIX + suffix;
-    client.createStream(testStreamName);
-    Subscription subscription =
-        Subscription.newBuilder().subscription(testSubscriptionId).stream(testStreamName)
-            .ackTimeoutSeconds(10)
-            .build();
-    client.createSubscription(subscription);
+    testStreamName = TestUtils.randStream(client);
+    testSubscriptionId = TestUtils.randSubscription(client, testStreamName);
   }
 
   @AfterEach

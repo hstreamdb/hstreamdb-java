@@ -25,31 +25,18 @@ public class HStreamClientTest07 {
 
   private static final Logger logger = LoggerFactory.getLogger(HStreamClientTest07.class);
   private static final String serviceUrl = "127.0.0.1:6570";
-  private static String STREAM_NAME_PREFIX = "test_stream_";
-  private static String SUBSCRIPTION_PREFIX = "test_sub_";
-
-  private static AtomicInteger counter = new AtomicInteger();
-
-  static String newStreamName() {
-    return STREAM_NAME_PREFIX + counter.incrementAndGet();
-  }
-
-  static String newSubscriptionId() {
-    return SUBSCRIPTION_PREFIX + counter.incrementAndGet();
-  }
 
   @Test
   void createStreamTest() throws Exception {
     HStreamClient client = HStreamClient.builder().serviceUrl(serviceUrl).build();
-    client.createStream(newStreamName());
+    randStream(client);
     client.close();
   }
 
   @Test
   void writeTest() throws Exception {
     HStreamClient client = HStreamClient.builder().serviceUrl(serviceUrl).build();
-    String streamName = newStreamName();
-    client.createStream(streamName);
+    String streamName = randStream(client);
 
     Random random = new Random();
     byte[] payload = new byte[100];
@@ -65,22 +52,16 @@ public class HStreamClientTest07 {
   @Test
   void createSubscriptionTest() throws Exception {
     HStreamClient client = HStreamClient.builder().serviceUrl(serviceUrl).build();
-    var streamName = newStreamName();
-    var subscriptionId = newSubscriptionId();
-    client.createStream(streamName);
-    client.createSubscription(
-        Subscription.newBuilder().subscription(subscriptionId).stream(streamName).build());
+    var streamName = randStream(client);
+    randSubscription(client, streamName);
     client.close();
   }
 
   @Test
   void readTest() throws Exception {
-    var streamName = newStreamName();
-    var subscriptionId = newSubscriptionId();
     HStreamClient client = HStreamClient.builder().serviceUrl(serviceUrl).build();
-    client.createStream(streamName);
-    client.createSubscription(
-        Subscription.newBuilder().subscription(subscriptionId).stream(streamName).build());
+    var streamName = randStream(client);
+    var subscriptionId = randSubscription(client, streamName);
 
     Producer producer = client.newProducer().stream(streamName).build();
     int recordCount = 10;
@@ -120,12 +101,9 @@ public class HStreamClientTest07 {
   @Test
   @RepeatedTest(3)
   void readMultipleShardsTest() throws Exception {
-    var streamName = newStreamName();
-    var subscriptionId = newSubscriptionId();
     HStreamClient client = HStreamClient.builder().serviceUrl(serviceUrl).build();
-    client.createStream(streamName);
-    client.createSubscription(
-        Subscription.newBuilder().subscription(subscriptionId).stream(streamName).build());
+    var streamName = randStream(client);
+    var subscriptionId = randSubscription(client, streamName);
 
     Producer producer = client.newProducer().stream(streamName).build();
     int shardCount = 3;
@@ -168,12 +146,9 @@ public class HStreamClientTest07 {
 
   @Test
   void consumerRebalenceTest() throws Exception {
-    var streamName = newStreamName();
-    var subscriptionId = newSubscriptionId();
     HStreamClient client = HStreamClient.builder().serviceUrl(serviceUrl).build();
-    client.createStream(streamName);
-    client.createSubscription(
-        Subscription.newBuilder().subscription(subscriptionId).stream(streamName).build());
+    var streamName = randStream(client);
+    var subscriptionId = randSubscription(client, streamName);
 
     Producer producer = client.newProducer().stream(streamName).build();
     int shardCount = 3;

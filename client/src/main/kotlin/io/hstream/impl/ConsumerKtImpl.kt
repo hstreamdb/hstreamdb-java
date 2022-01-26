@@ -76,9 +76,9 @@ class ConsumerKtImpl(
         }
 
         if (!isRunning) return
-        val server = lookupSubscriptionWithOrderingKey(watchServer, orderingKey)
-        logger.debug("lookupSubscriptionWithOrderingKey:[$orderingKey] from :[$watchServer], received:[$server]")
-        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(server))
+//        val server = lookupSubscriptionWithOrderingKey(watchServer, orderingKey)
+//        logger.debug("lookupSubscriptionWithOrderingKey:[$orderingKey] from :[$watchServer], received:[$server]")
+        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(watchServer))
         try {
             // send an empty ack request to trigger streamingFetch.
             val initRequest = StreamingFetchRequest.newBuilder()
