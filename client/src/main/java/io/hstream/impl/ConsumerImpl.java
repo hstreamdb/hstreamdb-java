@@ -77,35 +77,36 @@ public class ConsumerImpl extends AbstractService implements Consumer {
           HashSet<String> keySet = new HashSet<>();
 
           @Override
-          public void onNext(WatchSubscriptionResponse value) {
-            if (value.getChangeCase().getNumber()
+          public void onNext(WatchSubscriptionResponse watchSubscriptionResponse) {
+            if (watchSubscriptionResponse.getChangeCase().getNumber()
                 == WatchSubscriptionResponse.ChangeCase.CHANGEADD.getNumber()) {
-              var partitionKey = value.getChangeAdd().getOrderingKey();
+              var partitionKey = watchSubscriptionResponse.getChangeAdd().getOrderingKey();
               logger.info("watch recv changeAdd for key {}", partitionKey);
+              fetchLock.lock();
+              try {
+                if (keySet.contains(partitionKey)) {
+                  logger.info("watch will skip changeAdd for key {}", partitionKey);
+                  return;
+                } else {
+                  keySet.add(partitionKey);
+                }
+
+              } finally {
+                fetchLock.unlock();
+              }
+
               // call lookup, then streamingFetch
               HStreamApiGrpc.newStub(channelProvider.get(serverUrls.get(0)))
-                  .lookupSubscriptionWithOrderingKey(
-                      LookupSubscriptionWithOrderingKeyRequest.newBuilder()
+                  .lookupSubscription(
+                      LookupSubscriptionRequest.newBuilder()
                           .setSubscriptionId(subscriptionId)
-                          .setOrderingKey(partitionKey)
                           .build(),
-                      new StreamObserver<LookupSubscriptionWithOrderingKeyResponse>() {
+                      new StreamObserver<LookupSubscriptionResponse>() {
                         @Override
-                        public void onNext(LookupSubscriptionWithOrderingKeyResponse value) {
-                          fetchLock.lock();
-                          try {
-                            if (keySet.contains(value.getOrderingKey())) {
-                              logger.info("watch will skip changeAdd for key {}", partitionKey);
-                              return;
-                            } else {
-                              keySet.add(value.getOrderingKey());
-                            }
-
-                          } finally {
-                            fetchLock.unlock();
-                          }
-                          ServerNode serverNode = value.getServerNode();
+                        public void onNext(LookupSubscriptionResponse lookupSubscriptionResponse) {
+                          ServerNode serverNode = lookupSubscriptionResponse.getServerNode();
                           String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
+
                           StreamObserver<StreamingFetchRequest> requestStreamObserver =
                               HStreamApiGrpc.newStub(channelProvider.get(serverUrl))
                                   .streamingFetch(
@@ -168,6 +169,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                                               ConsumerImpl.this.consumerName,
                                               ConsumerImpl.this.subscriptionId,
                                               t);
+                                          t.printStackTrace();
                                         }
 
                                         @Override
@@ -191,7 +193,8 @@ public class ConsumerImpl extends AbstractService implements Consumer {
 
                         @Override
                         public void onError(Throwable t) {
-                          logger.error("lookupSubscription got error", t);
+                          logger.error("lookupSubscriptionWithOrderingKey got error", t);
+                          t.printStackTrace();
                         }
 
                         @Override
@@ -210,6 +213,7 @@ public class ConsumerImpl extends AbstractService implements Consumer {
                 subscriptionId,
                 t.getMessage(),
                 t);
+            t.printStackTrace();
             // notifyFailed(t);
           }
 
@@ -221,12 +225,37 @@ public class ConsumerImpl extends AbstractService implements Consumer {
         };
 
     HStreamApiGrpc.newStub(channelProvider.get(serverUrls.get(0)))
-        .watchSubscription(
-            WatchSubscriptionRequest.newBuilder()
-                .setSubscriptionId(subscriptionId)
-                .setConsumerName(consumerName)
-                .build(),
-            observer);
+        .lookupSubscription(
+            LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build(),
+            new StreamObserver<LookupSubscriptionResponse>() {
+              @Override
+              public void onNext(LookupSubscriptionResponse value) {
+                ServerNode serverNode = value.getServerNode();
+                String serverUrl = serverNode.getHost() + ":" + serverNode.getPort();
+
+                HStreamApiGrpc.newStub(channelProvider.get(serverUrl))
+                    .watchSubscription(
+                        WatchSubscriptionRequest.newBuilder()
+                            .setSubscriptionId(subscriptionId)
+                            .setConsumerName(consumerName)
+                            .build(),
+                        observer);
+              }
+
+              @Override
+              public void onError(Throwable t) {
+                logger.error(
+                    "consumer {} lookupSubscription for subscription {}" + " error: {}",
+                    ConsumerImpl.this.consumerName,
+                    ConsumerImpl.this.subscriptionId,
+                    t);
+                t.printStackTrace();
+              }
+
+              @Override
+              public void onCompleted() {}
+            });
+
     logger.info("consumer {} started", consumerName);
     notifyStarted();
   }
