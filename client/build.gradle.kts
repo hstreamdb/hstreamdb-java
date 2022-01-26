@@ -12,7 +12,7 @@ plugins {
     id("signing")
 
     kotlin("jvm") version "1.6.10"
-    id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
+    id("com.diffplug.spotless") version "6.2.0"
 }
 
 group = "io.hstream"
@@ -29,8 +29,6 @@ java {
         languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
-
-// val ktlint by configurations.creating
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
@@ -85,9 +83,6 @@ protobuf {
                 id("grpc")
                 id("grpckt")
             }
-            // it.builtins {
-            //     id("kotlin")
-            // }
         }
     }
 }
@@ -172,4 +167,19 @@ tasks.withType<Javadoc> {
         "https://javadoc.io/doc/com.google.guava/guava/latest/"
     )
     exclude("io/hstream/impl/**", "io/hstream/util/**")
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
+
+    kotlin {
+        ktlint()
+    }
+
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktlint()
+    }
 }
