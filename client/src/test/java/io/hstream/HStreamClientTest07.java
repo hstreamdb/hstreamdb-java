@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Disabled
+@Disabled("hs-928, hs-932")
 public class HStreamClientTest07 {
 
   private static final Logger logger = LoggerFactory.getLogger(HStreamClientTest07.class);
