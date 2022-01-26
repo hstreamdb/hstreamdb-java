@@ -267,6 +267,54 @@ public class HStreamClientTest07 {
   }
 
   // -------------------------------------------------------------------------
+  @Test
+  void recordsWithoutKeyTest() throws Exception {
+    // Prepare env
+    HStreamClient hStreamClient = HStreamClient.builder().serviceUrl(serviceUrl).build();
+    var stream = randStream(hStreamClient);
+    final String subscription = randSubscription(hStreamClient, stream);
+    int recordCount = 100;
+
+    // Read
+    List<Integer> readRes = new ArrayList<>();
+    CountDownLatch notify = new CountDownLatch(recordCount);
+    var lock = new ReentrantLock();
+    Consumer consumer =
+        createConsumerCollectIntegerPayload(
+            logger, hStreamClient, subscription, readRes, notify, lock);
+    consumer.startAsync().awaitRunning();
+
+    // Write
+    Producer producer = hStreamClient.newProducer().stream(stream).build();
+    List<Integer> writeRes = new ArrayList<>();
+    for (int i = 0; i < recordCount; ++i) {
+      var rid = produceIntegerAndGatherRid(producer, i);
+      logger.info("=== Write without key, value={}, id={}.", i, rid);
+      writeRes.add(i);
+    }
+
+    notify.await(20, TimeUnit.SECONDS);
+    consumer.stopAsync().awaitTerminated();
+
+    // Analisis
+    logger.info("===== Write Stats =====");
+    logger.info("{}", writeRes);
+    logger.info("Total Write = {}", writeRes.size());
+
+    logger.info("===== Read Stats ======");
+    logger.info("{}", readRes);
+    logger.info("Total Read = {}", readRes.size());
+
+    // 1. Every item written to the database is read out
+    HashSet<Integer> writeResAsSet = new HashSet<>(writeRes);
+    HashSet<Integer> diffSet = new HashSet<>(writeResAsSet);
+    diffSet.removeAll(readRes);
+    logger.info("Difference between write and read: {}", diffSet);
+    Assertions.assertEquals(new HashSet<>(readRes), writeResAsSet);
+    // 2. Order property: messages read from the default key preserve the order
+    //    when they were written to it
+    Assertions.assertTrue(isSkippedSublist(writeRes, readRes));
+  }
 
   @Test
   void dynamicallyAddPartitionTest() throws Exception {
