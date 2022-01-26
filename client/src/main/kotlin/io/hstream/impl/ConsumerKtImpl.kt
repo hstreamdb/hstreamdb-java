@@ -25,6 +25,7 @@ import io.hstream.util.RecordUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
@@ -75,6 +77,7 @@ class ConsumerKtImpl(
 
         if (!isRunning) return
         val server = lookupSubscriptionWithOrderingKey(watchServer, orderingKey)
+        logger.debug("lookupSubscriptionWithOrderingKey:[$orderingKey] from :[$watchServer], received:[$server]")
         val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(server))
         try {
             // send an empty ack request to trigger streamingFetch.
@@ -111,39 +114,47 @@ class ConsumerKtImpl(
             .setSubscriptionId(subscriptionId)
             .setConsumerName(consumerName)
             .build()
+        val fetchScope = CoroutineScope(Dispatchers.Default)
         try {
             logger.info("watching subscription, server:$server")
             val fetchers = HashMap<String, Job>()
             val fetcherFlows = HashMap<String, Flow<StreamingFetchRequest>>()
+            val fetchersLock = Mutex()
             stub.watchSubscription(req).collect {
-                if (it.changeCase == WatchSubscriptionResponse.ChangeCase.CHANGEADD) {
-                    val key = it.changeAdd.orderingKey
-                    if (fetchers.containsKey(key)) {
-                        logger.info("add fetcher failed, existed fetcher for orderingKey:$key")
-                        return@collect
-                    }
-                    logger.info("add fetcher: $key")
-                    val flow = MutableSharedFlow<StreamingFetchRequest>()
-                    fetcherFlows[key] = flow
-                    fetchers[key] = fetchScope.launch {
-                        // TODO: whether remove job and flow after finishing
-                        try {
-                            streamingFetchWithRetry(flow, server, key)
-                        } finally {
-                            logger.info("fetcher ended")
+                fetchersLock.withLock {
+                    if (it.changeCase == WatchSubscriptionResponse.ChangeCase.CHANGEADD) {
+                        val key = it.changeAdd.orderingKey
+                        if (fetchers.containsKey(key)) {
+                            logger.info("add fetcher failed, existed fetcher for orderingKey:[$key]")
+                            return@collect
                         }
+                        logger.debug("add fetcher: $key")
+                        val flow = MutableSharedFlow<StreamingFetchRequest>()
+                        fetcherFlows[key] = flow
+                        fetchers[key] = fetchScope.launch {
+                            try {
+                                streamingFetchWithRetry(flow, server, key)
+                            } finally {
+                                fetchersLock.withLock {
+                                    fetchers.remove(key)
+                                    fetcherFlows.remove(key)
+                                }
+                                logger.debug("fetcher for ordering key:[$key] stopped")
+                            }
+                        }
+                    } else {
+                        val key = it.changeRemove.orderingKey
+                        logger.debug("remove fetcher: $key")
+                        val job = fetchers.remove(key)
+                        fetcherFlows.remove(key)
+                        job?.cancel()
                     }
-                } else {
-                    val key = it.changeRemove.orderingKey
-                    logger.info("remove fetcher: $key")
-                    val job = fetchers.remove(key)
-                    fetcherFlows.remove(key)
-                    job?.cancel()
                 }
             }
         } catch (e: Throwable) {
             // TODO: retry
-            logger.error("watch subscription error: ${e.message}")
+            logger.warn("watch subscription stopped: ${e.message}")
+            fetchScope.cancel()
             throw e
         }
     }
@@ -258,7 +269,6 @@ class ConsumerKtImpl(
 
     companion object {
         private val logger = LoggerFactory.getLogger(ConsumerKtImpl::class.java)
-        private val fetchScope = CoroutineScope(Dispatchers.Default)
         private fun toReceivedRawRecord(receivedRecord: ReceivedRecord): ReceivedRawRecord {
             return try {
                 val hStreamRecord = HStreamRecord.parseFrom(receivedRecord.record)

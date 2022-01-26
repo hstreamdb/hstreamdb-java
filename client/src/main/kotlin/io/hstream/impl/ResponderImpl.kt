@@ -20,7 +20,6 @@ class ResponderImpl(
             .addAckIds(recordId)
             .setOrderingKey(orderingKey)
             .build()
-        logger.info("req key:${request.orderingKey}")
         futureForIO { ackFlow.emit(request) }
     }
 
