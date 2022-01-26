@@ -69,6 +69,7 @@ class ConsumerKtImpl(
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                 streamingFetchWithRetry(requestFlow, watchServer, orderingKey)
             } else if (status.code == Status.CANCELLED.code) {
+                // this means consumer closed actively, and do nothing here
                 logger.info("fetcher [$orderingKey] is canceled")
             } else {
                 logger.info("fetcher [$orderingKey] failed")
