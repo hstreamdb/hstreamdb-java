@@ -116,15 +116,15 @@ HRecord hRecord = HRecord.newBuilder()
 CompletableFuture<RecordId> future = producer.write(hRecord);
 
 // buffered writes
-Producer batchedProducer = client.newProducer()
+BufferedProducer batchedProducer = client.newBufferedProducer()
         .stream("test_stream")
-        .enableBatch()
         .recordCountLimit(100)
         .build();
 for(int i = 0; i < 1000; ++i) {
     random.nextBytes(rawRecord);
     batchedProducer.write(rawRecord);
 }
+batchedProducer.close();
 
 
 ```
