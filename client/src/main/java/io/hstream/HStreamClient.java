@@ -14,6 +14,8 @@ public interface HStreamClient extends AutoCloseable {
   /** @return a {@link ProducerBuilder} */
   ProducerBuilder newProducer();
 
+  BufferedProducerBuilder newBufferedProducer();
+
   /** @return a {@link ConsumerBuilder} */
   ConsumerBuilder newConsumer();
 
