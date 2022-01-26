@@ -23,18 +23,14 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
 
-      - name: check Java code format
-        uses: axel-op/googlejavaformat-action@v3
-        with:
-          version: "1.10.0"
-          skipCommit: true
-          args: "--set-exit-if-changed"
-
-      - name: check Kotlin code format
-        run: ./gradlew ktlintCheck
+      - name: check Java & Kotlin code format
+        run: |
+          ./gradlew spotlessJavaCheck
+          ./gradlew spotlessKotlinCheck
+          ./gradlew spotlessKotlinGradleCheck
 
       - name: Prepare test env
-        run:  script/prepare-test-env-latest.sh
+        run: script/prepare-test-env-latest.sh
 
       - name: Build and test with Gradle
         run: ./gradlew build
