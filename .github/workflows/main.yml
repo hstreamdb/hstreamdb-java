@@ -1,4 +1,4 @@
-name: main 
+name: main
 
 on:
   push:
@@ -17,8 +17,8 @@ jobs:
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
-          java-version: '11'
-          distribution: 'adopt'
+          java-version: "11"
+          distribution: "adopt"
 
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
@@ -26,9 +26,9 @@ jobs:
       - name: check Java code format
         uses: axel-op/googlejavaformat-action@v3
         with:
-          version: '1.10.0'
+          version: "1.10.0"
           skipCommit: true
-          args: '--set-exit-if-changed'
+          args: "--set-exit-if-changed"
 
       - name: check Kotlin code format
         run: ./gradlew ktlintCheck
@@ -37,4 +37,12 @@ jobs:
         run:  script/prepare-test-env-latest.sh
 
       - name: Build and test with Gradle
-        run: ./gradlew build 
+        run: ./gradlew build
+
+      - name: Upload Gradle reports
+        uses: actions/upload-artifact@v2
+        if: ${{ success() }} || ${{ failure() }}
+        with:
+          name: logs-artifact
+          path: |
+            client/build/reports
