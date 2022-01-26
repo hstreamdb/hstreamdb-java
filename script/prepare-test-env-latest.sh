@@ -24,6 +24,8 @@ docker run \
     hstreamdb/hstream:${DEFAULT_HSTREAM_DOCKER_TAG} \
     ld-dev-cluster --root /data/store --use-tcp
 
+sleep 10
+
 docker run \
   -td \
   -v /tmp/hstream-test-data:/data/store \
