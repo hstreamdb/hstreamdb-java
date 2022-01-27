@@ -2,7 +2,7 @@
 
 ![Build Status](https://github.com/hstreamdb/hstreamdb-java/actions/workflows/main.yml/badge.svg)
 [![Maven Central](https://img.shields.io/maven-central/v/io.hstream/hstreamdb-java)](https://search.maven.org/artifact/io.hstream/hstreamdb-java)
-[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.6.2/javadoc.svg)](https://javadoc.io/doc/io.hstream/hstreamdb-java/0.6.2)
+[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.7.0/javadoc.svg)](https://javadoc.io/doc/io.hstream/hstreamdb-java/0.7.0)
 [![Snapshot Artifacts](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.hstream/hstreamdb-java.svg)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/hstream/hstreamdb-java/0.7.0-SNAPSHOT/)
 [![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.7.0-SNAPSHOT/javadoc.svg)](https://hstreamdb.github.io/hstreamdb-java/javadoc/)
 
@@ -10,7 +10,7 @@ This is the official Java client library for [HStreamDB](https://hstream.io/).
 
 **Please use the latest released version.**
 
-**The latest release is v0.6.2, which requires hstream server v0.6.6 .**
+**The latest release is v0.7.0, which requires hstream server v0.7.0 .**
 
 ## Content
 - [Installation](#installation)
@@ -38,7 +38,7 @@ For Maven Users, the library can be included easily like this:
   <dependency>
     <groupId>io.hstream</groupId>
     <artifactId>hstreamdb-java</artifactId>
-    <version>0.6.2</version>
+    <version>0.7.0</version>
   </dependency>
 </dependencies>
 
@@ -50,7 +50,7 @@ For Gradle Users, the library can be included easily like this:
 
 ```groovy
 
-implementation 'io.hstream:hstreamdb-java:0.6.2'
+implementation 'io.hstream:hstreamdb-java:0.7.0'
 
 ```
 
@@ -105,7 +105,8 @@ Producer producer = client.newProducer().stream("test_stream").build();
 Random random = new Random();
 byte[] rawRecord = new byte[100];
 random.nextBytes(rawRecord);
-CompletableFuture<RecordId> future = producer.write(rawRecord);
+Record recordR = Record.newBuilder().rawRecord(rawRecord).build();
+CompletableFuture<RecordId> future = producer.write(recordR);
 
 // write hRecords
 HRecord hRecord = HRecord.newBuilder()
@@ -113,16 +114,24 @@ HRecord hRecord = HRecord.newBuilder()
         .put("key2", "hello")
         .put("key3", true)
         .build();
-CompletableFuture<RecordId> future = producer.write(hRecord);
+Record recordH = Record.newBuilder().hRecord(hRecord).build();
+CompletableFuture<RecordId> future = producer.write(recordH);
 
 // buffered writes
 BufferedProducer batchedProducer = client.newBufferedProducer()
         .stream("test_stream")
+        // optional, default: 100, the value must be greater than 0
         .recordCountLimit(100)
+        // optional, default: 100(ms), disabled if the value <= 0
+        .flushIntervalMs(100)
+        // optional, default: 4096(Bytes), disabled if the value <= 0
+        .maxBytesSize(4096)
         .build();
+
 for(int i = 0; i < 1000; ++i) {
     random.nextBytes(rawRecord);
-    batchedProducer.write(rawRecord);
+    Record recordB = Record.newBuilder().rawRecord(rawRecord).build();
+    batchedProducer.write(recordB);
 }
 batchedProducer.close();
 
@@ -141,7 +150,6 @@ Subscription subscription =
         .newBuilder()
         .subscription("my_subscription")
         .stream("my_stream")
-        .offset(new SubscriptionOffset(SubscriptionOffset.SpecialOffset.LATEST))
         .ackTimeoutSeconds(600)
         .build();
 client.createSubscription(subscription);
