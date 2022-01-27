@@ -57,7 +57,7 @@ public class TestUtils {
     var xs = new CompletableFuture[recordsNums];
     for (int i = 0; i < recordsNums; i++) {
       rand.nextBytes(rRec);
-      Record recordToWrite = Record.newBuilder().key(key).rawRecord(rRec).build();
+      Record recordToWrite = Record.newBuilder().orderingKey(key).rawRecord(rRec).build();
       records.add(Arrays.toString(rRec));
       xs[i] = producer.write(recordToWrite);
     }
@@ -68,7 +68,7 @@ public class TestUtils {
   public static RecordId produceIntegerAndGatherRid(Producer producer, int data, String key) {
     Record recordToWrite =
         Record.newBuilder()
-            .key(key)
+            .orderingKey(key)
             .rawRecord(Integer.toString(data).getBytes(StandardCharsets.UTF_8))
             .build();
     return producer.write(recordToWrite).join();
