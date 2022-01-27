@@ -8,10 +8,14 @@ public interface BufferedProducerBuilder {
   /** @param recordCountLimit optional, default: 100, it MUST be greater than 0 */
   BufferedProducerBuilder recordCountLimit(int recordCountLimit);
 
-  /** @param flushIntervalMs optional, default: 100(ms), disabled if flushIntervalMs <= 0 */
+  /**
+   * @param flushIntervalMs optional, default: 100(ms), disabled if flushIntervalMs {@literal <=} 0
+   */
   BufferedProducerBuilder flushIntervalMs(long flushIntervalMs);
 
-  /** @param maxBytesSize optional, default: 4096(Bytes), disabled if maxBytesSize <= 0 */
+  /**
+   * @param maxBytesSize optional, default: 4096(Bytes), disabled if maxBytesSize {@literal <=} 0
+   */
   BufferedProducerBuilder maxBytesSize(int maxBytesSize);
 
   /**
