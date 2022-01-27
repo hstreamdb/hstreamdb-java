@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 public class Record {
 
-  private String key;
+  private String orderingKey;
   private byte[] rawRecord;
   private HRecord hRecord;
   private boolean isRawRecord;
@@ -13,20 +13,20 @@ public class Record {
     return new Builder();
   }
 
-  private Record(String key, byte[] rawRecord) {
+  private Record(String orderingKey, byte[] rawRecord) {
     isRawRecord = true;
-    this.key = key;
+    this.orderingKey = orderingKey;
     this.rawRecord = rawRecord;
   }
 
-  private Record(String key, HRecord hRecord) {
+  private Record(String orderingKey, HRecord hRecord) {
     isRawRecord = false;
-    this.key = key;
+    this.orderingKey = orderingKey;
     this.hRecord = hRecord;
   }
 
-  public String getKey() {
-    return key;
+  public String getOrderingKey() {
+    return orderingKey;
   }
 
   public byte[] getRawRecord() {
@@ -44,12 +44,12 @@ public class Record {
   }
 
   public static class Builder {
-    private String key;
+    private String orderingKey;
     private byte[] rawRecord;
     private HRecord hRecord;
 
-    public Builder key(String key) {
-      this.key = key;
+    public Builder orderingKey(String key) {
+      this.orderingKey = key;
       return this;
     }
 
@@ -67,9 +67,9 @@ public class Record {
       checkArgument(
           (rawRecord != null && hRecord == null) || (rawRecord == null && hRecord != null));
       if (rawRecord != null) {
-        return new Record(key, rawRecord);
+        return new Record(orderingKey, rawRecord);
       } else {
-        return new Record(key, hRecord);
+        return new Record(orderingKey, hRecord);
       }
     }
   }

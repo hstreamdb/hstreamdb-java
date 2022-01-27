@@ -45,7 +45,7 @@ public class HStreamClientTest07 {
     random.nextBytes(payload);
     Producer producer = client.newProducer().stream(streamName).build();
     CompletableFuture<RecordId> future =
-        producer.write(Record.newBuilder().key("k1").rawRecord(payload).build());
+        producer.write(Record.newBuilder().orderingKey("k1").rawRecord(payload).build());
     RecordId recordId = future.join();
     logger.info("write successfully, got recordId: " + recordId.toString());
     client.close();
@@ -72,7 +72,7 @@ public class HStreamClientTest07 {
           producer
               .write(
                   Record.newBuilder()
-                      .key("k1")
+                      .orderingKey("k1")
                       .rawRecord(("record-" + i).getBytes(StandardCharsets.UTF_8))
                       .build())
               .join();
@@ -117,7 +117,7 @@ public class HStreamClientTest07 {
             producer
                 .write(
                     Record.newBuilder()
-                        .key(orderingKey)
+                        .orderingKey(orderingKey)
                         .rawRecord(("record-" + i).getBytes(StandardCharsets.UTF_8))
                         .build())
                 .join();
@@ -162,7 +162,7 @@ public class HStreamClientTest07 {
             producer
                 .write(
                     Record.newBuilder()
-                        .key(orderingKey)
+                        .orderingKey(orderingKey)
                         .rawRecord(("record-" + i).getBytes(StandardCharsets.UTF_8))
                         .build())
                 .join();
@@ -231,7 +231,7 @@ public class HStreamClientTest07 {
             producer
                 .write(
                     Record.newBuilder()
-                        .key(orderingKey)
+                        .orderingKey(orderingKey)
                         .rawRecord(("record-" + i).getBytes(StandardCharsets.UTF_8))
                         .build())
                 .join();

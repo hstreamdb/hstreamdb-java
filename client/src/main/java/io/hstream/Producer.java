@@ -11,6 +11,7 @@ public interface Producer {
    * @param rawRecord raw format record
    * @return the {@link RecordId} wrapped in a {@link CompletableFuture}
    */
+  @Deprecated
   CompletableFuture<RecordId> write(byte[] rawRecord);
 
   /**
@@ -19,6 +20,7 @@ public interface Producer {
    * @param hRecord {@link HRecord}
    * @return the {@link RecordId} wrapped in a {@link CompletableFuture}
    */
+  @Deprecated
   CompletableFuture<RecordId> write(HRecord hRecord);
 
   /**

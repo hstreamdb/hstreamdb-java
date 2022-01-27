@@ -53,11 +53,13 @@ public class RecordUtils {
         record.isRawRecord()
             ? buildHStreamRecordFromRawRecord(record.getRawRecord())
             : buildHStreamRecordFromHRecord(record.getHRecord());
-    if (record.getKey() == null) {
+    if (record.getOrderingKey() == null) {
       return hStreamRecord;
     }
     HStreamRecordHeader newHeader =
-        HStreamRecordHeader.newBuilder(hStreamRecord.getHeader()).setKey(record.getKey()).build();
+        HStreamRecordHeader.newBuilder(hStreamRecord.getHeader())
+            .setKey(record.getOrderingKey())
+            .build();
     return HStreamRecord.newBuilder(hStreamRecord).setHeader(newHeader).build();
   }
 
