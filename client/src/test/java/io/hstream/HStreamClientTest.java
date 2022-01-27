@@ -47,21 +47,6 @@ public class HStreamClientTest {
     return rids;
   }
 
-  public static ArrayList<RecordId> doProduceWithKey(
-      Producer producer, int payloadSize, int recordsNums, String key) {
-    var rids = new ArrayList<RecordId>();
-    Random rand = new Random();
-    byte[] rRec = new byte[payloadSize];
-    var writes = new ArrayList<CompletableFuture<RecordId>>();
-    for (int i = 0; i < recordsNums; i++) {
-      rand.nextBytes(rRec);
-      Record record = Record.newBuilder().rawRecord(rRec).key(key).build();
-      writes.add(producer.write(record));
-    }
-    writes.forEach(w -> rids.add(w.join()));
-    return rids;
-  }
-
   // @Test
   // public void testReceiverException() throws Exception {
   //   Consumer consumer =
@@ -537,43 +522,6 @@ public class HStreamClientTest {
                       recordIdFutures[index.getAndIncrement()].join(),
                       receivedRawRecord.getRecordId());
                   responder.ack();
-                  if (index.get() == count) {
-                    latch.countDown();
-                  }
-                })
-            .build();
-    consumer.startAsync().awaitRunning();
-
-    latch.await();
-    consumer.stopAsync().awaitTerminated();
-  }
-
-  @Test
-  @Order(8)
-  public void testOrderingKeyBatch() throws Exception {
-    BufferedProducer producer =
-        client.newBufferedProducer().stream(testStreamName)
-            .recordCountLimit(100)
-            .flushIntervalMs(100)
-            .build();
-    final int count = 10;
-    doProduceWithKey(producer, 100, count / 2, "K1");
-    doProduceWithKey(producer, 100, count / 2, "K2");
-
-    logger.info("producer finish");
-    producer.close();
-
-    CountDownLatch latch = new CountDownLatch(1);
-    AtomicInteger index = new AtomicInteger();
-    Consumer consumer =
-        client
-            .newConsumer()
-            .subscription(testSubscriptionId)
-            .rawRecordReceiver(
-                (receivedRawRecord, responder) -> {
-                  responder.ack();
-                  index.incrementAndGet();
-                  logger.info("ack for {}, idx:{}", receivedRawRecord.getRecordId(), index.get());
                   if (index.get() == count) {
                     latch.countDown();
                   }

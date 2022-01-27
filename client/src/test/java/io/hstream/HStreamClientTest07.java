@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -473,5 +474,44 @@ public class HStreamClientTest07 {
         Assertions.assertEquals(intersection, new HashSet<>());
       }
     }
+  }
+
+  @Test
+  public void testOrderingKeyBatch() throws Exception {
+    HStreamClient client = HStreamClient.builder().serviceUrl(serviceUrl).build();
+    var streamName = randStream(client);
+    var testSubscriptionId = randSubscription(client, streamName);
+    BufferedProducer producer =
+        client.newBufferedProducer().stream(streamName)
+            .recordCountLimit(100)
+            .flushIntervalMs(100)
+            .build();
+    final int count = 10;
+    doProduce(producer, 100, count / 2, "K1");
+    doProduce(producer, 100, count / 2, "K2");
+
+    logger.info("producer finish");
+    producer.close();
+
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicInteger index = new AtomicInteger();
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(testSubscriptionId)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  responder.ack();
+                  index.incrementAndGet();
+                  logger.info("ack for {}, idx:{}", receivedRawRecord.getRecordId(), index.get());
+                  if (index.get() == count) {
+                    latch.countDown();
+                  }
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
+
+    latch.await();
+    consumer.stopAsync().awaitTerminated();
   }
 }
