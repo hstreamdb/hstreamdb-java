@@ -44,7 +44,7 @@ dependencies {
     implementation("com.google.protobuf:protobuf-java-util:3.17.3")
 
     compileOnly("org.slf4j:slf4j-api:1.7.30")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.0")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.1")
 
     implementation("org.apache.commons:commons-lang3:3.12.0")
 
