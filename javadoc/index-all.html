@@ -90,7 +90,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </nav>
 </header>
 <main role="main">
-<div class="contentContainer"><a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:K">K</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:Q">Q</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes</a>&nbsp;<a href="allpackages-index.html">All&nbsp;Packages</a><a id="I:A">
+<div class="contentContainer"><a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:Q">Q</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes</a>&nbsp;<a href="allpackages-index.html">All&nbsp;Packages</a><a id="I:A">
 <!--   -->
 </a>
 <h2 class="title">A</h2>
@@ -123,7 +123,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><a href="io/hstream/BufferedProducer.html" title="interface in io.hstream"><span class="typeNameLink">BufferedProducer</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">The interface for the HStream BuffetedProducer.</div>
+<div class="block">The interface for the HStream BufferedProducer.</div>
 </dd>
 <dt><a href="io/hstream/BufferedProducerBuilder.html" title="interface in io.hstream"><span class="typeNameLink">BufferedProducerBuilder</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
@@ -269,11 +269,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#getInt(java.lang.String)">getInt(String)</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/Record.html#getKey()">getKey()</a></span> - Method in class io.hstream.<a href="io/hstream/Record.html" title="class in io.hstream">Record</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArray.html#getLong(int)">getLong(int)</a></span> - Method in class io.hstream.<a href="io/hstream/HArray.html" title="class in io.hstream">HArray</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#getLong(java.lang.String)">getLong(String)</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Record.html#getOrderingKey()">getOrderingKey()</a></span> - Method in class io.hstream.<a href="io/hstream/Record.html" title="class in io.hstream">Record</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ReceivedRawRecord.html#getRawRecord()">getRawRecord()</a></span> - Method in class io.hstream.<a href="io/hstream/ReceivedRawRecord.html" title="class in io.hstream">ReceivedRawRecord</a></dt>
 <dd>&nbsp;</dd>
@@ -378,14 +378,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/Record.html#isRawRecord()">isRawRecord()</a></span> - Method in class io.hstream.<a href="io/hstream/Record.html" title="class in io.hstream">Record</a></dt>
 <dd>&nbsp;</dd>
 </dl>
-<a id="I:K">
-<!--   -->
-</a>
-<h2 class="title">K</h2>
-<dl>
-<dt><span class="memberNameLink"><a href="io/hstream/Record.Builder.html#key(java.lang.String)">key(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Record.Builder.html" title="class in io.hstream">Record.Builder</a></dt>
-<dd>&nbsp;</dd>
-</dl>
 <a id="I:L">
 <!--   -->
 </a>
@@ -453,6 +445,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Receives a value.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Record.Builder.html#orderingKey(java.lang.String)">orderingKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Record.Builder.html" title="class in io.hstream">Record.Builder</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a id="I:P">
 <!--   -->
@@ -611,18 +605,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/Producer.html#write(byte%5B%5D)">write(byte[])</a></span> - Method in interface io.hstream.<a href="io/hstream/Producer.html" title="interface in io.hstream">Producer</a></dt>
 <dd>
-<div class="block">Write a raw record.</div>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Producer.html#write(io.hstream.HRecord)">write(HRecord)</a></span> - Method in interface io.hstream.<a href="io/hstream/Producer.html" title="interface in io.hstream">Producer</a></dt>
 <dd>
-<div class="block">Write a <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a>.</div>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Producer.html#write(io.hstream.Record)">write(Record)</a></span> - Method in interface io.hstream.<a href="io/hstream/Producer.html" title="interface in io.hstream">Producer</a></dt>
 <dd>
 <div class="block">Write a <a href="io/hstream/Record.html" title="class in io.hstream"><code>Record</code></a>.</div>
 </dd>
 </dl>
-<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:K">K</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:Q">Q</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes</a>&nbsp;<a href="allpackages-index.html">All&nbsp;Packages</a></div>
+<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:Q">Q</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes</a>&nbsp;<a href="allpackages-index.html">All&nbsp;Packages</a></div>
 </main>
 <footer role="contentinfo">
 <nav role="navigation">

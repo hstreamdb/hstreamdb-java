@@ -206,6 +206,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>recordCountLimit</h4>
 <pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;recordCountLimit&#8203;(int&nbsp;recordCountLimit)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>recordCountLimit</code> - optional, default: 100, it MUST be greater than 0</dd>
+</dl>
 </li>
 </ul>
 <a id="flushIntervalMs(long)">
@@ -215,6 +219,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>flushIntervalMs</h4>
 <pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;flushIntervalMs&#8203;(long&nbsp;flushIntervalMs)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>flushIntervalMs</code> - optional, default: 100(ms), disabled if flushIntervalMs &lt;= 0</dd>
+</dl>
 </li>
 </ul>
 <a id="maxBytesSize(int)">
@@ -224,6 +232,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>maxBytesSize</h4>
 <pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;maxBytesSize&#8203;(int&nbsp;maxBytesSize)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>maxBytesSize</code> - optional, default: 4096(Bytes), disabled if maxBytesSize &lt;= 0</dd>
+</dl>
 </li>
 </ul>
 <a id="throwExceptionIfFull(boolean)">
@@ -233,6 +245,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>throwExceptionIfFull</h4>
 <pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;throwExceptionIfFull&#8203;(boolean&nbsp;throwExceptionIfFull)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>throwExceptionIfFull</code> - optional, default: false, if throwExceptionIfFull is true, throw
+     HStreamDBClientException when buffer is full, otherwise, block thread and wait the buffer
+     to be flushed.</dd>
+</dl>
 </li>
 </ul>
 <a id="build()">
