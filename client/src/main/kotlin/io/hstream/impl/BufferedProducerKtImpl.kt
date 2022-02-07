@@ -4,6 +4,10 @@ import io.hstream.BufferedProducer
 import io.hstream.HStreamDBClientException
 import io.hstream.RecordId
 import io.hstream.internal.HStreamRecord
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
@@ -84,23 +88,42 @@ class BufferedProducerKtImpl(
             if (recordBuffer.isEmpty()) {
                 return
             }
-            try {
-                val recordBufferCount = recordBuffer.size
-                logger.info("ready to flush recordBuffer, current buffer size is [{}]", recordBufferCount)
-                val ids = futureForIO { super.writeHStreamRecords(recordBuffer) }.join()
-                for (i in ids.indices) {
-                    futures[i].complete(ids[i])
-                }
-                logger.info("flush the record buffer successfully")
-            } catch (e: Throwable) {
-                for (i in futures.indices) {
-                    futures[i].completeExceptionally(e)
-                }
-            }
+            val recordBufferCount = recordBuffer.size
+            logger.info("ready to flush recordBuffer, current buffer size is [{}]", recordBufferCount)
+            runBlocking(Dispatchers.IO) { groupWriteHStreamRecords() }
+            logger.info("flush the record buffer successfully")
             recordBuffer.clear()
             futures.clear()
             bufferedBytesSize = 0
             isFull = false
+        }
+    }
+
+    // only can be called by flush()
+    private suspend fun groupWriteHStreamRecords() {
+        val recordGroup =
+            mutableMapOf<String, Pair<MutableList<HStreamRecord>, MutableList<CompletableFuture<RecordId>>>>()
+        for (i in recordBuffer.indices) {
+            val key = recordBuffer[i].header.key
+            if (!recordGroup.containsKey(key)) {
+                recordGroup[key] = Pair(mutableListOf(), mutableListOf())
+            }
+            recordGroup[key]!!.first += recordBuffer[i]
+            recordGroup[key]!!.second += futures[i]
+        }
+        coroutineScope {
+            for ((key, pair) in recordGroup) {
+                launch {
+                    try {
+                        val ids = super.writeHStreamRecords(pair.first, key)
+                        for (i in ids.indices) {
+                            pair.second[i].complete(ids[i])
+                        }
+                    } catch (e: Throwable) {
+                        pair.second.forEach { it.completeExceptionally(e) }
+                    }
+                }
+            }
         }
     }
 

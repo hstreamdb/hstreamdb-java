@@ -8,21 +8,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Disabled("hs-928, hs-932")
+// @Disabled("hs-928, hs-932")
 public class HStreamClientTest07 {
 
   private static final Logger logger = LoggerFactory.getLogger(HStreamClientTest07.class);
@@ -513,5 +515,74 @@ public class HStreamClientTest07 {
 
     latch.await();
     consumer.stopAsync().awaitTerminated();
+  }
+
+  @Test
+  public void testWriteOrderWithDiffKeys() throws Exception {
+    HStreamClient client = HStreamClient.builder().serviceUrl(serviceUrl).build();
+    var streamName = randStream(client);
+    var testSubscriptionId = randSubscription(client, streamName);
+    BufferedProducer producer =
+        client.newBufferedProducer().stream(streamName)
+            .recordCountLimit(100)
+            .flushIntervalMs(-1)
+            .build();
+    final int count = 100;
+    List<CompletableFuture<RecordId>> fs = new LinkedList<>();
+    List<byte[]> records = new LinkedList<>();
+    for (int i = 0; i < 30; i++) {
+      var r = randBytes();
+      records.add(r);
+      fs.add(producer.write(Record.newBuilder().rawRecord(r).orderingKey("K1").build()));
+    }
+    for (int i = 0; i < 30; i++) {
+      var r = randBytes();
+      records.add(r);
+      fs.add(producer.write(Record.newBuilder().rawRecord(r).orderingKey("K1").build()));
+    }
+    for (int i = 0; i < 40; i++) {
+      var r = randBytes();
+      records.add(r);
+      fs.add(producer.write(Record.newBuilder().rawRecord(r).orderingKey("K1").build()));
+    }
+    Map<RecordId, byte[]> ids = new HashMap<>();
+    for (int i = 0; i < 100; i++) {
+      //      logger.info("write record:{}, id:{}", UUID.nameUUIDFromBytes(records.get(i)),
+      // fs.get(i).join());
+      ids.put(fs.get(i).join(), records.get(i));
+    }
+
+    logger.info("producer finish");
+    producer.close();
+
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicInteger index = new AtomicInteger();
+    List<ReceivedRawRecord> rawRecords = new ArrayList<>();
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(testSubscriptionId)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  rawRecords.add(receivedRawRecord);
+                  responder.ack();
+                  index.incrementAndGet();
+                  if (index.get() == count) {
+                    latch.countDown();
+                  }
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
+
+    latch.await();
+    consumer.stopAsync().awaitTerminated();
+
+    for (ReceivedRawRecord r : rawRecords) {
+      //      logger.info("l:{}, r:{}", UUID.nameUUIDFromBytes(r.getRawRecord()),
+      // UUID.nameUUIDFromBytes(ids.get(r.getRecordId())));
+      Assertions.assertEquals(
+          UUID.nameUUIDFromBytes(r.getRawRecord()),
+          UUID.nameUUIDFromBytes(ids.get(r.getRecordId())));
+    }
   }
 }
