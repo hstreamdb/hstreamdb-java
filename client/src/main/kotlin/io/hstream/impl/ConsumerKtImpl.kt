@@ -274,8 +274,9 @@ class ConsumerKtImpl(
             return try {
                 val hStreamRecord = HStreamRecord.parseFrom(receivedRecord.record)
                 val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord)
+                val header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord)
                 ReceivedRawRecord(
-                    GrpcUtils.recordIdFromGrpc(receivedRecord.recordId), rawRecord
+                    GrpcUtils.recordIdFromGrpc(receivedRecord.recordId), header, rawRecord
                 )
             } catch (e: InvalidProtocolBufferException) {
                 throw HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e)
@@ -286,7 +287,8 @@ class ConsumerKtImpl(
             return try {
                 val hStreamRecord = HStreamRecord.parseFrom(receivedRecord.record)
                 val hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord)
-                ReceivedHRecord(GrpcUtils.recordIdFromGrpc(receivedRecord.recordId), hRecord)
+                val header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord)
+                ReceivedHRecord(GrpcUtils.recordIdFromGrpc(receivedRecord.recordId), header, hRecord)
             } catch (e: InvalidProtocolBufferException) {
                 throw HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e)
             }
