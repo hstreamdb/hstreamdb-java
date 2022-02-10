@@ -117,7 +117,7 @@ class ConsumerKtImpl(
             .build()
         val fetchScope = CoroutineScope(Dispatchers.Default)
         try {
-            logger.info("watching subscription, server:$server")
+            logger.info("watching subscription:[$subscriptionId], server:$server")
             val fetchers = HashMap<String, Job>()
             val fetcherFlows = HashMap<String, Flow<StreamingFetchRequest>>()
             val fetchersLock = Mutex()

@@ -123,7 +123,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
 
     override fun deleteSubscription(subscriptionId: String?) {
         return runBlocking {
-            val serverUrl = lookupServerUrl(subscriptionId)
+            val serverUrl = lookupSubscriptionServerUrl(subscriptionId)
             HStreamApiGrpcKt.HStreamApiCoroutineStub(
                 channelProvider.get(
                     serverUrl
@@ -134,7 +134,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
         }
     }
 
-    private final suspend fun lookupServerUrl(subscriptionId: String?): String {
+    private final suspend fun lookupSubscriptionServerUrl(subscriptionId: String?): String {
         return unaryCallCoroutine {
             val req: LookupSubscriptionRequest =
                 LookupSubscriptionRequest
