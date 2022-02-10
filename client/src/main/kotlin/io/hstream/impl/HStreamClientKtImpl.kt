@@ -11,7 +11,9 @@ import io.hstream.Subscription
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.HStreamApiGrpcKt
+import io.hstream.internal.LookupSubscriptionRequest
 import io.hstream.util.GrpcUtils
+import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
@@ -28,7 +30,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
             return unaryCallAsync(clusterServerUrls, channelProvider, call)
         }
 
-        // warning: this method will block current thread. Don not call this in suspend functions, use unaryCallCoroutine instead!
+        // warning: this method will block current thread. Do not call this in suspend functions, use unaryCallCoroutine instead!
         fun <Resp> unaryCallBlocked(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
             return unaryCallBlocked(clusterServerUrls, channelProvider, call)
         }
@@ -41,7 +43,10 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
     init {
 
         logger.info("client init with bootstrapServerUrls [{}]", bootstrapServerUrls)
-        val describeClusterResponse = unaryCallWithCurrentUrls(bootstrapServerUrls, channelProvider) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
+        val describeClusterResponse = unaryCallWithCurrentUrls(
+            bootstrapServerUrls,
+            channelProvider
+        ) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
         val serverNodes = describeClusterResponse.serverNodesList
         val serverUrls: ArrayList<String> = ArrayList(serverNodes.size)
         clusterServerUrls.set(serverUrls)
@@ -81,7 +86,16 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
         checkNotNull(stream)
         check(replicationFactor in 1..15)
 
-        unaryCallBlocked { it.createStream(GrpcUtils.streamToGrpc(Stream(stream, replicationFactor.toInt()))) }
+        unaryCallBlocked {
+            it.createStream(
+                GrpcUtils.streamToGrpc(
+                    Stream(
+                        stream,
+                        replicationFactor.toInt()
+                    )
+                )
+            )
+        }
     }
 
     override fun deleteStream(stream: String?) {
@@ -100,10 +114,38 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
     }
 
     override fun listSubscriptions(): List<Subscription> {
-        return unaryCallBlocked { it.listSubscriptions(Empty.getDefaultInstance()).subscriptionList.map(GrpcUtils::subscriptionFromGrpc) }
+        return unaryCallBlocked {
+            it.listSubscriptions(Empty.getDefaultInstance()).subscriptionList.map(
+                GrpcUtils::subscriptionFromGrpc
+            )
+        }
     }
 
     override fun deleteSubscription(subscriptionId: String?) {
-        return unaryCallBlocked { it.deleteSubscription(DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()) }
+        val serverUrl =
+            runBlocking {
+                return@runBlocking lookupServerUrl(subscriptionId)
+            }
+        return runBlocking {
+            HStreamApiGrpcKt.HStreamApiCoroutineStub(
+                channelProvider.get(
+                    serverUrl
+                )
+            ).deleteSubscription(
+                DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()
+            )
+        }
+    }
+
+    private final suspend fun lookupServerUrl(subscriptionId: String?): String {
+        return unaryCallCoroutine {
+            val req: LookupSubscriptionRequest =
+                LookupSubscriptionRequest
+                    .newBuilder()
+                    .setSubscriptionId(subscriptionId)
+                    .build()
+            val serverNode = it.lookupSubscription(req).serverNode
+            return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
+        }
     }
 }
