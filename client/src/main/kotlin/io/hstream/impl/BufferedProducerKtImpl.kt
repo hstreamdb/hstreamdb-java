@@ -114,6 +114,10 @@ class BufferedProducerKtImpl(
 
     companion object {
         private val logger = LoggerFactory.getLogger(BufferedProducerKtImpl::class.java)
-        private val scheduler = Executors.newScheduledThreadPool(4)
+        private val scheduler = Executors.newScheduledThreadPool(4) { r ->
+            val t = Executors.defaultThreadFactory().newThread(r)
+            t.isDaemon = true
+            t
+        }
     }
 }
