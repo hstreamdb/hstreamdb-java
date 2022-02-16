@@ -241,7 +241,11 @@ class ConsumerKtImpl(
             try {
                 logger.info("consumer [{}] is starting", consumerName)
                 notifyStarted()
-                watchFuture = futureForIO { watchSubscription() }
+                watchFuture = (futureForIO { watchSubscription() }).handle { _, err ->
+                    if (err != null) {
+                        notifyFailed(HStreamDBClientException(err))
+                    }
+                }
                 logger.info("consumer [{}] is started", consumerName)
             } catch (e: Exception) {
                 logger.error("consumer [{}] failed to start", consumerName, e)
