@@ -24,12 +24,12 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import kotlin.collections.HashMap
 
-open class ProducerKtImpl(private val stream: String) : Producer {
+open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val stream: String) : Producer {
     private val serverUrls: HashMap<String, String> = HashMap()
     private val serverUrlsLock: Mutex = Mutex()
 
     private suspend fun lookupServerUrl(orderingKey: String): String {
-        return HStreamClientKtImpl.unaryCallCoroutine {
+        return client.unaryCallCoroutine {
             var server: String? = serverUrlsLock.withLock {
                 return@withLock serverUrls[orderingKey]
             }
@@ -99,7 +99,7 @@ open class ProducerKtImpl(private val stream: String) : Producer {
         val serverUrl = lookupServerUrl(orderingKey)
         logger.info("try append with serverUrl [{}], current left tryTimes is [{}]", serverUrl, tryTimes)
         try {
-            return HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
+            return HStreamApiGrpcKt.HStreamApiCoroutineStub(client.channelProvider.get(serverUrl))
                 .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
         } catch (e: StatusException) {
             return handleGRPCException(serverUrl, e)

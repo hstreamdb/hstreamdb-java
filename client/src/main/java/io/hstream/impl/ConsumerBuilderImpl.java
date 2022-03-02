@@ -10,10 +10,15 @@ import java.util.UUID;
 
 public class ConsumerBuilderImpl implements ConsumerBuilder {
 
+  private final HStreamClientKtImpl client;
   private String name;
   private String subscription;
   private RawRecordReceiver rawRecordReceiver;
   private HRecordReceiver hRecordReceiver;
+
+  public ConsumerBuilderImpl(HStreamClientKtImpl client) {
+    this.client = client;
+  }
 
   @Override
   public ConsumerBuilder name(String name) {
@@ -47,6 +52,6 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
       name = UUID.randomUUID().toString();
     }
     checkNotNull(name);
-    return new ConsumerKtImpl(name, subscription, rawRecordReceiver, hRecordReceiver);
+    return new ConsumerKtImpl(client, name, subscription, rawRecordReceiver, hRecordReceiver);
   }
 }

@@ -1,6 +1,7 @@
 package io.hstream.impl
 
 import com.google.protobuf.Empty
+import io.grpc.ChannelCredentials
 import io.hstream.BufferedProducerBuilder
 import io.hstream.ConsumerBuilder
 import io.hstream.HStreamClient
@@ -18,30 +19,27 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
 
-class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
+class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: ChannelCredentials? = null) : HStreamClient {
 
     private val logger = LoggerFactory.getLogger(HStreamClientKtImpl::class.java)
 
-    companion object ConnectionManager {
-        val channelProvider = ChannelProvider()
-        val clusterServerUrls: AtomicReference<List<String>> = AtomicReference(null)
+    val channelProvider = ChannelProvider(credentials)
+    val clusterServerUrls: AtomicReference<List<String>> = AtomicReference(null)
 
-        fun <Resp> unaryCallAsync(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
-            return unaryCallAsync(clusterServerUrls, channelProvider, call)
-        }
+    fun <Resp> unaryCallAsync(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
+        return unaryCallAsync(clusterServerUrls, channelProvider, call)
+    }
 
-        // warning: this method will block current thread. Do not call this in suspend functions, use unaryCallCoroutine instead!
-        fun <Resp> unaryCallBlocked(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
-            return unaryCallBlocked(clusterServerUrls, channelProvider, call)
-        }
+    // warning: this method will block current thread. Do not call this in suspend functions, use unaryCallCoroutine instead!
+    fun <Resp> unaryCallBlocked(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
+        return unaryCallBlocked(clusterServerUrls, channelProvider, call)
+    }
 
-        suspend fun <Resp> unaryCallCoroutine(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
-            return unaryCallCoroutine(clusterServerUrls, channelProvider, call)
-        }
+    suspend fun <Resp> unaryCallCoroutine(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
+        return unaryCallCoroutine(clusterServerUrls, channelProvider, call)
     }
 
     init {
-
         logger.info("client init with bootstrapServerUrls [{}]", bootstrapServerUrls)
         val describeClusterResponse = unaryCallWithCurrentUrls(
             bootstrapServerUrls,
@@ -63,15 +61,15 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
     }
 
     override fun newProducer(): ProducerBuilder {
-        return ProducerBuilderImpl()
+        return ProducerBuilderImpl(this)
     }
 
     override fun newBufferedProducer(): BufferedProducerBuilder {
-        return BufferedProducerBuilderImpl()
+        return BufferedProducerBuilderImpl(this)
     }
 
     override fun newConsumer(): ConsumerBuilder {
-        return ConsumerBuilderImpl()
+        return ConsumerBuilderImpl(this)
     }
 
     override fun newQueryer(): QueryerBuilder {

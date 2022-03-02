@@ -40,6 +40,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class ConsumerKtImpl(
+    private val client: HStreamClientKtImpl,
     private val consumerName: String,
     private val subscriptionId: String,
     private val rawRecordReceiver: RawRecordReceiver?,
@@ -79,7 +80,7 @@ class ConsumerKtImpl(
         if (!isRunning) return
 //        val server = lookupSubscriptionWithOrderingKey(watchServer, orderingKey)
 //        logger.debug("lookupSubscriptionWithOrderingKey:[$orderingKey] from :[$watchServer], received:[$server]")
-        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(watchServer))
+        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(client.channelProvider.get(watchServer))
         try {
             // send an empty ack request to trigger streamingFetch.
             val initRequest = StreamingFetchRequest.newBuilder()
@@ -110,7 +111,7 @@ class ConsumerKtImpl(
 
     private suspend fun watchSubscription() {
         val server = lookupSubscription()
-        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(server))
+        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(client.channelProvider.get(server))
         val req = WatchSubscriptionRequest.newBuilder()
             .setSubscriptionId(subscriptionId)
             .setConsumerName(consumerName)
@@ -161,7 +162,7 @@ class ConsumerKtImpl(
     }
 
     private suspend fun lookupSubscriptionWithOrderingKey(watchServer: String, orderingKey: String): String {
-        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(watchServer))
+        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(client.channelProvider.get(watchServer))
         val req = LookupSubscriptionWithOrderingKeyRequest.newBuilder()
             .setSubscriptionId(subscriptionId)
             .setOrderingKey(orderingKey)
@@ -171,7 +172,7 @@ class ConsumerKtImpl(
     }
 
     private suspend fun lookupSubscription(): String {
-        return HStreamClientKtImpl.unaryCallCoroutine {
+        return client.unaryCallCoroutine {
             val serverNode = it.lookupSubscription(
                 LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()
             ).serverNode

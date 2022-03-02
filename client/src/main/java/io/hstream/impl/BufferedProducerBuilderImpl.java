@@ -6,11 +6,16 @@ import io.hstream.HStreamDBClientException;
 
 public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
 
+  private HStreamClientKtImpl client;
   private String streamName;
   private int recordCountLimit = 100;
   private long flushIntervalMs = 100;
   private int maxBytesSize = 4096;
   private boolean throwExceptionIfFull = false;
+
+  public BufferedProducerBuilderImpl(HStreamClientKtImpl client) {
+    this.client = client;
+  }
 
   @Override
   public BufferedProducerBuilder stream(String streamName) {
@@ -59,6 +64,6 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
               recordCountLimit));
     }
     return new BufferedProducerKtImpl(
-        streamName, recordCountLimit, flushIntervalMs, maxBytesSize, throwExceptionIfFull);
+        client, streamName, recordCountLimit, flushIntervalMs, maxBytesSize, throwExceptionIfFull);
   }
 }

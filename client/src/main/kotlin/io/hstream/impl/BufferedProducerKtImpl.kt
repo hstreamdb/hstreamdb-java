@@ -14,12 +14,13 @@ import kotlin.collections.ArrayList
 import kotlin.concurrent.withLock
 
 class BufferedProducerKtImpl(
+    client: HStreamClientKtImpl,
     stream: String,
     private val recordCountLimit: Int,
     private val flushIntervalMs: Long,
     private val maxBytesSize: Int,
     private val throwExceptionIfFull: Boolean
-) : ProducerKtImpl(stream), BufferedProducer {
+) : ProducerKtImpl(client, stream), BufferedProducer {
     private var lock = ReentrantLock()
     private var recordBuffer: MutableList<HStreamRecord> = ArrayList(recordCountLimit)
     private var futures: MutableList<CompletableFuture<RecordId>> = ArrayList(recordCountLimit)
