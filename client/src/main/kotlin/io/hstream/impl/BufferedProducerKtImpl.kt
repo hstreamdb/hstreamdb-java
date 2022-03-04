@@ -4,7 +4,10 @@ import io.hstream.BufferedProducer
 import io.hstream.HStreamDBClientException
 import io.hstream.RecordId
 import io.hstream.internal.HStreamRecord
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -17,12 +20,16 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 import kotlin.concurrent.withLock
 
+typealias Records = MutableList<HStreamRecord>
+typealias Futures = MutableList<CompletableFuture<RecordId>>
+
 class BufferedProducerKtImpl(
     stream: String,
     private val recordCountLimit: Int,
     private val flushIntervalMs: Long,
     private val maxBytesSize: Int,
-    private val throwExceptionIfFull: Boolean
+    private val throwExceptionIfFull: Boolean,
+    private val maxBatchSize: Int
 ) : ProducerKtImpl(stream), BufferedProducer {
     private var lock = ReentrantLock()
     private var recordBuffer: MutableList<HStreamRecord> = ArrayList(recordCountLimit)
@@ -33,10 +40,19 @@ class BufferedProducerKtImpl(
     private var closed: Boolean = false
     private var bufferedBytesSize: Int = 0
 
+    private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val batchBuffer: Channel<Pair<Records, Futures>> = Channel(maxBatchSize)
+
     @Volatile
     private var isFull = false
 
     init {
+        batchScope.launch {
+            while (true) {
+                val (records, futures) = batchBuffer.receive()
+                groupWriteHStreamRecords(records, futures)
+            }
+        }
         if (flushIntervalMs > 0) {
             runTimer()
         }
@@ -90,25 +106,24 @@ class BufferedProducerKtImpl(
             }
             val recordBufferCount = recordBuffer.size
             logger.info("ready to flush recordBuffer, current buffer size is [{}]", recordBufferCount)
-            runBlocking(Dispatchers.IO) { groupWriteHStreamRecords() }
-            logger.info("flush the record buffer successfully")
-            recordBuffer.clear()
-            futures.clear()
+            runBlocking(Dispatchers.IO) { batchBuffer.send(Pair(recordBuffer, futures)) }
+            recordBuffer = ArrayList()
+            futures = ArrayList()
             bufferedBytesSize = 0
             isFull = false
         }
     }
 
     // only can be called by flush()
-    private suspend fun groupWriteHStreamRecords() {
+    private suspend fun groupWriteHStreamRecords(records: MutableList<HStreamRecord>, futures: MutableList<CompletableFuture<RecordId>>) {
         val recordGroup =
             mutableMapOf<String, Pair<MutableList<HStreamRecord>, MutableList<CompletableFuture<RecordId>>>>()
-        for (i in recordBuffer.indices) {
-            val key = recordBuffer[i].header.key
+        for (i in records.indices) {
+            val key = records[i].header.key
             if (!recordGroup.containsKey(key)) {
                 recordGroup[key] = Pair(mutableListOf(), mutableListOf())
             }
-            recordGroup[key]!!.first += recordBuffer[i]
+            recordGroup[key]!!.first += records[i]
             recordGroup[key]!!.second += futures[i]
         }
         coroutineScope {
@@ -130,6 +145,7 @@ class BufferedProducerKtImpl(
     override fun close() {
         if (!closed) {
             timerService?.cancel(false)
+            batchScope.cancel()
             closed = true
             flush()
         }

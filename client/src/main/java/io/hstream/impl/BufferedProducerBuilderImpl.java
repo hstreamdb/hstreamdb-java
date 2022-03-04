@@ -11,6 +11,7 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
   private long flushIntervalMs = 100;
   private int maxBytesSize = 4096;
   private boolean throwExceptionIfFull = false;
+  private int maxBatchSize = 10;
 
   @Override
   public BufferedProducerBuilder stream(String streamName) {
@@ -51,6 +52,12 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
   }
 
   @Override
+  public BufferedProducerBuilder maxBatchSize(int maxBatchSize) {
+    this.maxBatchSize = maxBatchSize;
+    return this;
+  }
+
+  @Override
   public BufferedProducer build() {
     if (recordCountLimit < 1) {
       throw new HStreamDBClientException(
@@ -59,6 +66,11 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
               recordCountLimit));
     }
     return new BufferedProducerKtImpl(
-        streamName, recordCountLimit, flushIntervalMs, maxBytesSize, throwExceptionIfFull);
+        streamName,
+        recordCountLimit,
+        flushIntervalMs,
+        maxBytesSize,
+        throwExceptionIfFull,
+        maxBatchSize);
   }
 }
