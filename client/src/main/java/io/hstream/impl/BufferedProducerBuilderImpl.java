@@ -65,6 +65,9 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
               "build buffedProducer failed, recordCountLimit(%d) can NOT be less than 1",
               recordCountLimit));
     }
+    if (maxBatchSize < 1) {
+      maxBatchSize = 1;
+    }
     return new BufferedProducerKtImpl(
         streamName,
         recordCountLimit,

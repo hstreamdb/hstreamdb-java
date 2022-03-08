@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -36,7 +37,7 @@ class BufferedProducerKtImpl(
     private var orderingFutures: HashMap<String, Futures> = HashMap()
     private var orderingBytesSize: HashMap<String, Int> = HashMap()
     private var orderingJobs: HashMap<String, Job> = HashMap()
-    private var batchCondition = Channel<Unit>(maxBatchSize)
+    private var batchCondition = Channel<Unit>(maxBatchSize, BufferOverflow.SUSPEND)
     private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     @Volatile
@@ -64,12 +65,6 @@ class BufferedProducerKtImpl(
     }
 
     private fun addToBuffer(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
-        // fuzzy check
-        val recordFuture = CompletableFuture<RecordId>()
-//        if (throwExceptionIfFull && isFull) {
-//            recordFuture.completeExceptionally(HStreamDBClientException("buffer is full"))
-//            return recordFuture
-//        }
         lock.withLock {
             if (closed) {
                 throw HStreamDBClientException("BufferedProducer is closed")
@@ -83,6 +78,7 @@ class BufferedProducerKtImpl(
                 orderingBytesSize[key] = 0
             }
             orderingBuffer[key]!!.add(hStreamRecord)
+            val recordFuture = CompletableFuture<RecordId>()
             orderingFutures[key]!!.add(recordFuture)
             orderingBytesSize[key] = orderingBytesSize[key]!! + hStreamRecord.payload.size()
             if (isFull(key)) {
@@ -100,31 +96,35 @@ class BufferedProducerKtImpl(
 
     override fun flush() {
         lock.withLock {
-            for ((k, _) in orderingBuffer) {
-                flushForKey(k)
+            for (key in orderingBuffer.keys.toList()) {
+                flushForKey(key)
             }
         }
     }
 
     private fun flushForKey(key: String) {
         lock.withLock {
-            if (orderingBuffer[key]!!.isEmpty()) {
-                return
-            }
-//            val recordBufferCount = recordBuffer.size
-//            logger.info("ready to flush recordBuffer, current buffer size is [{}]", recordBufferCount)
-            runBlocking(Dispatchers.IO) { batchCondition.send(Unit) }
-            val job = orderingJobs[key]
             val records = orderingBuffer[key]!!
             val futures = orderingFutures[key]!!
-            orderingJobs[key] = batchScope.launch {
-                job?.join()
-                writeSingleKeyHStreamRecords(records, futures)
-                batchCondition.receive()
-            }
+            logger.info("ready to flush recordBuffer for key:$key, current buffer size is [{}]", records.size)
             orderingBuffer.remove(key)
             orderingFutures.remove(key)
             orderingBytesSize.remove(key)
+            if (batchCondition.trySend(Unit).isFailure) {
+                if (throwExceptionIfFull) {
+                    futures.forEach { it.completeExceptionally(HStreamDBClientException("batchBuffer is full")) }
+                    return
+                } else {
+                    runBlocking(Dispatchers.IO) { batchCondition.send(Unit) }
+                }
+            }
+            val job = orderingJobs[key]
+            orderingJobs[key] = batchScope.launch {
+                job?.join()
+                writeSingleKeyHStreamRecords(records, futures)
+                logger.info("wrote batch for key:$key")
+                batchCondition.receive()
+            }
         }
     }
 
@@ -143,7 +143,6 @@ class BufferedProducerKtImpl(
     override fun close() {
         if (!closed) {
             timerService?.cancel(false)
-            batchScope.cancel()
             closed = true
             flush()
         }

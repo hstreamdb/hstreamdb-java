@@ -25,7 +25,7 @@ public interface BufferedProducerBuilder {
    */
   BufferedProducerBuilder throwExceptionIfFull(boolean throwExceptionIfFull);
 
-  /** @param maxBatchSize optional, default: 0 */
+  /** @param maxBatchSize optional, default: 10 */
   BufferedProducerBuilder maxBatchSize(int maxBatchSize);
 
   BufferedProducer build();

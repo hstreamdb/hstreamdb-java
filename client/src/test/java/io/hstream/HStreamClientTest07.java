@@ -537,9 +537,10 @@ public class HStreamClientTest07 {
       String key = i % 2 == 0 ? "k1" : "k2";
       fs.add(producer.write(Record.newBuilder().rawRecord(r).orderingKey(key).build()));
     }
+    producer.close();
     Map<String, Map<RecordId, byte[]>> ids = new HashMap<>();
     for (int i = 0; i < 100; i++) {
-      logger.info(
+      logger.debug(
           "write record:{}, id:{}", UUID.nameUUIDFromBytes(records.get(i)), fs.get(i).join());
       String key = i % 2 == 0 ? "k1" : "k2";
       if (i < 2) {
@@ -549,7 +550,6 @@ public class HStreamClientTest07 {
     }
 
     logger.info("producer finish");
-    producer.close();
 
     CountDownLatch latch = new CountDownLatch(1);
     AtomicInteger index = new AtomicInteger();
@@ -574,7 +574,7 @@ public class HStreamClientTest07 {
     consumer.stopAsync().awaitTerminated();
 
     for (ReceivedRawRecord r : rawRecords) {
-      logger.info(
+      logger.debug(
           "l:{}, r:{}",
           UUID.nameUUIDFromBytes(r.getRawRecord()),
           UUID.nameUUIDFromBytes(ids.get(r.getHeader().getOrderingKey()).get(r.getRecordId())));
