@@ -6,9 +6,9 @@ import io.hstream.RecordId
 import io.hstream.internal.HStreamRecord
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
@@ -32,27 +32,19 @@ class BufferedProducerKtImpl(
     private val maxBatchSize: Int
 ) : ProducerKtImpl(stream), BufferedProducer {
     private var lock = ReentrantLock()
-    private var recordBuffer: MutableList<HStreamRecord> = ArrayList(recordCountLimit)
-    private var futures: MutableList<CompletableFuture<RecordId>> = ArrayList(recordCountLimit)
-    private var timerService: ScheduledFuture<*>? = null
+    private var orderingBuffer: HashMap<String, Records> = HashMap()
+    private var orderingFutures: HashMap<String, Futures> = HashMap()
+    private var orderingBytesSize: HashMap<String, Int> = HashMap()
+    private var orderingJobs: HashMap<String, Job> = HashMap()
+    private var batchCondition = Channel<Unit>(maxBatchSize)
+    private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     @Volatile
     private var closed: Boolean = false
-    private var bufferedBytesSize: Int = 0
 
-    private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    private val batchBuffer: Channel<Pair<Records, Futures>> = Channel(maxBatchSize)
-
-    @Volatile
-    private var isFull = false
+    private var timerService: ScheduledFuture<*>? = null
 
     init {
-        batchScope.launch {
-            while (true) {
-                val (records, futures) = batchBuffer.receive()
-                groupWriteHStreamRecords(records, futures)
-            }
-        }
         if (flushIntervalMs > 0) {
             runTimer()
         }
@@ -74,71 +66,77 @@ class BufferedProducerKtImpl(
     private fun addToBuffer(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
         // fuzzy check
         val recordFuture = CompletableFuture<RecordId>()
-        if (throwExceptionIfFull && isFull) {
-            recordFuture.completeExceptionally(HStreamDBClientException("buffer is full"))
-            return recordFuture
-        }
+//        if (throwExceptionIfFull && isFull) {
+//            recordFuture.completeExceptionally(HStreamDBClientException("buffer is full"))
+//            return recordFuture
+//        }
         lock.withLock {
             if (closed) {
                 throw HStreamDBClientException("BufferedProducer is closed")
             }
             // it is impossible that buffer is full after holding the lock,
             // if buffer is full, there must exist another thread keeping the lock(flushing buffer).
-            recordBuffer.add(hStreamRecord)
-            futures.add(recordFuture)
-            bufferedBytesSize += hStreamRecord.payload.size()
-            if (isFull()) {
-                isFull = true
-                flush()
+            val key = hStreamRecord.header.key
+            if (!orderingBuffer.containsKey(key)) {
+                orderingBuffer[key] = ArrayList(recordCountLimit)
+                orderingFutures[key] = ArrayList(recordCountLimit)
+                orderingBytesSize[key] = 0
+            }
+            orderingBuffer[key]!!.add(hStreamRecord)
+            orderingFutures[key]!!.add(recordFuture)
+            orderingBytesSize[key] = orderingBytesSize[key]!! + hStreamRecord.payload.size()
+            if (isFull(key)) {
+                flushForKey(key)
             }
             return recordFuture
         }
     }
 
-    private fun isFull(): Boolean {
-        return (recordBuffer.size == recordCountLimit) || maxBytesSize > 0 && bufferedBytesSize >= maxBytesSize
+    private fun isFull(key: String): Boolean {
+        val recordCount = orderingBuffer[key]!!.size
+        val bytesSize = orderingBytesSize[key]!!
+        return (recordCount == recordCountLimit) || maxBytesSize > 0 && bytesSize >= maxBytesSize
     }
 
     override fun flush() {
         lock.withLock {
-            if (recordBuffer.isEmpty()) {
+            for ((k, _) in orderingBuffer) {
+                flushForKey(k)
+            }
+        }
+    }
+
+    private fun flushForKey(key: String) {
+        lock.withLock {
+            if (orderingBuffer[key]!!.isEmpty()) {
                 return
             }
-            val recordBufferCount = recordBuffer.size
-            logger.info("ready to flush recordBuffer, current buffer size is [{}]", recordBufferCount)
-            runBlocking(Dispatchers.IO) { batchBuffer.send(Pair(recordBuffer, futures)) }
-            recordBuffer = ArrayList()
-            futures = ArrayList()
-            bufferedBytesSize = 0
-            isFull = false
+//            val recordBufferCount = recordBuffer.size
+//            logger.info("ready to flush recordBuffer, current buffer size is [{}]", recordBufferCount)
+            runBlocking(Dispatchers.IO) { batchCondition.send(Unit) }
+            val job = orderingJobs[key]
+            val records = orderingBuffer[key]!!
+            val futures = orderingFutures[key]!!
+            orderingJobs[key] = batchScope.launch {
+                job?.join()
+                writeSingleKeyHStreamRecords(records, futures)
+                batchCondition.receive()
+            }
+            orderingBuffer.remove(key)
+            orderingFutures.remove(key)
+            orderingBytesSize.remove(key)
         }
     }
 
     // only can be called by flush()
-    private suspend fun groupWriteHStreamRecords(records: MutableList<HStreamRecord>, futures: MutableList<CompletableFuture<RecordId>>) {
-        val recordGroup =
-            mutableMapOf<String, Pair<MutableList<HStreamRecord>, MutableList<CompletableFuture<RecordId>>>>()
-        for (i in records.indices) {
-            val key = records[i].header.key
-            if (!recordGroup.containsKey(key)) {
-                recordGroup[key] = Pair(mutableListOf(), mutableListOf())
+    private suspend fun writeSingleKeyHStreamRecords(records: Records, futures: Futures) {
+        try {
+            val ids = super.writeHStreamRecords(records, records[0].header.key)
+            for (i in ids.indices) {
+                futures[i].complete(ids[i])
             }
-            recordGroup[key]!!.first += records[i]
-            recordGroup[key]!!.second += futures[i]
-        }
-        coroutineScope {
-            for ((key, pair) in recordGroup) {
-                launch {
-                    try {
-                        val ids = super.writeHStreamRecords(pair.first, key)
-                        for (i in ids.indices) {
-                            pair.second[i].complete(ids[i])
-                        }
-                    } catch (e: Throwable) {
-                        pair.second.forEach { it.completeExceptionally(e) }
-                    }
-                }
-            }
+        } catch (e: Throwable) {
+            futures.forEach { it.completeExceptionally(e) }
         }
     }
 
