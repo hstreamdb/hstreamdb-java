@@ -28,25 +28,33 @@ open class ProducerKtImpl(private val stream: String) : Producer {
     private val serverUrls: HashMap<String, String> = HashMap()
     private val serverUrlsLock: Mutex = Mutex()
 
-    private suspend fun lookupServerUrl(orderingKey: String): String {
-        return HStreamClientKtImpl.unaryCallCoroutine {
-            var server: String? = serverUrlsLock.withLock {
-                return@withLock serverUrls[orderingKey]
-            }
-            if (server != null) {
-                return@unaryCallCoroutine server
-            }
-            val req = LookupStreamRequest.newBuilder()
-                .setStreamName(stream)
-                .setOrderingKey(orderingKey)
-                .build()
-            val serverNode = it.lookupStream(req).serverNode
-            server = "${serverNode.host}:${serverNode.port}"
-            serverUrlsLock.withLock {
-                serverUrls[orderingKey] = server
-            }
-            return@unaryCallCoroutine server
+    private suspend fun lookupServerUrl(orderingKey: String, forceUpdate: Boolean = false): String {
+        if (forceUpdate) {
+            return updateServerUrl(orderingKey)
         }
+        val server: String? = serverUrlsLock.withLock {
+            return@withLock serverUrls[orderingKey]
+        }
+        if (server != null) {
+            return server
+        }
+        return updateServerUrl(orderingKey)
+    }
+
+    private suspend fun updateServerUrl(orderingKey: String): String {
+        val req = LookupStreamRequest.newBuilder()
+            .setStreamName(stream)
+            .setOrderingKey(orderingKey)
+            .build()
+        val server = HStreamClientKtImpl.unaryCallCoroutine {
+            val serverNode = it.lookupStream(req).serverNode
+            return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
+        }
+        serverUrlsLock.withLock {
+            serverUrls[orderingKey] = server
+        }
+        logger.debug("updateServerUrl, key:$orderingKey, server:$server")
+        return server
     }
 
     override fun write(rawRecord: ByteArray): CompletableFuture<RecordId> {
@@ -80,7 +88,8 @@ open class ProducerKtImpl(private val stream: String) : Producer {
     private suspend fun appendWithRetry(
         appendRequest: AppendRequest,
         orderingKey: String,
-        tryTimes: Int
+        tryTimes: Int,
+        forceUpdate: Boolean = false
     ): List<RecordId> {
         // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
         //       This function is for handling them.
@@ -89,14 +98,14 @@ open class ProducerKtImpl(private val stream: String) : Producer {
             val status = Status.fromThrowable(e)
             if (status.code == Status.UNAVAILABLE.code && tryTimes > 1) {
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                return appendWithRetry(appendRequest, orderingKey, tryTimes - 1)
+                return appendWithRetry(appendRequest, orderingKey, tryTimes - 1, true)
             } else {
                 throw HStreamDBClientException(e)
             }
         }
 
         check(tryTimes > 0)
-        val serverUrl = lookupServerUrl(orderingKey)
+        val serverUrl = lookupServerUrl(orderingKey, forceUpdate)
         logger.info("try append with serverUrl [{}], current left tryTimes is [{}]", serverUrl, tryTimes)
         try {
             return HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
