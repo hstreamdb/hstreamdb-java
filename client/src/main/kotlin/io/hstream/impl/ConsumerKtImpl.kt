@@ -54,11 +54,9 @@ class ConsumerKtImpl(
             if (status.code == Status.UNAVAILABLE.code) {
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                 streamingFetchWithRetry(requestFlow)
-            } else if (status.code == Status.CANCELLED.code) {
-                // this means consumer closed actively, and do nothing here
-                logger.info("streamingFetch is canceled")
             } else {
-                logger.info("streamingFetch failed")
+                logger.error("streamingFetch failed")
+                notifyFailed(HStreamDBClientException(e))
             }
         }
 
