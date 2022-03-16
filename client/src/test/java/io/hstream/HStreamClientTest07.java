@@ -485,10 +485,9 @@ public class HStreamClientTest07 {
     var streamName = randStream(client);
     var testSubscriptionId = randSubscription(client, streamName);
     BufferedProducer producer =
-        client.newBufferedProducer().stream(streamName)
-            .recordCountLimit(100)
-            .flushIntervalMs(100)
-            .build();
+            client.newBufferedProducer().stream(streamName)
+                    .batchSetting(BatchSetting.newBuilder().recordCountLimit(100).build())
+                    .build();
     final int count = 10;
     doProduce(producer, 100, count / 2, "K1");
     doProduce(producer, 100, count / 2, "K2");
@@ -524,10 +523,9 @@ public class HStreamClientTest07 {
     var streamName = randStream(client);
     var testSubscriptionId = randSubscription(client, streamName);
     BufferedProducer producer =
-        client.newBufferedProducer().stream(streamName)
-            .recordCountLimit(100)
-            .flushIntervalMs(-1)
-            .build();
+            client.newBufferedProducer().stream(streamName)
+                    .batchSetting(BatchSetting.newBuilder().recordCountLimit(100).ageLimit(-1).build())
+                    .build();
     final int count = 100;
     List<CompletableFuture<RecordId>> fs = new LinkedList<>();
     List<byte[]> records = new LinkedList<>();
