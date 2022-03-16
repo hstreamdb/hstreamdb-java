@@ -14,26 +14,16 @@ import io.hstream.ReceivedRawRecord
 import io.hstream.internal.HStreamApiGrpcKt
 import io.hstream.internal.HStreamRecord
 import io.hstream.internal.LookupSubscriptionRequest
-import io.hstream.internal.LookupSubscriptionWithOrderingKeyRequest
 import io.hstream.internal.ReceivedRecord
 import io.hstream.internal.StreamingFetchRequest
 import io.hstream.internal.StreamingFetchResponse
-import io.hstream.internal.WatchSubscriptionRequest
-import io.hstream.internal.WatchSubscriptionResponse
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
@@ -45,14 +35,10 @@ class ConsumerKtImpl(
     private val rawRecordReceiver: RawRecordReceiver?,
     private val hRecordReceiver: HRecordReceiver?
 ) : AbstractService(), Consumer {
-    private lateinit var watchFuture: CompletableFuture<Unit>
+    private lateinit var fetchFuture: CompletableFuture<Unit>
     private val executorService = Executors.newSingleThreadExecutor()
 
-    private suspend fun streamingFetchWithRetry(
-        requestFlow: MutableSharedFlow<StreamingFetchRequest>,
-        watchServer: String,
-        orderingKey: String
-    ) {
+    private suspend fun streamingFetchWithRetry(requestFlow: MutableSharedFlow<StreamingFetchRequest>) {
         // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
         //       This function is for handling them.
         suspend fun handleGRPCException(e: Throwable) {
@@ -67,24 +53,21 @@ class ConsumerKtImpl(
             // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
             if (status.code == Status.UNAVAILABLE.code) {
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                streamingFetchWithRetry(requestFlow, watchServer, orderingKey)
-            } else if (status.code == Status.CANCELLED.code) {
-                // this means consumer closed actively, and do nothing here
-                logger.info("fetcher [$orderingKey] is canceled")
+                streamingFetchWithRetry(requestFlow)
             } else {
-                logger.info("fetcher [$orderingKey] failed")
+                logger.error("streamingFetch failed")
+                notifyFailed(HStreamDBClientException(e))
             }
         }
 
         if (!isRunning) return
-//        val server = lookupSubscriptionWithOrderingKey(watchServer, orderingKey)
-//        logger.debug("lookupSubscriptionWithOrderingKey:[$orderingKey] from :[$watchServer], received:[$server]")
-        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(watchServer))
+        val server = lookupSubscription()
+        logger.debug("lookupSubscription, received:[$server]")
+        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(server))
         try {
             // send an empty ack request to trigger streamingFetch.
             val initRequest = StreamingFetchRequest.newBuilder()
                 .setSubscriptionId(subscriptionId)
-                .setOrderingKey(orderingKey)
                 .setConsumerName(consumerName)
                 .build()
             coroutineScope {
@@ -97,7 +80,7 @@ class ConsumerKtImpl(
                 }
                 launch {
                     stub.streamingFetch(requestFlow).collect {
-                        process(requestFlow, it, orderingKey)
+                        process(requestFlow, it)
                     }
                 }
             }
@@ -106,68 +89,6 @@ class ConsumerKtImpl(
         } catch (e: StatusRuntimeException) {
             handleGRPCException(e)
         }
-    }
-
-    private suspend fun watchSubscription() {
-        val server = lookupSubscription()
-        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(server))
-        val req = WatchSubscriptionRequest.newBuilder()
-            .setSubscriptionId(subscriptionId)
-            .setConsumerName(consumerName)
-            .build()
-        val fetchScope = CoroutineScope(Dispatchers.Default)
-        try {
-            logger.info("watching subscription, server:$server")
-            val fetchers = HashMap<String, Job>()
-            val fetcherFlows = HashMap<String, Flow<StreamingFetchRequest>>()
-            val fetchersLock = Mutex()
-            stub.watchSubscription(req).collect {
-                fetchersLock.withLock {
-                    if (it.changeCase == WatchSubscriptionResponse.ChangeCase.CHANGEADD) {
-                        val key = it.changeAdd.orderingKey
-                        if (fetchers.containsKey(key)) {
-                            logger.info("add fetcher failed, existed fetcher for orderingKey:[$key]")
-                            return@collect
-                        }
-                        logger.debug("add fetcher: $key")
-                        val flow = MutableSharedFlow<StreamingFetchRequest>()
-                        fetcherFlows[key] = flow
-                        fetchers[key] = fetchScope.launch {
-                            try {
-                                streamingFetchWithRetry(flow, server, key)
-                            } finally {
-                                fetchersLock.withLock {
-                                    fetchers.remove(key)
-                                    fetcherFlows.remove(key)
-                                }
-                                logger.debug("fetcher for ordering key:[$key] stopped")
-                            }
-                        }
-                    } else {
-                        val key = it.changeRemove.orderingKey
-                        logger.debug("remove fetcher: $key")
-                        val job = fetchers.remove(key)
-                        fetcherFlows.remove(key)
-                        job?.cancel()
-                    }
-                }
-            }
-        } catch (e: Throwable) {
-            // TODO: retry
-            logger.warn("watch subscription stopped: ${e.message}")
-            fetchScope.cancel()
-            throw e
-        }
-    }
-
-    private suspend fun lookupSubscriptionWithOrderingKey(watchServer: String, orderingKey: String): String {
-        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(watchServer))
-        val req = LookupSubscriptionWithOrderingKeyRequest.newBuilder()
-            .setSubscriptionId(subscriptionId)
-            .setOrderingKey(orderingKey)
-            .build()
-        val res = stub.lookupSubscriptionWithOrderingKey(req)
-        return "${res.serverNode.host}:${res.serverNode.port}"
     }
 
     private suspend fun lookupSubscription(): String {
@@ -181,8 +102,7 @@ class ConsumerKtImpl(
 
     private fun process(
         requestFlow: MutableSharedFlow<StreamingFetchRequest>,
-        value: StreamingFetchResponse,
-        orderingKey: String
+        value: StreamingFetchResponse
     ) {
         if (!isRunning) {
             return
@@ -191,7 +111,7 @@ class ConsumerKtImpl(
         val receivedRecords = value.receivedRecordsList
         for (receivedRecord in receivedRecords) {
             val responder = ResponderImpl(
-                subscriptionId, requestFlow, consumerName, receivedRecord.recordId, orderingKey
+                subscriptionId, requestFlow, consumerName, receivedRecord.recordId
             )
 
             executorService.submit {
@@ -241,7 +161,11 @@ class ConsumerKtImpl(
             try {
                 logger.info("consumer [{}] is starting", consumerName)
                 notifyStarted()
-                watchFuture = futureForIO { watchSubscription() }
+                fetchFuture = (futureForIO { streamingFetchWithRetry(MutableSharedFlow()) }).handle { _, err ->
+                    if (err != null) {
+                        notifyFailed(HStreamDBClientException(err))
+                    }
+                }
                 logger.info("consumer [{}] is started", consumerName)
             } catch (e: Exception) {
                 logger.error("consumer [{}] failed to start", consumerName, e)
@@ -254,7 +178,7 @@ class ConsumerKtImpl(
         Thread {
             logger.info("consumer [{}] is stopping", consumerName)
 
-            watchFuture.cancel(false)
+            fetchFuture.cancel(false)
             executorService.shutdown()
             try {
                 executorService.awaitTermination(30, TimeUnit.SECONDS)

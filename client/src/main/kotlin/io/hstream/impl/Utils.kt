@@ -110,7 +110,7 @@ fun <Resp> unaryCallAsync(urlsRef: AtomicReference<List<String>>, channelProvide
     return futureForIO { unaryCallCoroutine(urlsRef, channelProvider, call) }
 }
 
-// warning: this method will block current thread. Don not call this in suspend functions, use unaryCallCoroutine instead!
+// warning: this method will block current thread. Do not call this in suspend functions, use unaryCallCoroutine instead!
 fun <Resp> unaryCallBlocked(urlsRef: AtomicReference<List<String>>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
     return futureForIO(MoreExecutors.directExecutor().asCoroutineDispatcher()) { unaryCallCoroutine(urlsRef, channelProvider, call) }.join()
 }
