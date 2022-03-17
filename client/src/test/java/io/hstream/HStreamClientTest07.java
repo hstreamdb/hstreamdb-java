@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//@Disabled("hs-928, hs-932")
+@Disabled("hs-928, hs-932")
 public class HStreamClientTest07 {
 
   private static final Logger logger = LoggerFactory.getLogger(HStreamClientTest07.class);
@@ -485,9 +485,9 @@ public class HStreamClientTest07 {
     var streamName = randStream(client);
     var testSubscriptionId = randSubscription(client, streamName);
     BufferedProducer producer =
-            client.newBufferedProducer().stream(streamName)
-                    .batchSetting(BatchSetting.newBuilder().recordCountLimit(5).build())
-                    .build();
+        client.newBufferedProducer().stream(streamName)
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(5).build())
+            .build();
     final int count = 10;
     doProduce(producer, 100, count / 2, "K1");
     doProduce(producer, 100, count / 2, "K2");
@@ -523,9 +523,9 @@ public class HStreamClientTest07 {
     var streamName = randStream(client);
     var testSubscriptionId = randSubscription(client, streamName);
     BufferedProducer producer =
-            client.newBufferedProducer().stream(streamName)
-                    .batchSetting(BatchSetting.newBuilder().recordCountLimit(100).ageLimit(-1).build())
-                    .build();
+        client.newBufferedProducer().stream(streamName)
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(100).ageLimit(-1).build())
+            .build();
     final int count = 100;
     List<CompletableFuture<RecordId>> fs = new LinkedList<>();
     List<byte[]> records = new LinkedList<>();

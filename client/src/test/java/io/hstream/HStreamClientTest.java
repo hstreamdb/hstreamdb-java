@@ -167,8 +167,8 @@ public class HStreamClientTest {
   public void testWriteBatchRawRecord() throws Exception {
     BufferedProducer producer =
         client.newBufferedProducer().stream(testStreamName)
-                .batchSetting(BatchSetting.newBuilder().recordCountLimit(10).build())
-                .build();
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(10).build())
+            .build();
     final int count = 100;
     var ids = doProduceAndGatherRid(producer, 100, count);
     producer.close();
@@ -200,10 +200,10 @@ public class HStreamClientTest {
   @Test
   @Order(4)
   public void testWriteBatchRawRecordMultiThread() throws Exception {
-      BufferedProducer producer =
-              client.newBufferedProducer().stream(testStreamName)
-                      .batchSetting(BatchSetting.newBuilder().recordCountLimit(10).ageLimit(10).build())
-                      .build();
+    BufferedProducer producer =
+        client.newBufferedProducer().stream(testStreamName)
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(10).ageLimit(10).build())
+            .build();
     Random random = new Random();
     final int count = 100;
     CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
@@ -445,10 +445,10 @@ public class HStreamClientTest {
   @Test
   @Order(8)
   public void testWriteBatchRawRecordBasedTimer() throws Exception {
-      BufferedProducer producer =
-              client.newBufferedProducer().stream(testStreamName)
-                      .batchSetting(BatchSetting.newBuilder().recordCountLimit(100).ageLimit(100).build())
-                      .build();
+    BufferedProducer producer =
+        client.newBufferedProducer().stream(testStreamName)
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(100).ageLimit(100).build())
+            .build();
     final int count = 10;
     var ids = doProduceAndGatherRid(producer, 100, count);
 
@@ -481,11 +481,15 @@ public class HStreamClientTest {
   @Order(9)
   @Disabled
   public void testWriteBatchRawRecordBasedBytesSize() throws Exception {
-      BufferedProducer producer =
-              client.newBufferedProducer().stream(testStreamName)
-                      .batchSetting(
-                              BatchSetting.newBuilder().recordCountLimit(100).ageLimit(-1).bytesLimit(4096).build())
-                      .build();
+    BufferedProducer producer =
+        client.newBufferedProducer().stream(testStreamName)
+            .batchSetting(
+                BatchSetting.newBuilder()
+                    .recordCountLimit(100)
+                    .ageLimit(-1)
+                    .bytesLimit(4096)
+                    .build())
+            .build();
     Random random = new Random();
     final int count = 42;
     CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
