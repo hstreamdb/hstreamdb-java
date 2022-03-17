@@ -2,9 +2,11 @@ package io.hstream;
 
 public class BatchSetting {
 
-    private final int recordCountLimit;
-    private final int bytesLimit;
-    private final long ageLimit;
+    private int recordCountLimit = 100;
+    private int bytesLimit = 4096;
+    private long ageLimit = 100;
+
+    public BatchSetting() {}
 
     public int getRecordCountLimit() {
         return recordCountLimit;
@@ -53,12 +55,14 @@ public class BatchSetting {
         }
 
         public BatchSetting build() {
-
+            if (recordCountLimit < 1 && bytesLimit < 1 && ageLimit < 1) {
+                throw new HStreamDBClientException("disabled all options, at least one option should be enabled");
+            }
             return new BatchSetting(this);
         }
     }
 
-    private BatchSetting(Builder builder) {
+    public BatchSetting(Builder builder) {
         this.recordCountLimit = builder.recordCountLimit;
         this.bytesLimit = builder.bytesLimit;
         this.ageLimit = builder.ageLimit;

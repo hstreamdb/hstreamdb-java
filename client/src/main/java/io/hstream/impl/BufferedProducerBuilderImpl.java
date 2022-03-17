@@ -4,13 +4,12 @@ import io.hstream.BatchSetting;
 import io.hstream.BufferedProducer;
 import io.hstream.BufferedProducerBuilder;
 import io.hstream.FlowControlSetting;
-import io.hstream.HStreamDBClientException;
 
 public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
 
   private String streamName;
-  private BatchSetting batchSetting;
-  private FlowControlSetting flowControlSetting;
+  private BatchSetting batchSetting = new BatchSetting();
+  private FlowControlSetting flowControlSetting = new FlowControlSetting();
 
   @Override
   public BufferedProducerBuilder stream(String streamName) {
@@ -20,25 +19,18 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
 
   @Override
   public BufferedProducerBuilder batchSetting(BatchSetting batchSetting) {
-    return null;
+    this.batchSetting = batchSetting;
+    return this;
   }
 
   @Override
   public BufferedProducerBuilder flowControlSetting(FlowControlSetting flowControlSetting) {
-    return null;
+    this.flowControlSetting = flowControlSetting;
+    return this;
   }
 
   @Override
   public BufferedProducer build() {
-//    if (recordCountLimit < 1) {
-//      throw new HStreamDBClientException(
-//          String.format(
-//              "build buffedProducer failed, recordCountLimit(%d) can NOT be less than 1",
-//              recordCountLimit));
-//    }
-//    if (maxBatchSize < 1) {
-//      maxBatchSize = 1;
-//    }
     return new BufferedProducerKtImpl(streamName, batchSetting, flowControlSetting);
   }
 }

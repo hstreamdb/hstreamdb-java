@@ -11,13 +11,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
+import java.util.LinkedList
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.concurrent.withLock
 
@@ -53,18 +53,17 @@ class BufferedProducerKtImpl(
                 throw HStreamDBClientException("BufferedProducer is closed")
             }
             val recordFuture = CompletableFuture<RecordId>()
-            val bs = totalBytesSize.get()
-            if (bs + hStreamRecord.payload.size() > flowControlSetting.bytesLimit) {
+            if (flowControlSetting.bytesLimit in 1..totalBytesSize.get()) {
                 recordFuture.completeExceptionally(
                     HStreamDBClientException("total bytes size has reached FlowControlSetting.bytesLimit")
                 )
                 return recordFuture
             }
-            while (!totalBytesSize.compareAndSet(bs, bs + hStreamRecord.payload.size())) {}
+            totalBytesSize.addAndGet(hStreamRecord.payload.size())
             val key = hStreamRecord.header.key
             if (!orderingBuffer.containsKey(key)) {
-                orderingBuffer[key] = ArrayList(batchSetting.recordCountLimit)
-                orderingFutures[key] = ArrayList(batchSetting.recordCountLimit)
+                orderingBuffer[key] = LinkedList()
+                orderingFutures[key] = LinkedList()
                 orderingBytesSize[key] = 0
                 if (batchSetting.ageLimit > 0) {
                     timerServices[key] =
@@ -84,7 +83,7 @@ class BufferedProducerKtImpl(
     private fun isFull(key: String): Boolean {
         val recordCount = orderingBuffer[key]!!.size
         val bytesSize = orderingBytesSize[key]!!
-        return (recordCount == batchSetting.recordCountLimit) || batchSetting.bytesLimit > 0 && bytesSize >= batchSetting.bytesLimit
+        return batchSetting.recordCountLimit in 1..recordCount || batchSetting.bytesLimit in 1..bytesSize
     }
 
     override fun flush() {
@@ -111,8 +110,7 @@ class BufferedProducerKtImpl(
                 job?.join()
                 writeSingleKeyHStreamRecords(records, futures)
                 logger.info("wrote batch for key:$key")
-                val bs = totalBytesSize.get()
-                while (!totalBytesSize.compareAndSet(bs, bs - recordsBytesSize)) {}
+                totalBytesSize.updateAndGet { it - recordsBytesSize }
             }
         }
     }
