@@ -209,9 +209,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#createStream(java.lang.String)">createStream(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
-<div class="block">Create a new stream with 3 replicas.</div>
+<div class="block">Create a new stream with 1 replicas.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#createStream(java.lang.String,short)">createStream(String, short)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
+<dd>
+<div class="block">Create a new stream.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#createStream(java.lang.String,short,int)">createStream(String, short, int)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
 <div class="block">Create a new stream.</div>
 </dd>
@@ -274,6 +278,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.html#getAckTimeoutSeconds()">getAckTimeoutSeconds()</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.html" title="class in io.hstream">Subscription</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/BatchSetting.html#getAgeLimit()">getAgeLimit()</a></span> - Method in class io.hstream.<a href="io/hstream/BatchSetting.html" title="class in io.hstream">BatchSetting</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Stream.html#getBacklogDuration()">getBacklogDuration()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#getBatchId()">getBatchId()</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
 <dd>&nbsp;</dd>
@@ -601,6 +607,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClientBuilder.html#serviceUrl(java.lang.String)">serviceUrl(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Stream.html#setBacklogDuration(int)">setBacklogDuration(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#setBatchId(long)">setBatchId(long)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#setBatchIndex(int)">setBatchIndex(int)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
@@ -627,7 +635,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/Stream.html" title="class in io.hstream"><span class="typeNameLink">Stream</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/Stream.html#%3Cinit%3E(java.lang.String,int)">Stream(String, int)</a></span> - Constructor for class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
+<dt><span class="memberNameLink"><a href="io/hstream/Stream.html#%3Cinit%3E(java.lang.String,int,int)">Stream(String, int, int)</a></span> - Constructor for class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamDBClientException.SubscribeException.html#%3Cinit%3E(java.lang.String)">SubscribeException(String)</a></span> - Constructor for exception io.hstream.<a href="io/hstream/HStreamDBClientException.SubscribeException.html" title="class in io.hstream">HStreamDBClientException.SubscribeException</a></dt>
 <dd>&nbsp;</dd>
