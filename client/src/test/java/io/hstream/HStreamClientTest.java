@@ -166,7 +166,9 @@ public class HStreamClientTest {
   @Order(3)
   public void testWriteBatchRawRecord() throws Exception {
     BufferedProducer producer =
-        client.newBufferedProducer().stream(testStreamName).recordCountLimit(10).build();
+        client.newBufferedProducer().stream(testStreamName)
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(10).build())
+            .build();
     final int count = 100;
     var ids = doProduceAndGatherRid(producer, 100, count);
     producer.close();
@@ -200,8 +202,7 @@ public class HStreamClientTest {
   public void testWriteBatchRawRecordMultiThread() throws Exception {
     BufferedProducer producer =
         client.newBufferedProducer().stream(testStreamName)
-            .recordCountLimit(10)
-            .flushIntervalMs(10)
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(10).ageLimit(10).build())
             .build();
     Random random = new Random();
     final int count = 100;
@@ -446,8 +447,7 @@ public class HStreamClientTest {
   public void testWriteBatchRawRecordBasedTimer() throws Exception {
     BufferedProducer producer =
         client.newBufferedProducer().stream(testStreamName)
-            .recordCountLimit(100)
-            .flushIntervalMs(100)
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(100).ageLimit(100).build())
             .build();
     final int count = 10;
     var ids = doProduceAndGatherRid(producer, 100, count);
@@ -482,9 +482,12 @@ public class HStreamClientTest {
   public void testWriteBatchRawRecordBasedBytesSize() throws Exception {
     BufferedProducer producer =
         client.newBufferedProducer().stream(testStreamName)
-            .recordCountLimit(100)
-            .flushIntervalMs(-1)
-            .maxBytesSize(4096)
+            .batchSetting(
+                BatchSetting.newBuilder()
+                    .recordCountLimit(100)
+                    .ageLimit(-1)
+                    .bytesLimit(4096)
+                    .build())
             .build();
     Random random = new Random();
     final int count = 42;

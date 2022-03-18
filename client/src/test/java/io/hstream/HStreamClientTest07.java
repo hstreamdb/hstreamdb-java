@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -483,8 +486,7 @@ public class HStreamClientTest07 {
     var testSubscriptionId = randSubscription(client, streamName);
     BufferedProducer producer =
         client.newBufferedProducer().stream(streamName)
-            .recordCountLimit(100)
-            .flushIntervalMs(100)
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(5).build())
             .build();
     final int count = 10;
     doProduce(producer, 100, count / 2, "K1");
@@ -513,5 +515,70 @@ public class HStreamClientTest07 {
 
     latch.await();
     consumer.stopAsync().awaitTerminated();
+  }
+
+  @Test
+  public void testWriteOrderWithDiffKeys() throws Exception {
+    HStreamClient client = HStreamClient.builder().serviceUrl(serviceUrl).build();
+    var streamName = randStream(client);
+    var testSubscriptionId = randSubscription(client, streamName);
+    BufferedProducer producer =
+        client.newBufferedProducer().stream(streamName)
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(100).ageLimit(-1).build())
+            .build();
+    final int count = 100;
+    List<CompletableFuture<RecordId>> fs = new LinkedList<>();
+    List<byte[]> records = new LinkedList<>();
+    for (int i = 0; i < count; i++) {
+      var r = randBytes();
+      records.add(r);
+      String key = i % 2 == 0 ? "k1" : "k2";
+      fs.add(producer.write(Record.newBuilder().rawRecord(r).orderingKey(key).build()));
+    }
+    producer.close();
+    Map<String, Map<RecordId, byte[]>> ids = new HashMap<>();
+    for (int i = 0; i < 100; i++) {
+      logger.debug(
+          "write record:{}, id:{}", UUID.nameUUIDFromBytes(records.get(i)), fs.get(i).join());
+      String key = i % 2 == 0 ? "k1" : "k2";
+      if (i < 2) {
+        ids.put(key, new HashMap<>());
+      }
+      ids.get(key).put(fs.get(i).join(), records.get(i));
+    }
+
+    logger.info("producer finish");
+
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicInteger index = new AtomicInteger();
+    List<ReceivedRawRecord> rawRecords = new ArrayList<>();
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(testSubscriptionId)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  rawRecords.add(receivedRawRecord);
+                  responder.ack();
+                  index.incrementAndGet();
+                  if (index.get() == count) {
+                    latch.countDown();
+                  }
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
+
+    latch.await();
+    consumer.stopAsync().awaitTerminated();
+
+    for (ReceivedRawRecord r : rawRecords) {
+      logger.debug(
+          "l:{}, r:{}",
+          UUID.nameUUIDFromBytes(r.getRawRecord()),
+          UUID.nameUUIDFromBytes(ids.get(r.getHeader().getOrderingKey()).get(r.getRecordId())));
+      Assertions.assertEquals(
+          UUID.nameUUIDFromBytes(r.getRawRecord()),
+          UUID.nameUUIDFromBytes(ids.get(r.getHeader().getOrderingKey()).get(r.getRecordId())));
+    }
   }
 }

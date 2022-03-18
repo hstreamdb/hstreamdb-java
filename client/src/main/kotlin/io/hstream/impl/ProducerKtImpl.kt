@@ -76,7 +76,7 @@ open class ProducerKtImpl(private val stream: String) : Producer {
         val future = CompletableFuture<RecordId>()
         writeRecordScope.launch {
             try {
-                val ids = writeHStreamRecords(listOf(hStreamRecord))
+                val ids = writeHStreamRecords(listOf(hStreamRecord), hStreamRecord.header.key)
                 future.complete(ids[0])
             } catch (e: Throwable) {
                 future.completeExceptionally(e)
@@ -117,13 +117,9 @@ open class ProducerKtImpl(private val stream: String) : Producer {
         }
     }
 
-    protected suspend fun writeHStreamRecords(hStreamRecords: List<HStreamRecord>): List<RecordId> {
-        val res = emptyList<RecordId>().toMutableList()
-        for ((key, rs) in hStreamRecords.groupBy { it.header.key }) {
-            val appendRequest = AppendRequest.newBuilder().setStreamName(stream).addAllRecords(rs).build()
-            res += appendWithRetry(appendRequest, key, DefaultSettings.APPEND_RETRY_MAX_TIMES)
-        }
-        return res
+    protected suspend fun writeHStreamRecords(hStreamRecords: List<HStreamRecord>, key: String): List<RecordId> {
+        val appendRequest = AppendRequest.newBuilder().setStreamName(stream).addAllRecords(hStreamRecords).build()
+        return appendWithRetry(appendRequest, key, DefaultSettings.APPEND_RETRY_MAX_TIMES)
     }
 
     companion object {

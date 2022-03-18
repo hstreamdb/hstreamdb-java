@@ -1,16 +1,15 @@
 package io.hstream.impl;
 
+import io.hstream.BatchSetting;
 import io.hstream.BufferedProducer;
 import io.hstream.BufferedProducerBuilder;
-import io.hstream.HStreamDBClientException;
+import io.hstream.FlowControlSetting;
 
 public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
 
   private String streamName;
-  private int recordCountLimit = 100;
-  private long flushIntervalMs = 100;
-  private int maxBytesSize = 4096;
-  private boolean throwExceptionIfFull = false;
+  private BatchSetting batchSetting = new BatchSetting();
+  private FlowControlSetting flowControlSetting = new FlowControlSetting();
 
   @Override
   public BufferedProducerBuilder stream(String streamName) {
@@ -18,47 +17,20 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
     return this;
   }
 
-  /** @param recordCountLimit default value is 100, it can NOT be less than 1 */
   @Override
-  public BufferedProducerBuilder recordCountLimit(int recordCountLimit) {
-    this.recordCountLimit = recordCountLimit;
-    return this;
-  }
-
-  /**
-   * @param flushIntervalMs default value is 100ms, if flushIntervalMs <= 0, disables timed based
-   *     flush strategy.
-   */
-  @Override
-  public BufferedProducerBuilder flushIntervalMs(long flushIntervalMs) {
-    this.flushIntervalMs = flushIntervalMs;
-    return this;
-  }
-
-  /**
-   * @param maxBytesSize default value is 4K(4096), if maxBytesSize <= 0, does not limit bytes size
-   */
-  @Override
-  public BufferedProducerBuilder maxBytesSize(int maxBytesSize) {
-    this.maxBytesSize = maxBytesSize;
+  public BufferedProducerBuilder batchSetting(BatchSetting batchSetting) {
+    this.batchSetting = batchSetting;
     return this;
   }
 
   @Override
-  public BufferedProducerBuilder throwExceptionIfFull(boolean throwExceptionIfFull) {
-    this.throwExceptionIfFull = throwExceptionIfFull;
+  public BufferedProducerBuilder flowControlSetting(FlowControlSetting flowControlSetting) {
+    this.flowControlSetting = flowControlSetting;
     return this;
   }
 
   @Override
   public BufferedProducer build() {
-    if (recordCountLimit < 1) {
-      throw new HStreamDBClientException(
-          String.format(
-              "build buffedProducer failed, recordCountLimit(%d) can NOT be less than 1",
-              recordCountLimit));
-    }
-    return new BufferedProducerKtImpl(
-        streamName, recordCountLimit, flushIntervalMs, maxBytesSize, throwExceptionIfFull);
+    return new BufferedProducerKtImpl(streamName, batchSetting, flowControlSetting);
   }
 }

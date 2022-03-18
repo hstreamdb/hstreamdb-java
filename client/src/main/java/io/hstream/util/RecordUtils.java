@@ -71,6 +71,10 @@ public class RecordUtils {
     return hStreamRecord.getPayload().toByteArray();
   }
 
+  public static RecordHeader parseRecordHeaderFromHStreamRecord(HStreamRecord hStreamRecord) {
+    return RecordHeader.newBuild().orderingKey(hStreamRecord.getHeader().getKey()).build();
+  }
+
   public static HRecord parseHRecordFromHStreamRecord(HStreamRecord hStreamRecord) {
     HStreamRecordHeader.Flag flag = hStreamRecord.getHeader().getFlag();
     if (!flag.equals(HStreamRecordHeader.Flag.JSON)) {
