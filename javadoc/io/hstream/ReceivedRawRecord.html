@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10};
+var data = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -152,7 +152,8 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(io.hstream.RecordId,byte%5B%5D)">ReceivedRawRecord</a></span>&#8203;(<a href="RecordId.html" title="class in io.hstream">RecordId</a>&nbsp;recordId,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(io.hstream.RecordId,io.hstream.RecordHeader,byte%5B%5D)">ReceivedRawRecord</a></span>&#8203;(<a href="RecordId.html" title="class in io.hstream">RecordId</a>&nbsp;recordId,
+                 <a href="RecordHeader.html" title="class in io.hstream">RecordHeader</a>&nbsp;header,
                  byte[]&nbsp;rawRecord)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -175,11 +176,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code><a href="RecordHeader.html" title="class in io.hstream">RecordHeader</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHeader()">getHeader</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code>byte[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRawRecord()">getRawRecord</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="RecordId.html" title="class in io.hstream">RecordId</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRecordId()">getRecordId</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -208,13 +214,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(io.hstream.RecordId,byte[])">
+<a id="&lt;init&gt;(io.hstream.RecordId,io.hstream.RecordHeader,byte[])">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ReceivedRawRecord</h4>
 <pre>public&nbsp;ReceivedRawRecord&#8203;(<a href="RecordId.html" title="class in io.hstream">RecordId</a>&nbsp;recordId,
+                         <a href="RecordHeader.html" title="class in io.hstream">RecordHeader</a>&nbsp;header,
                          byte[]&nbsp;rawRecord)</pre>
 </li>
 </ul>
@@ -235,6 +242,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>getRecordId</h4>
 <pre class="methodSignature">public&nbsp;<a href="RecordId.html" title="class in io.hstream">RecordId</a>&nbsp;getRecordId()</pre>
+</li>
+</ul>
+<a id="getHeader()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHeader</h4>
+<pre class="methodSignature">public&nbsp;<a href="RecordHeader.html" title="class in io.hstream">RecordHeader</a>&nbsp;getHeader()</pre>
 </li>
 </ul>
 <a id="getRawRecord()">

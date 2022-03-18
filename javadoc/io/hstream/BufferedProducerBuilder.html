@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -144,33 +144,23 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#batchSetting(io.hstream.BatchSetting)">batchSetting</a></span>&#8203;(<a href="BatchSetting.html" title="class in io.hstream">BatchSetting</a>&nbsp;batchSetting)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="BufferedProducer.html" title="interface in io.hstream">BufferedProducer</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#build()">build</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#flushIntervalMs(long)">flushIntervalMs</a></span>&#8203;(long&nbsp;flushIntervalMs)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maxBytesSize(int)">maxBytesSize</a></span>&#8203;(int&nbsp;maxBytesSize)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#flowControlSetting(io.hstream.FlowControlSetting)">flowControlSetting</a></span>&#8203;(<a href="FlowControlSetting.html" title="class in io.hstream">FlowControlSetting</a>&nbsp;flowControlSetting)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#recordCountLimit(int)">recordCountLimit</a></span>&#8203;(int&nbsp;recordCountLimit)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stream(java.lang.String)">stream</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamName)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#throwExceptionIfFull(boolean)">throwExceptionIfFull</a></span>&#8203;(boolean&nbsp;throwExceptionIfFull)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -199,58 +189,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;stream&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamName)</pre>
 </li>
 </ul>
-<a id="recordCountLimit(int)">
+<a id="batchSetting(io.hstream.BatchSetting)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>recordCountLimit</h4>
-<pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;recordCountLimit&#8203;(int&nbsp;recordCountLimit)</pre>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>recordCountLimit</code> - optional, default: 100, it MUST be greater than 0</dd>
-</dl>
+<h4>batchSetting</h4>
+<pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;batchSetting&#8203;(<a href="BatchSetting.html" title="class in io.hstream">BatchSetting</a>&nbsp;batchSetting)</pre>
 </li>
 </ul>
-<a id="flushIntervalMs(long)">
+<a id="flowControlSetting(io.hstream.FlowControlSetting)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>flushIntervalMs</h4>
-<pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;flushIntervalMs&#8203;(long&nbsp;flushIntervalMs)</pre>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>flushIntervalMs</code> - optional, default: 100(ms), disabled if flushIntervalMs &lt;= 0</dd>
-</dl>
-</li>
-</ul>
-<a id="maxBytesSize(int)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>maxBytesSize</h4>
-<pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;maxBytesSize&#8203;(int&nbsp;maxBytesSize)</pre>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>maxBytesSize</code> - optional, default: 4096(Bytes), disabled if maxBytesSize &lt;= 0</dd>
-</dl>
-</li>
-</ul>
-<a id="throwExceptionIfFull(boolean)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>throwExceptionIfFull</h4>
-<pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;throwExceptionIfFull&#8203;(boolean&nbsp;throwExceptionIfFull)</pre>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>throwExceptionIfFull</code> - optional, default: false, if throwExceptionIfFull is true, throw
-     HStreamDBClientException when buffer is full, otherwise, block thread and wait the buffer
-     to be flushed.</dd>
-</dl>
+<h4>flowControlSetting</h4>
+<pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;flowControlSetting&#8203;(<a href="FlowControlSetting.html" title="class in io.hstream">FlowControlSetting</a>&nbsp;flowControlSetting)</pre>
 </li>
 </ul>
 <a id="build()">
