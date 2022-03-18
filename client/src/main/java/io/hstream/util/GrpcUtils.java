@@ -42,6 +42,7 @@ public class GrpcUtils {
   }
 
   public static Stream streamFromGrpc(io.hstream.internal.Stream stream) {
-    return new Stream(stream.getStreamName(), stream.getReplicationFactor());
+    return new Stream(
+        stream.getStreamName(), stream.getReplicationFactor(), stream.getBacklogDuration());
   }
 }

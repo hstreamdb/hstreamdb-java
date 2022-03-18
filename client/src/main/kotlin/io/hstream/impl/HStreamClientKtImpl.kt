@@ -83,6 +83,10 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
     }
 
     override fun createStream(stream: String?, replicationFactor: Short) {
+        createStream(stream, replicationFactor, 3600 * 24)
+    }
+
+    override fun createStream(stream: String?, replicationFactor: Short, backlogDuration: Int) {
         checkNotNull(stream)
         check(replicationFactor in 1..15)
 
@@ -91,7 +95,8 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>) : HStreamClient {
                 GrpcUtils.streamToGrpc(
                     Stream(
                         stream,
-                        replicationFactor.toInt()
+                        replicationFactor.toInt(),
+                        backlogDuration
                     )
                 )
             )
