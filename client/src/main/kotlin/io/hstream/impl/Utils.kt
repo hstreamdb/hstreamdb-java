@@ -13,12 +13,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.future.future
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.lang.Exception
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.CoroutineContext
@@ -125,23 +122,4 @@ fun <Resp> unaryCallWithCurrentUrls(urls: List<String>, channelProvider: Channel
 @OptIn(DelicateCoroutinesApi::class)
 fun <T> futureForIO(context: CoroutineContext = Dispatchers.Default, block: suspend CoroutineScope.() -> T): CompletableFuture<T> {
     return GlobalScope.future(context = context, block = block)
-}
-
-// I can't find any better solution for implementing wait/notifyAll mechanism
-class Waiter {
-    private val flow = MutableSharedFlow<Unit>()
-    suspend fun kWait() {
-        try {
-            flow.collect { throw Exception() }
-        } catch (e: Exception) {
-            return
-        }
-    }
-
-    fun kNotifyAll() {
-        flow.tryEmit(Unit)
-    }
-
-    fun close() {
-    }
 }
