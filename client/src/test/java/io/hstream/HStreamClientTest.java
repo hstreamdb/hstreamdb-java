@@ -479,7 +479,6 @@ public class HStreamClientTest {
 
   @Test
   @Order(9)
-  @Disabled
   public void testWriteBatchRawRecordBasedBytesSize() throws Exception {
     BufferedProducer producer =
         client.newBufferedProducer().stream(testStreamName)
