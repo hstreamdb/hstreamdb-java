@@ -16,7 +16,6 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.HashMap
 import kotlin.concurrent.withLock
@@ -34,16 +33,22 @@ class BufferedProducerKtImpl(
     private var orderingFutures: HashMap<String, Futures> = HashMap()
     private var orderingBytesSize: HashMap<String, Int> = HashMap()
     private var orderingJobs: HashMap<String, Job> = HashMap()
-    private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    private val totalBytesSize = AtomicInteger(0)
+    private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
+
+    private val flowController: FlowController? = if (flowControlSetting.bytesLimit > 0) FlowController(flowControlSetting.bytesLimit) else null
 
     @Volatile
     private var closed: Boolean = false
 
-    private val scheduler = Executors.newScheduledThreadPool(4)
+    private val scheduler = Executors.newScheduledThreadPool(1)
     private var timerServices: HashMap<String, ScheduledFuture<*>> = HashMap()
 
     override fun writeInternal(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
+        if (closed) {
+            throw HStreamDBClientException("BufferedProducer is closed")
+        }
+
+        flowController?.acquire(hStreamRecord.payload.size())
         return addToBuffer(hStreamRecord)
     }
 
@@ -52,14 +57,8 @@ class BufferedProducerKtImpl(
             if (closed) {
                 throw HStreamDBClientException("BufferedProducer is closed")
             }
+
             val recordFuture = CompletableFuture<RecordId>()
-            if (flowControlSetting.bytesLimit in 1..totalBytesSize.get()) {
-                recordFuture.completeExceptionally(
-                    HStreamDBClientException("total bytes size has reached FlowControlSetting.bytesLimit")
-                )
-                return recordFuture
-            }
-            totalBytesSize.addAndGet(hStreamRecord.payload.size())
             val key = hStreamRecord.header.key
             if (!orderingBuffer.containsKey(key)) {
                 orderingBuffer[key] = LinkedList()
@@ -110,7 +109,7 @@ class BufferedProducerKtImpl(
                 job?.join()
                 writeSingleKeyHStreamRecords(records, futures)
                 logger.info("wrote batch for key:$key")
-                totalBytesSize.updateAndGet { it - recordsBytesSize }
+                flowController?.release(recordsBytesSize)
             }
         }
     }
@@ -132,10 +131,89 @@ class BufferedProducerKtImpl(
             closed = true
             flush()
             scheduler.shutdown()
+            flowController?.releaseAll()
         }
     }
 
     companion object {
         private val logger = LoggerFactory.getLogger(BufferedProducerKtImpl::class.java)
+    }
+
+    class FlowController(private var leftBytes: Int) {
+
+        private val lock: ReentrantLock = ReentrantLock(true)
+        private val waitingList: LinkedList<BytesWaiter> = LinkedList()
+
+        fun acquire(bytes: Int) {
+            acquireInner(bytes)?.await()
+        }
+
+        fun release(bytes: Int) {
+            lock.withLock {
+                var availableBytes = bytes
+                while (!waitingList.isEmpty() && availableBytes > 0) {
+                    val bytesWaiter = waitingList.removeFirst()
+                    availableBytes = bytesWaiter.fill(availableBytes)
+                }
+
+                if (availableBytes > 0) {
+                    leftBytes += availableBytes
+                }
+            }
+        }
+
+        fun releaseAll() {
+            lock.withLock {
+                while (!waitingList.isEmpty()) {
+                    val bytesWaiter = waitingList.removeFirst()
+                    bytesWaiter.unblock()
+                }
+            }
+        }
+
+        private fun acquireInner(bytes: Int): BytesWaiter? {
+            lock.withLock {
+                return if (bytes <= leftBytes) {
+                    leftBytes -= bytes
+                    null
+                } else {
+                    val waitBytes = bytes - leftBytes
+                    val bytesWaiter = BytesWaiter(waitBytes)
+                    waitingList.addLast(bytesWaiter)
+                    bytesWaiter
+                }
+            }
+        }
+    }
+
+    class BytesWaiter(private var neededBytes: Int) {
+        private var lock = ReentrantLock(true)
+        private var isAvailable = lock.newCondition()
+
+        fun await() {
+            lock.withLock {
+                while (neededBytes > 0) {
+                    isAvailable.await()
+                }
+            }
+        }
+
+        fun fill(bytes: Int): Int {
+            lock.withLock {
+                if (neededBytes == 0) return bytes
+                return if (neededBytes <= bytes) {
+                    neededBytes = 0
+                    isAvailable.signal()
+                    bytes - neededBytes
+                } else {
+                    neededBytes -= bytes
+                    0
+                }
+            }
+        }
+
+        fun unblock() {
+            lock.withLock { fill(neededBytes) }
+        }
     }
 }
