@@ -33,7 +33,7 @@ class BufferedProducerKtImpl(
     private var orderingFutures: HashMap<String, Futures> = HashMap()
     private var orderingBytesSize: HashMap<String, Int> = HashMap()
     private var orderingJobs: HashMap<String, Job> = HashMap()
-    private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.Main)
+    private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     private val flowController: FlowController? = if (flowControlSetting.bytesLimit > 0) FlowController(flowControlSetting.bytesLimit) else null
 
