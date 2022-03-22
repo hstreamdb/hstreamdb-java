@@ -14,7 +14,7 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
   private String subscription;
   private RawRecordReceiver rawRecordReceiver;
   private HRecordReceiver hRecordReceiver;
-  private int ackBufferSize;
+  private int ackBufferSize = 100;
 
   @Override
   public ConsumerBuilder name(String name) {
