@@ -11,5 +11,7 @@ public interface ConsumerBuilder {
 
   ConsumerBuilder hRecordReceiver(HRecordReceiver hRecordReceiver);
 
+  ConsumerBuilder ackBufferSize(int ackBufferSize);
+
   Consumer build();
 }
