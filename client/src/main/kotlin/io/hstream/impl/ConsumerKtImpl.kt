@@ -82,7 +82,7 @@ class ConsumerKtImpl(
                 }
                 launch {
                     stub.streamingFetch(requestFlow).collect {
-                        process(requestFlow, it)
+                        process(it)
                     }
                 }
             }
@@ -102,10 +102,7 @@ class ConsumerKtImpl(
         }
     }
 
-    private fun process(
-        requestFlow: MutableSharedFlow<StreamingFetchRequest>,
-        value: StreamingFetchResponse
-    ) {
+    private fun process(value: StreamingFetchResponse) {
         if (!isRunning) {
             return
         }
