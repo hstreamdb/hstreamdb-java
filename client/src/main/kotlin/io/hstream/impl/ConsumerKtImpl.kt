@@ -37,6 +37,8 @@ class ConsumerKtImpl(
 ) : AbstractService(), Consumer {
     private lateinit var fetchFuture: CompletableFuture<Unit>
     private val executorService = Executors.newSingleThreadExecutor()
+    private val requestFlow = MutableSharedFlow<StreamingFetchRequest>()
+    private val ackSender = AckSender(subscriptionId, requestFlow, consumerName, 100)
 
     private suspend fun streamingFetchWithRetry(requestFlow: MutableSharedFlow<StreamingFetchRequest>) {
         // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
@@ -110,9 +112,7 @@ class ConsumerKtImpl(
 
         val receivedRecords = value.receivedRecordsList
         for (receivedRecord in receivedRecords) {
-            val responder = ResponderImpl(
-                subscriptionId, requestFlow, consumerName, receivedRecord.recordId
-            )
+            val responder = ResponderImpl(ackSender, receivedRecord.recordId)
 
             executorService.submit {
                 if (!isRunning) {
@@ -161,7 +161,7 @@ class ConsumerKtImpl(
             try {
                 logger.info("consumer [{}] is starting", consumerName)
                 notifyStarted()
-                fetchFuture = (futureForIO { streamingFetchWithRetry(MutableSharedFlow()) }).handle { _, err ->
+                fetchFuture = (futureForIO { streamingFetchWithRetry(requestFlow) }).handle { _, err ->
                     if (err != null) {
                         notifyFailed(HStreamDBClientException(err))
                     }
