@@ -14,6 +14,7 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
   private String subscription;
   private RawRecordReceiver rawRecordReceiver;
   private HRecordReceiver hRecordReceiver;
+  private int ackBufferSize = 100;
 
   @Override
   public ConsumerBuilder name(String name) {
@@ -40,6 +41,12 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
   }
 
   @Override
+  public ConsumerBuilder ackBufferSize(int ackBufferSize) {
+    this.ackBufferSize = ackBufferSize;
+    return this;
+  }
+
+  @Override
   public Consumer build() {
     checkNotNull(subscription);
     checkState(rawRecordReceiver != null || hRecordReceiver != null);
@@ -47,6 +54,10 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
       name = UUID.randomUUID().toString();
     }
     checkNotNull(name);
-    return new ConsumerKtImpl(name, subscription, rawRecordReceiver, hRecordReceiver);
+    if (ackBufferSize < 1) {
+      ackBufferSize = 1;
+    }
+    return new ConsumerKtImpl(
+        name, subscription, rawRecordReceiver, hRecordReceiver, ackBufferSize);
   }
 }

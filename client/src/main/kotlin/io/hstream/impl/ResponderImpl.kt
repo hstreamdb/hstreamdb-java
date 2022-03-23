@@ -3,43 +3,47 @@ package io.hstream.impl
 import io.hstream.Responder
 import io.hstream.internal.RecordId
 import io.hstream.internal.StreamingFetchRequest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import org.slf4j.LoggerFactory
+import kotlinx.coroutines.launch
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
+import kotlin.concurrent.withLock
 
-class ResponderImpl(
+class AckSender(
     private val subscriptionId: String,
     private val ackFlow: MutableSharedFlow<StreamingFetchRequest>,
-    private val consumerId: String,
-    private val recordId: RecordId
-) : Responder {
-    override fun ack() {
-        runBlocking {
-            lock.withLock {
-                if (!buffer.containsKey(consumerId)) {
-                    buffer[consumerId] = ArrayList(bufferSize)
-                }
-                buffer[consumerId]!!.add(recordId)
-                if (buffer[consumerId]!!.size >= bufferSize) {
-                    val request = StreamingFetchRequest.newBuilder()
-                        .setSubscriptionId(subscriptionId)
-                        .setConsumerName(consumerId)
-                        .addAckIds(recordId)
-                        .build()
+    private val consumerName: String,
+    private val bufferSize: Int
+) {
+    private val lock = ReentrantLock()
+    private val buffer: MutableList<RecordId> = ArrayList(100)
+    private val emitScope = CoroutineScope(Dispatchers.IO)
+
+    fun ack(recordId: RecordId) {
+        lock.withLock {
+            buffer.add(recordId)
+            if (buffer.size >= bufferSize) {
+                val request = StreamingFetchRequest.newBuilder()
+                    .setSubscriptionId(subscriptionId)
+                    .setConsumerName(consumerName)
+                    .addAllAckIds(ArrayList(buffer))
+                    .build()
+                emitScope.launch {
                     ackFlow.emit(request)
-                    buffer.remove(consumerId)
                 }
+                buffer.clear()
             }
         }
     }
+}
 
-    companion object {
-        private const val bufferSize = 100
-        private val lock = Mutex()
-        private val buffer: HashMap<String, MutableList<RecordId>> = HashMap()
-        private val logger = LoggerFactory.getLogger(ResponderImpl::class.java)
+class ResponderImpl(
+    private val ackSender: AckSender,
+    private val recordId: RecordId
+) : Responder {
+    override fun ack() {
+        ackSender.ack(recordId)
     }
 }
