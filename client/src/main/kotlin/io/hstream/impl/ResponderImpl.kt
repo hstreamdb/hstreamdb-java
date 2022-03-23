@@ -3,11 +3,13 @@ package io.hstream.impl
 import io.hstream.Responder
 import io.hstream.internal.RecordId
 import io.hstream.internal.StreamingFetchRequest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.launch
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
+import kotlin.concurrent.withLock
 
 class AckSender(
     private val subscriptionId: String,
@@ -15,9 +17,11 @@ class AckSender(
     private val consumerName: String,
     private val bufferSize: Int
 ) {
-    private val lock = Mutex()
+    private val lock = ReentrantLock()
     private val buffer: MutableList<RecordId> = ArrayList(100)
-    suspend fun ack(recordId: RecordId) {
+    private val emitScope = CoroutineScope(Dispatchers.IO)
+
+    fun ack(recordId: RecordId) {
         lock.withLock {
             buffer.add(recordId)
             if (buffer.size >= bufferSize) {
@@ -26,7 +30,9 @@ class AckSender(
                     .setConsumerName(consumerName)
                     .addAllAckIds(ArrayList(buffer))
                     .build()
-                ackFlow.emit(request)
+                emitScope.launch {
+                    ackFlow.emit(request)
+                }
                 buffer.clear()
             }
         }
@@ -38,8 +44,6 @@ class ResponderImpl(
     private val recordId: RecordId
 ) : Responder {
     override fun ack() {
-        runBlocking {
-            ackSender.ack(recordId)
-        }
+        ackSender.ack(recordId)
     }
 }
