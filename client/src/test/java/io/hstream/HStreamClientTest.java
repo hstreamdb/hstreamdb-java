@@ -33,12 +33,12 @@ public class HStreamClientTest {
     //    client.deleteStream(testStreamName);
   }
 
-  public static ArrayList<RecordId> doProduceAndGatherRid(
+  public static ArrayList<String> doProduceAndGatherRid(
       Producer producer, int payloadSize, int recordsNums) {
-    var rids = new ArrayList<RecordId>();
+    var rids = new ArrayList<String>();
     Random rand = new Random();
     byte[] rRec = new byte[payloadSize];
-    var writes = new ArrayList<CompletableFuture<RecordId>>();
+    var writes = new ArrayList<CompletableFuture<String>>();
     for (int i = 0; i < recordsNums; i++) {
       rand.nextBytes(rRec);
       writes.add(producer.write(rRec));
@@ -112,7 +112,7 @@ public class HStreamClientTest {
     byte[] rawRecord = new byte[100];
     random.nextBytes(rawRecord);
     //    Record record = Record.newBuilder().rawRecord(rawRecord).key("KQ").build();
-    RecordId recordId = producer.write(rawRecord).join();
+    String recordId = producer.write(rawRecord).join();
     logger.info("write record: {}", recordId);
 
     CountDownLatch latch = new CountDownLatch(1);
@@ -142,7 +142,7 @@ public class HStreamClientTest {
     Producer producer = client.newProducer().stream(testStreamName).build();
     HRecord hRecord =
         HRecord.newBuilder().put("key1", 10).put("key2", "hello").put("key3", true).build();
-    RecordId recordId = producer.write(hRecord).join();
+    String recordId = producer.write(hRecord).join();
 
     CountDownLatch countDownLatch = new CountDownLatch(1);
     Consumer consumer =
@@ -206,7 +206,7 @@ public class HStreamClientTest {
             .build();
     Random random = new Random();
     final int count = 100;
-    CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
+    CompletableFuture<String>[] recordIdFutures = new CompletableFuture[count];
 
     Thread thread1 =
         new Thread(
@@ -214,7 +214,7 @@ public class HStreamClientTest {
               for (int i = 0; i < count / 2; ++i) {
                 byte[] rawRecord = new byte[100];
                 random.nextBytes(rawRecord);
-                CompletableFuture<RecordId> future = producer.write(rawRecord);
+                CompletableFuture<String> future = producer.write(rawRecord);
                 recordIdFutures[i] = future;
               }
             });
@@ -225,7 +225,7 @@ public class HStreamClientTest {
               for (int i = count / 2; i < count; ++i) {
                 byte[] rawRecord = new byte[100];
                 random.nextBytes(rawRecord);
-                CompletableFuture<RecordId> future = producer.write(rawRecord);
+                CompletableFuture<String> future = producer.write(rawRecord);
                 recordIdFutures[i] = future;
               }
             });
@@ -282,7 +282,6 @@ public class HStreamClientTest {
             .name("consumer-1")
             .rawRecordReceiver(
                 (receivedRawRecord, responder) -> {
-                  logger.info("consumer-1 recv {}", receivedRawRecord.getRecordId().getBatchId());
                   readCount.incrementAndGet();
                   responder.ack();
                 })
@@ -295,7 +294,6 @@ public class HStreamClientTest {
             .name("consumer-2")
             .rawRecordReceiver(
                 (receivedRawRecord, responder) -> {
-                  logger.info("consumer-2 recv {}", receivedRawRecord.getRecordId().getBatchId());
                   readCount.incrementAndGet();
                   responder.ack();
                 })
@@ -308,7 +306,6 @@ public class HStreamClientTest {
             .name("consumer-3")
             .rawRecordReceiver(
                 (receivedRawRecord, responder) -> {
-                  logger.info("consumer-3 recv {}", receivedRawRecord.getRecordId().getBatchId());
                   readCount.incrementAndGet();
                   responder.ack();
                 })
@@ -491,11 +488,11 @@ public class HStreamClientTest {
             .build();
     Random random = new Random();
     final int count = 42;
-    CompletableFuture<RecordId>[] recordIdFutures = new CompletableFuture[count];
+    CompletableFuture<String>[] recordIdFutures = new CompletableFuture[count];
     for (int i = 0; i < count; ++i) {
       byte[] rawRecord = new byte[100];
       random.nextBytes(rawRecord);
-      CompletableFuture<RecordId> future = producer.write(rawRecord);
+      CompletableFuture<String> future = producer.write(rawRecord);
       recordIdFutures[i] = future;
     }
     for (int i = 0; i < count - 1; ++i) {
