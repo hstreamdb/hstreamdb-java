@@ -463,20 +463,22 @@ public class HStreamClientTest07 {
     Assertions.assertEquals(readResAsSet, writeResAsSet);
 
     // 3. Assert the union of keys all consumers own is equal to all keys
-    HashSet<String> expectedKeys = new HashSet<>();
-    for (int i = 0; i < shardCount; ++i) {
-      expectedKeys.add("key-" + i);
-    }
-
+    HashSet<String> expectedKeys = new HashSet<>(writeRes.keySet());
     Assertions.assertEquals(unionOfKeys, expectedKeys);
+
+    // NOTE: This property is implementation-related and relies on
+    //       certain test environment (all consumers are ready before
+    //       writing).
+    //       The protocol only ensures that a message of a certain key
+    //       is sent to ONLY ONE consumer.
     // 4. Assert the keys any two consumers own is disjoint
-    for (int i = 0; i < consumerCount; ++i) {
-      for (int j = 0; j < i; j++) {
-        HashSet<String> intersection = new HashSet<String>(ownedKeysByConsumers.get(i));
-        intersection.retainAll(ownedKeysByConsumers.get(j));
-        Assertions.assertEquals(intersection, new HashSet<>());
-      }
-    }
+    // for (int i = 0; i < consumerCount; ++i) {
+    //   for (int j = 0; j < i; j++) {
+    //     HashSet<String> intersection = new HashSet<String>(ownedKeysByConsumers.get(i));
+    //     intersection.retainAll(ownedKeysByConsumers.get(j));
+    //     Assertions.assertEquals(intersection, new HashSet<>());
+    //   }
+    // }
   }
 
   @Test
