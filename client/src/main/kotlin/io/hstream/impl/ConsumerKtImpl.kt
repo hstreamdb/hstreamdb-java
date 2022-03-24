@@ -177,7 +177,7 @@ class ConsumerKtImpl(
         Thread {
             logger.info("consumer [{}] is stopping", consumerName)
 
-            ackSender.flush()
+            ackSender.close()
             fetchFuture.cancel(false)
             executorService.shutdown()
             try {

@@ -7,7 +7,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import java.io.Closeable
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
@@ -19,16 +21,22 @@ class AckSender(
     private val consumerName: String,
     private val bufferSize: Int,
     private val ackAgeLimit: Long
-) {
+) : Closeable {
     private val lock = ReentrantLock()
     private val buffer: MutableList<RecordId> = ArrayList(100)
     private val emitScope = CoroutineScope(Dispatchers.IO)
-    private val scheduler = Executors.newScheduledThreadPool(1)
+    private var scheduler: ScheduledExecutorService? = null
+
+    init {
+        if (ackAgeLimit > 0) {
+            scheduler = Executors.newScheduledThreadPool(1)
+        }
+    }
 
     fun ack(recordId: RecordId) {
         lock.withLock {
-            if (buffer.isEmpty() && bufferSize > 1) {
-                scheduler.schedule({ flush() }, ackAgeLimit, TimeUnit.MILLISECONDS)
+            if (ackAgeLimit > 0 && buffer.isEmpty() && bufferSize > 1) {
+                scheduler!!.schedule({ flush() }, ackAgeLimit, TimeUnit.MILLISECONDS)
             }
             buffer.add(recordId)
             if (buffer.size >= bufferSize) {
@@ -52,6 +60,11 @@ class AckSender(
             }
             buffer.clear()
         }
+    }
+
+    override fun close() {
+        flush()
+        scheduler?.shutdown()
     }
 }
 
