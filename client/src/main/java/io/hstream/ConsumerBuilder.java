@@ -13,5 +13,7 @@ public interface ConsumerBuilder {
 
   ConsumerBuilder ackBufferSize(int ackBufferSize);
 
+  ConsumerBuilder ackAgeLimit(long ackAgeLimit);
+
   Consumer build();
 }

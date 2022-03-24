@@ -34,12 +34,13 @@ class ConsumerKtImpl(
     private val subscriptionId: String,
     private val rawRecordReceiver: RawRecordReceiver?,
     private val hRecordReceiver: HRecordReceiver?,
-    private val ackBufferSize: Int
+    private val ackBufferSize: Int,
+    private val ackAgeLimit: Long
 ) : AbstractService(), Consumer {
     private lateinit var fetchFuture: CompletableFuture<Unit>
     private val executorService = Executors.newSingleThreadExecutor()
     private val requestFlow = MutableSharedFlow<StreamingFetchRequest>()
-    private val ackSender = AckSender(subscriptionId, requestFlow, consumerName, ackBufferSize)
+    private val ackSender = AckSender(subscriptionId, requestFlow, consumerName, ackBufferSize, ackAgeLimit)
 
     private suspend fun streamingFetchWithRetry(requestFlow: MutableSharedFlow<StreamingFetchRequest>) {
         // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
@@ -176,6 +177,7 @@ class ConsumerKtImpl(
         Thread {
             logger.info("consumer [{}] is stopping", consumerName)
 
+            ackSender.flush()
             fetchFuture.cancel(false)
             executorService.shutdown()
             try {
