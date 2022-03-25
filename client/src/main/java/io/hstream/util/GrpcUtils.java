@@ -4,19 +4,13 @@ import io.hstream.*;
 
 /**
  * A class of utility functions to convert between the GRPC generated classes and the custom classes
- * e.g. {@link RecordId}, {@link Subscription}, and {@link Stream}
+ * e.g. {@link String}, {@link Subscription}, and {@link Stream}
  */
 public class GrpcUtils {
 
-  public static io.hstream.internal.RecordId recordIdToGrpc(RecordId recordId) {
-    return io.hstream.internal.RecordId.newBuilder()
-        .setBatchId(recordId.getBatchId())
-        .setBatchIndex(recordId.getBatchIndex())
-        .build();
-  }
-
-  public static RecordId recordIdFromGrpc(io.hstream.internal.RecordId recordId) {
-    return new RecordId(recordId.getBatchId(), recordId.getBatchIndex());
+  public static String recordIdFromGrpc(io.hstream.internal.RecordId recordId) {
+    return String.format(
+        "%s-%s-%s", recordId.getBatchIndex(), recordId.getBatchId(), recordId.getShardId());
   }
 
   public static io.hstream.internal.Subscription subscriptionToGrpc(Subscription subscription) {

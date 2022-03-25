@@ -65,7 +65,7 @@ public class TestUtils {
     return records;
   }
 
-  public static RecordId produceIntegerAndGatherRid(Producer producer, int data, String key) {
+  public static String produceIntegerAndGatherRid(Producer producer, int data, String key) {
     Record recordToWrite =
         Record.newBuilder()
             .orderingKey(key)

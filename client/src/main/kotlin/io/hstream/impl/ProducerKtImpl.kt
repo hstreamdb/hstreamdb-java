@@ -7,7 +7,6 @@ import io.hstream.HRecord
 import io.hstream.HStreamDBClientException
 import io.hstream.Producer
 import io.hstream.Record
-import io.hstream.RecordId
 import io.hstream.internal.AppendRequest
 import io.hstream.internal.HStreamApiGrpcKt
 import io.hstream.internal.HStreamRecord
@@ -57,23 +56,23 @@ open class ProducerKtImpl(private val stream: String) : Producer {
         return server
     }
 
-    override fun write(rawRecord: ByteArray): CompletableFuture<RecordId> {
+    override fun write(rawRecord: ByteArray): CompletableFuture<String> {
         val hStreamRecord = RecordUtils.buildHStreamRecordFromRawRecord(rawRecord)
         return writeInternal(hStreamRecord)
     }
 
-    override fun write(hRecord: HRecord): CompletableFuture<RecordId> {
+    override fun write(hRecord: HRecord): CompletableFuture<String> {
         val hStreamRecord = RecordUtils.buildHStreamRecordFromHRecord(hRecord)
         return writeInternal(hStreamRecord)
     }
 
-    override fun write(record: Record): CompletableFuture<RecordId> {
+    override fun write(record: Record): CompletableFuture<String> {
         val hStreamRecord = RecordUtils.buildHStreamRecordFromRecord(record)
         return writeInternal(hStreamRecord)
     }
 
-    protected open fun writeInternal(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
-        val future = CompletableFuture<RecordId>()
+    protected open fun writeInternal(hStreamRecord: HStreamRecord): CompletableFuture<String> {
+        val future = CompletableFuture<String>()
         writeRecordScope.launch {
             try {
                 val ids = writeHStreamRecords(listOf(hStreamRecord), hStreamRecord.header.key)
@@ -90,10 +89,10 @@ open class ProducerKtImpl(private val stream: String) : Producer {
         orderingKey: String,
         tryTimes: Int,
         forceUpdate: Boolean = false
-    ): List<RecordId> {
+    ): List<String> {
         // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
         //       This function is for handling them.
-        suspend fun handleGRPCException(serverUrl: String, e: Throwable): List<RecordId> {
+        suspend fun handleGRPCException(serverUrl: String, e: Throwable): List<String> {
             logger.error("append with serverUrl [{}] error", serverUrl, e)
             val status = Status.fromThrowable(e)
             if (status.code == Status.UNAVAILABLE.code && tryTimes > 1) {
@@ -117,7 +116,7 @@ open class ProducerKtImpl(private val stream: String) : Producer {
         }
     }
 
-    protected suspend fun writeHStreamRecords(hStreamRecords: List<HStreamRecord>, key: String): List<RecordId> {
+    protected suspend fun writeHStreamRecords(hStreamRecords: List<HStreamRecord>, key: String): List<String> {
         val appendRequest = AppendRequest.newBuilder().setStreamName(stream).addAllRecords(hStreamRecords).build()
         return appendWithRetry(appendRequest, key, DefaultSettings.APPEND_RETRY_MAX_TIMES)
     }
