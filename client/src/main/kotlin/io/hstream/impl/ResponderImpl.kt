@@ -1,12 +1,14 @@
 package io.hstream.impl
 
+import io.hstream.HStreamDBClientException
 import io.hstream.Responder
 import io.hstream.internal.RecordId
 import io.hstream.internal.StreamingFetchRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.future.future
 import java.io.Closeable
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -23,18 +25,23 @@ class AckSender(
     private val ackAgeLimit: Long
 ) : Closeable {
     private val lock = ReentrantLock()
-    private val buffer: MutableList<RecordId> = ArrayList(100)
+    private val buffer: MutableList<RecordId> = ArrayList(bufferSize)
     private val emitScope = CoroutineScope(Dispatchers.IO)
     private var scheduler: ScheduledExecutorService? = null
+    @Volatile
+    private var closed: Boolean = false
 
     init {
-        if (ackAgeLimit > 0) {
+        if (ackAgeLimit > 0 && bufferSize > 1) {
             scheduler = Executors.newScheduledThreadPool(1)
         }
     }
 
     fun ack(recordId: RecordId) {
         lock.withLock {
+            if (closed) {
+                throw HStreamDBClientException("ackSender is Closed")
+            }
             if (ackAgeLimit > 0 && buffer.isEmpty() && bufferSize > 1) {
                 scheduler!!.schedule({ flush() }, ackAgeLimit, TimeUnit.MILLISECONDS)
             }
@@ -45,7 +52,9 @@ class AckSender(
         }
     }
 
-    fun flush() {
+    // timeoutMs > 0 ==> sync mode with timeout
+    // timeoutMs <= 0 ==> async mode
+    fun flush(timeoutMs: Long = 0) {
         lock.withLock {
             if (buffer.isEmpty()) {
                 return
@@ -55,16 +64,25 @@ class AckSender(
                 .setConsumerName(consumerName)
                 .addAllAckIds(ArrayList(buffer))
                 .build()
-            emitScope.launch {
+            val future = emitScope.future {
                 ackFlow.emit(request)
+            }
+            if (timeoutMs > 0) {
+                try {
+                    future.get(timeoutMs, TimeUnit.MILLISECONDS)
+                } catch (e: Throwable) {
+                    logger.error("ack failed, ${e.message}")
+                }
             }
             buffer.clear()
         }
     }
 
     override fun close() {
-        flush()
+        closed = true
+        flush(300)
         scheduler?.shutdown()
+        emitScope.cancel()
     }
 }
 
