@@ -47,9 +47,9 @@ public class HStreamClientTest07 {
     byte[] payload = new byte[100];
     random.nextBytes(payload);
     Producer producer = client.newProducer().stream(streamName).build();
-    CompletableFuture<RecordId> future =
+    CompletableFuture<String> future =
         producer.write(Record.newBuilder().orderingKey("k1").rawRecord(payload).build());
-    RecordId recordId = future.join();
+    String recordId = future.join();
     logger.info("write successfully, got recordId: " + recordId.toString());
     client.close();
   }
@@ -71,7 +71,7 @@ public class HStreamClientTest07 {
     Producer producer = client.newProducer().stream(streamName).build();
     int recordCount = 10;
     for (int i = 0; i < recordCount; ++i) {
-      RecordId recordId =
+      String recordId =
           producer
               .write(
                   Record.newBuilder()
@@ -116,7 +116,7 @@ public class HStreamClientTest07 {
     for (int j = 0; j < shardCount; ++j) {
       String orderingKey = "key-" + j;
       for (int i = 0; i < recordCount; ++i) {
-        RecordId recordId =
+        String recordId =
             producer
                 .write(
                     Record.newBuilder()
@@ -161,7 +161,7 @@ public class HStreamClientTest07 {
     for (int j = 0; j < shardCount; ++j) {
       String orderingKey = "key-" + j;
       for (int i = 0; i < recordCount; ++i) {
-        RecordId recordId =
+        String recordId =
             producer
                 .write(
                     Record.newBuilder()
@@ -230,7 +230,7 @@ public class HStreamClientTest07 {
     for (int j = 0; j < shardCount; ++j) {
       String orderingKey = "key-" + j;
       for (int i = 0; i < recordCount; ++i) {
-        RecordId recordId =
+        String recordId =
             producer
                 .write(
                     Record.newBuilder()
@@ -527,7 +527,7 @@ public class HStreamClientTest07 {
             .batchSetting(BatchSetting.newBuilder().recordCountLimit(100).ageLimit(-1).build())
             .build();
     final int count = 100;
-    List<CompletableFuture<RecordId>> fs = new LinkedList<>();
+    List<CompletableFuture<String>> fs = new LinkedList<>();
     List<byte[]> records = new LinkedList<>();
     for (int i = 0; i < count; i++) {
       var r = randBytes();
@@ -536,7 +536,7 @@ public class HStreamClientTest07 {
       fs.add(producer.write(Record.newBuilder().rawRecord(r).orderingKey(key).build()));
     }
     producer.close();
-    Map<String, Map<RecordId, byte[]>> ids = new HashMap<>();
+    Map<String, Map<String, byte[]>> ids = new HashMap<>();
     for (int i = 0; i < 100; i++) {
       logger.debug(
           "write record:{}, id:{}", UUID.nameUUIDFromBytes(records.get(i)), fs.get(i).join());

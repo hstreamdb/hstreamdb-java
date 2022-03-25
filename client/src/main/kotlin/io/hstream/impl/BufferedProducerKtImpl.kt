@@ -4,7 +4,6 @@ import io.hstream.BatchSetting
 import io.hstream.BufferedProducer
 import io.hstream.FlowControlSetting
 import io.hstream.HStreamDBClientException
-import io.hstream.RecordId
 import io.hstream.internal.HStreamRecord
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +20,7 @@ import kotlin.collections.HashMap
 import kotlin.concurrent.withLock
 
 typealias Records = MutableList<HStreamRecord>
-typealias Futures = MutableList<CompletableFuture<RecordId>>
+typealias Futures = MutableList<CompletableFuture<String>>
 
 class BufferedProducerKtImpl(
     stream: String,
@@ -43,7 +42,7 @@ class BufferedProducerKtImpl(
     private val scheduler = Executors.newScheduledThreadPool(1)
     private var timerServices: HashMap<String, ScheduledFuture<*>> = HashMap()
 
-    override fun writeInternal(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
+    override fun writeInternal(hStreamRecord: HStreamRecord): CompletableFuture<String> {
         if (closed) {
             throw HStreamDBClientException("BufferedProducer is closed")
         }
@@ -52,13 +51,13 @@ class BufferedProducerKtImpl(
         return addToBuffer(hStreamRecord)
     }
 
-    private fun addToBuffer(hStreamRecord: HStreamRecord): CompletableFuture<RecordId> {
+    private fun addToBuffer(hStreamRecord: HStreamRecord): CompletableFuture<String> {
         lock.withLock {
             if (closed) {
                 throw HStreamDBClientException("BufferedProducer is closed")
             }
 
-            val recordFuture = CompletableFuture<RecordId>()
+            val recordFuture = CompletableFuture<String>()
             val key = hStreamRecord.header.key
             if (!orderingBuffer.containsKey(key)) {
                 orderingBuffer[key] = LinkedList()
