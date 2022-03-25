@@ -195,8 +195,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">closes the buffered producer, will call flush() first</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#compareTo(io.hstream.RecordId)">compareTo(RecordId)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="io/hstream/Consumer.html" title="interface in io.hstream"><span class="typeNameLink">Consumer</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
 <div class="block">The interface for the HStream consumer.</div>
@@ -245,8 +243,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">E</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.html" title="class in io.hstream">Subscription</a></dt>
@@ -282,10 +278,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/BatchSetting.html#getAgeLimit()">getAgeLimit()</a></span> - Method in class io.hstream.<a href="io/hstream/BatchSetting.html" title="class in io.hstream">BatchSetting</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#getBacklogDuration()">getBacklogDuration()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#getBatchId()">getBatchId()</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#getBatchIndex()">getBatchIndex()</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArray.html#getBoolean(int)">getBoolean(int)</a></span> - Method in class io.hstream.<a href="io/hstream/HArray.html" title="class in io.hstream">HArray</a></dt>
 <dd>&nbsp;</dd>
@@ -370,8 +362,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">A builder for <a href="io/hstream/HArray.html" title="class in io.hstream"><code>HArray</code></a>s.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArrayBuilder.html#%3Cinit%3E()">HArrayBuilder()</a></span> - Constructor for class io.hstream.<a href="io/hstream/HArrayBuilder.html" title="class in io.hstream">HArrayBuilder</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#hashCode()">hashCode()</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#hashCode()">hashCode()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
@@ -569,13 +559,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">An object that represents a received <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format record.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/hstream/ReceivedHRecord.html#%3Cinit%3E(io.hstream.RecordId,io.hstream.RecordHeader,io.hstream.HRecord)">ReceivedHRecord(RecordId, RecordHeader, HRecord)</a></span> - Constructor for class io.hstream.<a href="io/hstream/ReceivedHRecord.html" title="class in io.hstream">ReceivedHRecord</a></dt>
+<dt><span class="memberNameLink"><a href="io/hstream/ReceivedHRecord.html#%3Cinit%3E(java.lang.String,io.hstream.RecordHeader,io.hstream.HRecord)">ReceivedHRecord(String, RecordHeader, HRecord)</a></span> - Constructor for class io.hstream.<a href="io/hstream/ReceivedHRecord.html" title="class in io.hstream">ReceivedHRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/ReceivedRawRecord.html" title="class in io.hstream"><span class="typeNameLink">ReceivedRawRecord</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
 <div class="block">An object that represents a received raw record.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/hstream/ReceivedRawRecord.html#%3Cinit%3E(io.hstream.RecordId,io.hstream.RecordHeader,byte%5B%5D)">ReceivedRawRecord(RecordId, RecordHeader, byte[])</a></span> - Constructor for class io.hstream.<a href="io/hstream/ReceivedRawRecord.html" title="class in io.hstream">ReceivedRawRecord</a></dt>
+<dt><span class="memberNameLink"><a href="io/hstream/ReceivedRawRecord.html#%3Cinit%3E(java.lang.String,io.hstream.RecordHeader,byte%5B%5D)">ReceivedRawRecord(String, RecordHeader, byte[])</a></span> - Constructor for class io.hstream.<a href="io/hstream/ReceivedRawRecord.html" title="class in io.hstream">ReceivedRawRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/Record.html" title="class in io.hstream"><span class="typeNameLink">Record</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>&nbsp;</dd>
@@ -586,12 +576,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="io/hstream/RecordHeader.html" title="class in io.hstream"><span class="typeNameLink">RecordHeader</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/RecordHeader.Builder.html" title="class in io.hstream"><span class="typeNameLink">RecordHeader.Builder</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/hstream/RecordId.html" title="class in io.hstream"><span class="typeNameLink">RecordId</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
-<dd>
-<div class="block">An object represents the id of received record.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#%3Cinit%3E(long,int)">RecordId(long, int)</a></span> - Constructor for class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/Responder.html" title="interface in io.hstream"><span class="typeNameLink">Responder</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
@@ -610,10 +594,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClientBuilder.html#serviceUrl(java.lang.String)">serviceUrl(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#setBacklogDuration(int)">setBacklogDuration(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#setBatchId(long)">setBatchId(long)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#setBatchIndex(int)">setBatchIndex(int)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Record.html#setOrderingKey(java.lang.String)">setOrderingKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Record.html" title="class in io.hstream">Record</a></dt>
 <dd>&nbsp;</dd>
@@ -660,8 +640,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#toByteString()">toByteString()</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#toString()">toString()</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordId.html#toString()">toString()</a></span> - Method in class io.hstream.<a href="io/hstream/RecordId.html" title="class in io.hstream">RecordId</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a id="I:W">
