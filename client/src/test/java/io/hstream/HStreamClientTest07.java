@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -44,9 +47,9 @@ public class HStreamClientTest07 {
     byte[] payload = new byte[100];
     random.nextBytes(payload);
     Producer producer = client.newProducer().stream(streamName).build();
-    CompletableFuture<RecordId> future =
+    CompletableFuture<String> future =
         producer.write(Record.newBuilder().orderingKey("k1").rawRecord(payload).build());
-    RecordId recordId = future.join();
+    String recordId = future.join();
     logger.info("write successfully, got recordId: " + recordId.toString());
     client.close();
   }
@@ -68,7 +71,7 @@ public class HStreamClientTest07 {
     Producer producer = client.newProducer().stream(streamName).build();
     int recordCount = 10;
     for (int i = 0; i < recordCount; ++i) {
-      RecordId recordId =
+      String recordId =
           producer
               .write(
                   Record.newBuilder()
@@ -113,7 +116,7 @@ public class HStreamClientTest07 {
     for (int j = 0; j < shardCount; ++j) {
       String orderingKey = "key-" + j;
       for (int i = 0; i < recordCount; ++i) {
-        RecordId recordId =
+        String recordId =
             producer
                 .write(
                     Record.newBuilder()
@@ -158,7 +161,7 @@ public class HStreamClientTest07 {
     for (int j = 0; j < shardCount; ++j) {
       String orderingKey = "key-" + j;
       for (int i = 0; i < recordCount; ++i) {
-        RecordId recordId =
+        String recordId =
             producer
                 .write(
                     Record.newBuilder()
@@ -227,7 +230,7 @@ public class HStreamClientTest07 {
     for (int j = 0; j < shardCount; ++j) {
       String orderingKey = "key-" + j;
       for (int i = 0; i < recordCount; ++i) {
-        RecordId recordId =
+        String recordId =
             producer
                 .write(
                     Record.newBuilder()
@@ -460,20 +463,22 @@ public class HStreamClientTest07 {
     Assertions.assertEquals(readResAsSet, writeResAsSet);
 
     // 3. Assert the union of keys all consumers own is equal to all keys
-    HashSet<String> expectedKeys = new HashSet<>();
-    for (int i = 0; i < shardCount; ++i) {
-      expectedKeys.add("key-" + i);
-    }
-
+    HashSet<String> expectedKeys = new HashSet<>(writeRes.keySet());
     Assertions.assertEquals(unionOfKeys, expectedKeys);
+
+    // NOTE: This property is implementation-related and relies on
+    //       certain test environment (all consumers are ready before
+    //       writing).
+    //       The protocol only ensures that a message of a certain key
+    //       is sent to ONLY ONE consumer.
     // 4. Assert the keys any two consumers own is disjoint
-    for (int i = 0; i < consumerCount; ++i) {
-      for (int j = 0; j < i; j++) {
-        HashSet<String> intersection = new HashSet<String>(ownedKeysByConsumers.get(i));
-        intersection.retainAll(ownedKeysByConsumers.get(j));
-        Assertions.assertEquals(intersection, new HashSet<>());
-      }
-    }
+    // for (int i = 0; i < consumerCount; ++i) {
+    //   for (int j = 0; j < i; j++) {
+    //     HashSet<String> intersection = new HashSet<String>(ownedKeysByConsumers.get(i));
+    //     intersection.retainAll(ownedKeysByConsumers.get(j));
+    //     Assertions.assertEquals(intersection, new HashSet<>());
+    //   }
+    // }
   }
 
   @Test
@@ -483,8 +488,7 @@ public class HStreamClientTest07 {
     var testSubscriptionId = randSubscription(client, streamName);
     BufferedProducer producer =
         client.newBufferedProducer().stream(streamName)
-            .recordCountLimit(100)
-            .flushIntervalMs(100)
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(5).build())
             .build();
     final int count = 10;
     doProduce(producer, 100, count / 2, "K1");
@@ -513,5 +517,70 @@ public class HStreamClientTest07 {
 
     latch.await();
     consumer.stopAsync().awaitTerminated();
+  }
+
+  @Test
+  public void testWriteOrderWithDiffKeys() throws Exception {
+    HStreamClient client = HStreamClient.builder().serviceUrl(serviceUrl).build();
+    var streamName = randStream(client);
+    var testSubscriptionId = randSubscription(client, streamName);
+    BufferedProducer producer =
+        client.newBufferedProducer().stream(streamName)
+            .batchSetting(BatchSetting.newBuilder().recordCountLimit(100).ageLimit(-1).build())
+            .build();
+    final int count = 100;
+    List<CompletableFuture<String>> fs = new LinkedList<>();
+    List<byte[]> records = new LinkedList<>();
+    for (int i = 0; i < count; i++) {
+      var r = randBytes();
+      records.add(r);
+      String key = i % 2 == 0 ? "k1" : "k2";
+      fs.add(producer.write(Record.newBuilder().rawRecord(r).orderingKey(key).build()));
+    }
+    producer.close();
+    Map<String, Map<String, byte[]>> ids = new HashMap<>();
+    for (int i = 0; i < 100; i++) {
+      logger.debug(
+          "write record:{}, id:{}", UUID.nameUUIDFromBytes(records.get(i)), fs.get(i).join());
+      String key = i % 2 == 0 ? "k1" : "k2";
+      if (i < 2) {
+        ids.put(key, new HashMap<>());
+      }
+      ids.get(key).put(fs.get(i).join(), records.get(i));
+    }
+
+    logger.info("producer finish");
+
+    CountDownLatch latch = new CountDownLatch(1);
+    AtomicInteger index = new AtomicInteger();
+    List<ReceivedRawRecord> rawRecords = new ArrayList<>();
+    Consumer consumer =
+        client
+            .newConsumer()
+            .subscription(testSubscriptionId)
+            .rawRecordReceiver(
+                (receivedRawRecord, responder) -> {
+                  rawRecords.add(receivedRawRecord);
+                  responder.ack();
+                  index.incrementAndGet();
+                  if (index.get() == count) {
+                    latch.countDown();
+                  }
+                })
+            .build();
+    consumer.startAsync().awaitRunning();
+
+    latch.await();
+    consumer.stopAsync().awaitTerminated();
+
+    for (ReceivedRawRecord r : rawRecords) {
+      logger.debug(
+          "l:{}, r:{}",
+          UUID.nameUUIDFromBytes(r.getRawRecord()),
+          UUID.nameUUIDFromBytes(ids.get(r.getHeader().getOrderingKey()).get(r.getRecordId())));
+      Assertions.assertEquals(
+          UUID.nameUUIDFromBytes(r.getRawRecord()),
+          UUID.nameUUIDFromBytes(ids.get(r.getHeader().getOrderingKey()).get(r.getRecordId())));
+    }
   }
 }

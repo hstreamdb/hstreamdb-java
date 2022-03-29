@@ -3,14 +3,12 @@ package io.hstream.util;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
-import com.google.protobuf.util.JsonFormat;
 import io.hstream.*;
 import io.hstream.Record;
 import io.hstream.impl.DefaultSettings;
 import io.hstream.internal.HStreamRecord;
 import io.hstream.internal.HStreamRecordHeader;
 import io.hstream.internal.ReceivedRecord;
-import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,21 +29,13 @@ public class RecordUtils {
   }
 
   public static HStreamRecord buildHStreamRecordFromHRecord(HRecord hRecord) {
-    try {
-      HStreamRecordHeader header =
-          HStreamRecordHeader.newBuilder()
-              .setFlag(HStreamRecordHeader.Flag.JSON)
-              .setKey(DefaultSettings.DEFAULT_ORDERING_KEY)
-              .build();
-      String json = JsonFormat.printer().print(hRecord.getDelegate());
-      logger.debug("hrecord to json: {}", json);
-      return HStreamRecord.newBuilder()
-          .setHeader(header)
-          .setPayload(ByteString.copyFrom(json, StandardCharsets.UTF_8))
-          .build();
-    } catch (InvalidProtocolBufferException e) {
-      throw new HStreamDBClientException.InvalidRecordException("hrecord to json error", e);
-    }
+    HStreamRecordHeader header =
+        HStreamRecordHeader.newBuilder()
+            .setFlag(HStreamRecordHeader.Flag.JSON)
+            .setKey(DefaultSettings.DEFAULT_ORDERING_KEY)
+            .build();
+
+    return HStreamRecord.newBuilder().setHeader(header).setPayload(hRecord.toByteString()).build();
   }
 
   public static HStreamRecord buildHStreamRecordFromRecord(Record record) {
@@ -71,6 +61,10 @@ public class RecordUtils {
     return hStreamRecord.getPayload().toByteArray();
   }
 
+  public static RecordHeader parseRecordHeaderFromHStreamRecord(HStreamRecord hStreamRecord) {
+    return RecordHeader.newBuild().orderingKey(hStreamRecord.getHeader().getKey()).build();
+  }
+
   public static HRecord parseHRecordFromHStreamRecord(HStreamRecord hStreamRecord) {
     HStreamRecordHeader.Flag flag = hStreamRecord.getHeader().getFlag();
     if (!flag.equals(HStreamRecordHeader.Flag.JSON)) {
@@ -79,11 +73,7 @@ public class RecordUtils {
     }
 
     try {
-      String json = hStreamRecord.getPayload().toStringUtf8();
-      logger.debug("get json payload: {}", json);
-      Struct.Builder structBuilder = Struct.newBuilder();
-      JsonFormat.parser().merge(json, structBuilder);
-      Struct struct = structBuilder.build();
+      Struct struct = Struct.parseFrom(hStreamRecord.getPayload());
       return new HRecord(struct);
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("construct hrecord error", e);

@@ -16,7 +16,7 @@ plugins {
 }
 
 group = "io.hstream"
-version = "0.7.1-SNAPSHOT"
+version = "0.8.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -36,9 +36,9 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
     // grpc
-    implementation("io.grpc:grpc-netty-shaded:1.38.0")
-    implementation("io.grpc:grpc-protobuf:1.38.0")
-    implementation("io.grpc:grpc-stub:1.38.0")
+    implementation("io.grpc:grpc-netty-shaded:1.45.0")
+    implementation("io.grpc:grpc-protobuf:1.45.0")
+    implementation("io.grpc:grpc-stub:1.45.0")
     compileOnly("org.apache.tomcat:annotations-api:6.0.53") // necessary for java 9+
 
     implementation("com.google.protobuf:protobuf-java-util:3.17.3")
@@ -67,14 +67,14 @@ tasks.test {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.12.0"
+        artifact = "com.google.protobuf:protoc:3.19.2"
     }
     plugins {
         id("grpc") {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.38.0"
+            artifact = "io.grpc:protoc-gen-grpc-java:1.45.0"
         }
         id("grpckt") {
-            artifact = "io.grpc:protoc-gen-grpc-kotlin:1.2.0:jdk7@jar"
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:1.2.1:jdk7@jar"
         }
     }
     generateProtoTasks {

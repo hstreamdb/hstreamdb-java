@@ -23,7 +23,7 @@ public interface HStreamClient extends AutoCloseable {
   QueryerBuilder newQueryer();
 
   /**
-   * Create a new stream with 3 replicas.
+   * Create a new stream with 1 replicas.
    *
    * @param stream the name of stream
    */
@@ -32,9 +32,19 @@ public interface HStreamClient extends AutoCloseable {
   /**
    * Create a new stream.
    *
-   * @param stream the name of stream
+   * @param stream the name of the stream
+   * @param replicationFactor replication factor of the stream
    */
   void createStream(String stream, short replicationFactor);
+
+  /**
+   * Create a new stream.
+   *
+   * @param stream the name of the stream
+   * @param replicationFactor replication factor of the stream
+   * @param backlogDuration backlog duration(in seconds) of the stream
+   */
+  void createStream(String stream, short replicationFactor, int backlogDuration);
 
   /**
    * Delete the specified stream with streamName.

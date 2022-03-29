@@ -39,6 +39,10 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
         return unaryCallCoroutine(clusterServerUrls, channelProvider, call)
     }
 
+    fun getCoroutineStub(url: String): HStreamApiGrpcKt.HStreamApiCoroutineStub {
+        return HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(url))
+    }
+
     init {
         logger.info("client init with bootstrapServerUrls [{}]", bootstrapServerUrls)
         val describeClusterResponse = unaryCallWithCurrentUrls(
@@ -81,6 +85,10 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     }
 
     override fun createStream(stream: String?, replicationFactor: Short) {
+        createStream(stream, replicationFactor, 3600 * 24)
+    }
+
+    override fun createStream(stream: String?, replicationFactor: Short, backlogDuration: Int) {
         checkNotNull(stream)
         check(replicationFactor in 1..15)
 
@@ -89,7 +97,8 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
                 GrpcUtils.streamToGrpc(
                     Stream(
                         stream,
-                        replicationFactor.toInt()
+                        replicationFactor.toInt(),
+                        backlogDuration
                     )
                 )
             )

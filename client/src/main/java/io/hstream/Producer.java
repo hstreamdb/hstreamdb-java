@@ -9,25 +9,25 @@ public interface Producer {
    * Write a raw record.
    *
    * @param rawRecord raw format record
-   * @return the {@link RecordId} wrapped in a {@link CompletableFuture}
+   * @return the {@link String} wrapped in a {@link CompletableFuture}
    */
   @Deprecated
-  CompletableFuture<RecordId> write(byte[] rawRecord);
+  CompletableFuture<String> write(byte[] rawRecord);
 
   /**
    * Write a {@link HRecord}.
    *
    * @param hRecord {@link HRecord}
-   * @return the {@link RecordId} wrapped in a {@link CompletableFuture}
+   * @return the {@link String} wrapped in a {@link CompletableFuture}
    */
   @Deprecated
-  CompletableFuture<RecordId> write(HRecord hRecord);
+  CompletableFuture<String> write(HRecord hRecord);
 
   /**
    * Write a {@link Record}.
    *
    * @param record {@link Record}
-   * @return the {@link RecordId} wrapped in a {@link CompletableFuture}
+   * @return the {@link String} wrapped in a {@link CompletableFuture}
    */
-  CompletableFuture<RecordId> write(Record record);
+  CompletableFuture<String> write(Record record);
 }

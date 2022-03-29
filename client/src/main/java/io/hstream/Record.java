@@ -29,6 +29,10 @@ public class Record {
     return orderingKey;
   }
 
+  public void setOrderingKey(String orderingKey) {
+    this.orderingKey = orderingKey;
+  }
+
   public byte[] getRawRecord() {
     checkArgument(isRawRecord);
     return rawRecord;
