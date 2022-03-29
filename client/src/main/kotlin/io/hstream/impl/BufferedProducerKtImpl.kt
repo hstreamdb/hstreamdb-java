@@ -23,10 +23,11 @@ typealias Records = MutableList<HStreamRecord>
 typealias Futures = MutableList<CompletableFuture<String>>
 
 class BufferedProducerKtImpl(
+    client: HStreamClientKtImpl,
     stream: String,
     private val batchSetting: BatchSetting,
     private val flowControlSetting: FlowControlSetting,
-) : ProducerKtImpl(stream), BufferedProducer {
+) : ProducerKtImpl(client, stream), BufferedProducer {
     private var lock = ReentrantLock()
     private var orderingBuffer: HashMap<String, Records> = HashMap()
     private var orderingFutures: HashMap<String, Futures> = HashMap()

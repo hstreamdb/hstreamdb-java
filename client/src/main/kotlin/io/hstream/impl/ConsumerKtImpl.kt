@@ -11,7 +11,6 @@ import io.hstream.HStreamDBClientException
 import io.hstream.RawRecordReceiver
 import io.hstream.ReceivedHRecord
 import io.hstream.ReceivedRawRecord
-import io.hstream.internal.HStreamApiGrpcKt
 import io.hstream.internal.HStreamRecord
 import io.hstream.internal.LookupSubscriptionRequest
 import io.hstream.internal.ReceivedRecord
@@ -30,6 +29,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class ConsumerKtImpl(
+    private val client: HStreamClientKtImpl,
     private val consumerName: String,
     private val subscriptionId: String,
     private val rawRecordReceiver: RawRecordReceiver?,
@@ -66,7 +66,7 @@ class ConsumerKtImpl(
         if (!isRunning) return
         val server = lookupSubscription()
         logger.debug("lookupSubscription, received:[$server]")
-        val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(server))
+        val stub = client.getCoroutineStub(server)
         try {
             // send an empty ack request to trigger streamingFetch.
             val initRequest = StreamingFetchRequest.newBuilder()
@@ -95,7 +95,7 @@ class ConsumerKtImpl(
     }
 
     private suspend fun lookupSubscription(): String {
-        return HStreamClientKtImpl.unaryCallCoroutine {
+        return client.unaryCallCoroutine {
             val serverNode = it.lookupSubscription(
                 LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()
             ).serverNode
