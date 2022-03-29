@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -150,7 +150,32 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#enableTls()">enableTls</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#enableTlsAuthentication()">enableTlsAuthentication</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#serviceUrl(java.lang.String)">serviceUrl</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;serviceUrl)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#tlsCaPath(java.lang.String)">tlsCaPath</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;caPath)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#tlsCertPath(java.lang.String)">tlsCertPath</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;certPath)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#tlsKeyPath(java.lang.String)">tlsKeyPath</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;keyPath)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -177,6 +202,51 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>serviceUrl</h4>
 <pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;serviceUrl&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;serviceUrl)</pre>
+</li>
+</ul>
+<a id="enableTls()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>enableTls</h4>
+<pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;enableTls()</pre>
+</li>
+</ul>
+<a id="tlsCaPath(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>tlsCaPath</h4>
+<pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;tlsCaPath&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;caPath)</pre>
+</li>
+</ul>
+<a id="enableTlsAuthentication()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>enableTlsAuthentication</h4>
+<pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;enableTlsAuthentication()</pre>
+</li>
+</ul>
+<a id="tlsKeyPath(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>tlsKeyPath</h4>
+<pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;tlsKeyPath&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;keyPath)</pre>
+</li>
+</ul>
+<a id="tlsCertPath(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>tlsCertPath</h4>
+<pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;tlsCertPath&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;certPath)</pre>
 </li>
 </ul>
 <a id="build()">
