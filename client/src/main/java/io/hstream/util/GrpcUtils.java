@@ -32,6 +32,7 @@ public class GrpcUtils {
     return io.hstream.internal.Stream.newBuilder()
         .setStreamName(stream.getStreamName())
         .setReplicationFactor(stream.getReplicationFactor())
+        .setBacklogDuration(stream.getBacklogDuration())
         .build();
   }
 

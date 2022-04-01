@@ -10,12 +10,17 @@ import java.util.UUID;
 
 public class ConsumerBuilderImpl implements ConsumerBuilder {
 
+  private final HStreamClientKtImpl client;
   private String name;
   private String subscription;
   private RawRecordReceiver rawRecordReceiver;
   private HRecordReceiver hRecordReceiver;
   private int ackBufferSize = 100;
   private long ackAgeLimit = 100;
+
+  public ConsumerBuilderImpl(HStreamClientKtImpl client) {
+    this.client = client;
+  }
 
   @Override
   public ConsumerBuilder name(String name) {
@@ -65,6 +70,6 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
       ackBufferSize = 1;
     }
     return new ConsumerKtImpl(
-        name, subscription, rawRecordReceiver, hRecordReceiver, ackBufferSize, ackAgeLimit);
+        client, name, subscription, rawRecordReceiver, hRecordReceiver, ackBufferSize, ackAgeLimit);
   }
 }

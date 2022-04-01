@@ -7,9 +7,14 @@ import io.hstream.FlowControlSetting;
 
 public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
 
+  private HStreamClientKtImpl client;
   private String streamName;
   private BatchSetting batchSetting = new BatchSetting();
   private FlowControlSetting flowControlSetting = new FlowControlSetting();
+
+  public BufferedProducerBuilderImpl(HStreamClientKtImpl client) {
+    this.client = client;
+  }
 
   @Override
   public BufferedProducerBuilder stream(String streamName) {
@@ -31,6 +36,6 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
 
   @Override
   public BufferedProducer build() {
-    return new BufferedProducerKtImpl(streamName, batchSetting, flowControlSetting);
+    return new BufferedProducerKtImpl(client, streamName, batchSetting, flowControlSetting);
   }
 }

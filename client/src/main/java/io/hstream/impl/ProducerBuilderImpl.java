@@ -7,7 +7,12 @@ import io.hstream.ProducerBuilder;
 
 public class ProducerBuilderImpl implements ProducerBuilder {
 
+  private final HStreamClientKtImpl client;
   private String streamName;
+
+  public ProducerBuilderImpl(HStreamClientKtImpl client) {
+    this.client = client;
+  }
 
   @Override
   public ProducerBuilder stream(String streamName) {
@@ -18,6 +23,6 @@ public class ProducerBuilderImpl implements ProducerBuilder {
   @Override
   public Producer build() {
     checkNotNull(streamName);
-    return new ProducerKtImpl(streamName);
+    return new ProducerKtImpl(client, streamName);
   }
 }

@@ -5,5 +5,15 @@ public interface HStreamClientBuilder {
 
   HStreamClientBuilder serviceUrl(String serviceUrl);
 
+  HStreamClientBuilder enableTls();
+
+  HStreamClientBuilder tlsCaPath(String caPath);
+
+  HStreamClientBuilder enableTlsAuthentication();
+
+  HStreamClientBuilder tlsKeyPath(String keyPath);
+
+  HStreamClientBuilder tlsCertPath(String certPath);
+
   HStreamClient build();
 }

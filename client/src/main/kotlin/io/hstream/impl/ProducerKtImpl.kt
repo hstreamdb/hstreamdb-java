@@ -8,7 +8,6 @@ import io.hstream.HStreamDBClientException
 import io.hstream.Producer
 import io.hstream.Record
 import io.hstream.internal.AppendRequest
-import io.hstream.internal.HStreamApiGrpcKt
 import io.hstream.internal.HStreamRecord
 import io.hstream.internal.LookupStreamRequest
 import io.hstream.util.GrpcUtils
@@ -23,7 +22,7 @@ import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import kotlin.collections.HashMap
 
-open class ProducerKtImpl(private val stream: String) : Producer {
+open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val stream: String) : Producer {
     private val serverUrls: HashMap<String, String> = HashMap()
     private val serverUrlsLock: Mutex = Mutex()
 
@@ -45,7 +44,7 @@ open class ProducerKtImpl(private val stream: String) : Producer {
             .setStreamName(stream)
             .setOrderingKey(orderingKey)
             .build()
-        val server = HStreamClientKtImpl.unaryCallCoroutine {
+        val server = client.unaryCallCoroutine {
             val serverNode = it.lookupStream(req).serverNode
             return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
         }
@@ -107,7 +106,7 @@ open class ProducerKtImpl(private val stream: String) : Producer {
         val serverUrl = lookupServerUrl(orderingKey, forceUpdate)
         logger.info("try append with serverUrl [{}], current left tryTimes is [{}]", serverUrl, tryTimes)
         try {
-            return HStreamApiGrpcKt.HStreamApiCoroutineStub(HStreamClientKtImpl.channelProvider.get(serverUrl))
+            return client.getCoroutineStub(serverUrl)
                 .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
         } catch (e: StatusException) {
             return handleGRPCException(serverUrl, e)
