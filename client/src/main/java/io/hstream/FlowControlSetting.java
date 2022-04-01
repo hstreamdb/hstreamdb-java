@@ -2,7 +2,7 @@ package io.hstream;
 
 public class FlowControlSetting {
 
-  private int bytesLimit = 1048576;
+  private int bytesLimit = 104857600;
 
   public FlowControlSetting() {}
 
@@ -20,6 +20,13 @@ public class FlowControlSetting {
 
     public Builder() {}
 
+    /**
+     * Optional, the default value is 100MB, total bytes limit, including buffered batch records and
+     * sending records, the value should be greater than keys size * batchSetting.bytesLimit
+     *
+     * @param bytesLimit total bytes limit
+     * @return the FlowControlSetting Builder instance
+     */
     public Builder bytesLimit(int bytesLimit) {
       this.bytesLimit = bytesLimit;
       return Builder.this;
