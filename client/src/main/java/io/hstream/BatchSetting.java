@@ -32,24 +32,39 @@ public class BatchSetting {
 
     public Builder() {}
 
-    /** @param recordCountLimit optional, default: 100, it MUST be greater than 0 */
+    /**
+     * @param recordCountLimit optional, default: 100, disabled if recordCountLimit {@literal <=} 0
+     * @return the {@link BatchSetting.Builder} instance
+     */
     public Builder recordCountLimit(int recordCountLimit) {
       this.recordCountLimit = recordCountLimit;
       return Builder.this;
     }
 
-    /** @param bytesLimit optional, default: 4096(Bytes), disabled if bytesLimit {@literal <=} 0 */
+    /**
+     * @param bytesLimit optional, default: 4096(Bytes), disabled if bytesLimit {@literal <=} 0
+     * @return the {@link BatchSetting.Builder} instance
+     */
     public Builder bytesLimit(int bytesLimit) {
       this.bytesLimit = bytesLimit;
       return Builder.this;
     }
 
-    /** @param ageLimit optional, default: 100(ms), disabled if ageLimit {@literal <=} 0 */
+    /**
+     * @param ageLimit optional, default: 100(ms), disabled if ageLimit {@literal <=} 0
+     * @return the {@link BatchSetting.Builder} instance
+     */
     public Builder ageLimit(long ageLimit) {
       this.ageLimit = ageLimit;
       return Builder.this;
     }
 
+    /**
+     * There should exist more than one enabled option, otherwise throws a {@link
+     * HStreamDBClientException} exception.
+     *
+     * @return the {@link BatchSetting} instance
+     */
     public BatchSetting build() {
       if (recordCountLimit < 1 && bytesLimit < 1 && ageLimit < 1) {
         throw new HStreamDBClientException(
