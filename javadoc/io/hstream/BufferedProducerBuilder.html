@@ -146,7 +146,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#batchSetting(io.hstream.BatchSetting)">batchSetting</a></span>&#8203;(<a href="BatchSetting.html" title="class in io.hstream">BatchSetting</a>&nbsp;batchSetting)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">BufferedProducer will buffer records for each ordering key as a batch to send to servers, so
+ <a href="BatchSetting.html" title="class in io.hstream"><code>BatchSetting</code></a> is to control the batch buffer.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="BufferedProducer.html" title="interface in io.hstream">BufferedProducer</a></code></td>
@@ -156,7 +159,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#flowControlSetting(io.hstream.FlowControlSetting)">flowControlSetting</a></span>&#8203;(<a href="FlowControlSetting.html" title="class in io.hstream">FlowControlSetting</a>&nbsp;flowControlSetting)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><a href="FlowControlSetting.html" title="class in io.hstream"><code>FlowControlSetting</code></a> is to control total records(including buffered batch records for all
+ keys and sending records) through <a href="BufferedProducer.html" title="interface in io.hstream"><code>BufferedProducer</code></a>.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></code></td>
@@ -196,6 +202,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>batchSetting</h4>
 <pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;batchSetting&#8203;(<a href="BatchSetting.html" title="class in io.hstream">BatchSetting</a>&nbsp;batchSetting)</pre>
+<div class="block">BufferedProducer will buffer records for each ordering key as a batch to send to servers, so
+ <a href="BatchSetting.html" title="class in io.hstream"><code>BatchSetting</code></a> is to control the batch buffer.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>batchSetting</code> - setting for batch buffer</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the BufferedProducerBuilder instance</dd>
+</dl>
 </li>
 </ul>
 <a id="flowControlSetting(io.hstream.FlowControlSetting)">
@@ -205,6 +219,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>flowControlSetting</h4>
 <pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;flowControlSetting&#8203;(<a href="FlowControlSetting.html" title="class in io.hstream">FlowControlSetting</a>&nbsp;flowControlSetting)</pre>
+<div class="block"><a href="FlowControlSetting.html" title="class in io.hstream"><code>FlowControlSetting</code></a> is to control total records(including buffered batch records for all
+ keys and sending records) through <a href="BufferedProducer.html" title="interface in io.hstream"><code>BufferedProducer</code></a>.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>flowControlSetting</code> - setting for flow control</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the BufferedProducerBuilder instance</dd>
+</dl>
 </li>
 </ul>
 <a id="build()">

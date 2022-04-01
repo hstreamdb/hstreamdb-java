@@ -146,7 +146,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ackBufferSize(int)">ackBufferSize</a></span>&#8203;(int&nbsp;ackBufferSize)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">When <a href="Responder.html" title="interface in io.hstream"><code>Responder</code></a>.ack() is called, the consumer will not send it to servers immediately,
+ the ack request will be buffered until the ack count reaches ackBufferSize or the consumer is
+ stopping.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="Consumer.html" title="interface in io.hstream">Consumer</a></code></td>
@@ -156,22 +160,32 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hRecordReceiver(io.hstream.HRecordReceiver)">hRecordReceiver</a></span>&#8203;(<a href="HRecordReceiver.html" title="interface in io.hstream">HRecordReceiver</a>&nbsp;hRecordReceiver)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Same as rawRecordReceiver except receiving HRecord instead of raw record.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#name(java.lang.String)">name</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Optional, if not provided, the ConsumerBuilder will generate a unique name.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rawRecordReceiver(io.hstream.RawRecordReceiver)">rawRecordReceiver</a></span>&#8203;(<a href="RawRecordReceiver.html" title="interface in io.hstream">RawRecordReceiver</a>&nbsp;rawRecordReceiver)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Optional, when the consumer receives raw records, rawRecordReceiver is executed sequentially
+ for each record, if rawRecordReceiver throws an exception, the consumer will ignore it and
+ consume the next record.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#subscription(java.lang.String)">subscription</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;subscription)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Positional</div>
+</td>
 </tr>
 </table>
 </li>
@@ -197,6 +211,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>name</h4>
 <pre class="methodSignature"><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a>&nbsp;name&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name)</pre>
+<div class="block">Optional, if not provided, the ConsumerBuilder will generate a unique name.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>name</code> - consumer name</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the ConsumerBuilder instance</dd>
+</dl>
 </li>
 </ul>
 <a id="subscription(java.lang.String)">
@@ -206,6 +227,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>subscription</h4>
 <pre class="methodSignature"><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a>&nbsp;subscription&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;subscription)</pre>
+<div class="block">Positional</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>subscription</code> - subscription name</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the ConsumerBuilder instance</dd>
+</dl>
 </li>
 </ul>
 <a id="rawRecordReceiver(io.hstream.RawRecordReceiver)">
@@ -215,6 +243,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>rawRecordReceiver</h4>
 <pre class="methodSignature"><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a>&nbsp;rawRecordReceiver&#8203;(<a href="RawRecordReceiver.html" title="interface in io.hstream">RawRecordReceiver</a>&nbsp;rawRecordReceiver)</pre>
+<div class="block">Optional, when the consumer receives raw records, rawRecordReceiver is executed sequentially
+ for each record, if rawRecordReceiver throws an exception, the consumer will ignore it and
+ consume the next record.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>rawRecordReceiver</code> - raw record receiver</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the ConsumerBuilder instance</dd>
+</dl>
 </li>
 </ul>
 <a id="hRecordReceiver(io.hstream.HRecordReceiver)">
@@ -224,6 +261,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>hRecordReceiver</h4>
 <pre class="methodSignature"><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a>&nbsp;hRecordReceiver&#8203;(<a href="HRecordReceiver.html" title="interface in io.hstream">HRecordReceiver</a>&nbsp;hRecordReceiver)</pre>
+<div class="block">Same as rawRecordReceiver except receiving HRecord instead of raw record.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>hRecordReceiver</code> - HRecord receiver</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the ConsumerBuilder instance</dd>
+</dl>
 </li>
 </ul>
 <a id="ackBufferSize(int)">
@@ -233,6 +277,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>ackBufferSize</h4>
 <pre class="methodSignature"><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a>&nbsp;ackBufferSize&#8203;(int&nbsp;ackBufferSize)</pre>
+<div class="block">When <a href="Responder.html" title="interface in io.hstream"><code>Responder</code></a>.ack() is called, the consumer will not send it to servers immediately,
+ the ack request will be buffered until the ack count reaches ackBufferSize or the consumer is
+ stopping.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>ackBufferSize</code> - ack buffer size</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the ConsumerBuilder instance</dd>
+</dl>
 </li>
 </ul>
 <a id="build()">

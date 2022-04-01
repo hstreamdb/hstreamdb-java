@@ -151,32 +151,45 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#enableTls()">enableTls</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Optional, Enable TLS, it requires the tlsCaPath option.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#enableTlsAuthentication()">enableTlsAuthentication</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Optional, enable authentication based on TLS, it requires tlsKeyPath and tlsCertPath options.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#serviceUrl(java.lang.String)">serviceUrl</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;serviceUrl)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Positional, serviceUrl is the bootstrap service url, when <a href="HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a> builds
+ an <a href="HStreamClient.html" title="interface in io.hstream"><code>HStreamClient</code></a>, it will lookup and set the real cluster service to <a href="HStreamClient.html" title="interface in io.hstream"><code>HStreamClient</code></a> urls through serviceUrl.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#tlsCaPath(java.lang.String)">tlsCaPath</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;caPath)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Optional if enableTls is not set.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#tlsCertPath(java.lang.String)">tlsCertPath</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;certPath)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Optional if enableTlsAuthentication() is not set</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#tlsKeyPath(java.lang.String)">tlsKeyPath</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;keyPath)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Optional if enableTlsAuthentication() is not set</div>
+</td>
 </tr>
 </table>
 </li>
@@ -202,6 +215,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>serviceUrl</h4>
 <pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;serviceUrl&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;serviceUrl)</pre>
+<div class="block">Positional, serviceUrl is the bootstrap service url, when <a href="HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a> builds
+ an <a href="HStreamClient.html" title="interface in io.hstream"><code>HStreamClient</code></a>, it will lookup and set the real cluster service to <a href="HStreamClient.html" title="interface in io.hstream"><code>HStreamClient</code></a> urls through serviceUrl.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>serviceUrl</code> - the bootstrap service url</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <a href="HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a> instance</dd>
+</dl>
 </li>
 </ul>
 <a id="enableTls()">
@@ -211,6 +232,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>enableTls</h4>
 <pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;enableTls()</pre>
+<div class="block">Optional, Enable TLS, it requires the tlsCaPath option.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <a href="HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a> instance</dd>
+</dl>
 </li>
 </ul>
 <a id="tlsCaPath(java.lang.String)">
@@ -220,6 +246,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>tlsCaPath</h4>
 <pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;tlsCaPath&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;caPath)</pre>
+<div class="block">Optional if enableTls is not set.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>caPath</code> - the CA certificate file path</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <a href="HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a> instance</dd>
+</dl>
 </li>
 </ul>
 <a id="enableTlsAuthentication()">
@@ -229,6 +262,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>enableTlsAuthentication</h4>
 <pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;enableTlsAuthentication()</pre>
+<div class="block">Optional, enable authentication based on TLS, it requires tlsKeyPath and tlsCertPath options.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <a href="HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a> instance</dd>
+</dl>
 </li>
 </ul>
 <a id="tlsKeyPath(java.lang.String)">
@@ -238,6 +276,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>tlsKeyPath</h4>
 <pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;tlsKeyPath&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;keyPath)</pre>
+<div class="block">Optional if enableTlsAuthentication() is not set</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>keyPath</code> - the pk8 format key file path</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <a href="HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a> instance</dd>
+</dl>
 </li>
 </ul>
 <a id="tlsCertPath(java.lang.String)">
@@ -247,6 +292,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>tlsCertPath</h4>
 <pre class="methodSignature"><a href="HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a>&nbsp;tlsCertPath&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;certPath)</pre>
+<div class="block">Optional if enableTlsAuthentication() is not set</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>certPath</code> - the certificate file path</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <a href="HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a> instance</dd>
+</dl>
 </li>
 </ul>
 <a id="build()">

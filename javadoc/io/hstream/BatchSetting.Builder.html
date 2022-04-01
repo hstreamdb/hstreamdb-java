@@ -184,7 +184,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="BatchSetting.html" title="class in io.hstream">BatchSetting</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#build()">build</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">There should exist more than one enabled option, otherwise throws a <a href="HStreamDBClientException.html" title="class in io.hstream"><code>HStreamDBClientException</code></a> exception.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="BatchSetting.Builder.html" title="class in io.hstream">BatchSetting.Builder</a></code></td>
@@ -248,7 +250,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;<a href="BatchSetting.Builder.html" title="class in io.hstream">BatchSetting.Builder</a>&nbsp;recordCountLimit&#8203;(int&nbsp;recordCountLimit)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>recordCountLimit</code> - optional, default: 100, it MUST be greater than 0</dd>
+<dd><code>recordCountLimit</code> - optional, default: 100, disabled if recordCountLimit &lt;= 0</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <a href="BatchSetting.Builder.html" title="class in io.hstream"><code>BatchSetting.Builder</code></a> instance</dd>
 </dl>
 </li>
 </ul>
@@ -262,6 +266,8 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>bytesLimit</code> - optional, default: 4096(Bytes), disabled if bytesLimit &lt;= 0</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <a href="BatchSetting.Builder.html" title="class in io.hstream"><code>BatchSetting.Builder</code></a> instance</dd>
 </dl>
 </li>
 </ul>
@@ -275,6 +281,8 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>ageLimit</code> - optional, default: 100(ms), disabled if ageLimit &lt;= 0</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <a href="BatchSetting.Builder.html" title="class in io.hstream"><code>BatchSetting.Builder</code></a> instance</dd>
 </dl>
 </li>
 </ul>
@@ -285,6 +293,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>build</h4>
 <pre class="methodSignature">public&nbsp;<a href="BatchSetting.html" title="class in io.hstream">BatchSetting</a>&nbsp;build()</pre>
+<div class="block">There should exist more than one enabled option, otherwise throws a <a href="HStreamDBClientException.html" title="class in io.hstream"><code>HStreamDBClientException</code></a> exception.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <a href="BatchSetting.html" title="class in io.hstream"><code>BatchSetting</code></a> instance</dd>
+</dl>
 </li>
 </ul>
 </li>

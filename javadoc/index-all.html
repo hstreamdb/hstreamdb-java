@@ -100,7 +100,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Acknowledges that the message has been successfully processed.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ConsumerBuilder.html#ackBufferSize(int)">ackBufferSize(int)</a></span> - Method in interface io.hstream.<a href="io/hstream/ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">When <a href="io/hstream/Responder.html" title="interface in io.hstream"><code>Responder</code></a>.ack() is called, the consumer will not send it to servers immediately,
+ the ack request will be buffered until the ack count reaches ackBufferSize or the consumer is
+ stopping.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.Builder.html#ackTimeoutSeconds(int)">ackTimeoutSeconds(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArrayBuilder.html#add(boolean)">add(boolean)</a></span> - Method in class io.hstream.<a href="io/hstream/HArrayBuilder.html" title="class in io.hstream">HArrayBuilder</a></dt>
@@ -126,7 +130,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">B</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/BufferedProducerBuilder.html#batchSetting(io.hstream.BatchSetting)">batchSetting(BatchSetting)</a></span> - Method in interface io.hstream.<a href="io/hstream/BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">BufferedProducer will buffer records for each ordering key as a batch to send to servers, so
+ <a href="io/hstream/BatchSetting.html" title="class in io.hstream"><code>BatchSetting</code></a> is to control the batch buffer.</div>
+</dd>
 <dt><a href="io/hstream/BatchSetting.html" title="class in io.hstream"><span class="typeNameLink">BatchSetting</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/BatchSetting.html#%3Cinit%3E()">BatchSetting()</a></span> - Constructor for class io.hstream.<a href="io/hstream/BatchSetting.html" title="class in io.hstream">BatchSetting</a></dt>
@@ -144,7 +151,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">A builder for <a href="io/hstream/BufferedProducer.html" title="interface in io.hstream"><code>BufferedProducer</code></a>s.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/BatchSetting.Builder.html#build()">build()</a></span> - Method in class io.hstream.<a href="io/hstream/BatchSetting.Builder.html" title="class in io.hstream">BatchSetting.Builder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">There should exist more than one enabled option, otherwise throws a <a href="io/hstream/HStreamDBClientException.html" title="class in io.hstream"><code>HStreamDBClientException</code></a> exception.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/BufferedProducerBuilder.html#build()">build()</a></span> - Method in interface io.hstream.<a href="io/hstream/BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ConsumerBuilder.html#build()">build()</a></span> - Method in interface io.hstream.<a href="io/hstream/ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></dt>
@@ -184,7 +193,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/BatchSetting.Builder.html#bytesLimit(int)">bytesLimit(int)</a></span> - Method in class io.hstream.<a href="io/hstream/BatchSetting.Builder.html" title="class in io.hstream">BatchSetting.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/FlowControlSetting.Builder.html#bytesLimit(int)">bytesLimit(int)</a></span> - Method in class io.hstream.<a href="io/hstream/FlowControlSetting.Builder.html" title="class in io.hstream">FlowControlSetting.Builder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Optional, the default value is 100MB, total bytes limit, including buffered batch records and
+ sending records, the value should be greater than keys size * batchSetting.bytesLimit</div>
+</dd>
 </dl>
 <a id="I:C">
 <!--   -->
@@ -244,9 +256,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">E</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClientBuilder.html#enableTls()">enableTls()</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Optional, Enable TLS, it requires the tlsCaPath option.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClientBuilder.html#enableTlsAuthentication()">enableTlsAuthentication()</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Optional, enable authentication based on TLS, it requires tlsKeyPath and tlsCertPath options.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.html" title="class in io.hstream">Subscription</a></dt>
@@ -258,7 +274,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">F</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/BufferedProducerBuilder.html#flowControlSetting(io.hstream.FlowControlSetting)">flowControlSetting(FlowControlSetting)</a></span> - Method in interface io.hstream.<a href="io/hstream/BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block"><a href="io/hstream/FlowControlSetting.html" title="class in io.hstream"><code>FlowControlSetting</code></a> is to control total records(including buffered batch records for all
+ keys and sending records) through <a href="io/hstream/BufferedProducer.html" title="interface in io.hstream"><code>BufferedProducer</code></a>.</div>
+</dd>
 <dt><a href="io/hstream/FlowControlSetting.html" title="class in io.hstream"><span class="typeNameLink">FlowControlSetting</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/FlowControlSetting.html#%3Cinit%3E()">FlowControlSetting()</a></span> - Constructor for class io.hstream.<a href="io/hstream/FlowControlSetting.html" title="class in io.hstream">FlowControlSetting</a></dt>
@@ -386,7 +405,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/HRecordBuilder.html#%3Cinit%3E()">HRecordBuilder()</a></span> - Constructor for class io.hstream.<a href="io/hstream/HRecordBuilder.html" title="class in io.hstream">HRecordBuilder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ConsumerBuilder.html#hRecordReceiver(io.hstream.HRecordReceiver)">hRecordReceiver(HRecordReceiver)</a></span> - Method in interface io.hstream.<a href="io/hstream/ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Same as rawRecordReceiver except receiving HRecord instead of raw record.</div>
+</dd>
 <dt><a href="io/hstream/HRecordReceiver.html" title="interface in io.hstream"><span class="typeNameLink">HRecordReceiver</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
 <div class="block">This interface can be implemented by users of <a href="io/hstream/Consumer.html" title="interface in io.hstream"><code>Consumer</code></a> to receive <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a>s.</div>
@@ -450,7 +471,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">N</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/ConsumerBuilder.html#name(java.lang.String)">name(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Optional, if not provided, the ConsumerBuilder will generate a unique name.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#newBufferedProducer()">newBufferedProducer()</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordHeader.html#newBuild()">newBuild()</a></span> - Static method in class io.hstream.<a href="io/hstream/RecordHeader.html" title="class in io.hstream">RecordHeader</a></dt>
@@ -515,7 +538,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><a href="io/hstream/Producer.html" title="interface in io.hstream"><span class="typeNameLink">Producer</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
-<div class="block">The interface for the HStream producer.</div>
+<div class="block">The interface for the HStream producer, all of methods are thread-safe</div>
 </dd>
 <dt><a href="io/hstream/ProducerBuilder.html" title="interface in io.hstream"><span class="typeNameLink">ProducerBuilder</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
@@ -554,7 +577,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/Record.Builder.html#rawRecord(byte%5B%5D)">rawRecord(byte[])</a></span> - Method in class io.hstream.<a href="io/hstream/Record.Builder.html" title="class in io.hstream">Record.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ConsumerBuilder.html#rawRecordReceiver(io.hstream.RawRecordReceiver)">rawRecordReceiver(RawRecordReceiver)</a></span> - Method in interface io.hstream.<a href="io/hstream/ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Optional, when the consumer receives raw records, rawRecordReceiver is executed sequentially
+ for each record, if rawRecordReceiver throws an exception, the consumer will ignore it and
+ consume the next record.</div>
+</dd>
 <dt><a href="io/hstream/RawRecordReceiver.html" title="interface in io.hstream"><span class="typeNameLink">RawRecordReceiver</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
 <div class="block">This interface can be implemented by users of <a href="io/hstream/Consumer.html" title="interface in io.hstream"><code>Consumer</code></a> to receive raw records.</div>
@@ -596,7 +623,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">S</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClientBuilder.html#serviceUrl(java.lang.String)">serviceUrl(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Positional, serviceUrl is the bootstrap service url, when <a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream"><code>HStreamClientBuilder</code></a> builds
+ an <a href="io/hstream/HStreamClient.html" title="interface in io.hstream"><code>HStreamClient</code></a>, it will lookup and set the real cluster service to <a href="io/hstream/HStreamClient.html" title="interface in io.hstream"><code>HStreamClient</code></a> urls through serviceUrl.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#setBacklogDuration(int)">setBacklogDuration(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Record.html#setOrderingKey(java.lang.String)">setOrderingKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Record.html" title="class in io.hstream">Record</a></dt>
@@ -628,7 +658,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamDBClientException.SubscribeException.html#%3Cinit%3E(java.lang.String,java.lang.Throwable)">SubscribeException(String, Throwable)</a></span> - Constructor for exception io.hstream.<a href="io/hstream/HStreamDBClientException.SubscribeException.html" title="class in io.hstream">HStreamDBClientException.SubscribeException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ConsumerBuilder.html#subscription(java.lang.String)">subscription(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Positional</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.Builder.html#subscription(java.lang.String)">subscription(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/Subscription.html" title="class in io.hstream"><span class="typeNameLink">Subscription</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
@@ -642,11 +674,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">T</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClientBuilder.html#tlsCaPath(java.lang.String)">tlsCaPath(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Optional if enableTls is not set.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClientBuilder.html#tlsCertPath(java.lang.String)">tlsCertPath(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Optional if enableTlsAuthentication() is not set</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClientBuilder.html#tlsKeyPath(java.lang.String)">tlsKeyPath(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClientBuilder.html" title="interface in io.hstream">HStreamClientBuilder</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Optional if enableTlsAuthentication() is not set</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#toByteString()">toByteString()</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#toString()">toString()</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
