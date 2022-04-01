@@ -16,6 +16,7 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
   private RawRecordReceiver rawRecordReceiver;
   private HRecordReceiver hRecordReceiver;
   private int ackBufferSize = 100;
+  private long ackAgeLimit = 100;
 
   public ConsumerBuilderImpl(HStreamClientKtImpl client) {
     this.client = client;
@@ -52,6 +53,12 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
   }
 
   @Override
+  public ConsumerBuilder ackAgeLimit(long ackAgeLimit) {
+    this.ackAgeLimit = ackAgeLimit;
+    return this;
+  }
+
+  @Override
   public Consumer build() {
     checkNotNull(subscription);
     checkState(rawRecordReceiver != null || hRecordReceiver != null);
@@ -63,6 +70,6 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
       ackBufferSize = 1;
     }
     return new ConsumerKtImpl(
-        client, name, subscription, rawRecordReceiver, hRecordReceiver, ackBufferSize);
+        client, name, subscription, rawRecordReceiver, hRecordReceiver, ackBufferSize, ackAgeLimit);
   }
 }
