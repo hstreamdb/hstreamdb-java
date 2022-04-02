@@ -48,7 +48,14 @@ class BufferedProducerKtImpl(
             throw HStreamDBClientException("BufferedProducer is closed")
         }
 
-        flowController?.acquire(hStreamRecord.payload.size())
+        val waiter: BytesWaiter?
+        lock.withLock {
+            waiter = flowController?.acquire(hStreamRecord.payload.size())
+            if (waiter != null && batchSetting.ageLimit <= 0 && orderingJobs.filter { entry -> !entry.value.isCompleted }.isEmpty()) {
+                flush()
+            }
+        }
+        waiter?.await()
         return addToBuffer(hStreamRecord)
     }
 
@@ -144,10 +151,6 @@ class BufferedProducerKtImpl(
         private val lock: ReentrantLock = ReentrantLock(true)
         private val waitingList: LinkedList<BytesWaiter> = LinkedList()
 
-        fun acquire(bytes: Int) {
-            acquireInner(bytes)?.await()
-        }
-
         fun release(bytes: Int) {
             lock.withLock {
                 var availableBytes = bytes
@@ -171,7 +174,7 @@ class BufferedProducerKtImpl(
             }
         }
 
-        private fun acquireInner(bytes: Int): BytesWaiter? {
+        fun acquire(bytes: Int): BytesWaiter? {
             lock.withLock {
                 return if (bytes <= leftBytes) {
                     leftBytes -= bytes
