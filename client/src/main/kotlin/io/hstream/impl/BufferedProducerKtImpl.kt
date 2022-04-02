@@ -152,8 +152,10 @@ class BufferedProducerKtImpl(
             lock.withLock {
                 var availableBytes = bytes
                 while (!waitingList.isEmpty() && availableBytes > 0) {
-                    val bytesWaiter = waitingList.removeFirst()
-                    availableBytes = bytesWaiter.fill(availableBytes)
+                    availableBytes = waitingList.first.fill(availableBytes)
+                    if (availableBytes >= 0) {
+                        waitingList.removeFirst()
+                    }
                 }
 
                 if (availableBytes > 0) {
@@ -207,7 +209,7 @@ class BufferedProducerKtImpl(
                     bytes - neededBytes
                 } else {
                     neededBytes -= bytes
-                    0
+                    -1
                 }
             }
         }
