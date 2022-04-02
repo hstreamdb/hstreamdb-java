@@ -4,6 +4,7 @@ import io.hstream.BatchSetting;
 import io.hstream.BufferedProducer;
 import io.hstream.BufferedProducerBuilder;
 import io.hstream.FlowControlSetting;
+import io.hstream.HStreamDBClientException;
 
 public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
 
@@ -36,6 +37,17 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
 
   @Override
   public BufferedProducer build() {
+    if (streamName == null) {
+      throw new HStreamDBClientException("Positional option:[stream] is not set");
+    }
+    var batchBytes = batchSetting.getBytesLimit();
+    var flowBytes = flowControlSetting.getBytesLimit();
+    if (batchBytes > 0 && flowBytes > 0 && batchBytes > flowBytes) {
+      throw new HStreamDBClientException(
+          String.format(
+              "BatchSetting.ageLimit:[%d] should not be greater than flowControlSetting.bytesLimit:[%d]",
+              batchBytes, flowBytes));
+    }
     return new BufferedProducerKtImpl(client, streamName, batchSetting, flowControlSetting);
   }
 }
