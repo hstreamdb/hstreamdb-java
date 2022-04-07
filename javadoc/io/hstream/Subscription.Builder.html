@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -188,10 +188,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stream(java.lang.String)">stream</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamName)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maxUnackedRecords(int)">maxUnackedRecords</a></span>&#8203;(int&nbsp;maxUnackedRecords)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#stream(java.lang.String)">stream</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamName)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#subscription(java.lang.String)">subscription</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;subscriptionId)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -264,6 +269,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>ackTimeoutSeconds</h4>
 <pre class="methodSignature">public&nbsp;<a href="Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a>&nbsp;ackTimeoutSeconds&#8203;(int&nbsp;ackTimeoutSeconds)</pre>
+</li>
+</ul>
+<a id="maxUnackedRecords(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>maxUnackedRecords</h4>
+<pre class="methodSignature">public&nbsp;<a href="Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a>&nbsp;maxUnackedRecords&#8203;(int&nbsp;maxUnackedRecords)</pre>
 </li>
 </ul>
 <a id="build()">
