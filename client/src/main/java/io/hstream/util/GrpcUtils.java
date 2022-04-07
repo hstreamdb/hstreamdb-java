@@ -18,6 +18,7 @@ public class GrpcUtils {
         .setSubscriptionId(subscription.getSubscriptionId())
         .setStreamName(subscription.getStreamName())
         .setAckTimeoutSeconds(subscription.getAckTimeoutSeconds())
+        .setMaxUnackedRecords(subscription.getMaxUnackedRecords())
         .build();
   }
 
