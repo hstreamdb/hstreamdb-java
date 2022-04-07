@@ -63,6 +63,7 @@ message Subscription {
   string subscriptionId = 1;
   string streamName = 2;
   int32 ackTimeoutSeconds = 3;
+  int32 maxUnackedRecords = 4;
 }
 
 message SubscribeRequest {
