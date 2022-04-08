@@ -11,7 +11,7 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
   private HStreamClientKtImpl client;
   private String streamName;
   private BatchSetting batchSetting = BatchSetting.newBuilder().build();
-  private FlowControlSetting flowControlSetting = new FlowControlSetting();
+  private FlowControlSetting flowControlSetting = FlowControlSetting.newBuilder().build();
 
   public BufferedProducerBuilderImpl(HStreamClientKtImpl client) {
     this.client = client;
