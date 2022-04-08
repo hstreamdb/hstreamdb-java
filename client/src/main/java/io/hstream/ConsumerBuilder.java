@@ -47,6 +47,12 @@ public interface ConsumerBuilder {
    */
   ConsumerBuilder ackBufferSize(int ackBufferSize);
 
+  /**
+   * Optional, default: 100(ms), the value should be less than Subscription.ackTimeoutSeconds.
+   *
+   * @param ackAgeLimit the ack age limit(Milliseconds)
+   * @return the ConsumerBuilder instance
+   */
   ConsumerBuilder ackAgeLimit(long ackAgeLimit);
 
   Consumer build();

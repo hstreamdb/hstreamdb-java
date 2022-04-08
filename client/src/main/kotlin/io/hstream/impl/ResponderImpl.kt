@@ -12,6 +12,7 @@ import kotlinx.coroutines.future.future
 import java.io.Closeable
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
@@ -30,10 +31,11 @@ class AckSender(
     private var scheduler: ScheduledExecutorService? = null
     @Volatile
     private var closed: Boolean = false
+    private var pendingFlushFuture: ScheduledFuture<*>? = null
 
     init {
         if (ackAgeLimit > 0 && bufferSize > 1) {
-            scheduler = Executors.newScheduledThreadPool(1)
+            scheduler = Executors.newSingleThreadScheduledExecutor()
         }
     }
 
@@ -43,11 +45,12 @@ class AckSender(
                 throw HStreamDBClientException("ackSender is Closed")
             }
             if (ackAgeLimit > 0 && buffer.isEmpty() && bufferSize > 1) {
-                scheduler!!.schedule({ flush() }, ackAgeLimit, TimeUnit.MILLISECONDS)
+                pendingFlushFuture = scheduler!!.schedule({ flush() }, ackAgeLimit, TimeUnit.MILLISECONDS)
             }
             buffer.add(recordId)
             if (buffer.size >= bufferSize) {
                 flush()
+                pendingFlushFuture?.cancel(true)
             }
         }
     }
