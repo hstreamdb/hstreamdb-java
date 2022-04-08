@@ -2,11 +2,9 @@ package io.hstream;
 
 public class BatchSetting {
 
-  private int recordCountLimit = 100;
-  private int bytesLimit = 4096;
-  private long ageLimit = 100;
-
-  public BatchSetting() {}
+  private int recordCountLimit;
+  private int bytesLimit;
+  private long ageLimit;
 
   public int getRecordCountLimit() {
     return recordCountLimit;
@@ -74,7 +72,7 @@ public class BatchSetting {
     }
   }
 
-  public BatchSetting(Builder builder) {
+  private BatchSetting(Builder builder) {
     this.recordCountLimit = builder.recordCountLimit;
     this.bytesLimit = builder.bytesLimit;
     this.ageLimit = builder.ageLimit;

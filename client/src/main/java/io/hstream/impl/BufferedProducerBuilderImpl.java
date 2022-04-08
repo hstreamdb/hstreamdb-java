@@ -10,7 +10,7 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
 
   private HStreamClientKtImpl client;
   private String streamName;
-  private BatchSetting batchSetting = new BatchSetting();
+  private BatchSetting batchSetting = BatchSetting.newBuilder().build();
   private FlowControlSetting flowControlSetting = new FlowControlSetting();
 
   public BufferedProducerBuilderImpl(HStreamClientKtImpl client) {
