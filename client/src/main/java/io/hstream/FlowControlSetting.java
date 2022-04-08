@@ -1,10 +1,10 @@
 package io.hstream;
 
+import static com.google.common.base.Preconditions.*;
+
 public class FlowControlSetting {
 
-  private int bytesLimit = 104857600;
-
-  public FlowControlSetting() {}
+  private int bytesLimit;
 
   public int getBytesLimit() {
     return bytesLimit;
@@ -16,7 +16,7 @@ public class FlowControlSetting {
 
   public static class Builder {
 
-    private int bytesLimit;
+    private int bytesLimit = 104857600;
 
     public Builder() {}
 
@@ -33,12 +33,12 @@ public class FlowControlSetting {
     }
 
     public FlowControlSetting build() {
-
+      checkState(bytesLimit > 0);
       return new FlowControlSetting(this);
     }
   }
 
-  public FlowControlSetting(Builder builder) {
+  private FlowControlSetting(Builder builder) {
     this.bytesLimit = builder.bytesLimit;
   }
 }
