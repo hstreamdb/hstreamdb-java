@@ -106,7 +106,6 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     }
 
     override fun deleteStream(stream: String?) {
-
         val deleteStreamRequest = DeleteStreamRequest.newBuilder().setStreamName(stream).build()
         unaryCallBlocked { it.deleteStream(deleteStreamRequest) }
     }
@@ -127,8 +126,11 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
             )
         }
     }
-
     override fun deleteSubscription(subscriptionId: String?) {
+        deleteSubscription(subscriptionId, false)
+    }
+
+    override fun deleteSubscription(subscriptionId: String?, forced: Boolean) {
         return runBlocking {
             val serverUrl = lookupSubscriptionServerUrl(subscriptionId)
             HStreamApiGrpcKt.HStreamApiCoroutineStub(
@@ -136,7 +138,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
                     serverUrl
                 )
             ).deleteSubscription(
-                DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()
+                DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).setForced(forced).build()
             )
         }
     }

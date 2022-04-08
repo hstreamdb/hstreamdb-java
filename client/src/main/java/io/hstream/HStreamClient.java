@@ -80,4 +80,12 @@ public interface HStreamClient extends AutoCloseable {
    * @param subscriptionId the id of the subscription to be deleted
    */
   void deleteSubscription(String subscriptionId);
+
+  /**
+   * Delete the specified subscription with subscriptionId.
+   *
+   * @param subscriptionId the id of the subscription to be deleted
+   * @param forced the flag whether to enable forced deletion
+   */
+  void deleteSubscription(String subscriptionId, boolean forced);
 }
