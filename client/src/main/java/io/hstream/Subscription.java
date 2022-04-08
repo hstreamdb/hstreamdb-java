@@ -62,8 +62,7 @@ public class Subscription {
     private String subscriptionId;
     private String streamName;
     private int ackTimeoutSeconds = 600;
-    // private int maxUnackedRecords = 10000;
-    private int maxUnackedRecords = 1;
+    private int maxUnackedRecords = 10000;
 
     public Builder subscription(String subscriptionId) {
       this.subscriptionId = subscriptionId;
