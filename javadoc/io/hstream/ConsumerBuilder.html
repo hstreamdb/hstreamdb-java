@@ -146,7 +146,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ackAgeLimit(long)">ackAgeLimit</a></span>&#8203;(long&nbsp;ackAgeLimit)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Optional, default: 100(ms), the value should be less than Subscription.ackTimeoutSeconds.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
@@ -300,6 +302,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>ackAgeLimit</h4>
 <pre class="methodSignature"><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a>&nbsp;ackAgeLimit&#8203;(long&nbsp;ackAgeLimit)</pre>
+<div class="block">Optional, default: 100(ms), the value should be less than Subscription.ackTimeoutSeconds.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>ackAgeLimit</code> - the ack age limit(Milliseconds)</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the ConsumerBuilder instance</dd>
+</dl>
 </li>
 </ul>
 <a id="build()">
