@@ -26,9 +26,9 @@ public class BatchSetting {
 
   public static class Builder {
 
-    private int recordCountLimit;
-    private int bytesLimit;
-    private long ageLimit;
+    private int recordCountLimit = 100;
+    private int bytesLimit = 4096;
+    private long ageLimit = 100;
 
     public Builder() {}
 
