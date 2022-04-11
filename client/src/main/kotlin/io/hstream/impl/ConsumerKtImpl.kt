@@ -18,6 +18,7 @@ import io.hstream.internal.StreamingFetchRequest
 import io.hstream.internal.StreamingFetchResponse
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,7 +28,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import java.util.concurrent.CancellationException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
