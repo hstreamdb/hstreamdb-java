@@ -42,3 +42,23 @@ jobs:
           name: logs-artifact
           path: |
             client/build/reports
+
+      - name: fetch integration tests source code
+        uses: actions/checkout@v2
+        with:
+          repository: "hstreamdb/integration-tests"
+          path: integration-tests
+
+      - name: run integration tests
+        run: |
+          cd integration-tests
+          ./gradlew test --info --fail-fast -Dtag='basicTest'
+
+      - uses: actions/upload-artifact@v2
+        if: ${{ success() }} || ${{ failure() }}
+        with:
+          name: integration-tests-reports
+          path: |
+            integration-tests/.logs
+            integration-tests/app/build/reports
+          retention-days: 7
