@@ -43,6 +43,9 @@ jobs:
           path: |
             client/build/reports
 
+      - name: Clean test env
+        run: script/cleanup-test-env.sh
+
       - name: fetch integration tests source code
         uses: actions/checkout@v2
         with:
