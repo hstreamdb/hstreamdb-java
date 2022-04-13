@@ -106,7 +106,11 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     }
 
     override fun deleteStream(stream: String?) {
-        val deleteStreamRequest = DeleteStreamRequest.newBuilder().setStreamName(stream).build()
+        deleteStream(stream, false)
+    }
+
+    override fun deleteStream(stream: String?, force: Boolean) {
+        val deleteStreamRequest = DeleteStreamRequest.newBuilder().setStreamName(stream).setForce(force).build()
         unaryCallBlocked { it.deleteStream(deleteStreamRequest) }
     }
 
