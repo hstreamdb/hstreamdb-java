@@ -152,7 +152,7 @@ message RecordId {
 
 message DeleteSubscriptionRequest {
   string subscriptionId = 1;
-  bool forced = 2;
+  bool force = 2;
 }
 
 message ListSubscriptionsResponse {

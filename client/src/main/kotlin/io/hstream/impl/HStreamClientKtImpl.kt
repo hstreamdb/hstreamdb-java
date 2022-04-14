@@ -134,7 +134,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
         deleteSubscription(subscriptionId, false)
     }
 
-    override fun deleteSubscription(subscriptionId: String?, forced: Boolean) {
+    override fun deleteSubscription(subscriptionId: String?, force: Boolean) {
         return runBlocking {
             val serverUrl = lookupSubscriptionServerUrl(subscriptionId)
             HStreamApiGrpcKt.HStreamApiCoroutineStub(
@@ -142,7 +142,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
                     serverUrl
                 )
             ).deleteSubscription(
-                DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).setForced(forced).build()
+                DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).setForce(force).build()
             )
         }
     }
