@@ -57,9 +57,9 @@ public interface HStreamClient extends AutoCloseable {
    * Delete the specified stream with streamName.
    *
    * @param stream the name of stream
-   * @param forced the flag whether to enable forced deletion
+   * @param force the flag whether to enable force deletion
    */
-  void deleteStream(String stream, boolean forced);
+  void deleteStream(String stream, boolean force);
 
   /**
    * List all streams.
@@ -93,7 +93,7 @@ public interface HStreamClient extends AutoCloseable {
    * Delete the specified subscription with subscriptionId.
    *
    * @param subscriptionId the id of the subscription to be deleted
-   * @param forced the flag whether to enable forced deletion
+   * @param force the flag whether to enable force deletion
    */
-  void deleteSubscription(String subscriptionId, boolean forced);
+  void deleteSubscription(String subscriptionId, boolean force);
 }
