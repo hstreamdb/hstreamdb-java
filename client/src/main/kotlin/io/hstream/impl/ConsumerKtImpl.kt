@@ -62,6 +62,8 @@ class ConsumerKtImpl(
             if (status.code == Status.UNAVAILABLE.code) {
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
                 streamingFetchWithRetry(requestFlow)
+            } else if (status.code == Status.CANCELLED.code) {
+                logger.info("grpc streamingFetch is canceled")
             } else {
                 logger.error("streamingFetch failed")
                 notifyFailed(HStreamDBClientException(e))
