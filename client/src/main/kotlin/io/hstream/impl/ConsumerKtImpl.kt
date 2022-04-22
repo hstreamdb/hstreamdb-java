@@ -18,13 +18,16 @@ import io.hstream.internal.StreamingFetchRequest
 import io.hstream.internal.StreamingFetchResponse
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -37,7 +40,8 @@ class ConsumerKtImpl(
     private val ackBufferSize: Int,
     private val ackAgeLimit: Long
 ) : AbstractService(), Consumer {
-    private lateinit var fetchFuture: CompletableFuture<Unit>
+    private val fetchScope = CoroutineScope(Dispatchers.IO)
+    private lateinit var fetchJob: Job
     private val executorService = Executors.newSingleThreadExecutor()
     private val requestFlow = MutableSharedFlow<StreamingFetchRequest>()
     private val ackSender = AckSender(subscriptionId, requestFlow, consumerName, ackBufferSize, ackAgeLimit)
@@ -92,6 +96,11 @@ class ConsumerKtImpl(
             handleGRPCException(e)
         } catch (e: StatusRuntimeException) {
             handleGRPCException(e)
+        } catch (e: CancellationException) {
+            logger.info("streamingFetch is canceled")
+        } catch (e: Throwable) {
+            logger.info("streaming fetch failed, {}", e)
+            notifyFailed(HStreamDBClientException(e))
         }
     }
 
@@ -160,10 +169,8 @@ class ConsumerKtImpl(
             try {
                 logger.info("consumer [{}] is starting", consumerName)
                 notifyStarted()
-                fetchFuture = (futureForIO { streamingFetchWithRetry(requestFlow) }).handle { _, err ->
-                    if (err != null) {
-                        notifyFailed(HStreamDBClientException(err))
-                    }
+                fetchJob = fetchScope.launch {
+                    streamingFetchWithRetry(requestFlow)
                 }
                 logger.info("consumer [{}] is started", consumerName)
             } catch (e: Exception) {
@@ -178,7 +185,7 @@ class ConsumerKtImpl(
             logger.info("consumer [{}] is stopping", consumerName)
 
             ackSender.close()
-            fetchFuture.cancel(false)
+            fetchJob.cancel()
             executorService.shutdown()
             try {
                 executorService.awaitTermination(30, TimeUnit.SECONDS)
