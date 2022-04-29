@@ -1,3 +1,2 @@
 rootProject.name = 'hstreamdb-java'
 include 'client'
-include 'examples'
