@@ -2,7 +2,7 @@
 
 ![Build Status](https://github.com/hstreamdb/hstreamdb-java/actions/workflows/main.yml/badge.svg)
 [![Maven Central](https://img.shields.io/maven-central/v/io.hstream/hstreamdb-java)](https://search.maven.org/artifact/io.hstream/hstreamdb-java)
-[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.7.1/javadoc.svg)](https://javadoc.io/doc/io.hstream/hstreamdb-java/0.7.1)
+[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.8.0/javadoc.svg)](https://javadoc.io/doc/io.hstream/hstreamdb-java/0.8.0)
 [![Snapshot Artifacts](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.hstream/hstreamdb-java.svg)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/hstream/hstreamdb-java/0.8.0-SNAPSHOT/)
 [![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.8.0-SNAPSHOT/javadoc.svg)](https://hstreamdb.github.io/hstreamdb-java/javadoc/)
 
@@ -10,7 +10,7 @@ This is the official Java client library for [HStreamDB](https://hstream.io/).
 
 **Please use the latest released version.**
 
-**The latest release is v0.7.1, which requires hstream server v0.7.0 .**
+**The latest release is v0.8.0, which requires hstream server v0.8.0 .**
 
 ## Content
 - [Installation](#installation)
@@ -21,7 +21,6 @@ This is the official Java client library for [HStreamDB](https://hstream.io/).
     - [Work with Streams](#work-with-streams)
     - [Write Data to a Stream](#write-data-to-a-stream)
     - [Consume Data from a Stream](#consume-data-from-a-stream)
-    - [Process Data in Stream with SQL](#process-data-in-stream-with-sql)
 
 ## Installation
 
@@ -38,7 +37,7 @@ For Maven Users, the library can be included easily like this:
   <dependency>
     <groupId>io.hstream</groupId>
     <artifactId>hstreamdb-java</artifactId>
-    <version>0.7.1</version>
+    <version>0.8.0</version>
   </dependency>
 </dependencies>
 
@@ -50,11 +49,13 @@ For Gradle Users, the library can be included easily like this:
 
 ```groovy
 
-implementation 'io.hstream:hstreamdb-java:0.7.1'
+implementation 'io.hstream:hstreamdb-java:0.8.0'
 
 ```
 
 ## Example Usage
+
+Here we will show you some simple examples to use hstreamdb-client, for more detail on introduction and usage, please check the [guides](https://hstream.io/docs/en/latest/guides/write.html).
 
 ### Connect to HStreamDB
 
@@ -106,7 +107,7 @@ Random random = new Random();
 byte[] rawRecord = new byte[100];
 random.nextBytes(rawRecord);
 Record recordR = Record.newBuilder().rawRecord(rawRecord).build();
-CompletableFuture<RecordId> future = producer.write(recordR);
+CompletableFuture<String> future = producer.write(recordR);
 
 // write hRecords
 HRecord hRecord = HRecord.newBuilder()
@@ -115,26 +116,34 @@ HRecord hRecord = HRecord.newBuilder()
         .put("key3", true)
         .build();
 Record recordH = Record.newBuilder().hRecord(hRecord).build();
-CompletableFuture<RecordId> future = producer.write(recordH);
+CompletableFuture<String> future = producer.write(recordH);
 
 // buffered writes
-BufferedProducer batchedProducer = client.newBufferedProducer()
-        .stream("test_stream")
-        // optional, default: 100, the value must be greater than 0
+BatchSetting batchSetting =
+    BatchSetting.newBuilder()
         .recordCountLimit(100)
-        // optional, default: 100(ms), disabled if the value <= 0
-        .flushIntervalMs(100)
-        // optional, default: 4096(Bytes), disabled if the value <= 0
-        .maxBytesSize(4096)
+        .bytesLimit(4096)
+        .ageLimit(100)
         .build();
+
+FlowControlSetting flowControlSetting =
+    FlowControlSetting.newBuilder()
+        .bytesLimit(40960)
+        .build();
+
+BufferedProducer batchedProducer =
+    client.newBufferedProducer().stream("test_stream")
+            .batchSetting(batchSetting)
+            .flowControlSetting(flowControlSetting)
+            .build();
 
 for(int i = 0; i < 1000; ++i) {
     random.nextBytes(rawRecord);
     Record recordB = Record.newBuilder().rawRecord(rawRecord).build();
     batchedProducer.write(recordB);
 }
+// flush and close batchedProducer
 batchedProducer.close();
-
 
 ```
 
@@ -168,39 +177,6 @@ Consumer consumer =
 
 // third, start the consumer
 consumer.startAsync().awaitRunning();
-
-```
-
-### Process Data in Stream with SQL
-
-```java
-
-// first, create an observer for sql results
-Observer<HRecord> observer =
-      new Observer<HRecord>() {
-        @Override
-        public void onNext(HRecord value) {
-          System.out.println(value);
-        }
-
-        @Override
-        public void onError(Throwable t) {
-          System.out.println("error happend!");
-        }
-
-        @Override
-        public void onCompleted() {}
-      };
-
-// second, create a queryer to execute a sql
-Queryer queryer =
-      client
-          .newQueryer()
-          .sql("select * from test_stream emit changes;")
-          .resultObserver(observer)
-          .build();
-
-// third, start the queryer
-queryer.startAsync().awaitRunning();
+System.out.println("the consumer is started");
 
 ```
