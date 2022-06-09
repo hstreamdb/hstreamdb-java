@@ -68,7 +68,7 @@ suspend fun refreshClusterInfo(serverUrls: List<String>, channelProvider: Channe
             val port = serverNode.port
             newServerUrls.add("$host:$port")
         }
-        logger.info("refreshClusterInfo gets new urls [{}]", serverUrls)
+        logger.info("refreshClusterInfo gets new urls [{}]", newServerUrls)
         return@unaryCallWithCurrentUrlsCoroutine newServerUrls
     }
 }
