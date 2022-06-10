@@ -149,14 +149,16 @@ publishing {
     }
 }
 
-signing {
-    if (project.hasProperty("signing.keyId")) {
-        sign(publishing.publications["mavenJava"])
-    } else {
-        val signingKey = System.getenv("OSSRH_GPG_SECRET_KEY")
-        val signingPassword = System.getenv("OSSRH_GPG_PASSWORD")
-        useInMemoryPgpKeys(signingKey, signingPassword)
-        sign(publishing.publications["mavenJava"])
+if (!project.hasProperty("disableSigning")) {
+    signing {
+        if (project.hasProperty("signing.keyId")) {
+            sign(publishing.publications["mavenJava"])
+        } else {
+            val signingKey = System.getenv("OSSRH_GPG_SECRET_KEY")
+            val signingPassword = System.getenv("OSSRH_GPG_PASSWORD")
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            sign(publishing.publications["mavenJava"])
+        }
     }
 }
 

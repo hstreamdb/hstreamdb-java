@@ -29,16 +29,28 @@ jobs:
           ./gradlew spotlessKotlinCheck
           ./gradlew spotlessKotlinGradleCheck
 
-      - name: Prepare test env
-        run: script/prepare-test-env-latest.sh
+      - name: publish to mavenLocal
+        run: ./gradlew publishToMavenLocal -PdisableSigning
 
-      - name: Build and test with Gradle
-        run: ./gradlew build
+      - name: fetch integration tests source code
+        uses: actions/checkout@v2
+        with:
+          repository: "hstreamdb/integration-tests"
+          path: integration-tests
 
-      - name: Upload Gradle reports
+      - uses: gradle/wrapper-validation-action@v1
+
+      - name: run integration tests
+        run: |
+          cd integration-tests
+          ./gradlew test -PenableMavenLocal --info --fail-fast -Dtag='basicTest'
+
+      - name: upload tests-reports
         uses: actions/upload-artifact@v2
         if: ${{ success() }} || ${{ failure() }}
         with:
-          name: logs-artifact
+          name: integration-tests-reports
           path: |
-            client/build/reports
+            integration-tests/.logs
+            integration-tests/app/build/reports
+          retention-days: 7
