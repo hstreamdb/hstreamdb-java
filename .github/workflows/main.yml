@@ -40,6 +40,12 @@ jobs:
 
       - uses: gradle/wrapper-validation-action@v1
 
+      - name: tmp update proto
+        run: |
+          cp client/src/main/proto/hstream.proto integration-tests/app/src/test/proto/hstream.proto
+          sed -i "s/ListStreams(ListStreamsRequest)/ListStreams(google.protobuf.Empty)/g" integration-tests/app/src/test/proto/hstream.proto
+          sed -i "s/ListSubscriptions(ListSubscriptionsRequest)/ListSubscriptions(google.protobuf.Empty)/g" integration-tests/app/src/test/proto/hstream.proto
+
       - name: run integration tests
         run: |
           cd integration-tests
