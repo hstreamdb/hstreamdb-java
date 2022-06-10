@@ -12,6 +12,8 @@ import io.hstream.Subscription
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.HStreamApiGrpcKt
+import io.hstream.internal.ListStreamsRequest
+import io.hstream.internal.ListSubscriptionsRequest
 import io.hstream.internal.LookupSubscriptionRequest
 import io.hstream.util.GrpcUtils
 import kotlinx.coroutines.runBlocking
@@ -115,7 +117,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     }
 
     override fun listStreams(): List<Stream> {
-        val listStreamsResponse = unaryCallBlocked { it.listStreams(Empty.getDefaultInstance()) }
+        val listStreamsResponse = unaryCallBlocked { it.listStreams(ListStreamsRequest.newBuilder().build()) }
         return listStreamsResponse.streamsList.map(GrpcUtils::streamFromGrpc)
     }
 
@@ -125,7 +127,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
 
     override fun listSubscriptions(): List<Subscription> {
         return unaryCallBlocked {
-            it.listSubscriptions(Empty.getDefaultInstance()).subscriptionList.map(
+            it.listSubscriptions(ListSubscriptionsRequest.newBuilder().build()).subscriptionList.map(
                 GrpcUtils::subscriptionFromGrpc
             )
         }
