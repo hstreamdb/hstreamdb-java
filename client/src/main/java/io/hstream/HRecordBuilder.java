@@ -1,6 +1,8 @@
 package io.hstream;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
+import com.google.protobuf.util.JsonFormat;
 import com.google.protobuf.util.Values;
 
 /** A builder for {@link io.hstream.HRecord}s. */
@@ -34,6 +36,15 @@ public class HRecordBuilder {
 
   public HRecordBuilder put(String fieldName, HArray hArray) {
     this.structBuilder = structBuilder.putFields(fieldName, Values.of(hArray.getDelegate()));
+    return this;
+  }
+
+  public HRecordBuilder merge(String json) {
+    try {
+      JsonFormat.parser().merge(json, this.structBuilder);
+    } catch (InvalidProtocolBufferException e) {
+      throw new HStreamDBClientException(e);
+    }
     return this;
   }
 

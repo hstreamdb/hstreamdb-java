@@ -1,7 +1,9 @@
 package io.hstream;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
+import com.google.protobuf.util.JsonFormat;
 
 /** A data structure like json object. */
 public class HRecord {
@@ -22,6 +24,18 @@ public class HRecord {
 
   public String toString() {
     return delegate.toString();
+  }
+
+  public String toJsonString() {
+    try {
+      return JsonFormat.printer().print(delegate);
+    } catch (InvalidProtocolBufferException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public boolean contains(String key) {
+    return delegate.containsFields(key);
   }
 
   public boolean getBoolean(String name) {
