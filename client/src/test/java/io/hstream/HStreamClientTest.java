@@ -23,7 +23,7 @@ public class HStreamClientTest {
   @BeforeEach
   public void setUp() {
     client = HStreamClient.builder().serviceUrl(serviceUrl).build();
-    testStreamName = TestUtils.randStream(client);
+    testStreamName = TestUtils.randStreamWithOneShard(client);
     testSubscriptionId = TestUtils.randSubscription(client, testStreamName);
   }
 
