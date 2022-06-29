@@ -48,6 +48,15 @@ public class HRecordBuilder {
     return this;
   }
 
+  public HRecordBuilder merge(byte[] hRecordBytes) {
+    try {
+      this.structBuilder.mergeFrom(hRecordBytes);
+    } catch (InvalidProtocolBufferException e) {
+      throw new HStreamDBClientException(e);
+    }
+    return this;
+  }
+
   public HRecord build() {
     return new HRecord(structBuilder.build());
   }

@@ -4,6 +4,8 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
 import com.google.protobuf.util.JsonFormat;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /** A data structure like json object. */
 public class HRecord {
@@ -34,8 +36,25 @@ public class HRecord {
     }
   }
 
+  public Set<String> getKeySet() {
+    return delegate.getFieldsMap().keySet();
+  }
+
   public boolean contains(String key) {
     return delegate.containsFields(key);
+  }
+
+  public HRecord filterWithKeys(Predicate<String> p) {
+    var builder = Struct.newBuilder();
+    delegate
+        .getFieldsMap()
+        .forEach(
+            (k, v) -> {
+              if (p.test(k)) {
+                builder.putFields(k, v);
+              }
+            });
+    return new HRecord(builder.build());
   }
 
   public boolean getBoolean(String name) {
@@ -68,5 +87,9 @@ public class HRecord {
 
   public ByteString toByteString() {
     return delegate.toByteString();
+  }
+
+  public byte[] toByteArray() {
+    return delegate.toByteArray();
   }
 }
