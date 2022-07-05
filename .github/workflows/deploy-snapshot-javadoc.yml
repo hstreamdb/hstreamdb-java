@@ -8,13 +8,16 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          submodules: "recursive"
+
       - uses: actions/setup-java@v2
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: "adopt"
       - name: Generate Javadoc
-        run: ./gradlew :client:javadoc 
+        run: ./gradlew :client:javadoc
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
@@ -22,4 +25,3 @@ jobs:
           folder: client/build/docs/javadoc
           clean: true
           target-folder: javadoc
-
