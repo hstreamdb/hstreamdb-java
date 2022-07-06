@@ -33,20 +33,30 @@ public class TestUtils {
     return UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8);
   }
 
-  public static String randStream(HStreamClient c) {
+  public static String randStreamWithOneShard(HStreamClient c) {
+    return randStream(c, 1);
+  }
+
+  public static String randStream(HStreamClient c, int shardCnt) {
     String streamName = "test_stream_" + randText();
-    c.createStream(streamName, (short) 3);
+    c.createStream(streamName, (short) 3, shardCnt);
     return streamName;
   }
 
-  public static String randSubscription(HStreamClient c, String streamName) {
+  public static String randSubscriptionWithOffset(
+      HStreamClient c, String streamName, Subscription.SubscriptionOffset offset) {
     String subscriptionName = "test_subscription_" + randText();
     Subscription subscription =
         Subscription.newBuilder().subscription(subscriptionName).stream(streamName)
             .ackTimeoutSeconds(60)
+            .offset(offset)
             .build();
     c.createSubscription(subscription);
     return subscriptionName;
+  }
+
+  public static String randSubscription(HStreamClient c, String streamName) {
+    return randSubscriptionWithOffset(c, streamName, Subscription.SubscriptionOffset.EARLEST);
   }
 
   public static ArrayList<String> doProduce(

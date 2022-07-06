@@ -87,12 +87,17 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     }
 
     override fun createStream(stream: String?, replicationFactor: Short) {
-        createStream(stream, replicationFactor, 3600 * 24)
+        createStream(stream, replicationFactor, 1, 3600 * 24)
     }
 
-    override fun createStream(stream: String?, replicationFactor: Short, backlogDuration: Int) {
+    override fun createStream(stream: String?, replicationFactor: Short, shardCnt: Int) {
+        createStream(stream, replicationFactor, shardCnt, 3600 * 24)
+    }
+
+    override fun createStream(stream: String?, replicationFactor: Short, shardCnt: Int, backlogDuration: Int) {
         checkNotNull(stream)
         check(replicationFactor in 1..15)
+        check(shardCnt >= 1)
 
         unaryCallBlocked {
             it.createStream(
@@ -100,7 +105,8 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
                     Stream(
                         stream,
                         replicationFactor.toInt(),
-                        backlogDuration
+                        backlogDuration,
+                        shardCnt
                     )
                 )
             )

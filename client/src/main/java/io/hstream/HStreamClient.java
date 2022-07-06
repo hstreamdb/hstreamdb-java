@@ -42,9 +42,19 @@ public interface HStreamClient extends AutoCloseable {
    *
    * @param stream the name of the stream
    * @param replicationFactor replication factor of the stream
+   * @param shardCount number of shards in the stream
+   */
+  void createStream(String stream, short replicationFactor, int shardCount);
+
+  /**
+   * Create a new stream.
+   *
+   * @param stream the name of the stream
+   * @param replicationFactor replication factor of the stream
+   * @param shardCount number of shards in the stream
    * @param backlogDuration backlog duration(in seconds) of the stream
    */
-  void createStream(String stream, short replicationFactor, int backlogDuration);
+  void createStream(String stream, short replicationFactor, int shardCount, int backlogDuration);
 
   /**
    * Delete the specified stream with streamName.

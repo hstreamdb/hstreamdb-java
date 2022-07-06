@@ -6,11 +6,13 @@ public class Stream {
   private String streamName;
   private int replicationFactor;
   private int backlogDuration;
+  private int shardCount;
 
-  public Stream(String streamName, int replicationFactor, int backlogDuration) {
+  public Stream(String streamName, int replicationFactor, int backlogDuration, int shardCount) {
     this.streamName = streamName;
     this.replicationFactor = replicationFactor;
     this.backlogDuration = backlogDuration;
+    this.shardCount = shardCount;
   }
 
   public String getStreamName() {
@@ -37,6 +39,14 @@ public class Stream {
     this.backlogDuration = backlogDuration;
   }
 
+  public int getShardCount() {
+    return shardCount;
+  }
+
+  public void setShardCount(int shardCount) {
+    this.shardCount = shardCount;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -44,11 +54,12 @@ public class Stream {
     Stream stream = (Stream) o;
     return replicationFactor == stream.replicationFactor
         && backlogDuration == stream.backlogDuration
-        && streamName.equals(stream.streamName);
+        && streamName.equals(stream.streamName)
+        && shardCount == stream.shardCount;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(streamName, replicationFactor, backlogDuration);
+    return Objects.hash(streamName, replicationFactor, backlogDuration, shardCount);
   }
 }

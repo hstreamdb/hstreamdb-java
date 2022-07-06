@@ -12,12 +12,24 @@ public class Subscription {
 
   private int maxUnackedRecords;
 
+  private SubscriptionOffset offset;
+
+  public enum SubscriptionOffset {
+    EARLEST,
+    LATEST,
+  }
+
   private Subscription(
-      String subscriptionId, String streamName, int ackTimeoutSeconds, int maxUnackedRecords) {
+      String subscriptionId,
+      String streamName,
+      int ackTimeoutSeconds,
+      int maxUnackedRecords,
+      SubscriptionOffset offset) {
     this.subscriptionId = subscriptionId;
     this.streamName = streamName;
     this.ackTimeoutSeconds = ackTimeoutSeconds;
     this.maxUnackedRecords = maxUnackedRecords;
+    this.offset = offset;
   }
 
   /** @return {@link Subscription.Builder} */
@@ -39,6 +51,10 @@ public class Subscription {
 
   public int getMaxUnackedRecords() {
     return maxUnackedRecords;
+  }
+
+  public SubscriptionOffset getOffset() {
+    return offset;
   }
 
   @Override
@@ -63,6 +79,7 @@ public class Subscription {
     private String streamName;
     private int ackTimeoutSeconds = 600;
     private int maxUnackedRecords = 10000;
+    private SubscriptionOffset offset = SubscriptionOffset.LATEST;
 
     public Builder subscription(String subscriptionId) {
       this.subscriptionId = subscriptionId;
@@ -84,12 +101,18 @@ public class Subscription {
       return this;
     }
 
+    public Builder offset(SubscriptionOffset offset) {
+      this.offset = offset;
+      return this;
+    }
+
     public Subscription build() {
       checkNotNull(subscriptionId);
       checkNotNull(streamName);
       checkState(ackTimeoutSeconds > 0 && ackTimeoutSeconds < 36000);
       checkState(maxUnackedRecords > 0);
-      return new Subscription(subscriptionId, streamName, ackTimeoutSeconds, maxUnackedRecords);
+      return new Subscription(
+          subscriptionId, streamName, ackTimeoutSeconds, maxUnackedRecords, offset);
     }
   }
 }
