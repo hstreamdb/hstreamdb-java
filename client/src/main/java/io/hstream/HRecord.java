@@ -36,6 +36,14 @@ public class HRecord {
     }
   }
 
+  public String toCompactJsonString() {
+    try {
+      return JsonFormat.printer().omittingInsignificantWhitespace().print(delegate);
+    } catch (InvalidProtocolBufferException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public Set<String> getKeySet() {
     return delegate.getFieldsMap().keySet();
   }

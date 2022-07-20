@@ -39,6 +39,11 @@ public class HRecordBuilder {
     return this;
   }
 
+  public HRecordBuilder putNull(String fieldName) {
+    structBuilder.putFields(fieldName, Values.ofNull());
+    return this;
+  }
+
   public HRecordBuilder merge(String json) {
     try {
       JsonFormat.parser().merge(json, this.structBuilder);
