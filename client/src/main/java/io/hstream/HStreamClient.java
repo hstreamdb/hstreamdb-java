@@ -22,6 +22,9 @@ public interface HStreamClient extends AutoCloseable {
   /** @return a {@link QueryerBuilder} */
   QueryerBuilder newQueryer();
 
+  /** @return a {@link ReaderBuilder} */
+  ReaderBuilder newReader();
+
   /**
    * Create a new stream with 1 replicas.
    *
