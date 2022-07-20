@@ -32,7 +32,15 @@ public class HRecord {
     try {
       return JsonFormat.printer().print(delegate);
     } catch (InvalidProtocolBufferException e) {
-      throw new RuntimeException(e);
+      throw new HStreamDBClientException(e);
+    }
+  }
+
+  public String toCompactJsonString() {
+    try {
+      return JsonFormat.printer().omittingInsignificantWhitespace().print(delegate);
+    } catch (InvalidProtocolBufferException e) {
+      throw new HStreamDBClientException(e);
     }
   }
 
