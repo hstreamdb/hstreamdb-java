@@ -1,6 +1,9 @@
 package io.hstream.util;
 
+import static com.google.common.base.Preconditions.*;
+
 import io.hstream.*;
+import io.hstream.internal.RecordId;
 import io.hstream.internal.SpecialOffset;
 
 /**
@@ -12,6 +15,16 @@ public class GrpcUtils {
   public static String recordIdFromGrpc(io.hstream.internal.RecordId recordId) {
     return String.format(
         "%s-%s-%s", recordId.getBatchIndex(), recordId.getBatchId(), recordId.getShardId());
+  }
+
+  public static RecordId recordIdToGrpc(String recordId) {
+    String[] res = recordId.split("-");
+    checkArgument(res.length == 3);
+    return RecordId.newBuilder()
+        .setShardId(Long.parseLong(res[0]))
+        .setBatchId(Long.parseLong(res[1]))
+        .setBatchIndex(Integer.parseInt(res[2]))
+        .build();
   }
 
   public static SpecialOffset subscriptionOffsetToGrpc(Subscription.SubscriptionOffset offset) {
@@ -69,5 +82,47 @@ public class GrpcUtils {
         stream.getReplicationFactor(),
         stream.getBacklogDuration(),
         stream.getShardCount());
+  }
+
+  public static StreamShardOffset streamShardOffsetFromGrpc(
+      io.hstream.internal.ShardOffset shardOffset) {
+    if (shardOffset.hasSpecialOffset()) {
+      switch (shardOffset.getSpecialOffset()) {
+        case EARLIEST:
+          return new StreamShardOffset(StreamShardOffset.SpecialOffset.EARLIEST);
+        case LATEST:
+          return new StreamShardOffset(StreamShardOffset.SpecialOffset.LATEST);
+        default:
+          throw new IllegalArgumentException("Unknown ShardOffset : " + shardOffset);
+      }
+    } else if (shardOffset.hasRecordOffset()) {
+      return new StreamShardOffset(recordIdFromGrpc(shardOffset.getRecordOffset()));
+    } else {
+      throw new IllegalArgumentException("Unknown ShardOffset : " + shardOffset);
+    }
+  }
+
+  public static io.hstream.internal.ShardOffset streamShardOffsetToGrpc(
+      StreamShardOffset shardOffset) {
+    if (shardOffset.isSpecialOffset()) {
+      switch (shardOffset.getSpecialOffset()) {
+        case EARLIEST:
+          return io.hstream.internal.ShardOffset.newBuilder()
+              .setSpecialOffset(SpecialOffset.EARLIEST)
+              .build();
+        case LATEST:
+          return io.hstream.internal.ShardOffset.newBuilder()
+              .setSpecialOffset(SpecialOffset.LATEST)
+              .build();
+        default:
+          throw new IllegalArgumentException("Unknown streamShardOffset : " + shardOffset);
+      }
+    } else if (shardOffset.isNormalOffset()) {
+      return io.hstream.internal.ShardOffset.newBuilder()
+          .setRecordOffset(recordIdToGrpc(shardOffset.getNormalOffset()))
+          .build();
+    } else {
+      throw new IllegalArgumentException("Unknown streamShardOffset : " + shardOffset);
+    }
   }
 }

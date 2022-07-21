@@ -37,6 +37,6 @@ public class QueryerBuilderImpl implements QueryerBuilder {
   public Queryer build() {
     checkNotNull(sql);
     checkNotNull(resultObserver);
-    return new QueryerImpl(client, serverUrls, channelProvider, sql, resultObserver);
+    throw new HStreamDBClientException("unsupported");
   }
 }
