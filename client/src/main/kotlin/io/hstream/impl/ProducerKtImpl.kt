@@ -97,7 +97,7 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
 
     protected fun calculateShardIdByPartitionKey(partitionKey: String): Long {
         val hashcode = com.google.common.hash.Hashing.md5().hashString(partitionKey, StandardCharsets.UTF_8)
-        val hashValue = BigInteger(hashcode.toString())
+        val hashValue = BigInteger(hashcode.toString(), 16)
         for (shard in shards) {
             val start = BigInteger(shard.startHashRangeKey)
             val end = BigInteger(shard.endHashRangeKey)
