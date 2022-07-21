@@ -29,10 +29,10 @@ class BufferedProducerKtImpl(
     private val flowControlSetting: FlowControlSetting,
 ) : ProducerKtImpl(client, stream), BufferedProducer {
     private var lock = ReentrantLock()
-    private var orderingBuffer: HashMap<Long, Records> = HashMap()
-    private var orderingFutures: HashMap<Long, Futures> = HashMap()
-    private var orderingBytesSize: HashMap<Long, Int> = HashMap()
-    private var orderingJobs: HashMap<Long, Job> = HashMap()
+    private var shardAppendBuffer: HashMap<Long, Records> = HashMap()
+    private var shardAppendFutures: HashMap<Long, Futures> = HashMap()
+    private var shardAppendBytesSize: HashMap<Long, Int> = HashMap()
+    private var shardAppendJobs: HashMap<Long, Job> = HashMap()
     private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     private val flowController: FlowController? = if (flowControlSetting.bytesLimit > 0) FlowController(flowControlSetting.bytesLimit) else null
@@ -61,52 +61,52 @@ class BufferedProducerKtImpl(
             val recordFuture = CompletableFuture<String>()
             val partitionKey = hStreamRecord.header.key
             val shardId = calculateShardIdByPartitionKey(partitionKey)
-            if (!orderingBuffer.containsKey(shardId)) {
-                orderingBuffer[shardId] = LinkedList()
-                orderingFutures[shardId] = LinkedList()
-                orderingBytesSize[shardId] = 0
+            if (!shardAppendBuffer.containsKey(shardId)) {
+                shardAppendBuffer[shardId] = LinkedList()
+                shardAppendFutures[shardId] = LinkedList()
+                shardAppendBytesSize[shardId] = 0
                 if (batchSetting.ageLimit > 0) {
                     timerServices[shardId] =
-                        scheduler.schedule({ flushForKey(shardId) }, batchSetting.ageLimit, TimeUnit.MILLISECONDS)
+                        scheduler.schedule({ flushForShard(shardId) }, batchSetting.ageLimit, TimeUnit.MILLISECONDS)
                 }
             }
-            orderingBuffer[shardId]!!.add(hStreamRecord)
-            orderingFutures[shardId]!!.add(recordFuture)
-            orderingBytesSize[shardId] = orderingBytesSize[shardId]!! + hStreamRecord.payload.size()
+            shardAppendBuffer[shardId]!!.add(hStreamRecord)
+            shardAppendFutures[shardId]!!.add(recordFuture)
+            shardAppendBytesSize[shardId] = shardAppendBytesSize[shardId]!! + hStreamRecord.payload.size()
             if (isFull(shardId)) {
-                flushForKey(shardId)
+                flushForShard(shardId)
             }
             return recordFuture
         }
     }
 
     private fun isFull(shardId: Long): Boolean {
-        val recordCount = orderingBuffer[shardId]!!.size
-        val bytesSize = orderingBytesSize[shardId]!!
+        val recordCount = shardAppendBuffer[shardId]!!.size
+        val bytesSize = shardAppendBytesSize[shardId]!!
         return batchSetting.recordCountLimit in 1..recordCount || batchSetting.bytesLimit in 1..bytesSize
     }
 
     override fun flush() {
         lock.withLock {
-            for (shard in orderingBuffer.keys.toList()) {
-                flushForKey(shard)
+            for (shard in shardAppendBuffer.keys.toList()) {
+                flushForShard(shard)
             }
         }
     }
 
-    private fun flushForKey(shardId: Long) {
+    private fun flushForShard(shardId: Long) {
         lock.withLock {
-            val records = orderingBuffer[shardId]!!
-            val futures = orderingFutures[shardId]!!
-            val recordsBytesSize = orderingBytesSize[shardId]!!
+            val records = shardAppendBuffer[shardId]!!
+            val futures = shardAppendFutures[shardId]!!
+            val recordsBytesSize = shardAppendBytesSize[shardId]!!
             logger.info("ready to flush recordBuffer for shard:$shardId, current buffer size is [{}]", records.size)
-            orderingBuffer.remove(shardId)
-            orderingFutures.remove(shardId)
-            orderingBytesSize.remove(shardId)
+            shardAppendBuffer.remove(shardId)
+            shardAppendFutures.remove(shardId)
+            shardAppendBytesSize.remove(shardId)
             timerServices[shardId]?.cancel(true)
             timerServices.remove(shardId)
-            val job = orderingJobs[shardId]
-            orderingJobs[shardId] = batchScope.launch {
+            val job = shardAppendJobs[shardId]
+            shardAppendJobs[shardId] = batchScope.launch {
                 job?.join()
                 writeSingleKeyHStreamRecords(records, futures)
                 logger.info("wrote batch for shard:$shardId")
