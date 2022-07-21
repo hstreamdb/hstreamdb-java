@@ -5,7 +5,6 @@ import io.grpc.ChannelCredentials
 import io.hstream.BufferedProducerBuilder
 import io.hstream.ConsumerBuilder
 import io.hstream.HStreamClient
-import io.hstream.HStreamDBClientException
 import io.hstream.ProducerBuilder
 import io.hstream.QueryerBuilder
 import io.hstream.ReaderBuilder
@@ -81,7 +80,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     }
 
     override fun newReader(): ReaderBuilder {
-        throw HStreamDBClientException("unsupported")
+        return ReaderBuilderImpl(this)
     }
 
     override fun newQueryer(): QueryerBuilder {
