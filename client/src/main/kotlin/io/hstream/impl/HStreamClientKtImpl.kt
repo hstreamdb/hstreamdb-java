@@ -8,11 +8,13 @@ import io.hstream.HStreamClient
 import io.hstream.ProducerBuilder
 import io.hstream.QueryerBuilder
 import io.hstream.ReaderBuilder
+import io.hstream.Shard
 import io.hstream.Stream
 import io.hstream.Subscription
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.HStreamApiGrpcKt
+import io.hstream.internal.ListShardsRequest
 import io.hstream.internal.ListStreamsRequest
 import io.hstream.internal.ListSubscriptionsRequest
 import io.hstream.internal.LookupSubscriptionRequest
@@ -114,6 +116,20 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
                         shardCnt
                     )
                 )
+            )
+        }
+    }
+
+    override fun listShards(streamName: String?): List<Shard> {
+        checkNotNull(streamName)
+        val listShardsRequest = ListShardsRequest.newBuilder().setStreamName(streamName).build()
+        val listShardsResponse = unaryCallBlocked { it.listShards(listShardsRequest) }
+        return listShardsResponse.shardsList.map {
+            Shard(
+                it.streamName,
+                it.shardId,
+                it.startHashRangeKey,
+                it.endHashRangeKey
             )
         }
     }
