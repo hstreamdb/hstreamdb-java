@@ -283,6 +283,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Optional, enable authentication based on TLS, it requires tlsKeyPath and tlsCertPath options.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Shard.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.hstream.<a href="io/hstream/Shard.html" title="class in io.hstream">Shard</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.html" title="class in io.hstream">Subscription</a></dt>
@@ -336,6 +338,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#getDouble(java.lang.String)">getDouble(String)</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Shard.html#getEndingHashKey()">getEndingHashKey()</a></span> - Method in class io.hstream.<a href="io/hstream/Shard.html" title="class in io.hstream">Shard</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArray.html#getHArray(int)">getHArray(int)</a></span> - Method in class io.hstream.<a href="io/hstream/HArray.html" title="class in io.hstream">HArray</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#getHArray(java.lang.String)">getHArray(String)</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
@@ -386,7 +390,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#getShardCount()">getShardCount()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Shard.html#getShardId()">getShardId()</a></span> - Method in class io.hstream.<a href="io/hstream/Shard.html" title="class in io.hstream">Shard</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/StreamShardOffset.html#getSpecialOffset()">getSpecialOffset()</a></span> - Method in class io.hstream.<a href="io/hstream/StreamShardOffset.html" title="class in io.hstream">StreamShardOffset</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Shard.html#getStartingHashKey()">getStartingHashKey()</a></span> - Method in class io.hstream.<a href="io/hstream/Shard.html" title="class in io.hstream">Shard</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Shard.html#getStreamName()">getStreamName()</a></span> - Method in class io.hstream.<a href="io/hstream/Shard.html" title="class in io.hstream">Shard</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#getStreamName()">getStreamName()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
@@ -415,6 +425,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">A builder for <a href="io/hstream/HArray.html" title="class in io.hstream"><code>HArray</code></a>s.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArrayBuilder.html#%3Cinit%3E()">HArrayBuilder()</a></span> - Constructor for class io.hstream.<a href="io/hstream/HArrayBuilder.html" title="class in io.hstream">HArrayBuilder</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Shard.html#hashCode()">hashCode()</a></span> - Method in class io.hstream.<a href="io/hstream/Shard.html" title="class in io.hstream">Shard</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#hashCode()">hashCode()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
@@ -494,6 +506,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.SubscriptionOffset.html#LATEST">LATEST</a></span> - io.hstream.<a href="io/hstream/Subscription.SubscriptionOffset.html" title="enum in io.hstream">Subscription.SubscriptionOffset</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#listShards(java.lang.String)">listShards(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
+<dd>
+<div class="block">List shards in a stream.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#listStreams()">listStreams()</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
 <div class="block">List all streams.</div>
@@ -708,6 +724,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#setShardCount(int)">setShardCount(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#setStreamName(java.lang.String)">setStreamName(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/hstream/Shard.html" title="class in io.hstream"><span class="typeNameLink">Shard</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Shard.html#%3Cinit%3E(java.lang.String,long,java.lang.String,java.lang.String)">Shard(String, long, String, String)</a></span> - Constructor for class io.hstream.<a href="io/hstream/Shard.html" title="class in io.hstream">Shard</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ReaderBuilder.html#shardId(long)">shardId(long)</a></span> - Method in interface io.hstream.<a href="io/hstream/ReaderBuilder.html" title="interface in io.hstream">ReaderBuilder</a></dt>
 <dd>&nbsp;</dd>
