@@ -64,7 +64,7 @@ public interface HStreamClient extends AutoCloseable {
    *
    * @param streamName the name of the stream
    */
-  List<Shard> ListShards(String streamName);
+  List<Shard> listShards(String streamName);
 
   /**
    * Delete the specified stream with streamName.

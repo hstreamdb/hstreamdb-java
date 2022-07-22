@@ -120,7 +120,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
         }
     }
 
-    override fun ListShards(streamName: String?): List<Shard> {
+    override fun listShards(streamName: String?): List<Shard> {
         checkNotNull(streamName)
         val listShardsRequest = ListShardsRequest.newBuilder().setStreamName(streamName).build()
         val listShardsResponse = unaryCallBlocked { it.listShards(listShardsRequest) }
