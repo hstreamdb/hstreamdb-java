@@ -135,8 +135,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="io/hstream/BufferedProducerBuilder.html#batchSetting(io.hstream.BatchSetting)">batchSetting(BatchSetting)</a></span> - Method in interface io.hstream.<a href="io/hstream/BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></dt>
 <dd>
-<div class="block">BufferedProducer will buffer records for each ordering key as a batch to send to servers, so
- <a href="io/hstream/BatchSetting.html" title="class in io.hstream"><code>BatchSetting</code></a> is to control the batch buffer.</div>
+<div class="block">BufferedProducer will buffer records for each shard as a batch to send to servers, so <a href="io/hstream/BatchSetting.html" title="class in io.hstream"><code>BatchSetting</code></a> is to control the batch buffer.</div>
 </dd>
 <dt><a href="io/hstream/BatchSetting.html" title="class in io.hstream"><span class="typeNameLink">BatchSetting</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>&nbsp;</dd>
@@ -372,9 +371,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.html#getOffset()">getOffset()</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.html" title="class in io.hstream">Subscription</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/Record.html#getOrderingKey()">getOrderingKey()</a></span> - Method in class io.hstream.<a href="io/hstream/Record.html" title="class in io.hstream">Record</a></dt>
+<dt><span class="memberNameLink"><a href="io/hstream/Record.html#getPartitionKey()">getPartitionKey()</a></span> - Method in class io.hstream.<a href="io/hstream/Record.html" title="class in io.hstream">Record</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordHeader.html#getOrderingKey()">getOrderingKey()</a></span> - Method in class io.hstream.<a href="io/hstream/RecordHeader.html" title="class in io.hstream">RecordHeader</a></dt>
+<dt><span class="memberNameLink"><a href="io/hstream/RecordHeader.html#getPartitionKey()">getPartitionKey()</a></span> - Method in class io.hstream.<a href="io/hstream/RecordHeader.html" title="class in io.hstream">RecordHeader</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ReceivedRawRecord.html#getRawRecord()">getRawRecord()</a></span> - Method in class io.hstream.<a href="io/hstream/ReceivedRawRecord.html" title="class in io.hstream">ReceivedRawRecord</a></dt>
 <dd>&nbsp;</dd>
@@ -588,16 +587,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Receives a value.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/hstream/Record.Builder.html#orderingKey(java.lang.String)">orderingKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Record.Builder.html" title="class in io.hstream">Record.Builder</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordHeader.Builder.html#orderingKey(java.lang.String)">orderingKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordHeader.Builder.html" title="class in io.hstream">RecordHeader.Builder</a></dt>
-<dd>&nbsp;</dd>
 </dl>
 <a id="I:P">
 <!--   -->
 </a>
 <h2 class="title">P</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/hstream/Record.Builder.html#partitionKey(java.lang.String)">partitionKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Record.Builder.html" title="class in io.hstream">Record.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/RecordHeader.Builder.html#partitionKey(java.lang.String)">partitionKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordHeader.Builder.html" title="class in io.hstream">RecordHeader.Builder</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecordReceiver.html#processHRecord(io.hstream.ReceivedHRecord,io.hstream.Responder)">processHRecord(ReceivedHRecord, Responder)</a></span> - Method in interface io.hstream.<a href="io/hstream/HRecordReceiver.html" title="interface in io.hstream">HRecordReceiver</a></dt>
 <dd>
 <div class="block">Used to receive <a href="io/hstream/HRecord.html" title="class in io.hstream"><code>HRecord</code></a> format message.</div>
@@ -715,9 +714,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#setBacklogDuration(int)">setBacklogDuration(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/Record.html#setOrderingKey(java.lang.String)">setOrderingKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Record.html" title="class in io.hstream">Record</a></dt>
+<dt><span class="memberNameLink"><a href="io/hstream/Record.html#setPartitionKey(java.lang.String)">setPartitionKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Record.html" title="class in io.hstream">Record</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/RecordHeader.html#setOrderingKey(java.lang.String)">setOrderingKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordHeader.html" title="class in io.hstream">RecordHeader</a></dt>
+<dt><span class="memberNameLink"><a href="io/hstream/RecordHeader.html#setPartitionKey(java.lang.String)">setPartitionKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordHeader.html" title="class in io.hstream">RecordHeader</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#setReplicationFactor(int)">setReplicationFactor(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>

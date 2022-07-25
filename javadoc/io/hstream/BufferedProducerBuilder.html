@@ -147,8 +147,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#batchSetting(io.hstream.BatchSetting)">batchSetting</a></span>&#8203;(<a href="BatchSetting.html" title="class in io.hstream">BatchSetting</a>&nbsp;batchSetting)</code></th>
 <td class="colLast">
-<div class="block">BufferedProducer will buffer records for each ordering key as a batch to send to servers, so
- <a href="BatchSetting.html" title="class in io.hstream"><code>BatchSetting</code></a> is to control the batch buffer.</div>
+<div class="block">BufferedProducer will buffer records for each shard as a batch to send to servers, so <a href="BatchSetting.html" title="class in io.hstream"><code>BatchSetting</code></a> is to control the batch buffer.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -202,8 +201,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>batchSetting</h4>
 <pre class="methodSignature"><a href="BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a>&nbsp;batchSetting&#8203;(<a href="BatchSetting.html" title="class in io.hstream">BatchSetting</a>&nbsp;batchSetting)</pre>
-<div class="block">BufferedProducer will buffer records for each ordering key as a batch to send to servers, so
- <a href="BatchSetting.html" title="class in io.hstream"><code>BatchSetting</code></a> is to control the batch buffer.</div>
+<div class="block">BufferedProducer will buffer records for each shard as a batch to send to servers, so <a href="BatchSetting.html" title="class in io.hstream"><code>BatchSetting</code></a> is to control the batch buffer.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>batchSetting</code> - setting for batch buffer</dd>
