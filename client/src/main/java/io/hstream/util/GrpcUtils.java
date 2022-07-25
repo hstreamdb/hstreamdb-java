@@ -14,7 +14,7 @@ public class GrpcUtils {
 
   public static String recordIdFromGrpc(io.hstream.internal.RecordId recordId) {
     return String.format(
-        "%s-%s-%s", recordId.getBatchIndex(), recordId.getBatchId(), recordId.getShardId());
+        "%s-%s-%s", recordId.getShardId(), recordId.getBatchId(), recordId.getBatchIndex());
   }
 
   public static RecordId recordIdToGrpc(String recordId) {
