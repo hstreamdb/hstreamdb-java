@@ -9,7 +9,9 @@ import io.hstream.Producer
 import io.hstream.Record
 import io.hstream.internal.AppendRequest
 import io.hstream.internal.HStreamRecord
-import io.hstream.internal.LookupStreamRequest
+import io.hstream.internal.ListShardsRequest
+import io.hstream.internal.LookupShardRequest
+import io.hstream.internal.Shard
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
 import kotlinx.coroutines.CoroutineScope
@@ -19,39 +21,49 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.slf4j.LoggerFactory
+import java.math.BigInteger
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.CompletableFuture
 import kotlin.collections.HashMap
 
 open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val stream: String) : Producer {
-    private val serverUrls: HashMap<String, String> = HashMap()
+    private val serverUrls: HashMap<Long, String> = HashMap()
     private val serverUrlsLock: Mutex = Mutex()
+    private val shards: List<Shard>
 
-    private suspend fun lookupServerUrl(orderingKey: String, forceUpdate: Boolean = false): String {
+    init {
+        val listShardRequest = ListShardsRequest.newBuilder()
+            .setStreamName(stream)
+            .build()
+        val listShardResponse = client.unaryCallBlocked { it.listShards(listShardRequest) }
+        shards = listShardResponse.shardsList
+    }
+
+    private suspend fun lookupServerUrl(shardId: Long, forceUpdate: Boolean = false): String {
         if (forceUpdate) {
-            return updateServerUrl(orderingKey)
+            return updateServerUrl(shardId)
         }
         val server: String? = serverUrlsLock.withLock {
-            return@withLock serverUrls[orderingKey]
+            return@withLock serverUrls[shardId]
         }
         if (server != null) {
             return server
         }
-        return updateServerUrl(orderingKey)
+        return updateServerUrl(shardId)
     }
 
-    private suspend fun updateServerUrl(orderingKey: String): String {
-        val req = LookupStreamRequest.newBuilder()
-            .setStreamName(stream)
-            .setOrderingKey(orderingKey)
+    private suspend fun updateServerUrl(shardId: Long): String {
+        val req = LookupShardRequest.newBuilder()
+            .setShardId(shardId)
             .build()
         val server = client.unaryCallCoroutine {
-            val serverNode = it.lookupStream(req).serverNode
+            val serverNode = it.lookupShard(req).serverNode
             return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
         }
         serverUrlsLock.withLock {
-            serverUrls[orderingKey] = server
+            serverUrls[shardId] = server
         }
-        logger.debug("updateServerUrl, key:$orderingKey, server:$server")
+        logger.debug("updateServerUrl, key:$shardId, server:$server")
         return server
     }
 
@@ -83,9 +95,24 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
         return future
     }
 
+    protected fun calculateShardIdByPartitionKey(partitionKey: String): Long {
+        val hashcode = com.google.common.hash.Hashing.md5().hashString(partitionKey, StandardCharsets.UTF_8)
+        val hashValue = BigInteger(hashcode.toString(), 16)
+        for (shard in shards) {
+            val start = BigInteger(shard.startHashRangeKey)
+            val end = BigInteger(shard.endHashRangeKey)
+            if (hashValue.compareTo(start) >= 0 && hashValue.compareTo(end) <= 0) {
+                return shard.shardId
+            }
+        }
+
+        check(false)
+        return -1
+    }
+
     private suspend fun appendWithRetry(
         appendRequest: AppendRequest,
-        orderingKey: String,
+        partitionKey: String,
         tryTimes: Int,
         forceUpdate: Boolean = false
     ): List<String> {
@@ -96,22 +123,24 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
             val status = Status.fromThrowable(e)
             if (status.code == Status.UNAVAILABLE.code && tryTimes > 1) {
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                return appendWithRetry(appendRequest, orderingKey, tryTimes - 1, true)
+                return appendWithRetry(appendRequest, partitionKey, tryTimes - 1, true)
             } else {
                 throw HStreamDBClientException(e)
             }
         }
 
         check(tryTimes > 0)
-        val serverUrl = lookupServerUrl(orderingKey, forceUpdate)
+
+        val shardId = calculateShardIdByPartitionKey(partitionKey)
+        val serverUrl = lookupServerUrl(shardId, forceUpdate)
         logger.info("try append with serverUrl [{}], current left tryTimes is [{}]", serverUrl, tryTimes)
-        try {
-            return client.getCoroutineStub(serverUrl)
+        return try {
+            client.getCoroutineStub(serverUrl)
                 .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
         } catch (e: StatusException) {
-            return handleGRPCException(serverUrl, e)
+            handleGRPCException(serverUrl, e)
         } catch (e: StatusRuntimeException) {
-            return handleGRPCException(serverUrl, e)
+            handleGRPCException(serverUrl, e)
         }
     }
 
