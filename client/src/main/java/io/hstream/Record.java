@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 public class Record {
 
-  private String orderingKey;
+  private String partitionKey;
   private byte[] rawRecord;
   private HRecord hRecord;
   private boolean isRawRecord;
@@ -13,24 +13,24 @@ public class Record {
     return new Builder();
   }
 
-  private Record(String orderingKey, byte[] rawRecord) {
+  private Record(String partitionKey, byte[] rawRecord) {
     isRawRecord = true;
-    this.orderingKey = orderingKey;
+    this.partitionKey = partitionKey;
     this.rawRecord = rawRecord;
   }
 
-  private Record(String orderingKey, HRecord hRecord) {
+  private Record(String partitionKey, HRecord hRecord) {
     isRawRecord = false;
-    this.orderingKey = orderingKey;
+    this.partitionKey = partitionKey;
     this.hRecord = hRecord;
   }
 
-  public String getOrderingKey() {
-    return orderingKey;
+  public String getPartitionKey() {
+    return partitionKey;
   }
 
-  public void setOrderingKey(String orderingKey) {
-    this.orderingKey = orderingKey;
+  public void setPartitionKey(String partitionKey) {
+    this.partitionKey = partitionKey;
   }
 
   public byte[] getRawRecord() {
@@ -48,12 +48,12 @@ public class Record {
   }
 
   public static class Builder {
-    private String orderingKey;
+    private String partitionKey;
     private byte[] rawRecord;
     private HRecord hRecord;
 
-    public Builder orderingKey(String key) {
-      this.orderingKey = key;
+    public Builder partitionKey(String partitionKey) {
+      this.partitionKey = partitionKey;
       return this;
     }
 
@@ -71,9 +71,9 @@ public class Record {
       checkArgument(
           (rawRecord != null && hRecord == null) || (rawRecord == null && hRecord != null));
       if (rawRecord != null) {
-        return new Record(orderingKey, rawRecord);
+        return new Record(partitionKey, rawRecord);
       } else {
-        return new Record(orderingKey, hRecord);
+        return new Record(partitionKey, hRecord);
       }
     }
   }

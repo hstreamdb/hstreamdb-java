@@ -6,8 +6,8 @@ public interface BufferedProducerBuilder {
   BufferedProducerBuilder stream(String streamName);
 
   /**
-   * BufferedProducer will buffer records for each ordering key as a batch to send to servers, so
-   * {@link BatchSetting} is to control the batch buffer.
+   * BufferedProducer will buffer records for each shard as a batch to send to servers, so {@link
+   * BatchSetting} is to control the batch buffer.
    *
    * @param batchSetting setting for batch buffer
    * @return the BufferedProducerBuilder instance

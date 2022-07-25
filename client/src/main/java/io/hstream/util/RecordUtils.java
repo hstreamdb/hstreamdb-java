@@ -20,7 +20,7 @@ public class RecordUtils {
     HStreamRecordHeader header =
         HStreamRecordHeader.newBuilder()
             .setFlag(HStreamRecordHeader.Flag.RAW)
-            .setKey(DefaultSettings.DEFAULT_ORDERING_KEY)
+            .setKey(DefaultSettings.DEFAULT_PARTITION_KEY)
             .build();
     return HStreamRecord.newBuilder()
         .setHeader(header)
@@ -32,7 +32,7 @@ public class RecordUtils {
     HStreamRecordHeader header =
         HStreamRecordHeader.newBuilder()
             .setFlag(HStreamRecordHeader.Flag.JSON)
-            .setKey(DefaultSettings.DEFAULT_ORDERING_KEY)
+            .setKey(DefaultSettings.DEFAULT_PARTITION_KEY)
             .build();
 
     return HStreamRecord.newBuilder().setHeader(header).setPayload(hRecord.toByteString()).build();
@@ -43,12 +43,12 @@ public class RecordUtils {
         record.isRawRecord()
             ? buildHStreamRecordFromRawRecord(record.getRawRecord())
             : buildHStreamRecordFromHRecord(record.getHRecord());
-    if (record.getOrderingKey() == null) {
+    if (record.getPartitionKey() == null) {
       return hStreamRecord;
     }
     HStreamRecordHeader newHeader =
         HStreamRecordHeader.newBuilder(hStreamRecord.getHeader())
-            .setKey(record.getOrderingKey())
+            .setKey(record.getPartitionKey())
             .build();
     return HStreamRecord.newBuilder(hStreamRecord).setHeader(newHeader).build();
   }
@@ -62,7 +62,7 @@ public class RecordUtils {
   }
 
   public static RecordHeader parseRecordHeaderFromHStreamRecord(HStreamRecord hStreamRecord) {
-    return RecordHeader.newBuild().orderingKey(hStreamRecord.getHeader().getKey()).build();
+    return RecordHeader.newBuild().partitionKey(hStreamRecord.getHeader().getKey()).build();
   }
 
   public static HRecord parseHRecordFromHStreamRecord(HStreamRecord hStreamRecord) {
