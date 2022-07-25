@@ -1,18 +1,18 @@
 package io.hstream;
 
 public class RecordHeader {
-  private String orderingKey;
+  private String partitionKey;
 
   private RecordHeader(Builder builder) {
-    this.orderingKey = builder.orderingKey;
+    this.partitionKey = builder.partitionKey;
   }
 
-  public String getOrderingKey() {
-    return orderingKey;
+  public String getPartitionKey() {
+    return partitionKey;
   }
 
-  public void setOrderingKey(String orderingKey) {
-    this.orderingKey = orderingKey;
+  public void setPartitionKey(String partitionKey) {
+    this.partitionKey = partitionKey;
   }
 
   public static Builder newBuild() {
@@ -21,10 +21,10 @@ public class RecordHeader {
 
   public static class Builder {
 
-    private String orderingKey;
+    private String partitionKey;
 
-    public Builder orderingKey(String orderingKey) {
-      this.orderingKey = orderingKey;
+    public Builder partitionKey(String partitionKey) {
+      this.partitionKey = partitionKey;
       return Builder.this;
     }
 

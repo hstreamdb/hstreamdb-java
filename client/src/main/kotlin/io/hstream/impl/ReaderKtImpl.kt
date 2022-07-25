@@ -56,10 +56,10 @@ class ReaderKtImpl(
                     val header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord)
                     if (RecordUtils.isRawRecord(hStreamRecord)) {
                         val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord)
-                        Record.newBuilder().rawRecord(rawRecord).orderingKey(header.orderingKey).build()
+                        Record.newBuilder().rawRecord(rawRecord).partitionKey(header.partitionKey).build()
                     } else {
                         val hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord)
-                        Record.newBuilder().hRecord(hRecord).orderingKey(header.orderingKey).build()
+                        Record.newBuilder().hRecord(hRecord).partitionKey(header.partitionKey).build()
                     }
                 }
                 readFuture.complete(res as MutableList<Record>?)
