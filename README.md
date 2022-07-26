@@ -20,7 +20,9 @@ This is the official Java client library for [HStreamDB](https://hstream.io/).
     - [Connect to HStreamDB](#connect-to-hstreamdb)
     - [Work with Streams](#work-with-streams)
     - [Write Data to a Stream](#write-data-to-a-stream)
-    - [Consume Data from a Stream](#consume-data-from-a-stream)
+    - [Consume Data from a Stream](#consume-data-from-a-subscription)
+    - [Read Data from a Stream Shard](#read-data-from-a-stream-shard)
+
 
 ## Installation
 
@@ -152,7 +154,7 @@ batchedProducer.close();
 **Please do not write both binary data and hrecord in one stream.**
 
 
-### Consume Data from a Stream
+### Consume Data from a Subscription
 
 ```java
 // first, create a subscription for the stream
@@ -180,5 +182,24 @@ Consumer consumer =
 // third, start the consumer
 consumer.startAsync().awaitRunning();
 System.out.println("the consumer is started");
+
+```
+
+### Read Data from a Stream Shard
+
+```java
+
+Reader reader =
+    client
+        .newReader()
+        .readerId("my_readerId")
+        .streamName("my_stream")
+        .shardId("my_shardId")
+        .build();
+
+
+List<Record> records = reader.read(10).join();
+
+reader.close();
 
 ```
