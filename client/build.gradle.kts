@@ -65,6 +65,14 @@ tasks.test {
     }
 }
 
+sourceSets {
+    main {
+        proto {
+            exclude("api/*")
+        }
+    }
+}
+
 protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:3.19.2"
