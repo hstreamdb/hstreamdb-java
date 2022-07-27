@@ -86,7 +86,8 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
         val future = CompletableFuture<String>()
         writeRecordScope.launch {
             try {
-                val ids = writeHStreamRecords(listOf(hStreamRecord), hStreamRecord.header.key)
+                val shardId = calculateShardIdByPartitionKey(hStreamRecord.header.key)
+                val ids = writeHStreamRecords(listOf(hStreamRecord), shardId)
                 future.complete(ids[0])
             } catch (e: Throwable) {
                 future.completeExceptionally(e)
@@ -112,7 +113,7 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
 
     private suspend fun appendWithRetry(
         appendRequest: AppendRequest,
-        partitionKey: String,
+        shardId: Long,
         tryTimes: Int,
         forceUpdate: Boolean = false
     ): List<String> {
@@ -123,7 +124,7 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
             val status = Status.fromThrowable(e)
             if (status.code == Status.UNAVAILABLE.code && tryTimes > 1) {
                 delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                return appendWithRetry(appendRequest, partitionKey, tryTimes - 1, true)
+                return appendWithRetry(appendRequest, shardId, tryTimes - 1, true)
             } else {
                 throw HStreamDBClientException(e)
             }
@@ -131,7 +132,6 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
 
         check(tryTimes > 0)
 
-        val shardId = calculateShardIdByPartitionKey(partitionKey)
         val serverUrl = lookupServerUrl(shardId, forceUpdate)
         logger.info("try append with serverUrl [{}], current left tryTimes is [{}]", serverUrl, tryTimes)
         return try {
@@ -144,9 +144,9 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
         }
     }
 
-    protected suspend fun writeHStreamRecords(hStreamRecords: List<HStreamRecord>, key: String): List<String> {
-        val appendRequest = AppendRequest.newBuilder().setStreamName(stream).addAllRecords(hStreamRecords).build()
-        return appendWithRetry(appendRequest, key, DefaultSettings.APPEND_RETRY_MAX_TIMES)
+    protected suspend fun writeHStreamRecords(hStreamRecords: List<HStreamRecord>, shardId: Long): List<String> {
+        val appendRequest = AppendRequest.newBuilder().setStreamName(stream).setShardId(shardId).addAllRecords(hStreamRecords).build()
+        return appendWithRetry(appendRequest, shardId, DefaultSettings.APPEND_RETRY_MAX_TIMES)
     }
 
     companion object {

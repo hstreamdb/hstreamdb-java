@@ -63,6 +63,7 @@ public interface HStreamClient extends AutoCloseable {
    * List shards in a stream.
    *
    * @param streamName the name of the stream
+   * @return a list of {@link Shard}s.
    */
   List<Shard> listShards(String streamName);
 

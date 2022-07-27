@@ -108,7 +108,7 @@ class BufferedProducerKtImpl(
             val job = shardAppendJobs[shardId]
             shardAppendJobs[shardId] = batchScope.launch {
                 job?.join()
-                writeSingleKeyHStreamRecords(records, futures)
+                writeShard(shardId, records, futures)
                 logger.info("wrote batch for shard:$shardId")
                 flowController?.release(recordsBytesSize)
             }
@@ -116,9 +116,9 @@ class BufferedProducerKtImpl(
     }
 
     // only can be called by flush()
-    private suspend fun writeSingleKeyHStreamRecords(records: Records, futures: Futures) {
+    private suspend fun writeShard(shardId: Long, records: Records, futures: Futures) {
         try {
-            val ids = super.writeHStreamRecords(records, records[0].header.key)
+            val ids = super.writeHStreamRecords(records, shardId)
             for (i in ids.indices) {
                 futures[i].complete(ids[i])
             }
