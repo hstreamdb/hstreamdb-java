@@ -15,7 +15,7 @@ public class Subscription {
   private SubscriptionOffset offset;
 
   public enum SubscriptionOffset {
-    EARLEST,
+    EARLIEST,
     LATEST,
   }
 
