@@ -29,7 +29,7 @@ public class GrpcUtils {
 
   public static SpecialOffset subscriptionOffsetToGrpc(Subscription.SubscriptionOffset offset) {
     switch (offset) {
-      case EARLEST:
+      case EARLIEST:
         return io.hstream.internal.SpecialOffset.EARLIEST;
       case LATEST:
         return io.hstream.internal.SpecialOffset.LATEST;
@@ -41,7 +41,7 @@ public class GrpcUtils {
   public static Subscription.SubscriptionOffset subscriptionOffsetFromGrpc(SpecialOffset offset) {
     switch (offset) {
       case EARLIEST:
-        return Subscription.SubscriptionOffset.EARLEST;
+        return Subscription.SubscriptionOffset.EARLIEST;
       case LATEST:
         return Subscription.SubscriptionOffset.LATEST;
       default:
