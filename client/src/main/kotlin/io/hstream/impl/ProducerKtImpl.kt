@@ -145,7 +145,7 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
     }
 
     protected suspend fun writeHStreamRecords(hStreamRecords: List<HStreamRecord>, shardId: Long): List<String> {
-        val appendRequest = AppendRequest.newBuilder().setShardId(shardId).addAllRecords(hStreamRecords).build()
+        val appendRequest = AppendRequest.newBuilder().setStreamName(stream).setShardId(shardId).addAllRecords(hStreamRecords).build()
         return appendWithRetry(appendRequest, shardId, DefaultSettings.APPEND_RETRY_MAX_TIMES)
     }
 
