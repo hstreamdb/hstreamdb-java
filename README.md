@@ -2,15 +2,15 @@
 
 ![Build Status](https://github.com/hstreamdb/hstreamdb-java/actions/workflows/main.yml/badge.svg)
 [![Maven Central](https://img.shields.io/maven-central/v/io.hstream/hstreamdb-java)](https://search.maven.org/artifact/io.hstream/hstreamdb-java)
-[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.8.0/javadoc.svg)](https://javadoc.io/doc/io.hstream/hstreamdb-java/0.8.0)
-[![Snapshot Artifacts](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.hstream/hstreamdb-java.svg)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/hstream/hstreamdb-java/0.8.0-SNAPSHOT/)
-[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.8.0-SNAPSHOT/javadoc.svg)](https://hstreamdb.github.io/hstreamdb-java/javadoc/)
+[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.9.0/javadoc.svg)](https://javadoc.io/doc/io.hstream/hstreamdb-java/0.9.0)
+[![Snapshot Artifacts](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.hstream/hstreamdb-java.svg)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/hstream/hstreamdb-java/0.9.0-SNAPSHOT/)
+[![javadoc](https://javadoc.io/badge2/io.hstream/hstreamdb-java/0.9.0-SNAPSHOT/javadoc.svg)](https://hstreamdb.github.io/hstreamdb-java/javadoc/)
 
 This is the official Java client library for [HStreamDB](https://hstream.io/).
 
 **Please use the latest released version.**
 
-**The latest release is v0.8.0, which requires hstream server v0.8.0 .**
+**The latest release is v0.9.0, which requires hstream server v0.9.0 .**
 
 ## Content
 - [Installation](#installation)
@@ -20,7 +20,9 @@ This is the official Java client library for [HStreamDB](https://hstream.io/).
     - [Connect to HStreamDB](#connect-to-hstreamdb)
     - [Work with Streams](#work-with-streams)
     - [Write Data to a Stream](#write-data-to-a-stream)
-    - [Consume Data from a Stream](#consume-data-from-a-stream)
+    - [Consume Data from a Stream](#consume-data-from-a-subscription)
+    - [Read Data from a Stream Shard](#read-data-from-a-stream-shard)
+
 
 ## Installation
 
@@ -37,7 +39,7 @@ For Maven Users, the library can be included easily like this:
   <dependency>
     <groupId>io.hstream</groupId>
     <artifactId>hstreamdb-java</artifactId>
-    <version>0.8.0</version>
+    <version>0.9.0</version>
   </dependency>
 </dependencies>
 
@@ -49,7 +51,7 @@ For Gradle Users, the library can be included easily like this:
 
 ```groovy
 
-implementation 'io.hstream:hstreamdb-java:0.8.0'
+implementation 'io.hstream:hstreamdb-java:0.9.0'
 
 ```
 
@@ -152,7 +154,7 @@ batchedProducer.close();
 **Please do not write both binary data and hrecord in one stream.**
 
 
-### Consume Data from a Stream
+### Consume Data from a Subscription
 
 ```java
 // first, create a subscription for the stream
@@ -180,5 +182,24 @@ Consumer consumer =
 // third, start the consumer
 consumer.startAsync().awaitRunning();
 System.out.println("the consumer is started");
+
+```
+
+### Read Data from a Stream Shard
+
+```java
+
+Reader reader =
+    client
+        .newReader()
+        .readerId("my_readerId")
+        .streamName("my_stream")
+        .shardId("my_shardId")
+        .build();
+
+
+List<Record> records = reader.read(10).join();
+
+reader.close();
 
 ```
