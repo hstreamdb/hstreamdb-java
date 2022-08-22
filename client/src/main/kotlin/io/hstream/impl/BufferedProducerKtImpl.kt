@@ -2,6 +2,7 @@ package io.hstream.impl
 
 import io.hstream.BatchSetting
 import io.hstream.BufferedProducer
+import io.hstream.CompressionType
 import io.hstream.FlowControlSetting
 import io.hstream.HStreamDBClientException
 import io.hstream.internal.HStreamRecord
@@ -27,6 +28,7 @@ class BufferedProducerKtImpl(
     stream: String,
     private val batchSetting: BatchSetting,
     private val flowControlSetting: FlowControlSetting,
+    private val compressionType: CompressionType,
 ) : ProducerKtImpl(client, stream), BufferedProducer {
     private var lock = ReentrantLock()
     private var shardAppendBuffer: HashMap<Long, Records> = HashMap()
@@ -43,7 +45,9 @@ class BufferedProducerKtImpl(
     private val scheduler = Executors.newScheduledThreadPool(1)
     private var timerServices: HashMap<Long, ScheduledFuture<*>> = HashMap()
 
-    override fun writeInternal(hStreamRecord: HStreamRecord): CompletableFuture<String> {
+    override fun writeInternal(
+        hStreamRecord: HStreamRecord
+    ): CompletableFuture<String> {
         if (closed) {
             throw HStreamDBClientException("BufferedProducer is closed")
         }
@@ -118,7 +122,7 @@ class BufferedProducerKtImpl(
     // only can be called by flush()
     private suspend fun writeShard(shardId: Long, records: Records, futures: Futures) {
         try {
-            val ids = super.writeHStreamRecords(records, shardId)
+            val ids = super.writeHStreamRecords(records, shardId, compressionType)
             for (i in ids.indices) {
                 futures[i].complete(ids[i])
             }

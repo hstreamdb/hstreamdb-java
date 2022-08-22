@@ -1,13 +1,17 @@
 package io.hstream.impl
 
+import com.google.protobuf.ByteString
 import io.grpc.Status
 import io.grpc.StatusException
 import io.grpc.StatusRuntimeException
+import io.hstream.CompressionType
 import io.hstream.HRecord
 import io.hstream.HStreamDBClientException
 import io.hstream.Producer
 import io.hstream.Record
 import io.hstream.internal.AppendRequest
+import io.hstream.internal.BatchHStreamRecords
+import io.hstream.internal.BatchedRecord
 import io.hstream.internal.HStreamRecord
 import io.hstream.internal.ListShardsRequest
 import io.hstream.internal.LookupShardRequest
@@ -21,9 +25,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.slf4j.LoggerFactory
+import java.io.ByteArrayOutputStream
 import java.math.BigInteger
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.CompletableFuture
+import java.util.zip.GZIPOutputStream
 import kotlin.collections.HashMap
 
 open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val stream: String) : Producer {
@@ -144,8 +150,29 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
         }
     }
 
-    protected suspend fun writeHStreamRecords(hStreamRecords: List<HStreamRecord>, shardId: Long): List<String> {
-        val appendRequest = AppendRequest.newBuilder().setStreamName(stream).setShardId(shardId).addAllRecords(hStreamRecords).build()
+    private fun compress(records: List<HStreamRecord>, compressionType: CompressionType): ByteString {
+        val recordBatch = BatchHStreamRecords.newBuilder().addAllRecords(records).build()
+        return when (compressionType) {
+            CompressionType.NONE -> recordBatch.toByteString()
+            CompressionType.GZIP -> {
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                val gzipOutputStream = GZIPOutputStream(byteArrayOutputStream)
+                gzipOutputStream.write(recordBatch.toByteArray())
+                gzipOutputStream.flush()
+                ByteString.copyFrom(byteArrayOutputStream.toByteArray())
+            }
+        }
+    }
+
+    protected suspend fun writeHStreamRecords(
+        hStreamRecords: List<HStreamRecord>,
+        shardId: Long,
+        compressionType: CompressionType = CompressionType.NONE
+    ): List<String> {
+        val payload = compress(hStreamRecords, compressionType)
+        val batchedRecord = BatchedRecord.newBuilder().setCompressionType(GrpcUtils.compressionTypeToInternal(compressionType))
+            .setPayload(payload).build()
+        val appendRequest = AppendRequest.newBuilder().setStreamName(stream).setShardId(shardId).setRecords(batchedRecord).build()
         return appendWithRetry(appendRequest, shardId, DefaultSettings.APPEND_RETRY_MAX_TIMES)
     }
 

@@ -125,4 +125,29 @@ public class GrpcUtils {
       throw new IllegalArgumentException("Unknown streamShardOffset : " + shardOffset);
     }
   }
+
+  public static io.hstream.internal.CompressionType compressionTypeToInternal(
+      io.hstream.CompressionType compressionType) {
+    switch (compressionType) {
+      case NONE:
+        return io.hstream.internal.CompressionType.None;
+      case GZIP:
+        return io.hstream.internal.CompressionType.Gzip;
+      default:
+        throw new IllegalArgumentException("Unknown compressionType: " + compressionType);
+    }
+  }
+
+  public static io.hstream.CompressionType compressionTypeFromInternal(
+      io.hstream.internal.CompressionType compressionType) {
+
+    switch (compressionType) {
+      case None:
+        return io.hstream.CompressionType.NONE;
+      case Gzip:
+        return io.hstream.CompressionType.GZIP;
+      default:
+        throw new IllegalArgumentException("Unknown compressionType: " + compressionType);
+    }
+  }
 }
