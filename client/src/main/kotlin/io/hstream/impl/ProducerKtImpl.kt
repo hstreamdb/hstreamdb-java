@@ -171,7 +171,7 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
     ): List<String> {
         val payload = compress(hStreamRecords, compressionType)
         val batchedRecord = BatchedRecord.newBuilder().setCompressionType(GrpcUtils.compressionTypeToInternal(compressionType))
-            .setPayload(payload).build()
+            .setPayload(payload).setBatchSize(hStreamRecords.size).build()
         val appendRequest = AppendRequest.newBuilder().setStreamName(stream).setShardId(shardId).setRecords(batchedRecord).build()
         return appendWithRetry(appendRequest, shardId, DefaultSettings.APPEND_RETRY_MAX_TIMES)
     }
