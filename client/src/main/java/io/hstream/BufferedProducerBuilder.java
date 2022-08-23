@@ -26,7 +26,7 @@ public interface BufferedProducerBuilder {
   /**
    * Set the compression type.
    *
-   * @param compressionType
+   * @param compressionType type of compression
    * @return the BufferedProducerBuilder instance
    */
   BufferedProducerBuilder compressionType(CompressionType compressionType);

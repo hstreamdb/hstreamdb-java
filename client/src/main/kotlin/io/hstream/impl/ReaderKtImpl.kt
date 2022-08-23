@@ -6,7 +6,6 @@ import io.hstream.Record
 import io.hstream.StreamShardOffset
 import io.hstream.internal.CreateShardReaderRequest
 import io.hstream.internal.DeleteShardReaderRequest
-import io.hstream.internal.HStreamRecord
 import io.hstream.internal.LookupShardReaderRequest
 import io.hstream.internal.ReadShardRequest
 import io.hstream.util.GrpcUtils
@@ -51,15 +50,17 @@ class ReaderKtImpl(
                 val readShardRequest = ReadShardRequest.newBuilder().setReaderId(readerId).setMaxRecords(maxRecords).build()
                 val readShardResponse = client.getCoroutineStub(serverUrl)
                     .readShard(readShardRequest)
-                val res = readShardResponse.receivedRecordsList.map {
-                    val hStreamRecord = HStreamRecord.parseFrom(it.record)
-                    val header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord)
-                    if (RecordUtils.isRawRecord(hStreamRecord)) {
-                        val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord)
-                        Record.newBuilder().rawRecord(rawRecord).partitionKey(header.partitionKey).build()
-                    } else {
-                        val hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord)
-                        Record.newBuilder().hRecord(hRecord).partitionKey(header.partitionKey).build()
+                val res = readShardResponse.receivedRecordsList.flatMap {
+                    RecordUtils.decompress(it).map { receivedHStreamRecord ->
+                        val hStreamRecord = receivedHStreamRecord.record
+                        val header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord)
+                        if (RecordUtils.isRawRecord(hStreamRecord)) {
+                            val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord)
+                            Record.newBuilder().rawRecord(rawRecord).partitionKey(header.partitionKey).build()
+                        } else {
+                            val hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord)
+                            Record.newBuilder().hRecord(hRecord).partitionKey(header.partitionKey).build()
+                        }
                     }
                 }
                 readFuture.complete(res as MutableList<Record>?)
