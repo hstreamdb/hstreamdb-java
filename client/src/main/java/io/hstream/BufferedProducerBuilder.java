@@ -23,5 +23,13 @@ public interface BufferedProducerBuilder {
    */
   BufferedProducerBuilder flowControlSetting(FlowControlSetting flowControlSetting);
 
+  /**
+   * Set the compression type.
+   *
+   * @param compressionType type of compression
+   * @return the BufferedProducerBuilder instance
+   */
+  BufferedProducerBuilder compressionType(CompressionType compressionType);
+
   BufferedProducer build();
 }

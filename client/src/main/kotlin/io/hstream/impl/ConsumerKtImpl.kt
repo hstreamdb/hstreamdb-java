@@ -11,9 +11,7 @@ import io.hstream.HStreamDBClientException
 import io.hstream.RawRecordReceiver
 import io.hstream.ReceivedHRecord
 import io.hstream.ReceivedRawRecord
-import io.hstream.internal.HStreamRecord
 import io.hstream.internal.LookupSubscriptionRequest
-import io.hstream.internal.ReceivedRecord
 import io.hstream.internal.StreamingFetchRequest
 import io.hstream.internal.StreamingFetchResponse
 import io.hstream.util.GrpcUtils
@@ -120,44 +118,44 @@ class ConsumerKtImpl(
             return
         }
 
-        val receivedRecords = value.receivedRecordsList
-        for (receivedRecord in receivedRecords) {
-            val responder = ResponderImpl(ackSender, receivedRecord.recordId)
+        val receivedHStreamRecords = RecordUtils.decompress(value.receivedRecords)
+        for (receivedHStreamRecord in receivedHStreamRecords) {
+            val responder = ResponderImpl(ackSender, receivedHStreamRecord.recordId)
 
             executorService.submit {
                 if (!isRunning) {
                     return@submit
                 }
 
-                if (RecordUtils.isRawRecord(receivedRecord)) {
-                    logger.debug("consumer [{}] ready to process rawRecord [{}]", consumerName, receivedRecord.recordId)
+                if (RecordUtils.isRawRecord(receivedHStreamRecord.record)) {
+                    logger.debug("consumer [{}] ready to process rawRecord [{}]", consumerName, receivedHStreamRecord.recordId)
                     try {
-                        rawRecordReceiver!!.processRawRecord(toReceivedRawRecord(receivedRecord), responder)
+                        rawRecordReceiver!!.processRawRecord(toReceivedRawRecord(receivedHStreamRecord), responder)
                         logger.debug(
                             "consumer [{}] processes rawRecord [{}] done",
                             consumerName,
-                            receivedRecord.recordId
+                            receivedHStreamRecord.recordId
                         )
                     } catch (e: Exception) {
                         logger.error(
                             "consumer [{}] processes rawRecord [{}] error",
                             consumerName,
-                            receivedRecord.recordId,
+                            receivedHStreamRecord.recordId,
                             e
                         )
                     }
                 } else {
-                    logger.debug("consumer [{}] ready to process hRecord [{}]", consumerName, receivedRecord.recordId)
+                    logger.debug("consumer [{}] ready to process hRecord [{}]", consumerName, receivedHStreamRecord.recordId)
                     try {
                         hRecordReceiver!!.processHRecord(
-                            toReceivedHRecord(receivedRecord), responder
+                            toReceivedHRecord(receivedHStreamRecord), responder
                         )
-                        logger.debug("consumer [{}] processes hRecord [{}] done", consumerName, receivedRecord.recordId)
+                        logger.debug("consumer [{}] processes hRecord [{}] done", consumerName, receivedHStreamRecord.recordId)
                     } catch (e: Exception) {
                         logger.error(
                             "consumer [{}] processes hRecord [{}] error",
                             consumerName,
-                            receivedRecord.recordId,
+                            receivedHStreamRecord.recordId,
                             e
                         )
                     }
@@ -203,25 +201,23 @@ class ConsumerKtImpl(
 
     companion object {
         private val logger = LoggerFactory.getLogger(ConsumerKtImpl::class.java)
-        private fun toReceivedRawRecord(receivedRecord: ReceivedRecord): ReceivedRawRecord {
+        private fun toReceivedRawRecord(receivedHStreamRecord: ReceivedHStreamRecord): ReceivedRawRecord {
             return try {
-                val hStreamRecord = HStreamRecord.parseFrom(receivedRecord.record)
-                val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord)
-                val header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord)
+                val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(receivedHStreamRecord.record)
+                val header = RecordUtils.parseRecordHeaderFromHStreamRecord(receivedHStreamRecord.record)
                 ReceivedRawRecord(
-                    GrpcUtils.recordIdFromGrpc(receivedRecord.recordId), header, rawRecord
+                    GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId), header, rawRecord
                 )
             } catch (e: InvalidProtocolBufferException) {
                 throw HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e)
             }
         }
 
-        private fun toReceivedHRecord(receivedRecord: ReceivedRecord): ReceivedHRecord {
+        private fun toReceivedHRecord(receivedHStreamRecord: ReceivedHStreamRecord): ReceivedHRecord {
             return try {
-                val hStreamRecord = HStreamRecord.parseFrom(receivedRecord.record)
-                val hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord)
-                val header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord)
-                ReceivedHRecord(GrpcUtils.recordIdFromGrpc(receivedRecord.recordId), header, hRecord)
+                val hRecord = RecordUtils.parseHRecordFromHStreamRecord(receivedHStreamRecord.record)
+                val header = RecordUtils.parseRecordHeaderFromHStreamRecord(receivedHStreamRecord.record)
+                ReceivedHRecord(GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId), header, hRecord)
             } catch (e: InvalidProtocolBufferException) {
                 throw HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e)
             }

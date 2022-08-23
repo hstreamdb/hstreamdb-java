@@ -3,6 +3,7 @@ package io.hstream.impl;
 import io.hstream.BatchSetting;
 import io.hstream.BufferedProducer;
 import io.hstream.BufferedProducerBuilder;
+import io.hstream.CompressionType;
 import io.hstream.FlowControlSetting;
 import io.hstream.HStreamDBClientException;
 
@@ -12,6 +13,7 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
   private String streamName;
   private BatchSetting batchSetting = BatchSetting.newBuilder().build();
   private FlowControlSetting flowControlSetting = FlowControlSetting.newBuilder().build();
+  private CompressionType compressionType = CompressionType.NONE;
 
   public BufferedProducerBuilderImpl(HStreamClientKtImpl client) {
     this.client = client;
@@ -36,6 +38,12 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
   }
 
   @Override
+  public BufferedProducerBuilder compressionType(CompressionType compressionType) {
+    this.compressionType = compressionType;
+    return this;
+  }
+
+  @Override
   public BufferedProducer build() {
     if (streamName == null) {
       throw new HStreamDBClientException("Positional option:[stream] is not set");
@@ -48,6 +56,7 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
               "BatchSetting.ageLimit:[%d] should not be greater than flowControlSetting.bytesLimit:[%d]",
               batchBytes, flowBytes));
     }
-    return new BufferedProducerKtImpl(client, streamName, batchSetting, flowControlSetting);
+    return new BufferedProducerKtImpl(
+        client, streamName, batchSetting, flowControlSetting, compressionType);
   }
 }

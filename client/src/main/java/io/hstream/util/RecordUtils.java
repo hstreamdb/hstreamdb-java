@@ -1,14 +1,25 @@
 package io.hstream.util;
 
+import static com.google.common.base.Preconditions.*;
+
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
 import io.hstream.*;
 import io.hstream.Record;
 import io.hstream.impl.DefaultSettings;
+import io.hstream.impl.ReceivedHStreamRecord;
+import io.hstream.internal.BatchHStreamRecords;
+import io.hstream.internal.BatchedRecord;
 import io.hstream.internal.HStreamRecord;
 import io.hstream.internal.HStreamRecordHeader;
 import io.hstream.internal.ReceivedRecord;
+import io.hstream.internal.RecordId;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,31 +91,34 @@ public class RecordUtils {
     }
   }
 
-  public static boolean isRawRecord(ReceivedRecord receivedRecord) {
-    try {
-      HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
-      return isRawRecord(hStreamRecord);
-    } catch (InvalidProtocolBufferException e) {
-      throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
-    }
-  }
-
   public static boolean isRawRecord(HStreamRecord hStreamRecord) {
     HStreamRecordHeader.Flag flag = hStreamRecord.getHeader().getFlag();
     return flag.equals(HStreamRecordHeader.Flag.RAW);
   }
 
-  public static boolean isHRecord(ReceivedRecord receivedRecord) {
-    try {
-      HStreamRecord hStreamRecord = HStreamRecord.parseFrom(receivedRecord.getRecord());
-      return isHRecord(hStreamRecord);
-    } catch (InvalidProtocolBufferException e) {
-      throw new HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e);
-    }
-  }
-
   public static boolean isHRecord(HStreamRecord hStreamRecord) {
     HStreamRecordHeader.Flag flag = hStreamRecord.getHeader().getFlag();
     return flag.equals(HStreamRecordHeader.Flag.JSON);
+  }
+
+  public static List<ReceivedHStreamRecord> decompress(ReceivedRecord receivedRecord) {
+    BatchedRecord batchedRecord = receivedRecord.getRecord();
+    ByteArrayInputStream byteArrayInputStream =
+        new ByteArrayInputStream(batchedRecord.getPayload().toByteArray());
+    try {
+      GZIPInputStream gzipInputStream = new GZIPInputStream(byteArrayInputStream);
+      BatchHStreamRecords batchHStreamRecords = BatchHStreamRecords.parseFrom(gzipInputStream);
+      List<HStreamRecord> hStreamRecords = batchHStreamRecords.getRecordsList();
+      checkArgument(receivedRecord.getRecordIdsCount() == hStreamRecords.size());
+
+      List<ReceivedHStreamRecord> receivedHStreamRecords = new ArrayList<>(hStreamRecords.size());
+      for (int i = 0; i < hStreamRecords.size(); ++i) {
+        RecordId recordId = receivedRecord.getRecordIds(i);
+        receivedHStreamRecords.add(new ReceivedHStreamRecord(recordId, hStreamRecords.get(i)));
+      }
+      return receivedHStreamRecords;
+    } catch (IOException e) {
+      throw new HStreamDBClientException.InvalidRecordException("decompress record error", e);
+    }
   }
 }
