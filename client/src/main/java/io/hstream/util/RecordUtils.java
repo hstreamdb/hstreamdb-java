@@ -16,10 +16,12 @@ import io.hstream.internal.HStreamRecordHeader;
 import io.hstream.internal.ReceivedRecord;
 import io.hstream.internal.RecordId;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,11 +105,27 @@ public class RecordUtils {
 
   public static List<ReceivedHStreamRecord> decompress(ReceivedRecord receivedRecord) {
     BatchedRecord batchedRecord = receivedRecord.getRecord();
-    ByteArrayInputStream byteArrayInputStream =
-        new ByteArrayInputStream(batchedRecord.getPayload().toByteArray());
+    switch (batchedRecord.getCompressionType()) {
+      case None:
+        return parseBatchHStreamRecords(batchedRecord.getPayload(), receivedRecord);
+      case Gzip:
+        try {
+          ByteArrayInputStream byteArrayInputStream =
+              new ByteArrayInputStream(batchedRecord.getPayload().toByteArray());
+          GZIPInputStream gzipInputStream = new GZIPInputStream(byteArrayInputStream);
+          return parseBatchHStreamRecords(
+              ByteString.copyFrom(gzipInputStream.readAllBytes()), receivedRecord);
+        } catch (IOException e) {
+          throw new HStreamDBClientException.InvalidRecordException("decompress record error", e);
+        }
+    }
+    throw new HStreamDBClientException.InvalidRecordException("invalid record");
+  }
+
+  private static List<ReceivedHStreamRecord> parseBatchHStreamRecords(
+      ByteString byteString, ReceivedRecord receivedRecord) {
     try {
-      GZIPInputStream gzipInputStream = new GZIPInputStream(byteArrayInputStream);
-      BatchHStreamRecords batchHStreamRecords = BatchHStreamRecords.parseFrom(gzipInputStream);
+      BatchHStreamRecords batchHStreamRecords = BatchHStreamRecords.parseFrom(byteString);
       List<HStreamRecord> hStreamRecords = batchHStreamRecords.getRecordsList();
       checkArgument(receivedRecord.getRecordIdsCount() == hStreamRecords.size());
 
@@ -117,8 +135,30 @@ public class RecordUtils {
         receivedHStreamRecords.add(new ReceivedHStreamRecord(recordId, hStreamRecords.get(i)));
       }
       return receivedHStreamRecords;
-    } catch (IOException e) {
-      throw new HStreamDBClientException.InvalidRecordException("decompress record error", e);
+    } catch (InvalidProtocolBufferException e) {
+      throw new HStreamDBClientException.InvalidRecordException("parse record error", e);
     }
+  }
+
+  public static ByteString compress(
+      List<HStreamRecord> records, io.hstream.CompressionType compressionType) {
+    BatchHStreamRecords recordBatch =
+        BatchHStreamRecords.newBuilder().addAllRecords(records).build();
+    switch (compressionType) {
+      case NONE:
+        return recordBatch.toByteString();
+      case GZIP:
+        try {
+
+          var byteArrayOutputStream = new ByteArrayOutputStream();
+          var gzipOutputStream = new GZIPOutputStream(byteArrayOutputStream);
+          gzipOutputStream.write(recordBatch.toByteArray());
+          gzipOutputStream.close();
+          return ByteString.copyFrom(byteArrayOutputStream.toByteArray());
+        } catch (IOException e) {
+          throw new HStreamDBClientException("compress records error: ", e);
+        }
+    }
+    throw new HStreamDBClientException("compress records error");
   }
 }
