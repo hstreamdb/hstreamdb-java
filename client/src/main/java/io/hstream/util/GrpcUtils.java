@@ -133,6 +133,8 @@ public class GrpcUtils {
         return io.hstream.internal.CompressionType.None;
       case GZIP:
         return io.hstream.internal.CompressionType.Gzip;
+      case ZSTD:
+        return io.hstream.internal.CompressionType.Zstd;
       default:
         throw new IllegalArgumentException("Unknown compressionType: " + compressionType);
     }
@@ -146,6 +148,8 @@ public class GrpcUtils {
         return io.hstream.CompressionType.NONE;
       case Gzip:
         return io.hstream.CompressionType.GZIP;
+      case Zstd:
+        return io.hstream.CompressionType.ZSTD;
       default:
         throw new IllegalArgumentException("Unknown compressionType: " + compressionType);
     }

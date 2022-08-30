@@ -55,6 +55,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2")
+
+    implementation("com.github.luben:zstd-jni:1.5.2-3")
 }
 
 tasks.test {
