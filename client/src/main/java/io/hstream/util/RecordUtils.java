@@ -2,6 +2,8 @@ package io.hstream.util;
 
 import static com.google.common.base.Preconditions.*;
 
+import com.github.luben.zstd.Zstd;
+import com.github.luben.zstd.ZstdException;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
@@ -118,6 +120,14 @@ public class RecordUtils {
         } catch (IOException e) {
           throw new HStreamDBClientException.InvalidRecordException("decompress record error", e);
         }
+      case Zstd:
+        try {
+          byte[] payloadBytes = batchedRecord.getPayload().toByteArray();
+          byte[] srcPayloadBytes = Zstd.decompress(payloadBytes, payloadBytes.length);
+          return parseBatchHStreamRecords(ByteString.copyFrom(srcPayloadBytes), receivedRecord);
+        } catch (ZstdException e) {
+          throw new HStreamDBClientException.InvalidRecordException("decompress record error", e);
+        }
     }
     throw new HStreamDBClientException.InvalidRecordException("invalid record");
   }
@@ -156,6 +166,12 @@ public class RecordUtils {
           gzipOutputStream.close();
           return ByteString.copyFrom(byteArrayOutputStream.toByteArray());
         } catch (IOException e) {
+          throw new HStreamDBClientException("compress records error: ", e);
+        }
+      case ZSTD:
+        try {
+          return ByteString.copyFrom(Zstd.compress(recordBatch.toByteArray()));
+        } catch (ZstdException e) {
           throw new HStreamDBClientException("compress records error: ", e);
         }
     }

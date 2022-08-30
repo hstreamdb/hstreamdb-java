@@ -9,8 +9,11 @@ import io.hstream.internal.RecordId;
 import io.hstream.util.GrpcUtils;
 import io.hstream.util.RecordUtils;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class RecordUtilsTest {
@@ -23,6 +26,58 @@ public class RecordUtilsTest {
   @Test
   public void compressRecordsWithNone() {
     testCompressRecords(CompressionType.NONE);
+  }
+
+  @Test
+  public void compressRecordsWithZstd() {
+    testCompressRecords(CompressionType.ZSTD);
+  }
+
+  @Disabled
+  @Test
+  public void compressRatioWithGzip() {
+    compressRatio(4096, 100, CompressionType.GZIP);
+    compressRatio(4096, 250, CompressionType.GZIP);
+    compressRatio(4096, 500, CompressionType.GZIP);
+    compressRatio(4096, 750, CompressionType.GZIP);
+    compressRatio(4096, 1000, CompressionType.GZIP);
+  }
+
+  @Disabled
+  @Test
+  public void compressRatioWithZstd() {
+    compressRatio(4096, 100, CompressionType.ZSTD);
+    compressRatio(4096, 250, CompressionType.ZSTD);
+    compressRatio(4096, 500, CompressionType.ZSTD);
+    compressRatio(4096, 750, CompressionType.ZSTD);
+    compressRatio(4096, 1000, CompressionType.ZSTD);
+  }
+
+  private void compressRatio(int payloadSize, int recordsCount, CompressionType compressionType) {
+    var random = new Random();
+    var recordPayload = new byte[payloadSize];
+    random.nextBytes(recordPayload);
+
+    var hstreamRecord =
+        HStreamRecord.newBuilder()
+            .setHeader(
+                HStreamRecordHeader.newBuilder()
+                    .setKey("k1")
+                    .setFlag(HStreamRecordHeader.Flag.RAW)
+                    .build())
+            .setPayload(ByteString.copyFrom(recordPayload))
+            .build();
+    var len = recordsCount;
+    var records = new ArrayList<HStreamRecord>(len);
+    for (int i = 0; i < len; ++i) {
+      records.add(hstreamRecord);
+    }
+    var compressedPayload = RecordUtils.compress(records, compressionType);
+    var srcSize = hstreamRecord.getSerializedSize() * len;
+    var dstSize = compressedPayload.size();
+    System.out.println("before compress size: " + srcSize);
+    System.out.println("after compress size: " + dstSize);
+    System.out.println("compress ratio: " + (double) srcSize / dstSize);
   }
 
   private void testCompressRecords(CompressionType compressionType) {
