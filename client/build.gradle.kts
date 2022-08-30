@@ -13,6 +13,8 @@ plugins {
 
     kotlin("jvm") version "1.6.10"
     id("com.diffplug.spotless") version "6.2.0"
+
+    id("me.champeau.jmh") version "0.6.7"
 }
 
 group = "io.hstream"
@@ -194,4 +196,7 @@ spotless {
         target("*.gradle.kts")
         ktlint()
     }
+}
+
+jmh {
 }
