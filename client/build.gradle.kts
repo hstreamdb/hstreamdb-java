@@ -52,11 +52,11 @@ dependencies {
 
     api("com.google.guava:guava:30.1.1-jre")
 
-    implementation("io.grpc:grpc-kotlin-stub:1.2.0")
+    implementation("io.grpc:grpc-kotlin-stub:1.3.0")
     implementation("com.google.protobuf:protobuf-kotlin:3.17.3")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0")
 
     implementation("com.github.luben:zstd-jni:1.5.2-3")
 }
