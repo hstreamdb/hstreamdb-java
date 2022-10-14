@@ -75,6 +75,11 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
   }
 
   private List<String> parseServerUrls(String url) {
-    return List.of(url.strip().split(","));
+    var prefix = "hstream://";
+    String uriStr = url.strip();
+    if (uriStr.startsWith(prefix)) {
+      uriStr = uriStr.substring(prefix.length());
+    }
+    return List.of(uriStr.split(","));
   }
 }
