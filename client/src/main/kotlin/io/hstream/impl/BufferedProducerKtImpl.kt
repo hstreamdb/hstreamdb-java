@@ -184,7 +184,14 @@ class BufferedProducerKtImpl(
                     leftBytes -= bytes
                     null
                 } else {
-                    val waitBytes = bytes - leftBytes
+                    val waitBytes =
+                        if (leftBytes == 0) {
+                            bytes
+                        } else {
+                            val waitBytes = bytes - leftBytes
+                            leftBytes = 0
+                            waitBytes
+                        }
                     val bytesWaiter = BytesWaiter(waitBytes)
                     waitingList.addLast(bytesWaiter)
                     bytesWaiter
