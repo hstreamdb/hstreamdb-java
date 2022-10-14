@@ -117,4 +117,6 @@ public interface HStreamClient extends AutoCloseable {
    * @param force the flag whether to enable force deletion
    */
   void deleteSubscription(String subscriptionId, boolean force);
+
+  Cluster describeCluster();
 }

@@ -3,6 +3,7 @@ package io.hstream.impl
 import com.google.protobuf.Empty
 import io.grpc.ChannelCredentials
 import io.hstream.BufferedProducerBuilder
+import io.hstream.Cluster
 import io.hstream.ConsumerBuilder
 import io.hstream.HStreamClient
 import io.hstream.ProducerBuilder
@@ -173,6 +174,13 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
             ).deleteSubscription(
                 DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).setForce(force).build()
             )
+        }
+    }
+
+    override fun describeCluster(): Cluster {
+        return unaryCallBlocked {
+            val result = it.describeCluster(Empty.getDefaultInstance())
+            return@unaryCallBlocked Cluster.newBuilder().uptime(result.clusterUpTime).build()
         }
     }
 
