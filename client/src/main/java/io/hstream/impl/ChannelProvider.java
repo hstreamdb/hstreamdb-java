@@ -1,5 +1,6 @@
 package io.hstream.impl;
 
+import com.google.common.util.concurrent.MoreExecutors;
 import io.grpc.ChannelCredentials;
 import io.grpc.Grpc;
 import io.grpc.ManagedChannel;
@@ -30,10 +31,19 @@ public class ChannelProvider implements Closeable {
   public ManagedChannel get(String serverUrl) {
     if (credentials == null) {
       return provider.computeIfAbsent(
-          serverUrl, url -> ManagedChannelBuilder.forTarget(url).usePlaintext().build());
+          serverUrl,
+          url ->
+              ManagedChannelBuilder.forTarget(url)
+                  .usePlaintext()
+                  .executor(MoreExecutors.directExecutor())
+                  .build());
     }
     return provider.computeIfAbsent(
-        serverUrl, url -> Grpc.newChannelBuilder(url, credentials).build());
+        serverUrl,
+        url ->
+            Grpc.newChannelBuilder(url, credentials)
+                .executor(MoreExecutors.directExecutor())
+                .build());
   }
 
   @Override
