@@ -110,11 +110,14 @@ class BufferedProducerKtImpl(
             timerServices[shardId]?.cancel(true)
             timerServices.remove(shardId)
             val job = shardAppendJobs[shardId]
-            shardAppendJobs[shardId] = batchScope.launch {
-                job?.join()
-                writeShard(shardId, records, futures)
-                logger.info("wrote batch for shard:$shardId")
-                flowController?.release(recordsBytesSize)
+            job?.invokeOnCompletion { _ ->
+                run {
+                    shardAppendJobs[shardId] = batchScope.launch {
+                        writeShard(shardId, records, futures)
+                        logger.info("wrote batch for shard:$shardId")
+                        flowController?.release(recordsBytesSize)
+                    }
+                }
             }
         }
     }
