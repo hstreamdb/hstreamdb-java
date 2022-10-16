@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.HashMap
 import kotlin.concurrent.withLock
@@ -34,7 +35,7 @@ class BufferedProducerKtImpl(
     private var shardAppendBuffer: HashMap<Long, Records> = HashMap()
     private var shardAppendFutures: HashMap<Long, Futures> = HashMap()
     private var shardAppendBytesSize: HashMap<Long, Int> = HashMap()
-    private var shardAppendJobs: HashMap<Long, Job> = HashMap()
+    private var shardAppendJobs: HashMap<Long, AtomicReference<Job>> = HashMap()
     private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     private val flowController: FlowController? = if (flowControlSetting.bytesLimit > 0) FlowController(flowControlSetting.bytesLimit) else null
@@ -109,15 +110,19 @@ class BufferedProducerKtImpl(
             shardAppendBytesSize.remove(shardId)
             timerServices[shardId]?.cancel(true)
             timerServices.remove(shardId)
-            val job = shardAppendJobs[shardId]
-            job?.invokeOnCompletion { _ ->
-                run {
-                    shardAppendJobs[shardId] = batchScope.launch {
-                        writeShard(shardId, records, futures)
-                        logger.info("wrote batch for shard:$shardId")
-                        flowController?.release(recordsBytesSize)
-                    }
+            if (!shardAppendJobs.containsKey(shardId)) {
+                val dumbJob = Job()
+                dumbJob.complete()
+                shardAppendJobs[shardId] = AtomicReference(dumbJob)
+            }
+            val jobRef = shardAppendJobs[shardId]!!
+            jobRef.get().invokeOnCompletion {
+                val job = batchScope.launch {
+                    writeShard(shardId, records, futures)
+                    logger.info("wrote batch for shard:$shardId")
+                    flowController?.release(recordsBytesSize)
                 }
+                jobRef.set(job)
             }
         }
     }
