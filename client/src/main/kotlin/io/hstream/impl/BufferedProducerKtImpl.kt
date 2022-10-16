@@ -109,9 +109,10 @@ class BufferedProducerKtImpl(
             shardAppendBytesSize.remove(shardId)
             timerServices[shardId]?.cancel(true)
             timerServices.remove(shardId)
-            val job = shardAppendJobs[shardId]
+            var job = shardAppendJobs[shardId]
             shardAppendJobs[shardId] = batchScope.launch {
                 job?.join()
+                job = null
                 writeShard(shardId, records, futures)
                 logger.info("wrote batch for shard:$shardId")
                 flowController?.release(recordsBytesSize)
