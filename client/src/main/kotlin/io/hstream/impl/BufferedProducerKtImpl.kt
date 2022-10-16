@@ -8,7 +8,6 @@ import io.hstream.HStreamDBClientException
 import io.hstream.internal.HStreamRecord
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.util.LinkedList
@@ -34,7 +33,6 @@ class BufferedProducerKtImpl(
     private var shardAppendBuffer: HashMap<Long, Records> = HashMap()
     private var shardAppendFutures: HashMap<Long, Futures> = HashMap()
     private var shardAppendBytesSize: HashMap<Long, Int> = HashMap()
-    private var shardAppendJobs: HashMap<Long, Job> = HashMap()
     private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     private val flowController: FlowController? = if (flowControlSetting.bytesLimit > 0) FlowController(flowControlSetting.bytesLimit) else null
@@ -109,10 +107,7 @@ class BufferedProducerKtImpl(
             shardAppendBytesSize.remove(shardId)
             timerServices[shardId]?.cancel(true)
             timerServices.remove(shardId)
-            var job = shardAppendJobs[shardId]
-            shardAppendJobs[shardId] = batchScope.launch {
-                job?.join()
-                job = null
+            batchScope.launch {
                 writeShard(shardId, records, futures)
                 logger.info("wrote batch for shard:$shardId")
                 flowController?.release(recordsBytesSize)
