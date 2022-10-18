@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.*;
 import io.hstream.*;
 import io.hstream.internal.RecordId;
 import io.hstream.internal.SpecialOffset;
+import io.hstream.internal.TaskStatusPB;
 
 /**
  * A class of utility functions to convert between the GRPC generated classes and the custom classes
@@ -152,6 +153,44 @@ public class GrpcUtils {
         return io.hstream.CompressionType.ZSTD;
       default:
         throw new IllegalArgumentException("Unknown compressionType: " + compressionType);
+    }
+  }
+
+  public static Query queryFromInternal(io.hstream.internal.Query query) {
+    return Query.newBuilder()
+            .id(query.getId())
+            .status(taskStatusFromInternal(query.getStatus()))
+            .createdTime(query.getCreatedTime())
+            .queryText(query.getQueryText())
+            .build();
+  }
+
+  public static View viewFromInternal(io.hstream.internal.View view) {
+    return View.newBuilder()
+            .name(view.getViewId())
+            .status(taskStatusFromInternal(view.getStatus()))
+            .sql(view.getSql())
+            .createdTime(view.getCreatedTime())
+            .schema(view.getSchemaList())
+            .build();
+  }
+
+  public static TaskStatus taskStatusFromInternal(TaskStatusPB statusPB) {
+    switch (statusPB) {
+      case TASK_CREATING:
+        return TaskStatus.TASK_CREATING;
+      case TASK_CREATED:
+        return TaskStatus.TASK_CREATED;
+      case TASK_RUNNING:
+        return TaskStatus.TASK_RUNNING;
+      case TASK_CONNECTION_ABORT:
+        return TaskStatus.TASK_CONNECTION_ABORT;
+      case TASK_CREATION_ABORT:
+        return TaskStatus.TASK_CREATION_ABORT;
+      case TASK_TERMINATED:
+        return TaskStatus.TASK_TERMINATED;
+      default:
+        throw new IllegalArgumentException("Unknown task status: " + statusPB);
     }
   }
 }

@@ -119,4 +119,14 @@ public interface HStreamClient extends AutoCloseable {
   void deleteSubscription(String subscriptionId, boolean force);
 
   Cluster describeCluster();
+
+  void createQuery(String sql);
+  List<Query> listQueries();
+  Query getQuery(String id);
+  void deleteQuery(String id);
+
+  void createView(String sql);
+  List<View> listViews();
+  View getView(String name);
+  void deleteView(String name);
 }
