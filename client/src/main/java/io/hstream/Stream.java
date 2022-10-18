@@ -62,4 +62,39 @@ public class Stream {
   public int hashCode() {
     return Objects.hash(streamName, replicationFactor, backlogDuration, shardCount);
   }
+
+  public static final class Builder {
+    private String streamName;
+    private int replicationFactor = 1;
+    private int backlogDuration;
+    private int shardCount = 1;
+
+    public Builder streamName(String streamName) {
+      this.streamName = streamName;
+      return this;
+    }
+
+    public Builder replicationFactor(int replicationFactor) {
+      this.replicationFactor = replicationFactor;
+      return this;
+    }
+
+    public Builder backlogDuration(int backlogDuration) {
+      this.backlogDuration = backlogDuration;
+      return this;
+    }
+
+    public Builder shardCount(int shardCount) {
+      this.shardCount = shardCount;
+      return this;
+    }
+
+    public Stream build() {
+      return new Stream(streamName, replicationFactor, backlogDuration, shardCount);
+    }
+  }
+
+  public static Builder newBuilder() {
+    return new Builder();
+  }
 }
