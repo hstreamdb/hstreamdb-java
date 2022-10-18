@@ -121,6 +121,15 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
         }
     }
 
+    override fun createStream(stream: Stream?) {
+        checkNotNull(stream)
+        unaryCallBlocked {
+            it.createStream(
+                GrpcUtils.streamToGrpc(stream)
+            )
+        }
+    }
+
     override fun listShards(streamName: String?): List<Shard> {
         checkNotNull(streamName)
         val listShardsRequest = ListShardsRequest.newBuilder().setStreamName(streamName).build()
