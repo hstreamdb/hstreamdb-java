@@ -133,6 +133,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">B</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/hstream/Stream.Builder.html#backlogDuration(int)">backlogDuration(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.Builder.html" title="class in io.hstream">Stream.Builder</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/BufferedProducerBuilder.html#batchSetting(io.hstream.BatchSetting)">batchSetting(BatchSetting)</a></span> - Method in interface io.hstream.<a href="io/hstream/BufferedProducerBuilder.html" title="interface in io.hstream">BufferedProducerBuilder</a></dt>
 <dd>
 <div class="block">BufferedProducer will buffer records for each shard as a batch to send to servers, so <a href="io/hstream/BatchSetting.html" title="class in io.hstream"><code>BatchSetting</code></a> is to control the batch buffer.</div>
@@ -179,6 +181,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordHeader.Builder.html#build()">build()</a></span> - Method in class io.hstream.<a href="io/hstream/RecordHeader.Builder.html" title="class in io.hstream">RecordHeader.Builder</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Stream.Builder.html#build()">build()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.Builder.html" title="class in io.hstream">Stream.Builder</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.Builder.html#build()">build()</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#builder()">builder()</a></span> - Static method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
@@ -192,6 +196,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/Record.Builder.html#%3Cinit%3E()">Builder()</a></span> - Constructor for class io.hstream.<a href="io/hstream/Record.Builder.html" title="class in io.hstream">Record.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordHeader.Builder.html#%3Cinit%3E()">Builder()</a></span> - Constructor for class io.hstream.<a href="io/hstream/RecordHeader.Builder.html" title="class in io.hstream">RecordHeader.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Stream.Builder.html#%3Cinit%3E()">Builder()</a></span> - Constructor for class io.hstream.<a href="io/hstream/Stream.Builder.html" title="class in io.hstream">Stream.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.Builder.html#%3Cinit%3E()">Builder()</a></span> - Constructor for class io.hstream.<a href="io/hstream/Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></dt>
 <dd>&nbsp;</dd>
@@ -236,6 +242,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#contains(java.lang.String)">contains(String)</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#createStream(io.hstream.Stream)">createStream(Stream)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
+<dd>
+<div class="block">Create a new stream.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#createStream(java.lang.String)">createStream(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
 <div class="block">Create a new stream with 1 replicas.</div>
@@ -395,11 +405,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Record.html#getRawRecord()">getRawRecord()</a></span> - Method in class io.hstream.<a href="io/hstream/Record.html" title="class in io.hstream">Record</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/ReceivedRecord.html#getRecord()">getRecord()</a></span> - Method in class io.hstream.<a href="io/hstream/ReceivedRecord.html" title="class in io.hstream">ReceivedRecord</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/BatchSetting.html#getRecordCountLimit()">getRecordCountLimit()</a></span> - Method in class io.hstream.<a href="io/hstream/BatchSetting.html" title="class in io.hstream">BatchSetting</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ReceivedHRecord.html#getRecordId()">getRecordId()</a></span> - Method in class io.hstream.<a href="io/hstream/ReceivedHRecord.html" title="class in io.hstream">ReceivedHRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ReceivedRawRecord.html#getRecordId()">getRecordId()</a></span> - Method in class io.hstream.<a href="io/hstream/ReceivedRawRecord.html" title="class in io.hstream">ReceivedRawRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/ReceivedRecord.html#getRecordId()">getRecordId()</a></span> - Method in class io.hstream.<a href="io/hstream/ReceivedRecord.html" title="class in io.hstream">ReceivedRecord</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#getReplicationFactor()">getReplicationFactor()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
@@ -575,6 +589,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Record.html#newBuilder()">newBuilder()</a></span> - Static method in class io.hstream.<a href="io/hstream/Record.html" title="class in io.hstream">Record</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Stream.html#newBuilder()">newBuilder()</a></span> - Static method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.html#newBuilder()">newBuilder()</a></span> - Static method in class io.hstream.<a href="io/hstream/Subscription.html" title="class in io.hstream">Subscription</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#newConsumer()">newConsumer()</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
@@ -683,7 +699,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Reader.html#read(int)">read(int)</a></span> - Method in interface io.hstream.<a href="io/hstream/Reader.html" title="interface in io.hstream">Reader</a></dt>
 <dd>
-<div class="block">Read <a href="io/hstream/Record.html" title="class in io.hstream"><code>Record</code></a>s from a stream shard.</div>
+<div class="block">Read <a href="io/hstream/ReceivedRecord.html" title="class in io.hstream"><code>ReceivedRecord</code></a>s from a stream shard.</div>
 </dd>
 <dt><a href="io/hstream/Reader.html" title="interface in io.hstream"><span class="typeNameLink">Reader</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
@@ -707,6 +723,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ReceivedRawRecord.html#%3Cinit%3E(java.lang.String,io.hstream.RecordHeader,byte%5B%5D)">ReceivedRawRecord(String, RecordHeader, byte[])</a></span> - Constructor for class io.hstream.<a href="io/hstream/ReceivedRawRecord.html" title="class in io.hstream">ReceivedRawRecord</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/hstream/ReceivedRecord.html" title="class in io.hstream"><span class="typeNameLink">ReceivedRecord</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/ReceivedRecord.html#%3Cinit%3E(java.lang.String,io.hstream.Record)">ReceivedRecord(String, Record)</a></span> - Constructor for class io.hstream.<a href="io/hstream/ReceivedRecord.html" title="class in io.hstream">ReceivedRecord</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/hstream/Record.html" title="class in io.hstream"><span class="typeNameLink">Record</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/Record.Builder.html" title="class in io.hstream"><span class="typeNameLink">Record.Builder</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
@@ -716,6 +736,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="io/hstream/RecordHeader.html" title="class in io.hstream"><span class="typeNameLink">RecordHeader</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/RecordHeader.Builder.html" title="class in io.hstream"><span class="typeNameLink">RecordHeader.Builder</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Stream.Builder.html#replicationFactor(int)">replicationFactor(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.Builder.html" title="class in io.hstream">Stream.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/Responder.html" title="interface in io.hstream"><span class="typeNameLink">Responder</span></a> - Interface in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>
@@ -742,6 +764,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/RecordHeader.html#setPartitionKey(java.lang.String)">setPartitionKey(String)</a></span> - Method in class io.hstream.<a href="io/hstream/RecordHeader.html" title="class in io.hstream">RecordHeader</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/ReceivedRecord.html#setRecord(io.hstream.Record)">setRecord(Record)</a></span> - Method in class io.hstream.<a href="io/hstream/ReceivedRecord.html" title="class in io.hstream">ReceivedRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/ReceivedRecord.html#setRecordId(java.lang.String)">setRecordId(String)</a></span> - Method in class io.hstream.<a href="io/hstream/ReceivedRecord.html" title="class in io.hstream">ReceivedRecord</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#setReplicationFactor(int)">setReplicationFactor(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#setShardCount(int)">setShardCount(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
@@ -751,6 +777,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="io/hstream/Shard.html" title="class in io.hstream"><span class="typeNameLink">Shard</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Shard.html#%3Cinit%3E(java.lang.String,long,java.lang.String,java.lang.String)">Shard(String, long, String, String)</a></span> - Constructor for class io.hstream.<a href="io/hstream/Shard.html" title="class in io.hstream">Shard</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Stream.Builder.html#shardCount(int)">shardCount(int)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.Builder.html" title="class in io.hstream">Stream.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ReaderBuilder.html#shardId(long)">shardId(long)</a></span> - Method in interface io.hstream.<a href="io/hstream/ReaderBuilder.html" title="interface in io.hstream">ReaderBuilder</a></dt>
 <dd>&nbsp;</dd>
@@ -772,7 +800,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#%3Cinit%3E(java.lang.String,int,int,int)">Stream(String, int, int, int)</a></span> - Constructor for class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/hstream/Stream.Builder.html" title="class in io.hstream"><span class="typeNameLink">Stream.Builder</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ReaderBuilder.html#streamName(java.lang.String)">streamName(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/ReaderBuilder.html" title="interface in io.hstream">ReaderBuilder</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Stream.Builder.html#streamName(java.lang.String)">streamName(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.Builder.html" title="class in io.hstream">Stream.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/hstream/StreamShardOffset.html" title="class in io.hstream"><span class="typeNameLink">StreamShardOffset</span></a> - Class in <a href="io/hstream/package-summary.html">io.hstream</a></dt>
 <dd>&nbsp;</dd>
