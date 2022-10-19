@@ -14,8 +14,8 @@ import io.hstream.Shard
 import io.hstream.Stream
 import io.hstream.Subscription
 import io.hstream.View
-import io.hstream.internal.CommandPushQuery
 import io.hstream.internal.CommandQuery
+import io.hstream.internal.CreateQueryRequest
 import io.hstream.internal.DeleteQueryRequest
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
@@ -195,18 +195,18 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
         }
     }
 
-    override fun createQuery(sql: String?) {
+    override fun createQuery(sql: String?): Query? {
         checkNotNull(sql)
-        unaryCallBlocked {
-            // drop result
-            it.executePushQuery(CommandPushQuery.newBuilder().setQueryText(sql).build())
+        return unaryCallBlocked {
+            val query = it.createQuery(CreateQueryRequest.newBuilder().setSql(sql).build())
+            GrpcUtils.queryFromInternal(query)
         }
     }
 
     override fun listQueries(): List<Query> {
         return unaryCallBlocked {
             val result = it.listQueries(ListQueriesRequest.getDefaultInstance())
-            return@unaryCallBlocked result.queriesList.stream()
+            result.queriesList.stream()
                 .map(GrpcUtils::queryFromInternal)
                 .toList()
         }
@@ -215,7 +215,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     override fun getQuery(id: String?): Query {
         return unaryCallBlocked {
             val result = it.getQuery(GetQueryRequest.newBuilder().setId(id).build())
-            return@unaryCallBlocked GrpcUtils.queryFromInternal(result)
+            GrpcUtils.queryFromInternal(result)
         }
     }
 
@@ -233,7 +233,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
 
     override fun listViews(): List<View> {
         return unaryCallBlocked {
-            return@unaryCallBlocked it.listViews(ListViewsRequest.getDefaultInstance())
+            it.listViews(ListViewsRequest.getDefaultInstance())
                 .viewsList.stream()
                 .map(GrpcUtils::viewFromInternal)
                 .toList()
@@ -243,7 +243,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     override fun getView(name: String?): View {
         return unaryCallBlocked {
             val result = it.getView(GetViewRequest.newBuilder().setViewId(name).build())
-            return@unaryCallBlocked GrpcUtils.viewFromInternal(result);
+            GrpcUtils.viewFromInternal(result);
         }
     }
 
