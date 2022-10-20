@@ -7,9 +7,9 @@ import io.hstream.FlowControlSetting
 import io.hstream.HStreamDBClientException
 import io.hstream.internal.HStreamRecord
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
 import org.slf4j.LoggerFactory
 import java.util.LinkedList
 import java.util.concurrent.CompletableFuture
@@ -34,7 +34,7 @@ class BufferedProducerKtImpl(
     private var shardAppendBuffer: HashMap<Long, Records> = HashMap()
     private var shardAppendFutures: HashMap<Long, Futures> = HashMap()
     private var shardAppendBytesSize: HashMap<Long, Int> = HashMap()
-    private var shardAppendJobs: HashMap<Long, Job> = HashMap()
+    private var shardAppendResults: HashMap<Long, Deferred<Unit>> = HashMap()
     private var batchScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 
     private val flowController: FlowController? = if (flowControlSetting.bytesLimit > 0) FlowController(flowControlSetting.bytesLimit) else null
@@ -109,13 +109,15 @@ class BufferedProducerKtImpl(
             shardAppendBytesSize.remove(shardId)
             timerServices[shardId]?.cancel(true)
             timerServices.remove(shardId)
-            var job = shardAppendJobs[shardId]
-            shardAppendJobs[shardId] = batchScope.launch {
-                job?.join()
-                job = null
+            var result = shardAppendResults[shardId]
+            shardAppendResults[shardId] = batchScope.async {
+                // TODO: handle exception
+                result?.await()
+                result = null
                 writeShard(shardId, records, futures)
                 logger.info("wrote batch for shard:$shardId")
                 flowController?.release(recordsBytesSize)
+                Unit
             }
         }
     }
