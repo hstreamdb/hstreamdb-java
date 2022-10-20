@@ -158,21 +158,21 @@ public class GrpcUtils {
 
   public static Query queryFromInternal(io.hstream.internal.Query query) {
     return Query.newBuilder()
-            .id(query.getId())
-            .status(taskStatusFromInternal(query.getStatus()))
-            .createdTime(query.getCreatedTime())
-            .queryText(query.getQueryText())
-            .build();
+        .id(query.getId())
+        .status(taskStatusFromInternal(query.getStatus()))
+        .createdTime(query.getCreatedTime())
+        .queryText(query.getQueryText())
+        .build();
   }
 
   public static View viewFromInternal(io.hstream.internal.View view) {
     return View.newBuilder()
-            .name(view.getViewId())
-            .status(taskStatusFromInternal(view.getStatus()))
-            .sql(view.getSql())
-            .createdTime(view.getCreatedTime())
-            .schema(view.getSchemaList())
-            .build();
+        .name(view.getViewId())
+        .status(taskStatusFromInternal(view.getStatus()))
+        .sql(view.getSql())
+        .createdTime(view.getCreatedTime())
+        .schema(view.getSchemaList())
+        .build();
   }
 
   public static TaskStatus taskStatusFromInternal(TaskStatusPB statusPB) {

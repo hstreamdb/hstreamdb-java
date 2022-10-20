@@ -236,7 +236,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
 
     override fun createView(sql: String?) {
         unaryCallBlocked {
-            it.executeQuery(CommandQuery.newBuilder().setStmtText(sql).build());
+            it.executeQuery(CommandQuery.newBuilder().setStmtText(sql).build())
         }
     }
 
@@ -252,13 +252,13 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     override fun getView(name: String?): View {
         return unaryCallBlocked {
             val result = it.getView(GetViewRequest.newBuilder().setViewId(name).build())
-            GrpcUtils.viewFromInternal(result);
+            GrpcUtils.viewFromInternal(result)
         }
     }
 
     override fun deleteView(name: String?) {
         unaryCallBlocked {
-            it.deleteView(DeleteViewRequest.newBuilder().setViewId(name).build());
+            it.deleteView(DeleteViewRequest.newBuilder().setViewId(name).build())
         }
     }
 
