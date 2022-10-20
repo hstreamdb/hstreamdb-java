@@ -7,10 +7,10 @@ import java.util.concurrent.CompletableFuture;
 public interface Reader extends AutoCloseable {
 
   /**
-   * Read {@link Record}s from a stream shard.
+   * Read {@link ReceivedRecord}s from a stream shard.
    *
    * @param maxRecords the max number of the returned records
-   * @return the {@link Record}s wrapped in a {@link CompletableFuture}
+   * @return the {@link ReceivedRecord}s wrapped in a {@link CompletableFuture}
    */
-  CompletableFuture<List<Record>> read(int maxRecords);
+  CompletableFuture<List<ReceivedRecord>> read(int maxRecords);
 }

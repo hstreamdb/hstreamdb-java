@@ -60,6 +60,13 @@ public interface HStreamClient extends AutoCloseable {
   void createStream(String stream, short replicationFactor, int shardCount, int backlogDuration);
 
   /**
+   * Create a new stream.
+   *
+   * @param stream Stream Object, you should use {@link Stream.Builder} to build it.
+   */
+  void createStream(Stream stream);
+
+  /**
    * List shards in a stream.
    *
    * @param streamName the name of the stream

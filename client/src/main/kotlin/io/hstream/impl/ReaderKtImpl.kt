@@ -2,6 +2,7 @@ package io.hstream.impl
 
 import io.hstream.HStreamDBClientException
 import io.hstream.Reader
+import io.hstream.ReceivedRecord
 import io.hstream.Record
 import io.hstream.StreamShardOffset
 import io.hstream.internal.CreateShardReaderRequest
@@ -43,8 +44,8 @@ class ReaderKtImpl(
         logger.info("created Reader [{}] for stream [{}] shard [{}]", readerId, streamName, shardId)
     }
 
-    override fun read(maxRecords: Int): CompletableFuture<MutableList<Record>> {
-        val readFuture = CompletableFuture<MutableList<Record>>()
+    override fun read(maxRecords: Int): CompletableFuture<MutableList<ReceivedRecord>> {
+        val readFuture = CompletableFuture<MutableList<ReceivedRecord>>()
         readerScope.launch {
             try {
                 val readShardRequest = ReadShardRequest.newBuilder().setReaderId(readerId).setMaxRecords(maxRecords).build()
@@ -54,16 +55,17 @@ class ReaderKtImpl(
                     RecordUtils.decompress(it).map { receivedHStreamRecord ->
                         val hStreamRecord = receivedHStreamRecord.record
                         val header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord)
-                        if (RecordUtils.isRawRecord(hStreamRecord)) {
+                        val record = if (RecordUtils.isRawRecord(hStreamRecord)) {
                             val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord)
                             Record.newBuilder().rawRecord(rawRecord).partitionKey(header.partitionKey).build()
                         } else {
                             val hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord)
                             Record.newBuilder().hRecord(hRecord).partitionKey(header.partitionKey).build()
                         }
+                        ReceivedRecord(GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId), record)
                     }
                 }
-                readFuture.complete(res as MutableList<Record>?)
+                readFuture.complete(res as MutableList<ReceivedRecord>?)
             } catch (e: Throwable) {
                 readFuture.completeExceptionally(HStreamDBClientException(e))
             }
