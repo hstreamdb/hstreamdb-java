@@ -7,23 +7,34 @@ import io.hstream.Cluster
 import io.hstream.ConsumerBuilder
 import io.hstream.HStreamClient
 import io.hstream.ProducerBuilder
+import io.hstream.Query
 import io.hstream.QueryerBuilder
 import io.hstream.ReaderBuilder
 import io.hstream.Shard
 import io.hstream.Stream
 import io.hstream.Subscription
+import io.hstream.View
+import io.hstream.internal.CommandQuery
+import io.hstream.internal.CreateQueryRequest
+import io.hstream.internal.DeleteQueryRequest
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
+import io.hstream.internal.DeleteViewRequest
+import io.hstream.internal.GetQueryRequest
+import io.hstream.internal.GetViewRequest
 import io.hstream.internal.HStreamApiGrpcKt
+import io.hstream.internal.ListQueriesRequest
 import io.hstream.internal.ListShardsRequest
 import io.hstream.internal.ListStreamsRequest
 import io.hstream.internal.ListSubscriptionsRequest
+import io.hstream.internal.ListViewsRequest
 import io.hstream.internal.LookupSubscriptionRequest
 import io.hstream.util.GrpcUtils
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.streams.toList
 
 class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: ChannelCredentials? = null) : HStreamClient {
 
@@ -190,6 +201,64 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
         return unaryCallBlocked {
             val result = it.describeCluster(Empty.getDefaultInstance())
             return@unaryCallBlocked Cluster.newBuilder().uptime(result.clusterUpTime).build()
+        }
+    }
+
+    override fun createQuery(sql: String?): Query? {
+        checkNotNull(sql)
+        return unaryCallBlocked {
+            val query = it.createQuery(CreateQueryRequest.newBuilder().setSql(sql).build())
+            GrpcUtils.queryFromInternal(query)
+        }
+    }
+
+    override fun listQueries(): List<Query> {
+        return unaryCallBlocked {
+            val result = it.listQueries(ListQueriesRequest.getDefaultInstance())
+            result.queriesList.stream()
+                .map(GrpcUtils::queryFromInternal)
+                .toList()
+        }
+    }
+
+    override fun getQuery(id: String?): Query {
+        return unaryCallBlocked {
+            val result = it.getQuery(GetQueryRequest.newBuilder().setId(id).build())
+            GrpcUtils.queryFromInternal(result)
+        }
+    }
+
+    override fun deleteQuery(id: String?) {
+        unaryCallBlocked {
+            it.deleteQuery(DeleteQueryRequest.newBuilder().setId(id).build())
+        }
+    }
+
+    override fun createView(sql: String?) {
+        unaryCallBlocked {
+            it.executeQuery(CommandQuery.newBuilder().setStmtText(sql).build())
+        }
+    }
+
+    override fun listViews(): List<View> {
+        return unaryCallBlocked {
+            it.listViews(ListViewsRequest.getDefaultInstance())
+                .viewsList.stream()
+                .map(GrpcUtils::viewFromInternal)
+                .toList()
+        }
+    }
+
+    override fun getView(name: String?): View {
+        return unaryCallBlocked {
+            val result = it.getView(GetViewRequest.newBuilder().setViewId(name).build())
+            GrpcUtils.viewFromInternal(result)
+        }
+    }
+
+    override fun deleteView(name: String?) {
+        unaryCallBlocked {
+            it.deleteView(DeleteViewRequest.newBuilder().setViewId(name).build())
         }
     }
 
