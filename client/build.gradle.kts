@@ -178,7 +178,7 @@ tasks.withType<Javadoc> {
     (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
     (options as StandardJavadocDocletOptions).links(
         "https://docs.oracle.com/en/java/javase/11/docs/api/",
-        "https://javadoc.io/doc/com.google.guava/guava/latest/"
+        // "https://javadoc.io/doc/com.google.guava/guava/latest/"
     )
     exclude("io/hstream/impl/**", "io/hstream/util/**")
 }
