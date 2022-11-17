@@ -66,8 +66,8 @@ class BufferedProducerKtImpl(
             val partitionKey = hStreamRecord.header.key
             val shardId = calculateShardIdByPartitionKey(partitionKey)
             if (!shardAppendBuffer.containsKey(shardId)) {
-                shardAppendBuffer[shardId] = LinkedList()
-                shardAppendFutures[shardId] = LinkedList()
+                shardAppendBuffer[shardId] = ArrayList()
+                shardAppendFutures[shardId] = ArrayList()
                 shardAppendBytesSize[shardId] = 0
                 if (batchSetting.ageLimit > 0) {
                     timerServices[shardId] =
