@@ -121,12 +121,12 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
         unaryCallBlocked {
             it.createStream(
                 GrpcUtils.streamToGrpc(
-                    Stream(
-                        stream,
-                        replicationFactor.toInt(),
-                        backlogDuration,
-                        shardCnt
-                    )
+                    Stream.newBuilder()
+                        .streamName(stream)
+                        .replicationFactor(replicationFactor.toInt())
+                        .shardCount(shardCnt)
+                        .backlogDuration(backlogDuration)
+                        .build()
                 )
             )
         }
