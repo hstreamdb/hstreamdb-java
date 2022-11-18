@@ -2,6 +2,7 @@ package io.hstream;
 
 import static com.google.common.base.Preconditions.*;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class Subscription {
@@ -14,6 +15,12 @@ public class Subscription {
 
   private SubscriptionOffset offset;
 
+  public Instant getCreatedTime() {
+    return createdTime;
+  }
+
+  private final Instant createdTime;
+
   public enum SubscriptionOffset {
     EARLIEST,
     LATEST,
@@ -24,12 +31,14 @@ public class Subscription {
       String streamName,
       int ackTimeoutSeconds,
       int maxUnackedRecords,
-      SubscriptionOffset offset) {
+      SubscriptionOffset offset,
+      Instant createdTime) {
     this.subscriptionId = subscriptionId;
     this.streamName = streamName;
     this.ackTimeoutSeconds = ackTimeoutSeconds;
     this.maxUnackedRecords = maxUnackedRecords;
     this.offset = offset;
+    this.createdTime = createdTime;
   }
 
   /** @return {@link Subscription.Builder} */
@@ -81,6 +90,8 @@ public class Subscription {
     private int maxUnackedRecords = 10000;
     private SubscriptionOffset offset = SubscriptionOffset.LATEST;
 
+    private Instant createdTime;
+
     public Builder subscription(String subscriptionId) {
       this.subscriptionId = subscriptionId;
       return this;
@@ -106,13 +117,18 @@ public class Subscription {
       return this;
     }
 
+    public Builder createdTime(Instant createdTime) {
+      this.createdTime = createdTime;
+      return this;
+    }
+
     public Subscription build() {
       checkNotNull(subscriptionId);
       checkNotNull(streamName);
       checkState(ackTimeoutSeconds > 0 && ackTimeoutSeconds < 36000);
       checkState(maxUnackedRecords > 0);
       return new Subscription(
-          subscriptionId, streamName, ackTimeoutSeconds, maxUnackedRecords, offset);
+          subscriptionId, streamName, ackTimeoutSeconds, maxUnackedRecords, offset, createdTime);
     }
   }
 }

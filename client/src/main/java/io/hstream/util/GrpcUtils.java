@@ -6,6 +6,7 @@ import io.hstream.*;
 import io.hstream.internal.RecordId;
 import io.hstream.internal.SpecialOffset;
 import io.hstream.internal.TaskStatusPB;
+import java.time.Instant;
 
 /**
  * A class of utility functions to convert between the GRPC generated classes and the custom classes
@@ -61,10 +62,12 @@ public class GrpcUtils {
   }
 
   public static Subscription subscriptionFromGrpc(io.hstream.internal.Subscription subscription) {
+    var createdTime = subscription.getCreationTime();
     return Subscription.newBuilder().subscription(subscription.getSubscriptionId()).stream(
             subscription.getStreamName())
         .ackTimeoutSeconds(subscription.getAckTimeoutSeconds())
         .offset(subscriptionOffsetFromGrpc(subscription.getOffset()))
+        .createdTime(Instant.ofEpochSecond(createdTime.getSeconds(), createdTime.getNanos()))
         .build();
   }
 
@@ -78,11 +81,14 @@ public class GrpcUtils {
   }
 
   public static Stream streamFromGrpc(io.hstream.internal.Stream stream) {
-    return new Stream(
-        stream.getStreamName(),
-        stream.getReplicationFactor(),
-        stream.getBacklogDuration(),
-        stream.getShardCount());
+    var createdTime = stream.getCreationTime();
+    return Stream.newBuilder()
+        .streamName(stream.getStreamName())
+        .replicationFactor(stream.getReplicationFactor())
+        .backlogDuration(stream.getBacklogDuration())
+        .shardCount(stream.getShardCount())
+        .createdTime(Instant.ofEpochSecond(createdTime.getSeconds(), createdTime.getNanos()))
+        .build();
   }
 
   public static StreamShardOffset streamShardOffsetFromGrpc(
@@ -183,8 +189,6 @@ public class GrpcUtils {
         return TaskStatus.TASK_CREATED;
       case TASK_RUNNING:
         return TaskStatus.TASK_RUNNING;
-      case TASK_CONNECTION_ABORT:
-        return TaskStatus.TASK_CONNECTION_ABORT;
       case TASK_CREATION_ABORT:
         return TaskStatus.TASK_CREATION_ABORT;
       case TASK_TERMINATED:

@@ -3,6 +3,7 @@ package io.hstream;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class Stream {
@@ -10,12 +11,19 @@ public class Stream {
   private int replicationFactor;
   private int backlogDuration;
   private int shardCount;
+  private final Instant createdTime;
 
-  public Stream(String streamName, int replicationFactor, int backlogDuration, int shardCount) {
+  Stream(
+      String streamName,
+      int replicationFactor,
+      int backlogDuration,
+      int shardCount,
+      Instant createdTime) {
     this.streamName = streamName;
     this.replicationFactor = replicationFactor;
     this.backlogDuration = backlogDuration;
     this.shardCount = shardCount;
+    this.createdTime = createdTime;
   }
 
   public String getStreamName() {
@@ -50,6 +58,10 @@ public class Stream {
     this.shardCount = shardCount;
   }
 
+  public Instant getCreatedTime() {
+    return createdTime;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -71,6 +83,7 @@ public class Stream {
     private int replicationFactor = 1;
     private int backlogDuration = 3600 * 24;
     private int shardCount = 1;
+    private Instant createdTime;
 
     /**
      * @param streamName required, the name of the stream
@@ -109,11 +122,16 @@ public class Stream {
       return this;
     }
 
+    public Builder createdTime(Instant createdTime) {
+      this.createdTime = createdTime;
+      return this;
+    }
+
     public Stream build() {
       checkNotNull(streamName);
       checkArgument(replicationFactor >= 1 && replicationFactor <= 15);
       checkArgument(shardCount >= 1);
-      return new Stream(streamName, replicationFactor, backlogDuration, shardCount);
+      return new Stream(streamName, replicationFactor, backlogDuration, shardCount, createdTime);
     }
   }
 
