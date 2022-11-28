@@ -103,7 +103,7 @@ class BufferedProducerKtImpl(
             val records = shardAppendBuffer[shardId]!!
             val futures = shardAppendFutures[shardId]!!
             val recordsBytesSize = shardAppendBytesSize[shardId]!!
-            logger.info("ready to flush recordBuffer for shard:$shardId, current buffer size is [{}]", records.size)
+            logger.debug("ready to flush recordBuffer for shard:$shardId, current buffer size is [{}]", records.size)
             shardAppendBuffer.remove(shardId)
             shardAppendFutures.remove(shardId)
             shardAppendBytesSize.remove(shardId)
@@ -115,7 +115,7 @@ class BufferedProducerKtImpl(
                 result?.await()
                 result = null
                 writeShard(shardId, records, futures)
-                logger.info("wrote batch for shard:$shardId")
+                logger.debug("wrote batch for shard:$shardId")
                 flowController?.release(recordsBytesSize)
                 Unit
             }
