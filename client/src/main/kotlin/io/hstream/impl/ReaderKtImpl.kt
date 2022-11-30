@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
+import java.time.Instant
 import java.util.concurrent.CompletableFuture
 
 class ReaderKtImpl(
@@ -55,6 +56,8 @@ class ReaderKtImpl(
                     RecordUtils.decompress(it).map { receivedHStreamRecord ->
                         val hStreamRecord = receivedHStreamRecord.record
                         val header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord)
+                        val publishTime = it.record.publishTime
+                        val createdTime = Instant.ofEpochSecond(publishTime.seconds, publishTime.nanos.toLong())
                         val record = if (RecordUtils.isRawRecord(hStreamRecord)) {
                             val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord)
                             Record.newBuilder().rawRecord(rawRecord).partitionKey(header.partitionKey).build()
@@ -62,7 +65,7 @@ class ReaderKtImpl(
                             val hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord)
                             Record.newBuilder().hRecord(hRecord).partitionKey(header.partitionKey).build()
                         }
-                        ReceivedRecord(GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId), record)
+                        ReceivedRecord(GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId), record, createdTime)
                     }
                 }
                 readFuture.complete(res as MutableList<ReceivedRecord>?)
