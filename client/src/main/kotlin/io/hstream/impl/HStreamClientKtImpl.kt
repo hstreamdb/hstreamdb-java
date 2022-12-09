@@ -33,6 +33,7 @@ import io.hstream.util.GrpcUtils
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.streams.toList
 
@@ -57,7 +58,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     }
 
     fun getCoroutineStub(url: String): HStreamApiGrpcKt.HStreamApiCoroutineStub {
-        return HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(url))
+        return HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(url)).withDeadlineAfter(DefaultSettings.GRPC_CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS)
     }
 
     init {
