@@ -142,4 +142,6 @@ public interface HStreamClient extends AutoCloseable {
   View getView(String name);
 
   void deleteView(String name);
+
+  List<ConsumerInformation> listConsumers(String subscriptionId);
 }

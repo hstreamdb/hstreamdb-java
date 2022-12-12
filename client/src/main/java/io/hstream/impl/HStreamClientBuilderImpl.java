@@ -77,9 +77,10 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
   private List<String> parseServerUrls(String url) {
     var prefix = "hstream://";
     String uriStr = url.strip();
-    if (uriStr.startsWith(prefix)) {
-      uriStr = uriStr.substring(prefix.length());
+    if (!uriStr.startsWith(prefix)) {
+      throw new HStreamDBClientException(
+          "incorrect serviceUrl:" + uriStr + " (correct example: hstream://127.0.0.1:6570)");
     }
-    return List.of(uriStr.split(","));
+    return List.of(uriStr.substring(prefix.length()).split(","));
   }
 }

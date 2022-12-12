@@ -14,6 +14,8 @@ public class ChannelProvider implements Closeable {
   private ChannelCredentials credentials;
 
   private final ConcurrentHashMap<String, ManagedChannel> provider;
+  String userAgent =
+      "hstreamdb-java/" + ChannelProvider.class.getPackage().getImplementationVersion();
 
   public ChannelProvider(int size) {
     provider = new ConcurrentHashMap<>(size);
@@ -35,6 +37,7 @@ public class ChannelProvider implements Closeable {
           url ->
               ManagedChannelBuilder.forTarget(url)
                   .usePlaintext()
+                  .userAgent(userAgent)
                   .executor(MoreExecutors.directExecutor())
                   .build());
     }
@@ -42,6 +45,7 @@ public class ChannelProvider implements Closeable {
         serverUrl,
         url ->
             Grpc.newChannelBuilder(url, credentials)
+                .userAgent(userAgent)
                 .executor(MoreExecutors.directExecutor())
                 .build());
   }

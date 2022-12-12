@@ -183,6 +183,13 @@ tasks.withType<Javadoc> {
     exclude("io/hstream/impl/**", "io/hstream/util/**")
 }
 
+val clientVersion = version
+tasks.withType<Jar> {
+    manifest {
+        attributes["Implementation-Version"] = clientVersion
+    }
+}
+
 spotless {
     java {
         googleJavaFormat()
