@@ -197,4 +197,13 @@ public class GrpcUtils {
         throw new IllegalArgumentException("Unknown task status: " + statusPB);
     }
   }
+
+  public static ConsumerInformation consumerInformationFromGrpc(
+      io.hstream.internal.Consumer consumer) {
+    return ConsumerInformation.newBuilder()
+        .name(consumer.getName())
+        .uri(consumer.getUri())
+        .userAgent(consumer.getUserAgent())
+        .build();
+  }
 }

@@ -5,6 +5,7 @@ import io.grpc.ChannelCredentials
 import io.hstream.BufferedProducerBuilder
 import io.hstream.Cluster
 import io.hstream.ConsumerBuilder
+import io.hstream.ConsumerInformation
 import io.hstream.HStreamClient
 import io.hstream.ProducerBuilder
 import io.hstream.Query
@@ -23,6 +24,7 @@ import io.hstream.internal.DeleteViewRequest
 import io.hstream.internal.GetQueryRequest
 import io.hstream.internal.GetViewRequest
 import io.hstream.internal.HStreamApiGrpcKt
+import io.hstream.internal.ListConsumersRequest
 import io.hstream.internal.ListQueriesRequest
 import io.hstream.internal.ListShardsRequest
 import io.hstream.internal.ListStreamsRequest
@@ -259,6 +261,15 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     override fun deleteView(name: String?) {
         unaryCallBlocked {
             it.deleteView(DeleteViewRequest.newBuilder().setViewId(name).build())
+        }
+    }
+
+    override fun listConsumers(subscriptionId: String?): List<ConsumerInformation> {
+        return runBlocking {
+            val serverUrl = lookupSubscriptionServerUrl(subscriptionId)
+            val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(serverUrl))
+            stub.listConsumers(ListConsumersRequest.newBuilder().setSubscriptionId(subscriptionId).build())
+                .consumersList.stream().map(GrpcUtils::consumerInformationFromGrpc).toList()
         }
     }
 
