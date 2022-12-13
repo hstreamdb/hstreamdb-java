@@ -17,6 +17,7 @@ import kotlinx.coroutines.future.future
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.CoroutineContext
 
@@ -94,7 +95,7 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
     logger.debug("unary rpc with urls [{}]", urls)
 
     try {
-        return call(HStreamApiCoroutineStub(channelProvider.get(urls[0])))
+        return call(HStreamApiCoroutineStub(channelProvider.get(urls[0])).withDeadlineAfter(DefaultSettings.GRPC_CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS))
     } catch (e: StatusException) {
         return handleGRPCException(urls, e)
     } catch (e: StatusRuntimeException) {

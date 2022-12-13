@@ -137,7 +137,7 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
         val serverUrl = lookupServerUrl(shardId, forceUpdate)
         logger.debug("try append with serverUrl [{}], current left tryTimes is [{}]", serverUrl, tryTimes)
         return try {
-            client.getCoroutineStub(serverUrl)
+            client.getCoroutineStubWithTimeout(serverUrl, DefaultSettings.GRPC_CALL_TIMEOUT_SECONDS)
                 .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
         } catch (e: StatusException) {
             handleGRPCException(serverUrl, e)
