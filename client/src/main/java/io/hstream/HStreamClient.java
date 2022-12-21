@@ -110,6 +110,8 @@ public interface HStreamClient extends AutoCloseable {
    */
   List<Subscription> listSubscriptions();
 
+  GetSubscriptionResponse getSubscription(String subscriptionId);
+
   /**
    * Delete the specified subscription with subscriptionId.
    *

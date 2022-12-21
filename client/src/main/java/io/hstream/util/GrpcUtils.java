@@ -7,6 +7,7 @@ import io.hstream.internal.RecordId;
 import io.hstream.internal.SpecialOffset;
 import io.hstream.internal.TaskStatusPB;
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 /**
  * A class of utility functions to convert between the GRPC generated classes and the custom classes
@@ -205,5 +206,19 @@ public class GrpcUtils {
         .uri(consumer.getUri())
         .userAgent(consumer.getUserAgent())
         .build();
+  }
+
+  public static GetSubscriptionResponse GetSubscriptionResponseFromGrpc(io.hstream.internal.GetSubscriptionResponse response){
+    return GetSubscriptionResponse.newBuilder()
+            .subscription(subscriptionFromGrpc(response.getSubscription()))
+            .offsets(response.getOffsetsList().stream().map(GrpcUtils::subscriptionOffsetFromGrpc).collect(Collectors.toList()))
+            .build();
+  }
+
+  public static SubscriptionOffset subscriptionOffsetFromGrpc(io.hstream.internal.SubscriptionOffset offset) {
+    return SubscriptionOffset.newBuilder()
+            .withShardId(offset.getShardId())
+            .withBatchId(offset.getBatchId())
+            .build();
   }
 }
