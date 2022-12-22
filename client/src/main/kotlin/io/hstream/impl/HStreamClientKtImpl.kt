@@ -6,6 +6,7 @@ import io.hstream.BufferedProducerBuilder
 import io.hstream.Cluster
 import io.hstream.ConsumerBuilder
 import io.hstream.ConsumerInformation
+import io.hstream.GetSubscriptionResponse
 import io.hstream.HStreamClient
 import io.hstream.ProducerBuilder
 import io.hstream.Query
@@ -22,6 +23,7 @@ import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.DeleteViewRequest
 import io.hstream.internal.GetQueryRequest
+import io.hstream.internal.GetSubscriptionRequest
 import io.hstream.internal.GetViewRequest
 import io.hstream.internal.HStreamApiGrpcKt
 import io.hstream.internal.ListConsumersRequest
@@ -187,6 +189,14 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
             )
         }
     }
+
+    override fun getSubscription(subscriptionId: String?): GetSubscriptionResponse {
+        return unaryCallBlocked {
+            val response = it.getSubscription(GetSubscriptionRequest.newBuilder().setId(subscriptionId).build())
+            GrpcUtils.GetSubscriptionResponseFromGrpc(response)
+        }
+    }
+
     override fun deleteSubscription(subscriptionId: String?) {
         deleteSubscription(subscriptionId, false)
     }
