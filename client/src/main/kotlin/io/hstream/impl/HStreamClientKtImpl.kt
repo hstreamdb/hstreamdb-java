@@ -192,8 +192,8 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
 
     override fun getSubscription(subscriptionId: String?): GetSubscriptionResponse {
         return unaryCallBlocked {
-            val response = it.getSubscription(GetSubscriptionRequest.newBuilder().setId(subscriptionId).build());
-            GrpcUtils.GetSubscriptionResponseFromGrpc(response);
+            val response = it.getSubscription(GetSubscriptionRequest.newBuilder().setId(subscriptionId).build())
+            GrpcUtils.GetSubscriptionResponseFromGrpc(response)
         }
     }
 

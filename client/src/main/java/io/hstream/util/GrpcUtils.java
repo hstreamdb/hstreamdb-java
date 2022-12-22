@@ -208,17 +208,22 @@ public class GrpcUtils {
         .build();
   }
 
-  public static GetSubscriptionResponse GetSubscriptionResponseFromGrpc(io.hstream.internal.GetSubscriptionResponse response){
+  public static GetSubscriptionResponse GetSubscriptionResponseFromGrpc(
+      io.hstream.internal.GetSubscriptionResponse response) {
     return GetSubscriptionResponse.newBuilder()
-            .subscription(subscriptionFromGrpc(response.getSubscription()))
-            .offsets(response.getOffsetsList().stream().map(GrpcUtils::subscriptionOffsetFromGrpc).collect(Collectors.toList()))
-            .build();
+        .subscription(subscriptionFromGrpc(response.getSubscription()))
+        .offsets(
+            response.getOffsetsList().stream()
+                .map(GrpcUtils::subscriptionOffsetFromGrpc)
+                .collect(Collectors.toList()))
+        .build();
   }
 
-  public static SubscriptionOffset subscriptionOffsetFromGrpc(io.hstream.internal.SubscriptionOffset offset) {
+  public static SubscriptionOffset subscriptionOffsetFromGrpc(
+      io.hstream.internal.SubscriptionOffset offset) {
     return SubscriptionOffset.newBuilder()
-            .withShardId(offset.getShardId())
-            .withBatchId(offset.getBatchId())
-            .build();
+        .withShardId(offset.getShardId())
+        .withBatchId(offset.getBatchId())
+        .build();
   }
 }
