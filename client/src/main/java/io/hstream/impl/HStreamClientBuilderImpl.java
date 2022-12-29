@@ -6,9 +6,13 @@ import io.grpc.TlsChannelCredentials;
 import io.hstream.HStreamClient;
 import io.hstream.HStreamClientBuilder;
 import io.hstream.HStreamDBClientException;
+import io.hstream.UrlSchema;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class HStreamClientBuilderImpl implements HStreamClientBuilder {
 
@@ -58,7 +62,11 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
   @Override
   public HStreamClient build() {
     checkNotNull(serviceUrl);
-    List<String> serverUrls = parseServerUrls(serviceUrl);
+    Pair<UrlSchema, List<String>> schemaHosts = parseServerUrls(serviceUrl);
+    // FIXME: remove enableTls option
+    if (schemaHosts.getKey().equals(UrlSchema.HSTREAMS) && !enableTls) {
+      throw new HStreamDBClientException("hstreams url schema should enable tls");
+    }
     if (enableTls) {
       try {
         TlsChannelCredentials.Builder credentialsBuilder =
@@ -66,21 +74,41 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
         if (enableTlsAuthentication) {
           credentialsBuilder = credentialsBuilder.keyManager(new File(certPath), new File(keyPath));
         }
-        return new HStreamClientKtImpl(serverUrls, credentialsBuilder.build());
+        return new HStreamClientKtImpl(schemaHosts.getRight(), credentialsBuilder.build());
       } catch (IOException e) {
         throw new HStreamDBClientException(String.format("invalid tls options, %s", e));
       }
     }
-    return new HStreamClientKtImpl(serverUrls, null);
+    return new HStreamClientKtImpl(schemaHosts.getRight(), null);
   }
 
-  private List<String> parseServerUrls(String url) {
-    var prefix = "hstream://";
+  private Pair<UrlSchema, List<String>> parseServerUrls(String url) {
     String uriStr = url.strip();
-    if (!uriStr.startsWith(prefix)) {
+    var schemaHosts = uriStr.split("://");
+    if (schemaHosts.length != 2) {
       throw new HStreamDBClientException(
           "incorrect serviceUrl:" + uriStr + " (correct example: hstream://127.0.0.1:6570)");
     }
-    return List.of(uriStr.substring(prefix.length()).split(","));
+    var schemaStr = schemaHosts[0];
+    UrlSchema urlSchema;
+    try {
+      urlSchema = UrlSchema.valueOf(schemaStr.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      throw new HStreamDBClientException("Invalid url schema:" + schemaStr);
+    }
+    var hosts = schemaHosts[1];
+    return Pair.of(urlSchema, parseHosts(hosts));
+  }
+
+  private List<String> parseHosts(String hosts) {
+    return Arrays.stream(hosts.split(",")).map(this::normalizeHost).collect(Collectors.toList());
+  }
+
+  private String normalizeHost(String host) {
+    var address_port = host.split(":");
+    if (address_port.length == 1) {
+      return host + ":6570";
+    }
+    return host;
   }
 }
