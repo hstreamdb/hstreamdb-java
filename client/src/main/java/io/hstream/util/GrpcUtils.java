@@ -67,6 +67,7 @@ public class GrpcUtils {
     return Subscription.newBuilder().subscription(subscription.getSubscriptionId()).stream(
             subscription.getStreamName())
         .ackTimeoutSeconds(subscription.getAckTimeoutSeconds())
+        .maxUnackedRecords(subscription.getMaxUnackedRecords())
         .offset(subscriptionOffsetFromGrpc(subscription.getOffset()))
         .createdTime(Instant.ofEpochSecond(createdTime.getSeconds(), createdTime.getNanos()))
         .build();
