@@ -36,6 +36,7 @@ public class ChannelProvider implements Closeable {
           serverUrl,
           url ->
               ManagedChannelBuilder.forTarget(url)
+                  .disableRetry()
                   .usePlaintext()
                   .userAgent(userAgent)
                   .executor(MoreExecutors.directExecutor())
@@ -45,6 +46,7 @@ public class ChannelProvider implements Closeable {
         serverUrl,
         url ->
             Grpc.newChannelBuilder(url, credentials)
+                .disableRetry()
                 .userAgent(userAgent)
                 .executor(MoreExecutors.directExecutor())
                 .build());
