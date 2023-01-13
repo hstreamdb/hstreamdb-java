@@ -1,8 +1,6 @@
 package io.hstream.impl
 
 import io.grpc.Status
-import io.grpc.StatusException
-import io.grpc.StatusRuntimeException
 import io.hstream.CompressionType
 import io.hstream.HRecord
 import io.hstream.HStreamDBClientException
@@ -137,14 +135,8 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
 
         val serverUrl = lookupServerUrl(shardId, forceUpdate)
         logger.debug("try append with serverUrl [{}], current left tryTimes is [{}]", serverUrl, tryTimes)
-        return try {
-            client.getCoroutineStub(serverUrl).withDeadlineAfter(100, TimeUnit.MILLISECONDS)
-                .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
-        } catch (e: StatusException) {
-            handleGRPCException(serverUrl, e)
-        } catch (e: StatusRuntimeException) {
-            handleGRPCException(serverUrl, e)
-        }
+        return client.getCoroutineStub(serverUrl).withDeadlineAfter(100, TimeUnit.MILLISECONDS)
+            .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
     }
 
     protected suspend fun writeHStreamRecords(
