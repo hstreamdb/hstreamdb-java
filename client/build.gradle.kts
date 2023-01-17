@@ -33,30 +33,30 @@ java {
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
     // grpc
-    implementation("io.grpc:grpc-netty-shaded:1.45.0")
-    implementation("io.grpc:grpc-protobuf:1.45.0")
-    implementation("io.grpc:grpc-stub:1.45.0")
+    implementation("io.grpc:grpc-netty-shaded:1.50.2")
+    implementation("io.grpc:grpc-protobuf:1.50.2")
+    implementation("io.grpc:grpc-stub:1.50.2")
     compileOnly("org.apache.tomcat:annotations-api:6.0.53") // necessary for java 9+
 
-    implementation("com.google.protobuf:protobuf-java-util:3.17.3")
+    implementation("com.google.protobuf:protobuf-java-util:3.21.12")
 
-    compileOnly("org.slf4j:slf4j-api:1.7.30")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.1")
+    compileOnly("org.slf4j:slf4j-api:2.0.6")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.19.0")
 
     implementation("org.apache.commons:commons-lang3:3.12.0")
 
-    api("com.google.guava:guava:30.1.1-jre")
+    api("com.google.guava:guava:31.1-jre")
 
     implementation("io.grpc:grpc-kotlin-stub:1.3.0")
-    implementation("com.google.protobuf:protobuf-kotlin:3.17.3")
+    implementation("com.google.protobuf:protobuf-kotlin:3.21.12")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
 
     implementation("com.github.luben:zstd-jni:1.5.2-3")
 }
