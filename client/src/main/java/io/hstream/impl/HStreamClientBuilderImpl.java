@@ -70,6 +70,7 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
   @Override
   public HStreamClient build() {
     checkNotNull(serviceUrl);
+    checkArgument(requestTimeoutMs > 0);
     Pair<UrlSchema, List<String>> schemaHosts = parseServerUrls(serviceUrl);
     // FIXME: remove enableTls option
     if (schemaHosts.getKey().equals(UrlSchema.HSTREAMS) && !enableTls) {
