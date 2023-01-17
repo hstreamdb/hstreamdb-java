@@ -65,7 +65,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val request
         return HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(url))
     }
 
-    fun getCoroutineStubWithTimeout(url: String, timeoutSeconds: Long): HStreamApiGrpcKt.HStreamApiCoroutineStub {
+    fun getCoroutineStubWithTimeout(url: String, timeoutSeconds: Long = requestTimeoutMs): HStreamApiGrpcKt.HStreamApiCoroutineStub {
         return HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(url)).withDeadlineAfter(timeoutSeconds, TimeUnit.SECONDS)
     }
 
