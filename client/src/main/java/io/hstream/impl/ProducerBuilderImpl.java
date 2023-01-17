@@ -9,6 +9,7 @@ public class ProducerBuilderImpl implements ProducerBuilder {
 
   private final HStreamClientKtImpl client;
   private String streamName;
+  private long requestTimeoutMs = DefaultSettings.GRPC_CALL_TIMEOUT_MS;
 
   public ProducerBuilderImpl(HStreamClientKtImpl client) {
     this.client = client;
@@ -21,8 +22,15 @@ public class ProducerBuilderImpl implements ProducerBuilder {
   }
 
   @Override
+  public ProducerBuilder requestTimeoutMs(long timeoutMs) {
+    this.requestTimeoutMs = timeoutMs;
+    return this;
+  }
+
+  @Override
   public Producer build() {
     checkNotNull(streamName);
-    return new ProducerKtImpl(client, streamName);
+    checkArgument(requestTimeoutMs > 0);
+    return new ProducerKtImpl(client, streamName, requestTimeoutMs);
   }
 }

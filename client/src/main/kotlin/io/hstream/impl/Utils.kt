@@ -74,7 +74,12 @@ suspend fun refreshClusterInfo(serverUrls: List<String>, channelProvider: Channe
     }
 }
 
-suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
+suspend fun <Resp> unaryCallCoroutine(
+    urlsRef: AtomicReference<List<String>>,
+    channelProvider: ChannelProvider,
+    timeoutMs: Long,
+    call: suspend (stub: HStreamApiCoroutineStub) -> Resp
+): Resp {
     // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
     //       This function is for handling them.
     suspend fun handleGRPCException(urls: List<String>, e: Throwable): Resp {
@@ -95,7 +100,7 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
     logger.debug("unary rpc with urls [{}]", urls)
 
     try {
-        return call(HStreamApiCoroutineStub(channelProvider.get(urls[0])).withDeadlineAfter(DefaultSettings.GRPC_CALL_TIMEOUT_SECONDS, TimeUnit.SECONDS))
+        return call(HStreamApiCoroutineStub(channelProvider.get(urls[0])).withDeadlineAfter(timeoutMs, TimeUnit.MILLISECONDS))
     } catch (e: StatusException) {
         return handleGRPCException(urls, e)
     } catch (e: StatusRuntimeException) {
@@ -103,13 +108,30 @@ suspend fun <Resp> unaryCallCoroutine(urlsRef: AtomicReference<List<String>>, ch
     }
 }
 
-fun <Resp> unaryCallAsync(urlsRef: AtomicReference<List<String>>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
-    return futureForIO { unaryCallCoroutine(urlsRef, channelProvider, call) }
+fun <Resp> unaryCallAsync(
+    urlsRef: AtomicReference<List<String>>,
+    channelProvider: ChannelProvider,
+    timeoutMs: Long,
+    call: suspend (stub: HStreamApiCoroutineStub) -> Resp
+): CompletableFuture<Resp> {
+    return futureForIO { unaryCallCoroutine(urlsRef, channelProvider, timeoutMs, call) }
 }
 
 // warning: this method will block current thread. Do not call this in suspend functions, use unaryCallCoroutine instead!
-fun <Resp> unaryCallBlocked(urlsRef: AtomicReference<List<String>>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
-    return futureForIO(MoreExecutors.directExecutor().asCoroutineDispatcher()) { unaryCallCoroutine(urlsRef, channelProvider, call) }.join()
+fun <Resp> unaryCallBlocked(
+    urlsRef: AtomicReference<List<String>>,
+    channelProvider: ChannelProvider,
+    timeoutMs: Long,
+    call: suspend (stub: HStreamApiCoroutineStub) -> Resp
+): Resp {
+    return futureForIO(MoreExecutors.directExecutor().asCoroutineDispatcher()) {
+        unaryCallCoroutine(
+            urlsRef,
+            channelProvider,
+            timeoutMs,
+            call
+        )
+    }.join()
 }
 
 fun <Resp> unaryCallWithCurrentUrlsAsync(urls: List<String>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {

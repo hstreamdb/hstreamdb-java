@@ -8,5 +8,5 @@ public class DefaultSettings {
 
   public static final String DEFAULT_PARTITION_KEY = "";
 
-  public static final long GRPC_CALL_TIMEOUT_SECONDS = 5;
+  public static final long GRPC_CALL_TIMEOUT_MS = 5000;
 }

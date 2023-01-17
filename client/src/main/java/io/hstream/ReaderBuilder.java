@@ -13,5 +13,7 @@ public interface ReaderBuilder {
 
   ReaderBuilder readerId(String readerId);
 
+  ReaderBuilder requestTimeoutMs(long timeoutMs);
+
   Reader build();
 }

@@ -23,6 +23,8 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
   private String keyPath;
   private String certPath;
 
+  private long requestTimeoutMs = DefaultSettings.GRPC_CALL_TIMEOUT_MS;
+
   @Override
   public HStreamClientBuilder serviceUrl(String serviceUrl) {
     this.serviceUrl = serviceUrl;
@@ -60,8 +62,15 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
   }
 
   @Override
+  public HStreamClientBuilder requestTimeoutMs(long timeoutMs) {
+    this.requestTimeoutMs = timeoutMs;
+    return this;
+  }
+
+  @Override
   public HStreamClient build() {
     checkNotNull(serviceUrl);
+    checkArgument(requestTimeoutMs > 0);
     Pair<UrlSchema, List<String>> schemaHosts = parseServerUrls(serviceUrl);
     // FIXME: remove enableTls option
     if (schemaHosts.getKey().equals(UrlSchema.HSTREAMS) && !enableTls) {
@@ -74,12 +83,13 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
         if (enableTlsAuthentication) {
           credentialsBuilder = credentialsBuilder.keyManager(new File(certPath), new File(keyPath));
         }
-        return new HStreamClientKtImpl(schemaHosts.getRight(), credentialsBuilder.build());
+        return new HStreamClientKtImpl(
+            schemaHosts.getRight(), requestTimeoutMs, credentialsBuilder.build());
       } catch (IOException e) {
         throw new HStreamDBClientException(String.format("invalid tls options, %s", e));
       }
     }
-    return new HStreamClientKtImpl(schemaHosts.getRight(), null);
+    return new HStreamClientKtImpl(schemaHosts.getRight(), requestTimeoutMs, null);
   }
 
   private Pair<UrlSchema, List<String>> parseServerUrls(String url) {

@@ -5,5 +5,7 @@ public interface ProducerBuilder {
 
   ProducerBuilder stream(String streamName);
 
+  ProducerBuilder requestTimeoutMs(long timeoutMs);
+
   Producer build();
 }

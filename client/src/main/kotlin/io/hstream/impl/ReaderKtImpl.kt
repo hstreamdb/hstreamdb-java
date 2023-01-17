@@ -25,7 +25,8 @@ class ReaderKtImpl(
     private val shardId: Long,
     private val shardOffset: StreamShardOffset,
     private val timeoutMs: Int,
-    private val readerId: String
+    private val readerId: String,
+    private val requestTimeoutMs: Long
 ) : Reader {
 
     private var serverUrl: String
@@ -50,7 +51,7 @@ class ReaderKtImpl(
         readerScope.launch {
             try {
                 val readShardRequest = ReadShardRequest.newBuilder().setReaderId(readerId).setMaxRecords(maxRecords).build()
-                val readShardResponse = client.getCoroutineStubWithTimeout(serverUrl, DefaultSettings.GRPC_CALL_TIMEOUT_SECONDS)
+                val readShardResponse = client.getCoroutineStubWithTimeout(serverUrl, requestTimeoutMs)
                     .readShard(readShardRequest)
                 val res = readShardResponse.receivedRecordsList.flatMap {
                     RecordUtils.decompress(it).map { receivedHStreamRecord ->
@@ -82,7 +83,7 @@ class ReaderKtImpl(
             .setReaderId(readerId)
             .build()
         runBlocking {
-            client.getCoroutineStubWithTimeout(serverUrl, DefaultSettings.GRPC_CALL_TIMEOUT_SECONDS).deleteShardReader(deleteShardReaderRequest)
+            client.getCoroutineStubWithTimeout(serverUrl, requestTimeoutMs).deleteShardReader(deleteShardReaderRequest)
         }
 
         logger.info("Reader [{}] closed", readerId)

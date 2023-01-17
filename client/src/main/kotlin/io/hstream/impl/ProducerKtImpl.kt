@@ -28,7 +28,11 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.CompletableFuture
 import kotlin.collections.HashMap
 
-open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val stream: String) : Producer {
+open class ProducerKtImpl(
+    private val client: HStreamClientKtImpl,
+    private val stream: String,
+    val requestTimeoutMs: Long
+) : Producer {
     private val serverUrls: HashMap<Long, String> = HashMap()
     private val serverUrlsLock: Mutex = Mutex()
     private val shards: List<Shard>
@@ -137,7 +141,7 @@ open class ProducerKtImpl(private val client: HStreamClientKtImpl, private val s
         val serverUrl = lookupServerUrl(shardId, forceUpdate)
         logger.debug("try append with serverUrl [{}], current left tryTimes is [{}]", serverUrl, tryTimes)
         return try {
-            client.getCoroutineStubWithTimeout(serverUrl, DefaultSettings.GRPC_CALL_TIMEOUT_SECONDS)
+            client.getCoroutineStubWithTimeout(serverUrl, requestTimeoutMs)
                 .append(appendRequest).recordIdsList.map(GrpcUtils::recordIdFromGrpc)
         } catch (e: StatusException) {
             handleGRPCException(serverUrl, e)

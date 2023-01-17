@@ -51,5 +51,7 @@ public interface HStreamClientBuilder {
    */
   HStreamClientBuilder tlsCertPath(String certPath);
 
+  HStreamClientBuilder requestTimeoutMs(long timeoutMs);
+
   HStreamClient build();
 }

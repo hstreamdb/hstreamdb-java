@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.streams.toList
 
-class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: ChannelCredentials? = null) : HStreamClient {
+class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val requestTimeoutMs: Long, credentials: ChannelCredentials? = null) : HStreamClient {
 
     private val logger = LoggerFactory.getLogger(HStreamClientKtImpl::class.java)
 
@@ -49,16 +49,16 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, credentials: Channe
     val clusterServerUrls: AtomicReference<List<String>> = AtomicReference(null)
 
     fun <Resp> unaryCallAsync(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
-        return unaryCallAsync(clusterServerUrls, channelProvider, call)
+        return unaryCallAsync(clusterServerUrls, channelProvider, requestTimeoutMs, call)
     }
 
     // warning: this method will block current thread. Do not call this in suspend functions, use unaryCallCoroutine instead!
     fun <Resp> unaryCallBlocked(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
-        return unaryCallBlocked(clusterServerUrls, channelProvider, call)
+        return unaryCallBlocked(clusterServerUrls, channelProvider, requestTimeoutMs, call)
     }
 
     suspend fun <Resp> unaryCallCoroutine(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
-        return unaryCallCoroutine(clusterServerUrls, channelProvider, call)
+        return unaryCallCoroutine(clusterServerUrls, channelProvider, requestTimeoutMs, call)
     }
 
     fun getCoroutineStub(url: String): HStreamApiGrpcKt.HStreamApiCoroutineStub {
