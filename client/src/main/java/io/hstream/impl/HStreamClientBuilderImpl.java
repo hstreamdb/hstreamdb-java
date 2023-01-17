@@ -77,10 +77,13 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
       throw new HStreamDBClientException("hstreams url schema should enable tls");
     }
     if (enableTls) {
+      checkNotNull(caPath);
       try {
         TlsChannelCredentials.Builder credentialsBuilder =
             TlsChannelCredentials.newBuilder().trustManager(new File(caPath));
         if (enableTlsAuthentication) {
+          checkNotNull(certPath);
+          checkNotNull(keyPath);
           credentialsBuilder = credentialsBuilder.keyManager(new File(certPath), new File(keyPath));
         }
         return new HStreamClientKtImpl(
