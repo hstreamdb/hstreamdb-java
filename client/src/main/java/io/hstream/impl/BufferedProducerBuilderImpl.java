@@ -1,5 +1,6 @@
 package io.hstream.impl;
 
+import com.google.common.base.Preconditions;
 import io.hstream.BatchSetting;
 import io.hstream.BufferedProducer;
 import io.hstream.BufferedProducerBuilder;
@@ -14,6 +15,8 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
   private BatchSetting batchSetting = BatchSetting.newBuilder().build();
   private FlowControlSetting flowControlSetting = FlowControlSetting.newBuilder().build();
   private CompressionType compressionType = CompressionType.NONE;
+
+  private long requestTimeoutMs = DefaultSettings.GRPC_CALL_TIMEOUT_MS;
 
   public BufferedProducerBuilderImpl(HStreamClientKtImpl client) {
     this.client = client;
@@ -44,6 +47,12 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
   }
 
   @Override
+  public BufferedProducerBuilder requestTimeoutMs(long timeoutMs) {
+    this.requestTimeoutMs = timeoutMs;
+    return this;
+  }
+
+  @Override
   public BufferedProducer build() {
     if (streamName == null) {
       throw new HStreamDBClientException("Positional option:[stream] is not set");
@@ -56,7 +65,8 @@ public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
               "BatchSetting.ageLimit:[%d] should not be greater than flowControlSetting.bytesLimit:[%d]",
               batchBytes, flowBytes));
     }
+    Preconditions.checkArgument(requestTimeoutMs > 0);
     return new BufferedProducerKtImpl(
-        client, streamName, batchSetting, flowControlSetting, compressionType);
+        client, streamName, requestTimeoutMs, batchSetting, flowControlSetting, compressionType);
   }
 }

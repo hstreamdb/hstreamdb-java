@@ -26,10 +26,11 @@ typealias Futures = MutableList<CompletableFuture<String>>
 class BufferedProducerKtImpl(
     client: HStreamClientKtImpl,
     stream: String,
+    requestTimeoutMs: Long,
     private val batchSetting: BatchSetting,
     private val flowControlSetting: FlowControlSetting,
     private val compressionType: CompressionType,
-) : ProducerKtImpl(client, stream), BufferedProducer {
+) : ProducerKtImpl(client, stream, requestTimeoutMs), BufferedProducer {
     private var lock = ReentrantLock()
     private var shardAppendBuffer: HashMap<Long, Records> = HashMap()
     private var shardAppendFutures: HashMap<Long, Futures> = HashMap()

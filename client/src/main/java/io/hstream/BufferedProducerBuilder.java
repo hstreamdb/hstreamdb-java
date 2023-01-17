@@ -31,5 +31,7 @@ public interface BufferedProducerBuilder {
    */
   BufferedProducerBuilder compressionType(CompressionType compressionType);
 
+  BufferedProducerBuilder requestTimeoutMs(long timeoutMs);
+
   BufferedProducer build();
 }
