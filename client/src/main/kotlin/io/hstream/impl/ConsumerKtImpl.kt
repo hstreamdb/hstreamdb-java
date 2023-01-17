@@ -71,7 +71,7 @@ class ConsumerKtImpl(
         if (!isRunning) return
         val server = lookupSubscription()
         logger.debug("lookupSubscription, received:[$server]")
-        val stub = client.getCoroutineStub(server)
+        val stub = client.getCoroutineStubWithTimeout(server)
         try {
             // send an empty ack request to trigger streamingFetch.
             val initRequest = StreamingFetchRequest.newBuilder()
