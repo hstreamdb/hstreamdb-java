@@ -191,8 +191,10 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val request
     }
 
     override fun getSubscription(subscriptionId: String?): GetSubscriptionResponse {
-        return unaryCallBlocked {
-            val response = it.getSubscription(GetSubscriptionRequest.newBuilder().setId(subscriptionId).build())
+        return runBlocking {
+            val serverUrl = lookupSubscriptionServerUrl(subscriptionId)
+            val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(serverUrl))
+            val response = stub.getSubscription(GetSubscriptionRequest.newBuilder().setId(subscriptionId).build())
             GrpcUtils.GetSubscriptionResponseFromGrpc(response)
         }
     }
