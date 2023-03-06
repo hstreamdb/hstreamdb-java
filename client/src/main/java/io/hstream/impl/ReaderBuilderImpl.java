@@ -12,7 +12,7 @@ public class ReaderBuilderImpl implements ReaderBuilder {
   private final HStreamClientKtImpl client;
 
   private String streamName;
-  private long shardId;
+  private Long shardId;
   private StreamShardOffset shardOffset =
       new StreamShardOffset(StreamShardOffset.SpecialOffset.EARLIEST);
   private int timeoutMs = 0;
@@ -64,6 +64,7 @@ public class ReaderBuilderImpl implements ReaderBuilder {
   public Reader build() {
     checkNotNull(client);
     checkNotNull(streamName);
+    checkNotNull(shardId);
     checkState(shardId >= 0);
     checkNotNull(shardOffset);
     checkState(timeoutMs >= 0);
