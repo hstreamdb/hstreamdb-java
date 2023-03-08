@@ -96,6 +96,8 @@ public interface HStreamClient extends AutoCloseable {
    */
   List<Stream> listStreams();
 
+  GetStreamResponse getStream(String streamName);
+
   /**
    * Create a new Subscription.
    *

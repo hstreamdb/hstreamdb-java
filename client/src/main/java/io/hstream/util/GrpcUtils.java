@@ -220,6 +220,11 @@ public class GrpcUtils {
         .build();
   }
 
+  public static GetStreamResponse GetStreamResponseFromGrpc(
+      io.hstream.internal.GetStreamResponse response) {
+    return GetStreamResponse.newBuilder().setStream(streamFromGrpc(response.getStream())).build();
+  }
+
   public static SubscriptionOffset subscriptionOffsetFromGrpc(
       io.hstream.internal.SubscriptionOffset offset) {
     return SubscriptionOffset.newBuilder()
