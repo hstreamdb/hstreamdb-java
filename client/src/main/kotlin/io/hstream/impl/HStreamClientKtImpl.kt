@@ -6,6 +6,7 @@ import io.hstream.BufferedProducerBuilder
 import io.hstream.Cluster
 import io.hstream.ConsumerBuilder
 import io.hstream.ConsumerInformation
+import io.hstream.GetStreamResponse
 import io.hstream.GetSubscriptionResponse
 import io.hstream.HStreamClient
 import io.hstream.ProducerBuilder
@@ -23,6 +24,7 @@ import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.DeleteViewRequest
 import io.hstream.internal.GetQueryRequest
+import io.hstream.internal.GetStreamRequest
 import io.hstream.internal.GetSubscriptionRequest
 import io.hstream.internal.GetViewRequest
 import io.hstream.internal.HStreamApiGrpcKt
@@ -32,7 +34,9 @@ import io.hstream.internal.ListShardsRequest
 import io.hstream.internal.ListStreamsRequest
 import io.hstream.internal.ListSubscriptionsRequest
 import io.hstream.internal.ListViewsRequest
+import io.hstream.internal.LookupResourceRequest
 import io.hstream.internal.LookupSubscriptionRequest
+import io.hstream.internal.ResourceType
 import io.hstream.util.GrpcUtils
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
@@ -45,8 +49,8 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val request
 
     private val logger = LoggerFactory.getLogger(HStreamClientKtImpl::class.java)
 
-    val channelProvider = ChannelProvider(credentials)
-    val clusterServerUrls: AtomicReference<List<String>> = AtomicReference(null)
+    private val channelProvider = ChannelProvider(credentials)
+    private val clusterServerUrls: AtomicReference<List<String>> = AtomicReference(null)
 
     fun <Resp> unaryCallAsync(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
         return unaryCallAsync(clusterServerUrls, channelProvider, requestTimeoutMs, call)
@@ -178,6 +182,15 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val request
         return listStreamsResponse.streamsList.map(GrpcUtils::streamFromGrpc)
     }
 
+    override fun getStream(streamName: String?): GetStreamResponse {
+        return runBlocking {
+            val serverUrl = lookupResource(ResourceType.ResStream, streamName)
+            val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(serverUrl))
+            val response = stub.getStream(GetStreamRequest.newBuilder().setName(streamName).build())
+            GrpcUtils.GetStreamResponseFromGrpc(response)
+        }
+    }
+
     override fun createSubscription(subscription: Subscription?) {
         unaryCallBlocked { it.createSubscription(GrpcUtils.subscriptionToGrpc(subscription)) }
     }
@@ -298,6 +311,14 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val request
                     .setSubscriptionId(subscriptionId)
                     .build()
             val serverNode = it.lookupSubscription(req).serverNode
+            return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
+        }
+    }
+
+    private suspend fun lookupResource(resourceType: ResourceType, resourceId: String?): String {
+        return unaryCallCoroutine {
+            val req: LookupResourceRequest = LookupResourceRequest.newBuilder().setResType(resourceType).setResId(resourceId).build()
+            val serverNode = it.lookupResource(req)
             return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
         }
     }
