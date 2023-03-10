@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -153,9 +153,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,io.hstream.RecordHeader,io.hstream.HRecord)">ReceivedHRecord</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;recordId,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,io.hstream.RecordHeader,io.hstream.HRecord,java.time.Instant)">ReceivedHRecord</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;recordId,
                <a href="RecordHeader.html" title="class in io.hstream">RecordHeader</a>&nbsp;header,
-               <a href="HRecord.html" title="class in io.hstream">HRecord</a>&nbsp;hRecord)</code></th>
+               <a href="HRecord.html" title="class in io.hstream">HRecord</a>&nbsp;hRecord,
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Instant.html?is-external=true" title="class or interface in java.time" class="externalLink">Instant</a>&nbsp;createdTime)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -177,16 +178,21 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Instant.html?is-external=true" title="class or interface in java.time" class="externalLink">Instant</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCreatedTime()">getCreatedTime</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="RecordHeader.html" title="class in io.hstream">RecordHeader</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHeader()">getHeader</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="HRecord.html" title="class in io.hstream">HRecord</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHRecord()">getHRecord</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRecordId()">getRecordId</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -215,7 +221,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(java.lang.String,io.hstream.RecordHeader,io.hstream.HRecord)">
+<a id="&lt;init&gt;(java.lang.String,io.hstream.RecordHeader,io.hstream.HRecord,java.time.Instant)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -223,7 +229,8 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>ReceivedHRecord</h4>
 <pre>public&nbsp;ReceivedHRecord&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;recordId,
                        <a href="RecordHeader.html" title="class in io.hstream">RecordHeader</a>&nbsp;header,
-                       <a href="HRecord.html" title="class in io.hstream">HRecord</a>&nbsp;hRecord)</pre>
+                       <a href="HRecord.html" title="class in io.hstream">HRecord</a>&nbsp;hRecord,
+                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Instant.html?is-external=true" title="class or interface in java.time" class="externalLink">Instant</a>&nbsp;createdTime)</pre>
 </li>
 </ul>
 </li>
@@ -257,10 +264,19 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <a id="getHRecord()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getHRecord</h4>
 <pre class="methodSignature">public&nbsp;<a href="HRecord.html" title="class in io.hstream">HRecord</a>&nbsp;getHRecord()</pre>
+</li>
+</ul>
+<a id="getCreatedTime()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getCreatedTime</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Instant.html?is-external=true" title="class or interface in java.time" class="externalLink">Instant</a>&nbsp;getCreatedTime()</pre>
 </li>
 </ul>
 </li>
