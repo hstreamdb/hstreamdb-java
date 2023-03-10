@@ -23,9 +23,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
+import java.time.Instant
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -119,6 +119,8 @@ class ConsumerKtImpl(
         }
 
         val receivedHStreamRecords = RecordUtils.decompress(value.receivedRecords)
+        val createdTimestamp = value.receivedRecords.record.publishTime
+        val createdTime = Instant.ofEpochSecond(createdTimestamp.seconds, createdTimestamp.nanos.toLong())
         for (receivedHStreamRecord in receivedHStreamRecords) {
             val responder = ResponderImpl(ackSender, receivedHStreamRecord.recordId)
 
@@ -130,7 +132,7 @@ class ConsumerKtImpl(
                 if (RecordUtils.isRawRecord(receivedHStreamRecord.record)) {
                     logger.debug("consumer [{}] ready to process rawRecord [{}]", consumerName, receivedHStreamRecord.recordId)
                     try {
-                        rawRecordReceiver!!.processRawRecord(toReceivedRawRecord(receivedHStreamRecord), responder)
+                        rawRecordReceiver!!.processRawRecord(toReceivedRawRecord(receivedHStreamRecord, createdTime), responder)
                         logger.debug(
                             "consumer [{}] processes rawRecord [{}] done",
                             consumerName,
@@ -148,7 +150,7 @@ class ConsumerKtImpl(
                     logger.debug("consumer [{}] ready to process hRecord [{}]", consumerName, receivedHStreamRecord.recordId)
                     try {
                         hRecordReceiver!!.processHRecord(
-                            toReceivedHRecord(receivedHStreamRecord), responder
+                            toReceivedHRecord(receivedHStreamRecord, createdTime), responder
                         )
                         logger.debug("consumer [{}] processes hRecord [{}] done", consumerName, receivedHStreamRecord.recordId)
                     } catch (e: Exception) {
@@ -201,23 +203,23 @@ class ConsumerKtImpl(
 
     companion object {
         private val logger = LoggerFactory.getLogger(ConsumerKtImpl::class.java)
-        private fun toReceivedRawRecord(receivedHStreamRecord: ReceivedHStreamRecord): ReceivedRawRecord {
+        private fun toReceivedRawRecord(receivedHStreamRecord: ReceivedHStreamRecord, createdTime: Instant): ReceivedRawRecord {
             return try {
                 val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(receivedHStreamRecord.record)
                 val header = RecordUtils.parseRecordHeaderFromHStreamRecord(receivedHStreamRecord.record)
                 ReceivedRawRecord(
-                    GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId), header, rawRecord
+                    GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId), header, rawRecord, createdTime
                 )
             } catch (e: InvalidProtocolBufferException) {
                 throw HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e)
             }
         }
 
-        private fun toReceivedHRecord(receivedHStreamRecord: ReceivedHStreamRecord): ReceivedHRecord {
+        private fun toReceivedHRecord(receivedHStreamRecord: ReceivedHStreamRecord, createdTime: Instant): ReceivedHRecord {
             return try {
                 val hRecord = RecordUtils.parseHRecordFromHStreamRecord(receivedHStreamRecord.record)
                 val header = RecordUtils.parseRecordHeaderFromHStreamRecord(receivedHStreamRecord.record)
-                ReceivedHRecord(GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId), header, hRecord)
+                ReceivedHRecord(GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId), header, hRecord, createdTime)
             } catch (e: InvalidProtocolBufferException) {
                 throw HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e)
             }
