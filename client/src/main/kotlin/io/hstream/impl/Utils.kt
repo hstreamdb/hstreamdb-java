@@ -5,6 +5,7 @@ import com.google.protobuf.Empty
 import io.grpc.Status
 import io.grpc.StatusException
 import io.grpc.StatusRuntimeException
+import io.hstream.HServerException.tryToHServerException
 import io.hstream.HStreamDBClientException
 import io.hstream.internal.HStreamApiGrpcKt.HStreamApiCoroutineStub
 import kotlinx.coroutines.CoroutineScope
@@ -14,6 +15,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.future.future
+import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
@@ -27,10 +29,14 @@ suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, c
     // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
     //       This function is for handling them.
     suspend fun handleGRPCException(i: Int, e: Throwable) {
-        logger.error("call unary rpc with url [{}] error", serverUrls[i], e)
+        logger.error("call unary rpc with url [{}] error", serverUrls[i])
         val status = Status.fromThrowable(e)
         if (status.code == Status.UNAVAILABLE.code) {
             if (i == serverUrls.size - 1) {
+                val hServerErr = tryToHServerException(status.description)
+                if (hServerErr != null) {
+                    throw hServerErr
+                }
                 throw HStreamDBClientException(e)
             } else {
                 logger.info("unary rpc will be retried with url [{}]", serverUrls[i + 1])
@@ -38,6 +44,10 @@ suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, c
                 return
             }
         } else {
+            val hServerErr = tryToHServerException(status.description)
+            if (hServerErr != null) {
+                throw hServerErr
+            }
             throw HStreamDBClientException(e)
         }
     }
@@ -83,13 +93,17 @@ suspend fun <Resp> unaryCallCoroutine(
     // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
     //       This function is for handling them.
     suspend fun handleGRPCException(urls: List<String>, e: Throwable): Resp {
-        logger.error("unary rpc error with url [{}]", urls[0], e)
+        logger.error("unary rpc error with url [{}]", urls[0])
         val status = Status.fromThrowable(e)
         if (status.code == Status.UNAVAILABLE.code && urls.size > 1) {
             val newServerUrls = refreshClusterInfo(urls.subList(1, urls.size), channelProvider)
             urlsRef.set(newServerUrls)
             return unaryCallWithCurrentUrlsCoroutine(urlsRef.get(), channelProvider, call)
         } else {
+            val hServerErr = tryToHServerException(status.description)
+            if (hServerErr != null) {
+                throw hServerErr
+            }
             throw HStreamDBClientException(e)
         }
     }
@@ -124,14 +138,14 @@ fun <Resp> unaryCallBlocked(
     timeoutMs: Long,
     call: suspend (stub: HStreamApiCoroutineStub) -> Resp
 ): Resp {
-    return futureForIO(MoreExecutors.directExecutor().asCoroutineDispatcher()) {
+    return runBlocking(MoreExecutors.directExecutor().asCoroutineDispatcher()) {
         unaryCallCoroutine(
             urlsRef,
             channelProvider,
             timeoutMs,
             call
         )
-    }.join()
+    }
 }
 
 fun <Resp> unaryCallWithCurrentUrlsAsync(urls: List<String>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
@@ -139,7 +153,7 @@ fun <Resp> unaryCallWithCurrentUrlsAsync(urls: List<String>, channelProvider: Ch
 }
 
 fun <Resp> unaryCallWithCurrentUrls(urls: List<String>, channelProvider: ChannelProvider, call: suspend (stub: HStreamApiCoroutineStub) -> Resp): Resp {
-    return unaryCallWithCurrentUrlsAsync(urls, channelProvider, call).join()
+    return runBlocking { unaryCallWithCurrentUrlsCoroutine(urls, channelProvider, call) }
 }
 
 @OptIn(DelicateCoroutinesApi::class)
