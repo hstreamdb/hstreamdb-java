@@ -45,11 +45,16 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.streams.toList
 
-class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val requestTimeoutMs: Long, credentials: ChannelCredentials? = null) : HStreamClient {
+class HStreamClientKtImpl(
+    bootstrapServerUrls: List<String>,
+    private val requestTimeoutMs: Long,
+    credentials: ChannelCredentials? = null,
+    channelProvider: ChannelProvider? = null
+) : HStreamClient {
 
     private val logger = LoggerFactory.getLogger(HStreamClientKtImpl::class.java)
+    private var channelProvider: ChannelProvider
 
-    private val channelProvider = ChannelProvider(credentials)
     private val clusterServerUrls: AtomicReference<List<String>> = AtomicReference(null)
 
     fun <Resp> unaryCallAsync(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
@@ -74,10 +79,15 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val request
     }
 
     init {
+        if (channelProvider == null) {
+            this.channelProvider = ChannelProviderImpl(credentials)
+        } else {
+            this.channelProvider = channelProvider
+        }
         logger.info("client init with bootstrapServerUrls [{}]", bootstrapServerUrls)
         val describeClusterResponse = unaryCallWithCurrentUrls(
             bootstrapServerUrls,
-            channelProvider
+            this.channelProvider
         ) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
         val serverNodes = describeClusterResponse.serverNodesList
         val serverUrls: ArrayList<String> = ArrayList(serverNodes.size)

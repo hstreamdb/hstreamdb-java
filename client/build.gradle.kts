@@ -32,15 +32,19 @@ java {
     }
 }
 
+val grpcVersion = "1.50.2"
+
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testImplementation("org.mockito:mockito-core:5.1.1")
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 
     // grpc
-    implementation("io.grpc:grpc-netty-shaded:1.50.2")
-    implementation("io.grpc:grpc-protobuf:1.50.2")
-    implementation("io.grpc:grpc-stub:1.50.2")
+    implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
+    implementation("io.grpc:grpc-protobuf:$grpcVersion")
+    implementation("io.grpc:grpc-stub:$grpcVersion")
+    testImplementation("io.grpc:grpc-testing:$grpcVersion")
     compileOnly("org.apache.tomcat:annotations-api:6.0.53") // necessary for java 9+
 
     implementation("com.google.protobuf:protobuf-java-util:3.21.12")
