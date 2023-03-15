@@ -85,4 +85,15 @@ public class ReaderBuilderImplTest {
         .requestTimeoutMs(-10000);
     assertThrows(IllegalArgumentException.class, builder::build);
   }
+
+  @Test
+  void testBuildWithoutShardId() {
+    builder
+        .streamName(UUID.randomUUID().toString())
+        .shardOffset(new StreamShardOffset(StreamShardOffset.SpecialOffset.LATEST))
+        .timeoutMs(500)
+        .readerId(UUID.randomUUID().toString())
+        .requestTimeoutMs(10000);
+    assertThrows(NullPointerException.class, builder::build);
+  }
 }
