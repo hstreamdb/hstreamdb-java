@@ -10,7 +10,19 @@ import java.util.function.Predicate;
 /** A data structure like json object. */
 public class HRecord {
 
-  private Struct delegate;
+  private final Struct delegate;
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    } else if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+
+    HRecord hRecord = (HRecord) obj;
+    return this.delegate.equals(hRecord.delegate);
+  }
 
   public static HRecordBuilder newBuilder() {
     return new HRecordBuilder();

@@ -5,7 +5,19 @@ import com.google.protobuf.ListValue;
 /** A data structure like array */
 public class HArray {
 
-  private ListValue delegate;
+  private final ListValue delegate;
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    } else if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+
+    HArray hArray = (HArray) obj;
+    return this.delegate.equals(hArray.delegate);
+  }
 
   public static HArrayBuilder newBuilder() {
     return new HArrayBuilder();

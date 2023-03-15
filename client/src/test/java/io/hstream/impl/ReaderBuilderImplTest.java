@@ -41,7 +41,7 @@ public class ReaderBuilderImplTest {
   }
 
   @Test
-  public void testBuild_NullStreamName() {
+  public void testBuildNullStreamName() {
     builder
         .shardId(0)
         .shardOffset(new StreamShardOffset(StreamShardOffset.SpecialOffset.LATEST))
@@ -52,7 +52,7 @@ public class ReaderBuilderImplTest {
   }
 
   @Test
-  public void testBuild_InvalidShardId() {
+  public void testBuildInvalidShardId() {
     builder
         .streamName(UUID.randomUUID().toString())
         .shardId(-1)
@@ -64,7 +64,7 @@ public class ReaderBuilderImplTest {
   }
 
   @Test
-  public void testBuild_NullShardOffset() {
+  public void testBuildNullShardOffset() {
     builder
         .streamName(UUID.randomUUID().toString())
         .shardId(0)
@@ -75,7 +75,7 @@ public class ReaderBuilderImplTest {
   }
 
   @Test
-  public void testBuild_InvalidRequestTimeoutMs() {
+  public void testBuildInvalidRequestTimeoutMs() {
     builder
         .streamName(UUID.randomUUID().toString())
         .shardId(0)
