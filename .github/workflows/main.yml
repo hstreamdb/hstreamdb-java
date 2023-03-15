@@ -31,6 +31,9 @@ jobs:
           ./gradlew spotlessKotlinCheck
           ./gradlew spotlessKotlinGradleCheck
 
+      - name: build and run unit tests
+        run: ./gradlew build
+
       - name: publish to mavenLocal
         run: ./gradlew publishToMavenLocal -PdisableSigning
 
