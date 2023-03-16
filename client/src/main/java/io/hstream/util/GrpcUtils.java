@@ -166,10 +166,12 @@ public class GrpcUtils {
 
   public static Query queryFromInternal(io.hstream.internal.Query query) {
     return Query.newBuilder()
-        .id(query.getId())
+        .name(query.getId())
         .status(taskStatusFromInternal(query.getStatus()))
         .createdTime(query.getCreatedTime())
         .queryText(query.getQueryText())
+        .sourceStreams(query.getSourcesList())
+        .resultStream(query.getSink())
         .build();
   }
 

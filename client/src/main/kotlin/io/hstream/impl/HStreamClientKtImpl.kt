@@ -236,10 +236,11 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val request
         }
     }
 
-    override fun createQuery(sql: String?): Query? {
+    override fun createQuery(sql: String?, name: String?): Query? {
         checkNotNull(sql)
+        checkNotNull(name)
         return unaryCallBlocked {
-            val query = it.createQuery(CreateQueryRequest.newBuilder().setSql(sql).build())
+            val query = it.createQuery(CreateQueryRequest.newBuilder().setSql(sql).setQueryName(name).build())
             GrpcUtils.queryFromInternal(query)
         }
     }
