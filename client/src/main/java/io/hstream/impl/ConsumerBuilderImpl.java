@@ -1,6 +1,6 @@
 package io.hstream.impl;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import io.hstream.Consumer;
 import io.hstream.ConsumerBuilder;
@@ -60,12 +60,14 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
 
   @Override
   public Consumer build() {
-    checkNotNull(subscription);
-    checkState(rawRecordReceiver != null || hRecordReceiver != null);
+    checkArgument(subscription != null, "ConsumerBuilder: `subscription` should not be null");
+    checkArgument(
+        rawRecordReceiver != null, "ConsumerBuilder: `rawRecordReceiver` should not be null");
+    checkArgument(hRecordReceiver != null, "ConsumerBuilder: `hRecordReceiver` should not be null");
     if (name == null) {
       name = UUID.randomUUID().toString();
     }
-    checkNotNull(name);
+    checkArgument(name != null, "ConsumerBuilder: `name` should not be null");
     if (ackBufferSize < 1) {
       ackBufferSize = 1;
     }

@@ -1,5 +1,6 @@
 package io.hstream.impl
 
+import com.google.common.base.Preconditions.checkArgument
 import com.google.protobuf.Empty
 import io.grpc.ChannelCredentials
 import io.hstream.BufferedProducerBuilder
@@ -45,11 +46,16 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.streams.toList
 
-class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val requestTimeoutMs: Long, credentials: ChannelCredentials? = null) : HStreamClient {
+class HStreamClientKtImpl(
+    bootstrapServerUrls: List<String>,
+    private val requestTimeoutMs: Long,
+    credentials: ChannelCredentials? = null,
+    channelProvider: ChannelProvider? = null
+) : HStreamClient {
 
     private val logger = LoggerFactory.getLogger(HStreamClientKtImpl::class.java)
+    private var channelProvider: ChannelProvider
 
-    private val channelProvider = ChannelProvider(credentials)
     private val clusterServerUrls: AtomicReference<List<String>> = AtomicReference(null)
 
     fun <Resp> unaryCallAsync(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
@@ -74,10 +80,15 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val request
     }
 
     init {
+        if (channelProvider == null) {
+            this.channelProvider = ChannelProviderImpl(credentials)
+        } else {
+            this.channelProvider = channelProvider
+        }
         logger.info("client init with bootstrapServerUrls [{}]", bootstrapServerUrls)
         val describeClusterResponse = unaryCallWithCurrentUrls(
             bootstrapServerUrls,
-            channelProvider
+            this.channelProvider
         ) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
         val serverNodes = describeClusterResponse.serverNodesList
         val serverUrls: ArrayList<String> = ArrayList(serverNodes.size)
@@ -127,9 +138,9 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val request
     }
 
     override fun createStream(stream: String?, replicationFactor: Short, shardCnt: Int, backlogDuration: Int) {
-        checkNotNull(stream)
-        check(replicationFactor in 1..15)
-        check(shardCnt >= 1)
+        checkArgument(stream != null, "stream name should not be null")
+        checkArgument(replicationFactor in 1..15)
+        checkArgument(shardCnt >= 1)
 
         unaryCallBlocked {
             it.createStream(

@@ -63,12 +63,12 @@ public class ReaderBuilderImpl implements ReaderBuilder {
   @Override
   public Reader build() {
     checkNotNull(client);
-    checkNotNull(streamName);
-    checkNotNull(shardId);
+    checkArgument(streamName != null, "ReaderBuilder: `streamName` should not be null");
+    checkArgument(shardId != null, "ReaderBuilder: `shardId` should not be null");
     checkState(shardId >= 0);
-    checkNotNull(shardOffset);
+    checkArgument(shardOffset != null, "ReaderBuilder: `shardOffset` should not be null");
     checkState(timeoutMs >= 0);
-    checkNotNull(readerId);
+    checkArgument(readerId != null, "ReaderBuilder: `readerId` should not be null");
     checkArgument(requestTimeoutMs > 0);
     return new ReaderKtImpl(
         client, streamName, shardId, shardOffset, timeoutMs, readerId, requestTimeoutMs);

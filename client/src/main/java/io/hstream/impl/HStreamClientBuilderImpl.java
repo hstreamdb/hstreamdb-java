@@ -1,6 +1,7 @@
 package io.hstream.impl;
 
 import static com.google.common.base.Preconditions.*;
+import static io.hstream.util.UrlSchemaUtils.parseServerUrls;
 
 import io.grpc.TlsChannelCredentials;
 import io.hstream.HStreamClient;
@@ -9,21 +10,25 @@ import io.hstream.HStreamDBClientException;
 import io.hstream.UrlSchema;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class HStreamClientBuilderImpl implements HStreamClientBuilder {
 
-  private String serviceUrl;
-  private boolean enableTls = false;
-  private String caPath;
-  private boolean enableTlsAuthentication;
-  private String keyPath;
-  private String certPath;
+  String serviceUrl;
+  boolean enableTls = false;
+  String caPath;
+  boolean enableTlsAuthentication;
+  String keyPath;
+  String certPath;
 
-  private long requestTimeoutMs = DefaultSettings.GRPC_CALL_TIMEOUT_MS;
+  long requestTimeoutMs = DefaultSettings.GRPC_CALL_TIMEOUT_MS;
+
+  private ChannelProvider channelProvider;
+
+  public void channelProvider(ChannelProvider channelProvider) {
+    this.channelProvider = channelProvider;
+  }
 
   @Override
   public HStreamClientBuilder serviceUrl(String serviceUrl) {
@@ -69,7 +74,7 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
 
   @Override
   public HStreamClient build() {
-    checkNotNull(serviceUrl);
+    checkArgument(serviceUrl != null, "HStreamClientBuilder: `serviceUrl` should not be null");
     checkArgument(requestTimeoutMs > 0);
     Pair<UrlSchema, List<String>> schemaHosts = parseServerUrls(serviceUrl);
     // FIXME: remove enableTls option
@@ -77,51 +82,24 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
       throw new HStreamDBClientException("hstreams url schema should enable tls");
     }
     if (enableTls) {
-      checkNotNull(caPath);
+      checkArgument(caPath != null, "when TLS is enabled, `caPath` should not be null");
       try {
         TlsChannelCredentials.Builder credentialsBuilder =
             TlsChannelCredentials.newBuilder().trustManager(new File(caPath));
         if (enableTlsAuthentication) {
-          checkNotNull(certPath);
-          checkNotNull(keyPath);
+          checkArgument(
+              certPath != null,
+              "when TLS authentication is enabled, `certPath` should not be null");
+          checkArgument(
+              keyPath != null, "when TLS authentication is enabled, `keyPath` should not be null");
           credentialsBuilder = credentialsBuilder.keyManager(new File(certPath), new File(keyPath));
         }
         return new HStreamClientKtImpl(
-            schemaHosts.getRight(), requestTimeoutMs, credentialsBuilder.build());
+            schemaHosts.getRight(), requestTimeoutMs, credentialsBuilder.build(), channelProvider);
       } catch (IOException e) {
         throw new HStreamDBClientException(String.format("invalid tls options, %s", e));
       }
     }
-    return new HStreamClientKtImpl(schemaHosts.getRight(), requestTimeoutMs, null);
-  }
-
-  private Pair<UrlSchema, List<String>> parseServerUrls(String url) {
-    String uriStr = url.strip();
-    var schemaHosts = uriStr.split("://");
-    if (schemaHosts.length != 2) {
-      throw new HStreamDBClientException(
-          "incorrect serviceUrl:" + uriStr + " (correct example: hstream://127.0.0.1:6570)");
-    }
-    var schemaStr = schemaHosts[0];
-    UrlSchema urlSchema;
-    try {
-      urlSchema = UrlSchema.valueOf(schemaStr.toUpperCase());
-    } catch (IllegalArgumentException e) {
-      throw new HStreamDBClientException("Invalid url schema:" + schemaStr);
-    }
-    var hosts = schemaHosts[1];
-    return Pair.of(urlSchema, parseHosts(hosts));
-  }
-
-  private List<String> parseHosts(String hosts) {
-    return Arrays.stream(hosts.split(",")).map(this::normalizeHost).collect(Collectors.toList());
-  }
-
-  private String normalizeHost(String host) {
-    var address_port = host.split(":");
-    if (address_port.length == 1) {
-      return host + ":6570";
-    }
-    return host;
+    return new HStreamClientKtImpl(schemaHosts.getRight(), requestTimeoutMs, null, channelProvider);
   }
 }

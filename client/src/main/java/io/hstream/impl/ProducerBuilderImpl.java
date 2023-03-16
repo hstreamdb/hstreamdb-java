@@ -29,7 +29,7 @@ public class ProducerBuilderImpl implements ProducerBuilder {
 
   @Override
   public Producer build() {
-    checkNotNull(streamName);
+    checkArgument(streamName != null, "ProducerBuilder: `streamName` should not be null");
     checkArgument(requestTimeoutMs > 0);
     return new ProducerKtImpl(client, streamName, requestTimeoutMs);
   }

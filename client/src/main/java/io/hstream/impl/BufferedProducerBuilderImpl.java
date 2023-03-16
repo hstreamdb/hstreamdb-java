@@ -10,7 +10,7 @@ import io.hstream.HStreamDBClientException;
 
 public class BufferedProducerBuilderImpl implements BufferedProducerBuilder {
 
-  private HStreamClientKtImpl client;
+  private final HStreamClientKtImpl client;
   private String streamName;
   private BatchSetting batchSetting = BatchSetting.newBuilder().build();
   private FlowControlSetting flowControlSetting = FlowControlSetting.newBuilder().build();
