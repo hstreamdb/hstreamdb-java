@@ -62,8 +62,8 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
   public Consumer build() {
     checkArgument(subscription != null, "ConsumerBuilder: `subscription` should not be null");
     checkArgument(
-        rawRecordReceiver != null, "ConsumerBuilder: `rawRecordReceiver` should not be null");
-    checkArgument(hRecordReceiver != null, "ConsumerBuilder: `hRecordReceiver` should not be null");
+        rawRecordReceiver != null || hRecordReceiver != null,
+        "ConsumerBuilder: `rawRecordReceiver` and `hRecordReceiver` should not be both null");
     if (name == null) {
       name = UUID.randomUUID().toString();
     }
