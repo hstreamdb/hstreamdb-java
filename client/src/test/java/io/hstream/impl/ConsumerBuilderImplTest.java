@@ -13,14 +13,14 @@ public class ConsumerBuilderImplTest {
   public void testBuildWithoutSubscriptionShouldThrowException() {
     ConsumerBuilderImpl consumerBuilder = new ConsumerBuilderImpl(null);
     consumerBuilder.hRecordReceiver((_x, _y) -> {});
-    Assertions.assertThrows(NullPointerException.class, consumerBuilder::build);
+    Assertions.assertThrows(IllegalArgumentException.class, consumerBuilder::build);
   }
 
   @Test
   public void testBuildWithoutRecordReceiverShouldThrowException() {
     ConsumerBuilderImpl consumerBuilder = new ConsumerBuilderImpl(null);
     consumerBuilder.subscription("test-subscription");
-    Assertions.assertThrows(IllegalStateException.class, consumerBuilder::build);
+    Assertions.assertThrows(IllegalArgumentException.class, consumerBuilder::build);
   }
 
   @Test

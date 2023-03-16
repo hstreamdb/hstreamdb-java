@@ -48,7 +48,7 @@ public class ReaderBuilderImplTest {
         .timeoutMs(500)
         .readerId(UUID.randomUUID().toString())
         .requestTimeoutMs(10000);
-    assertThrows(NullPointerException.class, builder::build);
+    assertThrows(IllegalArgumentException.class, builder::build);
   }
 
   @Test
@@ -94,6 +94,6 @@ public class ReaderBuilderImplTest {
         .timeoutMs(500)
         .readerId(UUID.randomUUID().toString())
         .requestTimeoutMs(10000);
-    assertThrows(NullPointerException.class, builder::build);
+    assertThrows(IllegalArgumentException.class, builder::build);
   }
 }

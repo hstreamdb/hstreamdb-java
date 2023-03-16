@@ -1,5 +1,6 @@
 package io.hstream.impl
 
+import com.google.common.base.Preconditions.checkArgument
 import com.google.protobuf.Empty
 import io.grpc.ChannelCredentials
 import io.hstream.BufferedProducerBuilder
@@ -137,9 +138,9 @@ class HStreamClientKtImpl(
     }
 
     override fun createStream(stream: String?, replicationFactor: Short, shardCnt: Int, backlogDuration: Int) {
-        checkNotNull(stream)
-        check(replicationFactor in 1..15)
-        check(shardCnt >= 1)
+        checkArgument(stream != null, "stream name should not be null")
+        checkArgument(replicationFactor in 1..15)
+        checkArgument(shardCnt >= 1)
 
         unaryCallBlocked {
             it.createStream(

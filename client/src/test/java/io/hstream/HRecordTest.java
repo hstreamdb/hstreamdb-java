@@ -11,7 +11,7 @@ public class HRecordTest {
         HRecord.newBuilder().put("key1", 1).put("key2", false).put("key3", "hello").build();
 
     Assertions.assertEquals(1, hRecord.getInt("key1"));
-    Assertions.assertEquals(false, hRecord.getBoolean("key2"));
+    Assertions.assertFalse(hRecord.getBoolean("key2"));
     Assertions.assertEquals("hello", hRecord.getString("key3"));
   }
 
@@ -23,7 +23,7 @@ public class HRecordTest {
     HRecord parentHRecord = HRecord.newBuilder().put("record_key", hRecord).build();
 
     Assertions.assertEquals(1, parentHRecord.getHRecord("record_key").getInt("key1"));
-    Assertions.assertEquals(false, parentHRecord.getHRecord("record_key").getBoolean("key2"));
+    Assertions.assertFalse(parentHRecord.getHRecord("record_key").getBoolean("key2"));
     Assertions.assertEquals("hello", parentHRecord.getHRecord("record_key").getString("key3"));
   }
 }

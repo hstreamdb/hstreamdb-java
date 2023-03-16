@@ -74,7 +74,7 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
 
   @Override
   public HStreamClient build() {
-    checkNotNull(serviceUrl);
+    checkArgument(serviceUrl != null, "HStreamClientBuilder: `serviceUrl` should not be null");
     checkArgument(requestTimeoutMs > 0);
     Pair<UrlSchema, List<String>> schemaHosts = parseServerUrls(serviceUrl);
     // FIXME: remove enableTls option
@@ -82,13 +82,16 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
       throw new HStreamDBClientException("hstreams url schema should enable tls");
     }
     if (enableTls) {
-      checkNotNull(caPath);
+      checkArgument(caPath != null, "when TLS is enabled, `caPath` should not be null");
       try {
         TlsChannelCredentials.Builder credentialsBuilder =
             TlsChannelCredentials.newBuilder().trustManager(new File(caPath));
         if (enableTlsAuthentication) {
-          checkNotNull(certPath);
-          checkNotNull(keyPath);
+          checkArgument(
+              certPath != null,
+              "when TLS authentication is enabled, `certPath` should not be null");
+          checkArgument(
+              keyPath != null, "when TLS authentication is enabled, `keyPath` should not be null");
           credentialsBuilder = credentialsBuilder.keyManager(new File(certPath), new File(keyPath));
         }
         return new HStreamClientKtImpl(

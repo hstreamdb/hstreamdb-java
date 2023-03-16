@@ -58,15 +58,16 @@ class SubscriptionTest {
   }
 
   @Test
-  public void testBuilderMissingSubscriptionIdThrowsNullPointerException() {
+  public void testBuilderMissingSubscriptionIdThrowsIllegalArgumentException() {
     assertThrows(
-        NullPointerException.class, () -> Subscription.newBuilder().stream("stream-name").build());
+        IllegalArgumentException.class,
+        () -> Subscription.newBuilder().stream("stream-name").build());
   }
 
   @Test
-  public void testBuilderMissingStreamNameThrowsNullPointerException() {
+  public void testBuilderMissingStreamNameThrowsIllegalArgumentException() {
     assertThrows(
-        NullPointerException.class,
+        IllegalArgumentException.class,
         () -> Subscription.newBuilder().subscription("subscription-id").build());
   }
 

@@ -1,6 +1,6 @@
 package io.hstream.impl;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import io.hstream.*;
 import java.util.List;
@@ -35,8 +35,8 @@ public class QueryerBuilderImpl implements QueryerBuilder {
 
   @Override
   public Queryer build() {
-    checkNotNull(sql);
-    checkNotNull(resultObserver);
+    checkArgument(sql != null, "QueryerBuilder: `sql` should not be null");
+    checkArgument(resultObserver != null, "QueryerBuilder: `resultObserver` should not be null");
     throw new HStreamDBClientException("unsupported");
   }
 }

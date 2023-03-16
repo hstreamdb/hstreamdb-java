@@ -61,7 +61,7 @@ class HStreamClientBuilderImplTest {
 
   @Test
   public void testBuildWithNullServiceUrl() {
-    assertThrows(NullPointerException.class, () -> builder.build());
+    assertThrows(IllegalArgumentException.class, () -> builder.build());
   }
 
   @Test
@@ -81,7 +81,7 @@ class HStreamClientBuilderImplTest {
   @Test
   public void testBuildWithTlsAndNullCaPath() {
     assertThrows(
-        NullPointerException.class,
+        IllegalArgumentException.class,
         () -> builder.serviceUrl("hstreams://localhost:6570").enableTls().build());
   }
 
@@ -95,7 +95,7 @@ class HStreamClientBuilderImplTest {
   @Test
   public void testBuildWithTlsAuthenticationAndNullKeyPath() {
     assertThrows(
-        NullPointerException.class,
+        IllegalArgumentException.class,
         () ->
             builder
                 .serviceUrl("hstreams://localhost:6570")
