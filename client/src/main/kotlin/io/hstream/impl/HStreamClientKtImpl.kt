@@ -247,10 +247,11 @@ class HStreamClientKtImpl(
         }
     }
 
-    override fun createQuery(sql: String?): Query? {
+    override fun createQuery(name: String?, sql: String?): Query? {
         checkNotNull(sql)
+        checkNotNull(name)
         return unaryCallBlocked {
-            val query = it.createQuery(CreateQueryRequest.newBuilder().setSql(sql).build())
+            val query = it.createQuery(CreateQueryRequest.newBuilder().setSql(sql).setQueryName(name).build())
             GrpcUtils.queryFromInternal(query)
         }
     }
