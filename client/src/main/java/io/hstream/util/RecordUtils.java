@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public class RecordUtils {
 
-  private static Logger logger = LoggerFactory.getLogger(RecordUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(RecordUtils.class);
 
   public static HStreamRecord buildHStreamRecordFromRawRecord(byte[] rawRecord) {
     HStreamRecordHeader header =

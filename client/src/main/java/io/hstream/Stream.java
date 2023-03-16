@@ -1,7 +1,6 @@
 package io.hstream;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -128,7 +127,7 @@ public class Stream {
     }
 
     public Stream build() {
-      checkNotNull(streamName);
+      checkArgument(streamName != null, "StreamBuilder: `streamName` should not be null");
       checkArgument(replicationFactor >= 1 && replicationFactor <= 15);
       checkArgument(shardCount >= 1);
       return new Stream(streamName, replicationFactor, backlogDuration, shardCount, createdTime);

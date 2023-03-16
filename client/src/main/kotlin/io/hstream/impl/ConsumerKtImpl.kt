@@ -31,11 +31,11 @@ import java.util.concurrent.TimeUnit
 
 class ConsumerKtImpl(
     private val client: HStreamClientKtImpl,
-    private val consumerName: String,
+    public val consumerName: String,
     private val subscriptionId: String,
     private val rawRecordReceiver: RawRecordReceiver?,
     private val hRecordReceiver: HRecordReceiver?,
-    private val ackBufferSize: Int,
+    public val ackBufferSize: Int,
     private val ackAgeLimit: Long
 ) : AbstractService(), Consumer {
     private val fetchScope = CoroutineScope(Dispatchers.IO)

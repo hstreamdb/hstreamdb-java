@@ -123,8 +123,9 @@ public class Subscription {
     }
 
     public Subscription build() {
-      checkNotNull(subscriptionId);
-      checkNotNull(streamName);
+      checkArgument(
+          subscriptionId != null, "SubscriptionBuilder: `subscriptionId` should not be null");
+      checkArgument(streamName != null, "SubscriptionBuilder: `streamName` should not be null");
       checkState(ackTimeoutSeconds > 0 && ackTimeoutSeconds < 36000);
       checkState(maxUnackedRecords > 0);
       return new Subscription(
