@@ -236,7 +236,7 @@ class HStreamClientKtImpl(bootstrapServerUrls: List<String>, private val request
         }
     }
 
-    override fun createQuery(sql: String?, name: String?): Query? {
+    override fun createQuery(name: String?, sql: String?): Query? {
         checkNotNull(sql)
         checkNotNull(name)
         return unaryCallBlocked {

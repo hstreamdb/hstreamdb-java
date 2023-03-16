@@ -131,7 +131,7 @@ public interface HStreamClient extends AutoCloseable {
 
   Cluster describeCluster();
 
-  Query createQuery(String sql, String name);
+  Query createQuery(String name, String sql);
 
   List<Query> listQueries();
 
