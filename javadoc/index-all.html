@@ -279,7 +279,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Subscription.Builder.html#createdTime(java.time.Instant)">createdTime(Instant)</a></span> - Method in class io.hstream.<a href="io/hstream/Subscription.Builder.html" title="class in io.hstream">Subscription.Builder</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#createQuery(java.lang.String)">createQuery(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
+<dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#createQuery(java.lang.String,java.lang.String)">createQuery(String, String)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamClient.html#createStream(io.hstream.Stream)">createStream(Stream)</a></span> - Method in interface io.hstream.<a href="io/hstream/HStreamClient.html" title="interface in io.hstream">HStreamClient</a></dt>
 <dd>
@@ -444,8 +444,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#getHRecord(java.lang.String)">getHRecord(String)</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/hstream/Query.html#getId()">getId()</a></span> - Method in class io.hstream.<a href="io/hstream/Query.html" title="class in io.hstream">Query</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArray.html#getInt(int)">getInt(int)</a></span> - Method in class io.hstream.<a href="io/hstream/HArray.html" title="class in io.hstream">HArray</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HRecord.html#getInt(java.lang.String)">getInt(String)</a></span> - Method in class io.hstream.<a href="io/hstream/HRecord.html" title="class in io.hstream">HRecord</a></dt>
@@ -461,6 +459,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/HServerException.html#getMessage()">getMessage()</a></span> - Method in exception io.hstream.<a href="io/hstream/HServerException.html" title="class in io.hstream">HServerException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ConsumerInformation.html#getName()">getName()</a></span> - Method in class io.hstream.<a href="io/hstream/ConsumerInformation.html" title="class in io.hstream">ConsumerInformation</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Query.html#getName()">getName()</a></span> - Method in class io.hstream.<a href="io/hstream/Query.html" title="class in io.hstream">Query</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/View.html#getName()">getName()</a></span> - Method in class io.hstream.<a href="io/hstream/View.html" title="class in io.hstream">View</a></dt>
 <dd>&nbsp;</dd>
@@ -496,6 +496,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#getReplicationFactor()">getReplicationFactor()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Query.html#getResultStream()">getResultStream()</a></span> - Method in class io.hstream.<a href="io/hstream/Query.html" title="class in io.hstream">Query</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/View.html#getSchema()">getSchema()</a></span> - Method in class io.hstream.<a href="io/hstream/View.html" title="class in io.hstream">View</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/Stream.html#getShardCount()">getShardCount()</a></span> - Method in class io.hstream.<a href="io/hstream/Stream.html" title="class in io.hstream">Stream</a></dt>
@@ -503,6 +505,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/Shard.html#getShardId()">getShardId()</a></span> - Method in class io.hstream.<a href="io/hstream/Shard.html" title="class in io.hstream">Shard</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/SubscriptionOffset.html#getShardId()">getShardId()</a></span> - Method in class io.hstream.<a href="io/hstream/SubscriptionOffset.html" title="class in io.hstream">SubscriptionOffset</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Query.html#getSourceStreams()">getSourceStreams()</a></span> - Method in class io.hstream.<a href="io/hstream/Query.html" title="class in io.hstream">Query</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/StreamShardOffset.html#getSpecialOffset()">getSpecialOffset()</a></span> - Method in class io.hstream.<a href="io/hstream/StreamShardOffset.html" title="class in io.hstream">StreamShardOffset</a></dt>
 <dd>&nbsp;</dd>
@@ -638,8 +642,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">I</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="io/hstream/Query.Builder.html#id(java.lang.String)">id(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Query.Builder.html" title="class in io.hstream">Query.Builder</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamDBClientException.InvalidRecordException.html#%3Cinit%3E(java.lang.String)">InvalidRecordException(String)</a></span> - Constructor for exception io.hstream.<a href="io/hstream/HStreamDBClientException.InvalidRecordException.html" title="class in io.hstream">HStreamDBClientException.InvalidRecordException</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HStreamDBClientException.InvalidRecordException.html#%3Cinit%3E(java.lang.String,java.lang.Throwable)">InvalidRecordException(String, Throwable)</a></span> - Constructor for exception io.hstream.<a href="io/hstream/HStreamDBClientException.InvalidRecordException.html" title="class in io.hstream">HStreamDBClientException.InvalidRecordException</a></dt>
@@ -703,6 +705,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Optional, if not provided, the ConsumerBuilder will generate a unique name.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/hstream/ConsumerInformation.Builder.html#name(java.lang.String)">name(String)</a></span> - Method in class io.hstream.<a href="io/hstream/ConsumerInformation.Builder.html" title="class in io.hstream">ConsumerInformation.Builder</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Query.Builder.html#name(java.lang.String)">name(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Query.Builder.html" title="class in io.hstream">Query.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/View.Builder.html#name(java.lang.String)">name(String)</a></span> - Method in class io.hstream.<a href="io/hstream/View.Builder.html" title="class in io.hstream">View.Builder</a></dt>
 <dd>&nbsp;</dd>
@@ -910,6 +914,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Set <a href="io/hstream/Observer.html" title="interface in io.hstream"><code>Observer</code></a> for sql results.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Query.Builder.html#resultStream(java.lang.String)">resultStream(String)</a></span> - Method in class io.hstream.<a href="io/hstream/Query.Builder.html" title="class in io.hstream">Query.Builder</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a id="I:S">
 <!--   -->
@@ -952,6 +958,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/hstream/ReaderBuilder.html#shardOffset(io.hstream.StreamShardOffset)">shardOffset(StreamShardOffset)</a></span> - Method in interface io.hstream.<a href="io/hstream/ReaderBuilder.html" title="interface in io.hstream">ReaderBuilder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/HArray.html#size()">size()</a></span> - Method in class io.hstream.<a href="io/hstream/HArray.html" title="class in io.hstream">HArray</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/hstream/Query.Builder.html#sourceStreams(java.util.List)">sourceStreams(List&lt;String&gt;)</a></span> - Method in class io.hstream.<a href="io/hstream/Query.Builder.html" title="class in io.hstream">Query.Builder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/hstream/QueryerBuilder.html#sql(java.lang.String)">sql(String)</a></span> - Method in interface io.hstream.<a href="io/hstream/QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a></dt>
 <dd>

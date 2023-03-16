@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -189,7 +189,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream">Query.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#id(java.lang.String)">id</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;id)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#name(java.lang.String)">name</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -198,6 +198,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream">Query.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resultStream(java.lang.String)">resultStream</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;resultStream)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream">Query.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sourceStreams(java.util.List)">sourceStreams</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;sourceStreams)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#status(io.hstream.TaskStatus)">status</a></span>&#8203;(<a href="TaskStatus.html" title="enum in io.hstream">TaskStatus</a>&nbsp;status)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -245,13 +255,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="id(java.lang.String)">
+<a id="name(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>id</h4>
-<pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream">Query.Builder</a>&nbsp;id&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;id)</pre>
+<h4>name</h4>
+<pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream">Query.Builder</a>&nbsp;name&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name)</pre>
 </li>
 </ul>
 <a id="status(io.hstream.TaskStatus)">
@@ -279,6 +289,24 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>queryText</h4>
 <pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream">Query.Builder</a>&nbsp;queryText&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;queryText)</pre>
+</li>
+</ul>
+<a id="sourceStreams(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sourceStreams</h4>
+<pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream">Query.Builder</a>&nbsp;sourceStreams&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;sourceStreams)</pre>
+</li>
+</ul>
+<a id="resultStream(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>resultStream</h4>
+<pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream">Query.Builder</a>&nbsp;resultStream&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;resultStream)</pre>
 </li>
 </ul>
 <a id="build()">
