@@ -135,9 +135,11 @@ public interface HStreamClient extends AutoCloseable {
 
   List<Query> listQueries();
 
-  Query getQuery(String id);
+  Query getQuery(String name);
 
-  void deleteQuery(String id);
+  void deleteQuery(String name);
+
+  void pauseQuery(String name);
 
   void createView(String sql);
 

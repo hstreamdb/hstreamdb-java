@@ -1,6 +1,7 @@
 package io.hstream.impl
 
 import com.google.common.base.Preconditions.checkArgument
+import com.google.common.util.concurrent.MoreExecutors
 import com.google.protobuf.Empty
 import io.grpc.ChannelCredentials
 import io.hstream.BufferedProducerBuilder
@@ -38,7 +39,9 @@ import io.hstream.internal.ListViewsRequest
 import io.hstream.internal.LookupResourceRequest
 import io.hstream.internal.LookupSubscriptionRequest
 import io.hstream.internal.ResourceType
+import io.hstream.internal.TerminateQueriesRequest
 import io.hstream.util.GrpcUtils
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
@@ -65,6 +68,13 @@ class HStreamClientKtImpl(
     // warning: this method will block current thread. Do not call this in suspend functions, use unaryCallCoroutine instead!
     fun <Resp> unaryCallBlocked(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
         return unaryCallBlocked(clusterServerUrls, channelProvider, requestTimeoutMs, call)
+    }
+
+    private fun <Resp> unaryCallBlockedWithLookup(resourceType: ResourceType, resourceId: String?, call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
+        return runBlocking(MoreExecutors.directExecutor().asCoroutineDispatcher()) {
+            val nodeUrl = lookupResource(resourceType, resourceId)
+            call(HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(nodeUrl)))
+        }
     }
 
     suspend fun <Resp> unaryCallCoroutine(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
@@ -194,11 +204,8 @@ class HStreamClientKtImpl(
     }
 
     override fun getStream(streamName: String?): GetStreamResponse {
-        return runBlocking {
-            val serverUrl = lookupResource(ResourceType.ResStream, streamName)
-            val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(serverUrl))
-            val response = stub.getStream(GetStreamRequest.newBuilder().setName(streamName).build())
-            GrpcUtils.GetStreamResponseFromGrpc(response)
+        return unaryCallBlockedWithLookup(ResourceType.ResStream, streamName) {
+            GrpcUtils.GetStreamResponseFromGrpc(it.getStream(GetStreamRequest.newBuilder().setName(streamName).build()))
         }
     }
 
@@ -250,7 +257,7 @@ class HStreamClientKtImpl(
     override fun createQuery(name: String?, sql: String?): Query? {
         checkNotNull(sql)
         checkNotNull(name)
-        return unaryCallBlocked {
+        return unaryCallBlockedWithLookup(ResourceType.ResQuery, name) {
             val query = it.createQuery(CreateQueryRequest.newBuilder().setSql(sql).setQueryName(name).build())
             GrpcUtils.queryFromInternal(query)
         }
@@ -265,16 +272,25 @@ class HStreamClientKtImpl(
         }
     }
 
-    override fun getQuery(id: String?): Query {
-        return unaryCallBlocked {
-            val result = it.getQuery(GetQueryRequest.newBuilder().setId(id).build())
+    override fun getQuery(name: String?): Query {
+        checkNotNull(name)
+        return unaryCallBlockedWithLookup(ResourceType.ResQuery, name) {
+            val result = it.getQuery(GetQueryRequest.newBuilder().setId(name).build())
             GrpcUtils.queryFromInternal(result)
         }
     }
 
-    override fun deleteQuery(id: String?) {
+    override fun deleteQuery(name: String?) {
+        checkNotNull(name)
+        unaryCallBlockedWithLookup(ResourceType.ResQuery, name) {
+            it.deleteQuery(DeleteQueryRequest.newBuilder().setId(name).build())
+        }
+    }
+
+    override fun pauseQuery(name: String?) {
+        checkNotNull(name)
         unaryCallBlocked {
-            it.deleteQuery(DeleteQueryRequest.newBuilder().setId(id).build())
+            it.terminateQueries(TerminateQueriesRequest.newBuilder().addQueryId(name).build())
         }
     }
 
