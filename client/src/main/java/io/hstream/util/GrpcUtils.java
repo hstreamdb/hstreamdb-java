@@ -197,6 +197,8 @@ public class GrpcUtils {
         return TaskStatus.TASK_CREATION_ABORT;
       case TASK_TERMINATED:
         return TaskStatus.TASK_TERMINATED;
+      case TASK_ABORT:
+        return TaskStatus.TASK_ABORT;
       default:
         throw new IllegalArgumentException("Unknown task status: " + statusPB);
     }

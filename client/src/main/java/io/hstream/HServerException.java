@@ -33,6 +33,9 @@ public class HServerException extends RuntimeException {
   public static HServerException tryToHServerException(String errBodyStr) {
     try {
       var errBody = new Gson().fromJson(errBodyStr, ErrBody.class);
+      if (errBody == null) {
+        return null;
+      }
       return new HServerException(errBody);
     } catch (JsonSyntaxException e) {
       return null;

@@ -29,7 +29,7 @@ suspend fun <Resp> unaryCallWithCurrentUrlsCoroutine(serverUrls: List<String>, c
     // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
     //       This function is for handling them.
     suspend fun handleGRPCException(i: Int, e: Throwable) {
-        logger.error("call unary rpc with url [{}] error", serverUrls[i])
+        logger.error("call unary rpc with url [{}] error, msg:{}", serverUrls[i], e.message)
         val status = Status.fromThrowable(e)
         if (status.code == Status.UNAVAILABLE.code) {
             if (i == serverUrls.size - 1) {
@@ -93,7 +93,7 @@ suspend fun <Resp> unaryCallCoroutine(
     // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
     //       This function is for handling them.
     suspend fun handleGRPCException(urls: List<String>, e: Throwable): Resp {
-        logger.error("unary rpc error with url [{}]", urls[0])
+        logger.error("unary rpc error with url [{}], msg:{}", urls[0], e.message)
         val status = Status.fromThrowable(e)
         if (status.code == Status.UNAVAILABLE.code && urls.size > 1) {
             val newServerUrls = refreshClusterInfo(urls.subList(1, urls.size), channelProvider)

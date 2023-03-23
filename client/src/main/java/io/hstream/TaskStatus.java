@@ -6,4 +6,5 @@ public enum TaskStatus {
   TASK_RUNNING,
   TASK_CREATION_ABORT,
   TASK_TERMINATED,
+  TASK_ABORT
 }
