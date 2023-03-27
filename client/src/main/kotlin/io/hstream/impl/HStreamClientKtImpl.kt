@@ -50,7 +50,7 @@ import java.util.concurrent.atomic.AtomicReference
 import kotlin.streams.toList
 
 class HStreamClientKtImpl(
-    bootstrapServerUrls: List<String>,
+    private val bootstrapServerUrls: List<String>,
     private val requestTimeoutMs: Long,
     credentials: ChannelCredentials? = null,
     channelProvider: ChannelProvider? = null
@@ -60,6 +60,21 @@ class HStreamClientKtImpl(
     private var channelProvider: ChannelProvider
 
     private val clusterServerUrls: AtomicReference<List<String>> = AtomicReference(null)
+    fun refreshClusterServerUrls() {
+        val describeClusterResponse = unaryCallWithCurrentUrls(
+            bootstrapServerUrls,
+            this.channelProvider
+        ) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
+        val serverNodes = describeClusterResponse.serverNodesList
+        val serverUrls: ArrayList<String> = ArrayList(serverNodes.size)
+        clusterServerUrls.set(serverUrls)
+        for (serverNode in serverNodes) {
+            val host = serverNode.host
+            val port = serverNode.port
+            serverUrls.add("$host:$port")
+        }
+        logger.info("update clusterServerUrls to [{}]", clusterServerUrls.get())
+    }
 
     fun <Resp> unaryCallAsync(call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): CompletableFuture<Resp> {
         return unaryCallAsync(clusterServerUrls, channelProvider, requestTimeoutMs, call)
@@ -96,19 +111,7 @@ class HStreamClientKtImpl(
             this.channelProvider = channelProvider
         }
         logger.info("client init with bootstrapServerUrls [{}]", bootstrapServerUrls)
-        val describeClusterResponse = unaryCallWithCurrentUrls(
-            bootstrapServerUrls,
-            this.channelProvider
-        ) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
-        val serverNodes = describeClusterResponse.serverNodesList
-        val serverUrls: ArrayList<String> = ArrayList(serverNodes.size)
-        clusterServerUrls.set(serverUrls)
-        for (serverNode in serverNodes) {
-            val host = serverNode.host
-            val port = serverNode.port
-            serverUrls.add("$host:$port")
-        }
-        logger.info("update clusterServerUrls to [{}]", clusterServerUrls.get())
+        refreshClusterServerUrls()
     }
 
     override fun close() {
@@ -331,7 +334,7 @@ class HStreamClientKtImpl(
         }
     }
 
-    private final suspend fun lookupSubscriptionServerUrl(subscriptionId: String?): String {
+    private suspend fun lookupSubscriptionServerUrl(subscriptionId: String?): String {
         return unaryCallCoroutine {
             val req: LookupSubscriptionRequest =
                 LookupSubscriptionRequest
