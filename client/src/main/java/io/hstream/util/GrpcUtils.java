@@ -236,4 +236,17 @@ public class GrpcUtils {
         .withBatchId(offset.getBatchId())
         .build();
   }
+
+  // == Connector
+  public static Connector ConnectorFromGrpc(io.hstream.internal.Connector connector) {
+    var createdTime = connector.getCreationTime();
+    return Connector.newBuilder()
+        .name(connector.getName())
+        .type(ConnectorType.valueOf(connector.getType()))
+        .target(connector.getTarget())
+        .status(connector.getStatus())
+        .createdTime(Instant.ofEpochSecond(createdTime.getSeconds(), createdTime.getNanos()))
+        .config(connector.getCnofig())
+        .build();
+  }
 }

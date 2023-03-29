@@ -150,4 +150,19 @@ public interface HStreamClient extends AutoCloseable {
   void deleteView(String name);
 
   List<ConsumerInformation> listConsumers(String subscriptionId);
+
+  // == Connectors
+  Connector createConnector(CreateConnectorRequest request);
+
+  List<Connector> listConnectors();
+
+  Connector getConnector(String name);
+
+  String getConnectorSpec(String type, String target);
+
+  void pauseConnector(String name);
+
+  void resumeConnector(String name);
+
+  void deleteConnector(String name);
 }
