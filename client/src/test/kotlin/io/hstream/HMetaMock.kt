@@ -16,6 +16,12 @@ class HMetaMock {
     val clusterNames: MutableList<Pair<String, Int>> = arrayListOf()
     private val clusterNameMutex: Mutex = Mutex()
 
+    val streamsInfo: MutableList<Pair<String, String>> = arrayListOf()
+    private val streamsInfoMutex: Mutex = Mutex()
+
+    val subscriptionInfo: MutableList<Pair<String, String>> = arrayListOf()
+    private val subscriptionInfoMutex: Mutex = Mutex()
+
     suspend fun registerName(serverName: String) {
         val uri = if (serverName.contains("://")) {
             URI(serverName)
@@ -35,6 +41,46 @@ class HMetaMock {
             }
             clusterNames.add(hostPort)
         }
+    }
+
+    suspend fun registerStream(streamName: String, serverName: String) {
+        streamsInfoMutex.withLock {
+            for (info in streamsInfo) {
+                if (info.first == streamName) {
+                    TODO()
+                }
+            }
+            streamsInfo.add(Pair(streamName, serverName))
+        }
+    }
+
+    suspend fun lookupStreamName(streamName: String): String = streamsInfoMutex.withLock {
+        for (info in streamsInfo) {
+            if (info.first == streamName) {
+                return info.second
+            }
+        }
+        TODO()
+    }
+
+    suspend fun registerSubscription(subscriptionId: String, serverName: String) {
+        subscriptionInfoMutex.withLock {
+            for (info in subscriptionInfo) {
+                if (info.first == subscriptionId) {
+                    TODO()
+                }
+            }
+            streamsInfo.add(Pair(subscriptionId, serverName))
+        }
+    }
+
+    suspend fun lookupSubscriptionName(subscriptionId: String): String = subscriptionInfoMutex.withLock {
+        for (info in subscriptionInfo) {
+            if (info.first == subscriptionId) {
+                return info.second
+            }
+        }
+        TODO()
     }
 
     suspend fun getServerNodes(): List<ServerNode> {
