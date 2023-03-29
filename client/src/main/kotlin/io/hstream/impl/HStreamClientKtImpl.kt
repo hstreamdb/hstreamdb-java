@@ -6,8 +6,10 @@ import com.google.protobuf.Empty
 import io.grpc.ChannelCredentials
 import io.hstream.BufferedProducerBuilder
 import io.hstream.Cluster
+import io.hstream.Connector
 import io.hstream.ConsumerBuilder
 import io.hstream.ConsumerInformation
+import io.hstream.CreateConnectorRequest
 import io.hstream.GetStreamResponse
 import io.hstream.GetSubscriptionResponse
 import io.hstream.HStreamClient
@@ -21,15 +23,19 @@ import io.hstream.Subscription
 import io.hstream.View
 import io.hstream.internal.CommandQuery
 import io.hstream.internal.CreateQueryRequest
+import io.hstream.internal.DeleteConnectorRequest
 import io.hstream.internal.DeleteQueryRequest
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.DeleteViewRequest
+import io.hstream.internal.GetConnectorRequest
+import io.hstream.internal.GetConnectorSpecRequest
 import io.hstream.internal.GetQueryRequest
 import io.hstream.internal.GetStreamRequest
 import io.hstream.internal.GetSubscriptionRequest
 import io.hstream.internal.GetViewRequest
 import io.hstream.internal.HStreamApiGrpcKt
+import io.hstream.internal.ListConnectorsRequest
 import io.hstream.internal.ListConsumersRequest
 import io.hstream.internal.ListQueriesRequest
 import io.hstream.internal.ListShardsRequest
@@ -38,7 +44,9 @@ import io.hstream.internal.ListSubscriptionsRequest
 import io.hstream.internal.ListViewsRequest
 import io.hstream.internal.LookupResourceRequest
 import io.hstream.internal.LookupSubscriptionRequest
+import io.hstream.internal.PauseConnectorRequest
 import io.hstream.internal.ResourceType
+import io.hstream.internal.ResumeConnectorRequest
 import io.hstream.internal.TerminateQueriesRequest
 import io.hstream.util.GrpcUtils
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -328,6 +336,57 @@ class HStreamClientKtImpl(
             val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(serverUrl))
             stub.listConsumers(ListConsumersRequest.newBuilder().setSubscriptionId(subscriptionId).build())
                 .consumersList.stream().map(GrpcUtils::consumerInformationFromGrpc).toList()
+        }
+    }
+
+    override fun createConnector(request: CreateConnectorRequest?): Connector {
+        checkNotNull(request)
+        return unaryCallBlockedWithLookup(ResourceType.ResConnector, request.name) {
+            val req = io.hstream.internal.CreateConnectorRequest.newBuilder()
+                .setName(request.name)
+                .setType(request.type.toString())
+                .setTarget(request.target)
+                .setConfig(request.config)
+                .build()
+            GrpcUtils.ConnectorFromGrpc(it.createConnector(req))
+        }
+    }
+
+    override fun listConnectors(): List<Connector> {
+        return unaryCallBlocked {
+            it.listConnectors(ListConnectorsRequest.getDefaultInstance()).connectorsList.stream()
+                .map(GrpcUtils::ConnectorFromGrpc)
+                .toList()
+        }
+    }
+
+    override fun getConnector(name: String?): Connector {
+        return unaryCallBlockedWithLookup(ResourceType.ResConnector, name) {
+            GrpcUtils.ConnectorFromGrpc(it.getConnector(GetConnectorRequest.newBuilder().setName(name).build()))
+        }
+    }
+
+    override fun getConnectorSpec(type: String?, target: String?): String {
+        return unaryCallBlocked {
+            it.getConnectorSpec(GetConnectorSpecRequest.newBuilder().setType(type).setTarget(target).build()).spec
+        }
+    }
+
+    override fun pauseConnector(name: String?) {
+        return unaryCallBlockedWithLookup(ResourceType.ResConnector, name) {
+            it.pauseConnector(PauseConnectorRequest.newBuilder().setName(name).build())
+        }
+    }
+
+    override fun resumeConnector(name: String?) {
+        return unaryCallBlockedWithLookup(ResourceType.ResConnector, name) {
+            it.resumeConnector(ResumeConnectorRequest.newBuilder().setName(name).build())
+        }
+    }
+
+    override fun deleteConnector(name: String?) {
+        return unaryCallBlockedWithLookup(ResourceType.ResConnector, name) {
+            it.deleteConnector(DeleteConnectorRequest.newBuilder().setName(name).build())
         }
     }
 
