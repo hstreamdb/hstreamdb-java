@@ -12,14 +12,22 @@ import io.hstream.impl.HStreamClientBuilderImpl
 import io.hstream.impl.HStreamClientKtImpl
 import io.hstream.impl.logger
 import io.hstream.impl.unaryCallWithCurrentUrls
+import io.hstream.internal.AppendRequest
+import io.hstream.internal.AppendResponse
+import io.hstream.internal.BatchedRecord
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DescribeClusterResponse
 import io.hstream.internal.HStreamApiGrpc
 import io.hstream.internal.ListStreamsRequest
 import io.hstream.internal.ListStreamsResponse
+import io.hstream.internal.LookupResourceRequest
 import io.hstream.internal.LookupSubscriptionRequest
 import io.hstream.internal.LookupSubscriptionResponse
+import io.hstream.internal.ResourceType
 import io.hstream.internal.ServerNode
+import io.hstream.internal.SpecialOffset
+import io.hstream.internal.StreamingFetchRequest
+import io.hstream.internal.StreamingFetchResponse
 import io.hstream.util.GrpcUtils
 import io.hstream.util.UrlSchemaUtils.parseServerUrls
 import kotlinx.coroutines.runBlocking
@@ -30,6 +38,9 @@ import org.junit.jupiter.api.assertThrows
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.CompletionException
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.random.Random
 
 class HServerMock(
@@ -43,6 +54,9 @@ class HServerMock(
 
     private val subscriptions: MutableList<Subscription> = arrayListOf()
     private val subscriptionsMutex: Mutex = Mutex()
+
+    private val streamReceivedRecord: ConcurrentHashMap<String, MutableList<BatchedRecord>> = ConcurrentHashMap()
+    private val streamReceivedRecordConsumeProgress: ConcurrentHashMap<String, AtomicInteger> = ConcurrentHashMap()
 
     override fun describeCluster(request: Empty?, responseObserver: StreamObserver<DescribeClusterResponse>?) = runBlocking {
         val serverNodes: List<ServerNode> = hMetaMockCluster.getServerNodes()
@@ -132,10 +146,14 @@ class HServerMock(
         request: io.hstream.internal.Subscription?,
         responseObserver: StreamObserver<io.hstream.internal.Subscription>?
     ) {
+        if (request!!.offset != SpecialOffset.EARLIEST) {
+            responseObserver?.onError(Status.INTERNAL.asException())
+        }
+
         runBlocking {
             streamsMutex.withLock {
                 for (stream in streams) {
-                    if (stream.streamName == request!!.streamName) {
+                    if (stream.streamName == request.streamName) {
                         return@runBlocking
                     }
                 }
@@ -145,7 +163,7 @@ class HServerMock(
 
         val subscription = GrpcUtils.subscriptionFromGrpc(request)
         runBlocking {
-            val subscriptionId = request!!.subscriptionId
+            val subscriptionId = request.subscriptionId
             subscriptionsMutex.withLock {
                 for (sub in subscriptions) {
                     if (sub.subscriptionId == subscriptionId) {
@@ -171,17 +189,12 @@ class HServerMock(
         try {
             runBlocking {
                 val serverName = hMetaMockCluster.lookupSubscriptionName(request!!.subscriptionId)
-                val uri = URI(serverName)
-                assert(uri.port != -1)
+                val serverNode = serverNameToServerNode(serverName)
                 responseObserver?.onNext(
                     LookupSubscriptionResponse.newBuilder()
                         .setSubscriptionId(request.subscriptionId)
-                        .setServerNode(
-                            ServerNode.newBuilder()
-                                .setHost(uri.host)
-                                .setPort(uri.port)
-                                .build()
-                        ).build()
+                        .setServerNode(serverNode)
+                        .build()
                 )
             }
         } catch (e: Throwable) {
@@ -189,6 +202,86 @@ class HServerMock(
             responseObserver?.onError(
                 Status.NOT_FOUND.asException()
             )
+        }
+    }
+
+    override fun append(request: AppendRequest?, responseObserver: StreamObserver<AppendResponse>?) {
+        try {
+            checkStreamBelonging(request!!.streamName)
+        } catch (e: Throwable) {
+            responseObserver?.onError(
+                Status.INVALID_ARGUMENT.asException()
+            )
+        }
+
+        TODO()
+    }
+
+    private fun checkStreamBelonging(streamName: String) {
+        assert(
+            serverName == runBlocking { hMetaMockCluster.lookupStreamName(streamName) }
+        )
+    }
+
+    private fun checkSubscriptionBelonging(subscriptionId: String) {
+        assert(
+            serverName == runBlocking { hMetaMockCluster.lookupSubscriptionName(subscriptionId) }
+        )
+    }
+
+    override fun lookupResource(request: LookupResourceRequest?, responseObserver: StreamObserver<ServerNode>?) {
+        val serverName: String = runBlocking {
+            when (request!!.resType) {
+                ResourceType.ResStream -> hMetaMockCluster.lookupStreamName(request.resId)
+                ResourceType.ResSubscription -> hMetaMockCluster.lookupSubscriptionName(request.resId)
+                ResourceType.ResShard -> TODO()
+                ResourceType.ResShardReader -> TODO()
+                ResourceType.ResConnector -> TODO()
+                ResourceType.ResQuery -> TODO()
+                ResourceType.ResView -> TODO()
+                ResourceType.UNRECOGNIZED -> TODO()
+                else -> TODO()
+            }
+        }
+
+        val serverNode: ServerNode = serverNameToServerNode(serverName)
+
+        responseObserver?.onNext(serverNode)
+        responseObserver?.onCompleted()
+    }
+
+    override fun streamingFetch(responseObserver: StreamObserver<StreamingFetchResponse>?): StreamObserver<StreamingFetchRequest> {
+        return object : StreamObserver<StreamingFetchRequest> {
+            val isInitReq: AtomicBoolean = AtomicBoolean(true)
+
+            override fun onNext(request: StreamingFetchRequest) {
+                if (isInitReq.get()) {
+                    try {
+                        checkSubscriptionBelonging(request.subscriptionId)
+                    } catch (e: Throwable) {
+                        responseObserver?.onError(
+                            Status.INVALID_ARGUMENT.asException()
+                        )
+                    }
+                    isInitReq.set(false)
+                }
+
+                val response = StreamingFetchResponse.newBuilder()
+                    .setReceivedRecords(
+                        io.hstream.internal.ReceivedRecord.newBuilder()
+                            .build()
+                    )
+                    .build()
+
+                responseObserver?.onNext(response)
+            }
+
+            override fun onError(t: Throwable?) {
+            }
+
+            override fun onCompleted() {
+                responseObserver?.onCompleted()
+            }
         }
     }
 }
@@ -320,6 +413,7 @@ class HServerMockTests {
             client.createSubscription(
                 Subscription.newBuilder()
                     .subscription("some-id")
+                    .offset(Subscription.SubscriptionOffset.EARLIEST)
                     .stream("some-stream")
                     .build()
             )
@@ -333,6 +427,7 @@ class HServerMockTests {
         client.createSubscription(
             Subscription.newBuilder()
                 .subscription("some-id")
+                .offset(Subscription.SubscriptionOffset.EARLIEST)
                 .stream("some-stream")
                 .build()
         )
@@ -366,4 +461,13 @@ fun buildMockedClient(): HStreamClient {
     clientBuilder.channelProvider(channelProvider)
 
     return clientBuilder.build() as HStreamClientKtImpl
+}
+
+fun serverNameToServerNode(serverName: String): ServerNode {
+    val uri = URI(serverName)
+    assert(uri.port != -1)
+    return ServerNode.newBuilder()
+        .setHost(uri.host)
+        .setPort(uri.port)
+        .build()
 }
