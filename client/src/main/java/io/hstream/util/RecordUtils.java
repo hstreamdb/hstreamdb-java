@@ -20,7 +20,6 @@ import io.hstream.internal.RecordId;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -94,17 +93,6 @@ public class RecordUtils {
     } catch (InvalidProtocolBufferException e) {
       throw new HStreamDBClientException.InvalidRecordException("construct hrecord error", e);
     }
-  }
-
-  public static ReceivedHRecord toReceivedHRecord(
-      ReceivedHStreamRecord receivedHStreamRecord, Instant createdTime) {
-    var hRecord = RecordUtils.parseHRecordFromHStreamRecord(receivedHStreamRecord.getRecord());
-    var header = RecordUtils.parseRecordHeaderFromHStreamRecord(receivedHStreamRecord.getRecord());
-    return new ReceivedHRecord(
-        GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.getRecordId()),
-        header,
-        hRecord,
-        createdTime);
   }
 
   public static boolean isRawRecord(HStreamRecord hStreamRecord) {

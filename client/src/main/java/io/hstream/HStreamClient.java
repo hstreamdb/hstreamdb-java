@@ -155,7 +155,7 @@ public interface HStreamClient extends AutoCloseable {
    * @param sql select view sql
    * @return all HRecord result set
    */
-  List<ReceivedHRecord> executeViewQuery(String sql);
+  List<HRecord> executeViewQuery(String sql);
 
   List<ConsumerInformation> listConsumers(String subscriptionId);
 
