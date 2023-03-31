@@ -76,7 +76,7 @@ class ConsumerKtImplTest {
         val streamName = "some_stream"
         client.createStream(streamName)
         val subId = "some_sub"
-        client.createSubscription(Subscription.newBuilder().subscription(subId).stream(streamName).build())
+        client.createSubscription(Subscription.newBuilder().offset(Subscription.SubscriptionOffset.EARLIEST).subscription(subId).stream(streamName).build())
         val consumer = client.newConsumer()
             .subscription(subId)
             .hRecordReceiver { record, ackSender ->
