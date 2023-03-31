@@ -99,7 +99,7 @@ class ConsumerKtImpl(
         } catch (e: CancellationException) {
             logger.info("streamingFetch is canceled")
         } catch (e: Throwable) {
-            logger.info("streaming fetch failed, {}", e)
+            logger.info("streaming fetch failed: $e")
             notifyFailed(HStreamDBClientException(e))
         }
     }

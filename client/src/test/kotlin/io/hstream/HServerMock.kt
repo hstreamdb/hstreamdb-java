@@ -185,7 +185,10 @@ class HServerMock(
                 )
             }
         } catch (e: Throwable) {
-            TODO()
+            logger.error("lookup subscription failed: $e")
+            responseObserver?.onError(
+                Status.NOT_FOUND.asException()
+            )
         }
     }
 }
