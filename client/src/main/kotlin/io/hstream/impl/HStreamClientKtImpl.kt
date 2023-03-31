@@ -12,6 +12,7 @@ import io.hstream.ConsumerInformation
 import io.hstream.CreateConnectorRequest
 import io.hstream.GetStreamResponse
 import io.hstream.GetSubscriptionResponse
+import io.hstream.HRecord
 import io.hstream.HStreamClient
 import io.hstream.ProducerBuilder
 import io.hstream.Query
@@ -28,6 +29,7 @@ import io.hstream.internal.DeleteQueryRequest
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.DeleteViewRequest
+import io.hstream.internal.ExecuteViewQueryRequest
 import io.hstream.internal.GetConnectorRequest
 import io.hstream.internal.GetConnectorSpecRequest
 import io.hstream.internal.GetQueryRequest
@@ -330,6 +332,13 @@ class HStreamClientKtImpl(
     override fun deleteView(name: String?) {
         unaryCallBlocked {
             it.deleteView(DeleteViewRequest.newBuilder().setViewId(name).build())
+        }
+    }
+
+    override fun executeViewQuery(sql: String?): List<HRecord> {
+        checkNotNull(sql)
+        return unaryCallBlocked {
+            it.executeViewQuery(ExecuteViewQueryRequest.newBuilder().setSql(sql).build()).resultsList.map { s -> HRecord(s) }
         }
     }
 
