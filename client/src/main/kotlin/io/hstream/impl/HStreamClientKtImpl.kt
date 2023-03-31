@@ -17,6 +17,7 @@ import io.hstream.ProducerBuilder
 import io.hstream.Query
 import io.hstream.QueryerBuilder
 import io.hstream.ReaderBuilder
+import io.hstream.ReceivedHRecord
 import io.hstream.Shard
 import io.hstream.Stream
 import io.hstream.Subscription
@@ -28,6 +29,7 @@ import io.hstream.internal.DeleteQueryRequest
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.DeleteViewRequest
+import io.hstream.internal.ExecuteViewQueryRequest
 import io.hstream.internal.GetConnectorRequest
 import io.hstream.internal.GetConnectorSpecRequest
 import io.hstream.internal.GetQueryRequest
@@ -49,9 +51,11 @@ import io.hstream.internal.ResourceType
 import io.hstream.internal.ResumeConnectorRequest
 import io.hstream.internal.TerminateQueriesRequest
 import io.hstream.util.GrpcUtils
+import io.hstream.util.RecordUtils
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
+import java.time.Instant
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
@@ -330,6 +334,19 @@ class HStreamClientKtImpl(
     override fun deleteView(name: String?) {
         unaryCallBlocked {
             it.deleteView(DeleteViewRequest.newBuilder().setViewId(name).build())
+        }
+    }
+
+    override fun executeViewQuery(sql: String?): List<ReceivedHRecord> {
+        checkNotNull(sql)
+        return unaryCallBlocked {
+            val result = it.executeViewQuery(ExecuteViewQueryRequest.newBuilder().setSql(sql).build())
+            val createdTimestamp = result.receivedRecords.record.publishTime
+            val createdTime = Instant.ofEpochSecond(createdTimestamp.seconds, createdTimestamp.nanos.toLong())
+            RecordUtils.decompress(result.receivedRecords)
+                // Receive HRecord Only
+                .filter { r -> RecordUtils.isHRecord(r.record) }
+                .map { r -> RecordUtils.toReceivedHRecord(r, createdTime) }
         }
     }
 

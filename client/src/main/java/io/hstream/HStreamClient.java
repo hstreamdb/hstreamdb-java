@@ -149,6 +149,13 @@ public interface HStreamClient extends AutoCloseable {
 
   void deleteView(String name);
 
+  /**
+   * only support to execute view query, e.g. `select * from view1 where id = 1;`
+   * @param sql select view sql
+   * @return all HRecord result set
+   */
+  List<ReceivedHRecord> executeViewQuery(String sql);
+
   List<ConsumerInformation> listConsumers(String subscriptionId);
 
   // == Connectors
