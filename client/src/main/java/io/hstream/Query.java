@@ -4,14 +4,24 @@ import java.util.List;
 
 public class Query {
   String name;
+  QueryType type;
   TaskStatus status;
   long createdTime;
   String queryText;
   List<String> sourceStreams;
-  String resultStream;
+  String resultName;
+
+  public enum QueryType {
+    CreateStreamAs,
+    CreateViewAs,
+  }
 
   public String getName() {
     return name;
+  }
+
+  public QueryType getType() {
+    return type;
   }
 
   public TaskStatus getStatus() {
@@ -30,20 +40,30 @@ public class Query {
     return sourceStreams;
   }
 
-  public String getResultStream() {
-    return resultStream;
+  public String getResultName() {
+    return resultName;
+  }
+
+  public static Builder newBuilder() {
+    return new Builder();
   }
 
   public static final class Builder {
     private String name;
+    private QueryType type;
     private TaskStatus status;
     private long createdTime;
     private String queryText;
     private List<String> sourceStreams;
-    private String resultStream;
+    private String resultName;
 
     public Builder name(String name) {
       this.name = name;
+      return this;
+    }
+
+    public Builder type(QueryType type) {
+      this.type = type;
       return this;
     }
 
@@ -67,24 +87,21 @@ public class Query {
       return this;
     }
 
-    public Builder resultStream(String resultStream) {
-      this.resultStream = resultStream;
+    public Builder resultName(String resultName) {
+      this.resultName = resultName;
       return this;
     }
 
     public Query build() {
       Query query = new Query();
-      query.queryText = this.queryText;
-      query.name = this.name;
-      query.createdTime = this.createdTime;
       query.status = this.status;
-      query.sourceStreams = sourceStreams;
-      query.resultStream = resultStream;
+      query.createdTime = this.createdTime;
+      query.resultName = this.resultName;
+      query.name = this.name;
+      query.type = this.type;
+      query.sourceStreams = this.sourceStreams;
+      query.queryText = this.queryText;
       return query;
     }
-  }
-
-  public static Builder newBuilder() {
-    return new Builder();
   }
 }

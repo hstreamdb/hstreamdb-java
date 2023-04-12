@@ -139,9 +139,7 @@ public interface HStreamClient extends AutoCloseable {
 
   void deleteQuery(String name);
 
-  void pauseQuery(String name);
-
-  void createView(String sql);
+  void terminateQuery(String name);
 
   List<View> listViews();
 
@@ -167,10 +165,6 @@ public interface HStreamClient extends AutoCloseable {
   Connector getConnector(String name);
 
   String getConnectorSpec(String type, String target);
-
-  void pauseConnector(String name);
-
-  void resumeConnector(String name);
 
   void deleteConnector(String name);
 }
