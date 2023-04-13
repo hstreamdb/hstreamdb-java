@@ -35,7 +35,7 @@ public class View {
   }
 
   public String getQueryName() {
-      return queryName;
+    return queryName;
   }
 
   public static final class Builder {
