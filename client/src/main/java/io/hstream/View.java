@@ -5,6 +5,7 @@ import java.util.List;
 public class View {
   String name;
   TaskStatus status;
+  String queryName;
   long createdTime;
   String sql;
   List<String> schema;
@@ -33,9 +34,14 @@ public class View {
     return schema;
   }
 
+  public String getQueryName() {
+    return queryName;
+  }
+
   public static final class Builder {
     private String name;
     private TaskStatus status;
+    private String queryName;
     private long createdTime;
     private String sql;
     private List<String> schema;
@@ -47,6 +53,11 @@ public class View {
 
     public Builder status(TaskStatus status) {
       this.status = status;
+      return this;
+    }
+
+    public Builder queryName(String queryName) {
+      this.queryName = queryName;
       return this;
     }
 
@@ -68,10 +79,11 @@ public class View {
     public View build() {
       View view = new View();
       view.createdTime = this.createdTime;
-      view.schema = this.schema;
       view.status = this.status;
       view.name = this.name;
+      view.schema = this.schema;
       view.sql = this.sql;
+      view.queryName = this.queryName;
       return view;
     }
   }
