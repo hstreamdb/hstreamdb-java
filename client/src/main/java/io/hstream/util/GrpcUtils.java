@@ -167,11 +167,12 @@ public class GrpcUtils {
   public static Query queryFromInternal(io.hstream.internal.Query query) {
     return Query.newBuilder()
         .name(query.getId())
+        .type(Query.QueryType.valueOf(query.getType().name()))
         .status(taskStatusFromInternal(query.getStatus()))
         .createdTime(query.getCreatedTime())
         .queryText(query.getQueryText())
         .sourceStreams(query.getSourcesList())
-        .resultStream(query.getSink())
+        .resultName(query.getResultName())
         .build();
   }
 
@@ -188,19 +189,13 @@ public class GrpcUtils {
   public static TaskStatus taskStatusFromInternal(TaskStatusPB statusPB) {
     switch (statusPB) {
       case TASK_CREATING:
-        return TaskStatus.TASK_CREATING;
-      case TASK_CREATED:
-        return TaskStatus.TASK_CREATED;
+        return TaskStatus.CREATING;
       case TASK_RUNNING:
-        return TaskStatus.TASK_RUNNING;
-      case TASK_CREATION_ABORT:
-        return TaskStatus.TASK_CREATION_ABORT;
-      case TASK_TERMINATED:
-        return TaskStatus.TASK_TERMINATED;
-      case TASK_ABORT:
-        return TaskStatus.TASK_ABORT;
+        return TaskStatus.RUNNING;
+      case TASK_ABORTED:
+        return TaskStatus.ABORTED;
       default:
-        throw new IllegalArgumentException("Unknown task status: " + statusPB);
+        return TaskStatus.UNKNOWN;
     }
   }
 

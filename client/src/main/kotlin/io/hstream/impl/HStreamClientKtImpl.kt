@@ -22,7 +22,6 @@ import io.hstream.Shard
 import io.hstream.Stream
 import io.hstream.Subscription
 import io.hstream.View
-import io.hstream.internal.CommandQuery
 import io.hstream.internal.CreateQueryRequest
 import io.hstream.internal.DeleteConnectorRequest
 import io.hstream.internal.DeleteQueryRequest
@@ -46,9 +45,7 @@ import io.hstream.internal.ListSubscriptionsRequest
 import io.hstream.internal.ListViewsRequest
 import io.hstream.internal.LookupResourceRequest
 import io.hstream.internal.LookupSubscriptionRequest
-import io.hstream.internal.PauseConnectorRequest
 import io.hstream.internal.ResourceType
-import io.hstream.internal.ResumeConnectorRequest
 import io.hstream.internal.TerminateQueriesRequest
 import io.hstream.util.GrpcUtils
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -300,16 +297,10 @@ class HStreamClientKtImpl(
         }
     }
 
-    override fun pauseQuery(name: String?) {
+    override fun terminateQuery(name: String?) {
         checkNotNull(name)
         unaryCallBlocked {
             it.terminateQueries(TerminateQueriesRequest.newBuilder().addQueryId(name).build())
-        }
-    }
-
-    override fun createView(sql: String?) {
-        unaryCallBlocked {
-            it.executeQuery(CommandQuery.newBuilder().setStmtText(sql).build())
         }
     }
 
@@ -381,18 +372,6 @@ class HStreamClientKtImpl(
     override fun getConnectorSpec(type: String?, target: String?): String {
         return unaryCallBlocked {
             it.getConnectorSpec(GetConnectorSpecRequest.newBuilder().setType(type).setTarget(target).build()).spec
-        }
-    }
-
-    override fun pauseConnector(name: String?) {
-        return unaryCallBlockedWithLookup(ResourceType.ResConnector, name) {
-            it.pauseConnector(PauseConnectorRequest.newBuilder().setName(name).build())
-        }
-    }
-
-    override fun resumeConnector(name: String?) {
-        return unaryCallBlockedWithLookup(ResourceType.ResConnector, name) {
-            it.resumeConnector(ResumeConnectorRequest.newBuilder().setName(name).build())
         }
     }
 
