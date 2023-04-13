@@ -180,6 +180,7 @@ public class GrpcUtils {
     return View.newBuilder()
         .name(view.getViewId())
         .status(taskStatusFromInternal(view.getStatus()))
+        .queryName(view.getQueryName())
         .sql(view.getSql())
         .createdTime(view.getCreatedTime())
         .schema(view.getSchemaList())
