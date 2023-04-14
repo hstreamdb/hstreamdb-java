@@ -21,9 +21,9 @@ class ServerStreamingFetchImpl(
                 val records = TODO()
 
                 val response = StreamingFetchResponse.newBuilder()
-                    .setReceivedRecords(TODO())
-                    .setSubscriptionId(subscriptionId)
-                    .setConsumerName(consumerName)
+//                    .setReceivedRecords(TODO())
+//                    .setSubscriptionId(subscriptionId)
+//                    .setConsumerName(consumerName)
                     .build()
 
                 responseObserver.onNext(response)

@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.random.Random
 
-class HServerMock(
+open class HServerMock(
     private val hMetaMockCluster: HMetaMock,
     private val serverName: String,
 ) : HStreamApiGrpc.HStreamApiImplBase() {
@@ -293,8 +293,12 @@ class HServerMock(
     }
 }
 
+fun mockServiceImpl(hMetaMockCluster: HMetaMock, serverName: String, hServerMockImpl: Class<out HStreamApiGrpc.HStreamApiImplBase>): HStreamApiGrpc.HStreamApiImplBase {
+    return hServerMockImpl.getConstructor(HMetaMock::class.java, String::class.java).newInstance(hMetaMockCluster, serverName)
+}
+
 fun mockServiceImpl(hMetaMockCluster: HMetaMock, serverName: String): HStreamApiGrpc.HStreamApiImplBase {
-    return HServerMock(hMetaMockCluster, serverName)
+    return mockServiceImpl(hMetaMockCluster, serverName, HServerMock::class.java)
 }
 
 fun startMockedHServer(
@@ -452,7 +456,7 @@ private fun randPort(): Int {
     return Random.nextInt(256)
 }
 
-fun buildMockedClient(): HStreamClient {
+fun buildMockedClient(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): HStreamClient {
     val grpcCleanupRule = GrpcCleanupRule()
     // TODO: AutoCloseable?
 
@@ -460,7 +464,7 @@ fun buildMockedClient(): HStreamClient {
     val port = randPort()
     val serverUrl = "hstream://$hostname:$port"
     val hMetaMockCluster = HMetaMock()
-    startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster, serverUrl), hMetaMockCluster, serverUrl)
+    startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster, serverUrl, hServerMock), hMetaMockCluster, serverUrl)
     val channelProvider = mockChannelProvider(grpcCleanupRule)
 
     val clientBuilder = HStreamClientBuilderImpl()
@@ -468,6 +472,10 @@ fun buildMockedClient(): HStreamClient {
     clientBuilder.channelProvider(channelProvider)
 
     return clientBuilder.build() as HStreamClientKtImpl
+}
+
+fun buildMockedClient(): HStreamClient {
+    return buildMockedClient(HServerMock::class.java as Class<HStreamApiGrpc.HStreamApiImplBase>)
 }
 
 fun serverNameToServerNode(serverName: String): ServerNode {

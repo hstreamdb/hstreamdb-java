@@ -113,12 +113,12 @@ suspend fun <Resp> unaryCallCoroutine(
 
     logger.debug("unary rpc with urls [{}]", urls)
 
-    try {
-        return call(HStreamApiCoroutineStub(channelProvider.get(urls[0])).withDeadlineAfter(timeoutMs, TimeUnit.MILLISECONDS))
+    return try {
+        call(HStreamApiCoroutineStub(channelProvider.get(urls[0])).withDeadlineAfter(timeoutMs, TimeUnit.MILLISECONDS))
     } catch (e: StatusException) {
-        return handleGRPCException(urls, e)
+        handleGRPCException(urls, e)
     } catch (e: StatusRuntimeException) {
-        return handleGRPCException(urls, e)
+        handleGRPCException(urls, e)
     }
 }
 

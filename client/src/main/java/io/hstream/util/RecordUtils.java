@@ -137,7 +137,9 @@ public class RecordUtils {
     try {
       BatchHStreamRecords batchHStreamRecords = BatchHStreamRecords.parseFrom(byteString);
       List<HStreamRecord> hStreamRecords = batchHStreamRecords.getRecordsList();
-      checkArgument(receivedRecord.getRecordIdsCount() == hStreamRecords.size());
+      checkArgument(
+          receivedRecord.getRecordIdsCount() == hStreamRecords.size(),
+          "decode HStreamRecord error: invalid batched records from server, the `RecordIdsCount` should equals to `BatchHStreamRecords.size`");
 
       List<ReceivedHStreamRecord> receivedHStreamRecords = new ArrayList<>(hStreamRecords.size());
       for (int i = 0; i < hStreamRecords.size(); ++i) {
