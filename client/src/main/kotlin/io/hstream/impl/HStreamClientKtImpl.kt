@@ -46,7 +46,7 @@ import io.hstream.internal.ListViewsRequest
 import io.hstream.internal.LookupResourceRequest
 import io.hstream.internal.LookupSubscriptionRequest
 import io.hstream.internal.ResourceType
-import io.hstream.internal.TerminateQueriesRequest
+import io.hstream.internal.TerminateQueryRequest
 import io.hstream.util.GrpcUtils
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
@@ -300,7 +300,7 @@ class HStreamClientKtImpl(
     override fun terminateQuery(name: String?) {
         checkNotNull(name)
         unaryCallBlocked {
-            it.terminateQueries(TerminateQueriesRequest.newBuilder().addQueryId(name).build())
+            it.terminateQuery(TerminateQueryRequest.newBuilder().setQueryId(name).build())
         }
     }
 
