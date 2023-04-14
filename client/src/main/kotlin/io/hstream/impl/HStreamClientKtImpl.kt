@@ -46,7 +46,6 @@ import io.hstream.internal.ListViewsRequest
 import io.hstream.internal.LookupResourceRequest
 import io.hstream.internal.LookupSubscriptionRequest
 import io.hstream.internal.ResourceType
-import io.hstream.internal.TerminateQueriesRequest
 import io.hstream.internal.TerminateQueryRequest
 import io.hstream.util.GrpcUtils
 import kotlinx.coroutines.asCoroutineDispatcher
