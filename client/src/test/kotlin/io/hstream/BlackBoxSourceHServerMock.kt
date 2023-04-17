@@ -67,11 +67,13 @@ class BlackBoxSourceHServerMock(
             override fun onNext(request: StreamingFetchRequest) {
                 if (isInitReq.get()) {
                     isInitReq.set(false)
-                    channel = channelMapRef.getOrPut(request.consumerName) { Channel<List<RecordId>>(1000) }
+                    channel = channelMapRef.getOrPut(request.consumerName) { Channel<List<RecordId>>(6000) }
                 }
 
                 val ackIdsList: List<RecordId> = request.ackIdsList
+                println("[DEBUG]: begin `trySendBlocking`")
                 assert(channel.trySendBlocking(ackIdsList).isSuccess)
+                println("[DEBUG]: end `trySendBlocking`")
 
                 val len = 100
                 val response = StreamingFetchResponse.newBuilder()
