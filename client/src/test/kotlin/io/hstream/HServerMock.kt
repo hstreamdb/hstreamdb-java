@@ -456,7 +456,7 @@ private fun randPort(): Int {
     return Random.nextInt(256)
 }
 
-fun buildMockedClient(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): HStreamClient {
+fun buildMockedClient_(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): Pair<HStreamClient, HStreamApiGrpc.HStreamApiImplBase> {
     val grpcCleanupRule = GrpcCleanupRule()
     // TODO: AutoCloseable?
 
@@ -464,14 +464,19 @@ fun buildMockedClient(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): HS
     val port = randPort()
     val serverUrl = "hstream://$hostname:$port"
     val hMetaMockCluster = HMetaMock()
-    startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster, serverUrl, hServerMock), hMetaMockCluster, serverUrl)
+    val serverImpl = mockServiceImpl(hMetaMockCluster, serverUrl, hServerMock)
+    startMockedHServer(grpcCleanupRule, serverImpl, hMetaMockCluster, serverUrl)
     val channelProvider = mockChannelProvider(grpcCleanupRule)
 
     val clientBuilder = HStreamClientBuilderImpl()
     clientBuilder.serviceUrl(serverUrl)
     clientBuilder.channelProvider(channelProvider)
 
-    return clientBuilder.build() as HStreamClientKtImpl
+    return Pair(clientBuilder.build() as HStreamClientKtImpl, serverImpl)
+}
+
+fun buildMockedClient(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): HStreamClient {
+    return buildMockedClient_(hServerMock).first
 }
 
 fun buildMockedClient(): HStreamClient {

@@ -9,12 +9,15 @@ import io.hstream.internal.RecordId
 import io.hstream.internal.ServerNode
 import io.hstream.internal.StreamingFetchRequest
 import io.hstream.internal.StreamingFetchResponse
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.trySendBlocking
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import java.net.URI
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 
 class BlackBoxSourceHServerMock(
@@ -24,6 +27,11 @@ class BlackBoxSourceHServerMock(
     hMetaMockCluster,
     serverName
 ) {
+    private val consumerNameChannelMap: MutableMap<String, Channel<List<RecordId>>> = mutableMapOf()
+    fun getConsumerNameChannelMap(): MutableMap<String, Channel<List<RecordId>>> {
+        return this.consumerNameChannelMap
+    }
+
     private val uri = run {
         val uri = URI(serverName)
         assert(uri.port != -1)
@@ -49,8 +57,22 @@ class BlackBoxSourceHServerMock(
     }
 
     override fun streamingFetch(responseObserver: StreamObserver<StreamingFetchResponse>?): StreamObserver<StreamingFetchRequest> {
+        val channelMapRef = this.consumerNameChannelMap
+        val isInitReq = AtomicBoolean(true)
+
         return object : StreamObserver<StreamingFetchRequest> {
+
+            lateinit var channel: Channel<List<RecordId>>
+
             override fun onNext(request: StreamingFetchRequest) {
+                if (isInitReq.get()) {
+                    isInitReq.set(false)
+                    channel = channelMapRef.getOrPut(request.consumerName) { Channel<List<RecordId>>(1000) }
+                }
+
+                val ackIdsList: List<RecordId> = request.ackIdsList
+                assert(channel.trySendBlocking(ackIdsList).isSuccess)
+
                 val len = 100
                 val response = StreamingFetchResponse.newBuilder()
                     .setReceivedRecords(
@@ -81,10 +103,17 @@ class BlackBoxSourceHServerMock(
     }
 }
 
-fun buildBlackBoxSourceClient(): HStreamClient {
-    return buildMockedClient(
+fun buildBlackBoxSourceClient_(): Pair<HStreamClient, MutableMap<String, Channel<List<RecordId>>>> {
+    val xs = buildMockedClient_(
         BlackBoxSourceHServerMock::class.java as Class<HStreamApiGrpc.HStreamApiImplBase>
     )
+    val serverImpl: BlackBoxSourceHServerMock = (xs.second) as BlackBoxSourceHServerMock
+    val channel = serverImpl.getConsumerNameChannelMap()
+    return Pair(xs.first, channel)
+}
+
+fun buildBlackBoxSourceClient(): HStreamClient {
+    return buildBlackBoxSourceClient_().first
 }
 
 @RunWith(MockitoJUnitRunner::class)
@@ -99,7 +128,7 @@ class BlackBoxSourceHServerMockTests {
     @Test
     fun `test BlackBoxSourceHServerMock can fetch many records`() {
         val client = buildBlackBoxSourceClient()
-        val records = CopyOnWriteArrayList<io.hstream.ReceivedRawRecord>()
+        val records = CopyOnWriteArrayList<ReceivedRawRecord>()
         val countDownLatch = CountDownLatch(50)
         val consumer = client.newConsumer()
             .subscription("any-sub")
@@ -112,5 +141,38 @@ class BlackBoxSourceHServerMockTests {
         consumer.startAsync().awaitRunning()
         countDownLatch.await()
         consumer.stopAsync().awaitTerminated()
+    }
+
+    @Test
+    fun `test ack should really ack`() {
+        val consumerName = "some-consumer"
+        val xs = buildBlackBoxSourceClient_()
+        val client = xs.first
+        val records = CopyOnWriteArrayList<ReceivedRawRecord>()
+        val countDownLatch = CountDownLatch(50)
+        val consumer = client.newConsumer()
+            .subscription("any-sub")
+            .name(consumerName)
+            .rawRecordReceiver { record, ackSender ->
+                records.add(record)
+                ackSender.ack()
+                countDownLatch.countDown()
+            }
+            .build()
+        consumer.startAsync().awaitRunning()
+        countDownLatch.await()
+        consumer.stopAsync().awaitTerminated()
+
+        val channel = xs.second[consumerName]
+        val channelAcc = mutableListOf<RecordId>()
+        var ret: List<RecordId>?
+        while (run {
+            ret = channel!!.tryReceive().getOrNull()
+            ret != null
+        }
+        ) {
+            channelAcc.addAll(ret!!)
+        }
+        assert(records.size == channelAcc.size)
     }
 }
