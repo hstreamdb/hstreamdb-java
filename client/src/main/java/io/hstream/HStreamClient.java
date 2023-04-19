@@ -166,5 +166,7 @@ public interface HStreamClient extends AutoCloseable {
 
   String getConnectorSpec(String type, String target);
 
+  String getConnectorLogs(String name, int begin, int count);
+
   void deleteConnector(String name);
 }

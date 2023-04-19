@@ -1,6 +1,7 @@
 package io.hstream;
 
 import java.time.Instant;
+import java.util.List;
 
 public class Connector {
   String name;
@@ -10,6 +11,8 @@ public class Connector {
   String status;
   /** only available in GetConnector */
   String config;
+
+  List<String> offsets;
 
   public static ConnectorBuilder newBuilder() {
     return new ConnectorBuilder();
@@ -39,6 +42,10 @@ public class Connector {
     return config;
   }
 
+  public List<String> getOffsets() {
+    return offsets;
+  }
+
   public static final class ConnectorBuilder {
     private String name;
     private ConnectorType type;
@@ -46,8 +53,7 @@ public class Connector {
     private Instant createdTime;
     private String status;
     private String config;
-
-    private ConnectorBuilder() {}
+    private List<String> offsets;
 
     public ConnectorBuilder name(String name) {
       this.name = name;
@@ -79,14 +85,20 @@ public class Connector {
       return this;
     }
 
+    public ConnectorBuilder offsets(List<String> offsets) {
+      this.offsets = offsets;
+      return this;
+    }
+
     public Connector build() {
       Connector connector = new Connector();
       connector.type = this.type;
-      connector.status = this.status;
-      connector.target = this.target;
-      connector.createdTime = this.createdTime;
-      connector.name = this.name;
       connector.config = this.config;
+      connector.status = this.status;
+      connector.name = this.name;
+      connector.target = this.target;
+      connector.offsets = this.offsets;
+      connector.createdTime = this.createdTime;
       return connector;
     }
   }

@@ -29,6 +29,7 @@ import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DeleteSubscriptionRequest
 import io.hstream.internal.DeleteViewRequest
 import io.hstream.internal.ExecuteViewQueryRequest
+import io.hstream.internal.GetConnectorLogsRequest
 import io.hstream.internal.GetConnectorRequest
 import io.hstream.internal.GetConnectorSpecRequest
 import io.hstream.internal.GetQueryRequest
@@ -372,6 +373,21 @@ class HStreamClientKtImpl(
     override fun getConnectorSpec(type: String?, target: String?): String {
         return unaryCallBlocked {
             it.getConnectorSpec(GetConnectorSpecRequest.newBuilder().setType(type).setTarget(target).build()).spec
+        }
+    }
+
+    override fun getConnectorLogs(name: String?, beginLine: Int, readCount: Int): String {
+        checkNotNull(name)
+        checkArgument(beginLine > 0, "beginLine should greater than 0")
+        checkArgument(readCount > 0, "readCount should greater than 0")
+        return unaryCallBlockedWithLookup(ResourceType.ResConnector, name) {
+            it.getConnectorLogs(
+                GetConnectorLogsRequest.newBuilder()
+                    .setName(name)
+                    .setBegin(beginLine)
+                    .setCount(readCount)
+                    .build()
+            ).logs
         }
     }
 
