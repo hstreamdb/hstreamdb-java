@@ -1,14 +1,15 @@
-
+package io.hstream.impl
 import io.hstream.HStreamClient
 import io.hstream.buildBlackBoxSourceClient
 import io.hstream.buildBlackBoxSourceClient_
+import io.hstream.internal.RecordId
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicBoolean
 
 @RunWith(MockitoJUnitRunner::class)
 class ResponderImplTest {
@@ -20,13 +21,12 @@ class ResponderImplTest {
         blackBoxSourceClient = buildBlackBoxSourceClient()
     }
 
-    @AfterEach()
+    @AfterEach
     fun shutdown() {
         blackBoxSourceClient.close()
     }
 
     @Test
-    @Disabled("DEBUG")
     fun `when ackAgeLimit == default, all ack should wait for buffer limit`() {
         val xs = buildBlackBoxSourceClient_()
         val consumerName = "some-consumer"
@@ -44,12 +44,24 @@ class ResponderImplTest {
 
         producer.startAsync().awaitRunning()
         countDownLatch.await()
-        producer.stopAsync().awaitRunning()
+        producer.stopAsync().awaitTerminated()
 
-        val ackReceiver = xs.second[consumerName]
-        val initAckRecvSize = ackReceiver!!.tryReceive().getOrThrow().size
-        repeat(50) {
-            assert(ackReceiver.tryReceive().getOrThrow().size == initAckRecvSize)
+        val ackReceiver = xs.second.getAckChannel(consumerName)
+        val initAckSize = ackReceiver.tryReceive().getOrThrow().size
+
+        var ret: List<RecordId>?
+        val isLast = AtomicBoolean(false)
+        while (
+            run {
+                ret = ackReceiver.tryReceive().getOrNull()
+                ret != null
+            }
+        ) {
+            if (ret!!.size != initAckSize) {
+                assert(!isLast.get())
+                isLast.set(true)
+            }
         }
+        assert(ret != null)
     }
 }

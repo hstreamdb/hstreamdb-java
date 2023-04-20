@@ -11,6 +11,7 @@ import io.hstream.internal.StreamingFetchRequest
 import io.hstream.internal.StreamingFetchResponse
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.trySendBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
@@ -28,8 +29,13 @@ class BlackBoxSourceHServerMock(
     serverName
 ) {
     private val consumerNameChannelMap: MutableMap<String, Channel<List<RecordId>>> = mutableMapOf()
+    private val shouldCloseAllSubscriptions: AtomicBoolean = AtomicBoolean(false)
     fun getConsumerNameChannelMap(): MutableMap<String, Channel<List<RecordId>>> {
         return this.consumerNameChannelMap
+    }
+
+    fun getShouldCloseAllSubscriptions(): AtomicBoolean {
+        return this.shouldCloseAllSubscriptions
     }
 
     private val uri = run {
@@ -67,31 +73,35 @@ class BlackBoxSourceHServerMock(
             override fun onNext(request: StreamingFetchRequest) {
                 if (isInitReq.get()) {
                     isInitReq.set(false)
-                    channel = channelMapRef.getOrPut(request.consumerName) { Channel<List<RecordId>>(6000) }
+                    channel = channelMapRef.getOrPut(request.consumerName) { Channel(6000) }
                 }
 
-                val ackIdsList: List<RecordId> = request.ackIdsList
-                println("[DEBUG]: begin `trySendBlocking`")
-                assert(channel.trySendBlocking(ackIdsList).isSuccess)
-                println("[DEBUG]: end `trySendBlocking`")
+                Thread {
+                    while (!shouldCloseAllSubscriptions.get()) {
+                        Thread.sleep(500)
 
-                val len = 100
-                val response = StreamingFetchResponse.newBuilder()
-                    .setReceivedRecords(
-                        ReceivedRecord.newBuilder()
-                            .addAllRecordIds(
-                                (1..len).map {
-                                    RecordId.newBuilder()
-                                        .setShardId(Random.nextLong())
-                                        .setBatchId(Random.nextLong())
-                                        .setBatchIndex(it).build()
-                                }
+                        val ackIdsList: List<RecordId> = request.ackIdsList
+                        assert(channel.trySendBlocking(ackIdsList).isSuccess)
+
+                        val len = 100
+                        val response = StreamingFetchResponse.newBuilder()
+                            .setReceivedRecords(
+                                ReceivedRecord.newBuilder()
+                                    .addAllRecordIds(
+                                        (1..len).map {
+                                            RecordId.newBuilder()
+                                                .setShardId(Random.nextLong())
+                                                .setBatchId(Random.nextLong())
+                                                .setBatchIndex(it).build()
+                                        }
+                                    )
+                                    .setRecord(buildRandomBatchedRecord(len))
+                                    .build()
                             )
-                            .setRecord(buildRandomBatchedRecord(len))
                             .build()
-                    )
-                    .build()
-                responseObserver?.onNext(response)
+                        responseObserver?.onNext(response)
+                    }
+                }.start()
             }
 
             override fun onError(t: Throwable) {
@@ -105,13 +115,32 @@ class BlackBoxSourceHServerMock(
     }
 }
 
-fun buildBlackBoxSourceClient_(): Pair<HStreamClient, MutableMap<String, Channel<List<RecordId>>>> {
+class BlackBoxSourceHServerMockController(
+    private val consumerNameAckChannelMap: MutableMap<String, Channel<List<RecordId>>>,
+    private val shouldCloseAllSubscriptions: AtomicBoolean
+) {
+    fun getAckChannel(consumerName: String): Channel<List<RecordId>> {
+        return this.consumerNameAckChannelMap[consumerName]!!
+    }
+
+    fun closeAllSubscriptions() {
+        this.shouldCloseAllSubscriptions.set(true)
+    }
+}
+
+fun buildBlackBoxSourceClient_(): Pair<HStreamClient, BlackBoxSourceHServerMockController> {
     val xs = buildMockedClient_(
         BlackBoxSourceHServerMock::class.java as Class<HStreamApiGrpc.HStreamApiImplBase>
     )
     val serverImpl: BlackBoxSourceHServerMock = (xs.second) as BlackBoxSourceHServerMock
     val channel = serverImpl.getConsumerNameChannelMap()
-    return Pair(xs.first, channel)
+    return Pair(
+        xs.first,
+        BlackBoxSourceHServerMockController(
+            channel,
+            serverImpl.getShouldCloseAllSubscriptions()
+        )
+    )
 }
 
 fun buildBlackBoxSourceClient(): HStreamClient {
@@ -165,16 +194,17 @@ class BlackBoxSourceHServerMockTests {
         countDownLatch.await()
         consumer.stopAsync().awaitTerminated()
 
-        val channel = xs.second[consumerName]
+        val channel = xs.second.getAckChannel(consumerName)
         val channelAcc = mutableListOf<RecordId>()
         var ret: List<RecordId>?
+        xs.second.closeAllSubscriptions()
         while (run {
-            ret = channel!!.tryReceive().getOrNull()
+            ret = channel.tryReceive().getOrNull()
             ret != null
         }
         ) {
             channelAcc.addAll(ret!!)
         }
-        assert(records.size == channelAcc.size)
+        assertEquals(records.size, channelAcc.size)
     }
 }
