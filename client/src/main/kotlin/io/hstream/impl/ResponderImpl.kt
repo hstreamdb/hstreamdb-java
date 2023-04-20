@@ -45,7 +45,9 @@ class AckSender(
                 throw HStreamDBClientException("ackSender is Closed")
             }
             if (ackAgeLimit > 0 && buffer.isEmpty() && bufferSize > 1) {
-                pendingFlushFuture = scheduler!!.schedule({ flush() }, ackAgeLimit, TimeUnit.MILLISECONDS)
+                pendingFlushFuture = scheduler!!.schedule({
+                    flush()
+                }, ackAgeLimit, TimeUnit.MILLISECONDS)
             }
             buffer.add(recordId)
             if (buffer.size >= bufferSize) {

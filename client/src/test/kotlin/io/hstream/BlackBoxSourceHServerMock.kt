@@ -99,10 +99,10 @@ class BlackBoxSourceHServerMock(
                             responseObserver?.onNext(response)
                         }
                     }.start()
+                } else {
+                    val ackIdsList: List<RecordId> = ArrayList(request.ackIdsList)
+                    assert(channel.trySendBlocking(ackIdsList).isSuccess)
                 }
-
-                val ackIdsList: List<RecordId> = ArrayList(request.ackIdsList)
-                assert(channel.trySendBlocking(ackIdsList).isSuccess)
             }
 
             override fun onError(t: Throwable) {
@@ -122,6 +122,10 @@ class BlackBoxSourceHServerMockController(
 ) {
     fun getAckChannel(consumerName: String): Channel<List<RecordId>> {
         return this.consumerNameAckChannelMap[consumerName]!!
+    }
+
+    fun setAckChannel(consumerName: String) {
+        return this.consumerNameAckChannelMap.set(consumerName, Channel(6000))
     }
 
     fun closeAllSubscriptions() {
