@@ -32,7 +32,7 @@ class ResponderImplTest {
         val consumerName = "some-consumer"
         val client = xs.first
         val countDownLatch = CountDownLatch(500)
-        val producer = client
+        val consumer = client
             .newConsumer()
             .name(consumerName)
             .ackAgeLimit(0)
@@ -42,9 +42,9 @@ class ResponderImplTest {
                 countDownLatch.countDown()
             }.build()
 
-        producer.startAsync().awaitRunning()
+        consumer.startAsync().awaitRunning()
         countDownLatch.await()
-        producer.stopAsync().awaitTerminated()
+        consumer.stopAsync().awaitTerminated()
 
         val ackReceiver = xs.second.getAckChannel(consumerName)
         val initAckSize = ackReceiver.tryReceive().getOrThrow().size
