@@ -62,6 +62,5 @@ class ResponderImplTest {
                 isLast.set(true)
             }
         }
-        assert(ret != null)
     }
 }

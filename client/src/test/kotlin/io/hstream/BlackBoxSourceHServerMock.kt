@@ -11,6 +11,7 @@ import io.hstream.internal.StreamingFetchRequest
 import io.hstream.internal.StreamingFetchResponse
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
@@ -74,34 +75,34 @@ class BlackBoxSourceHServerMock(
                 if (isInitReq.get()) {
                     isInitReq.set(false)
                     channel = channelMapRef.getOrPut(request.consumerName) { Channel(6000) }
+
+                    Thread {
+                        while (!shouldCloseAllSubscriptions.get()) {
+                            Thread.sleep(500)
+
+                            val len = 100
+                            val response = StreamingFetchResponse.newBuilder()
+                                .setReceivedRecords(
+                                    ReceivedRecord.newBuilder()
+                                        .addAllRecordIds(
+                                            (1..len).map {
+                                                RecordId.newBuilder()
+                                                    .setShardId(Random.nextLong())
+                                                    .setBatchId(Random.nextLong())
+                                                    .setBatchIndex(it).build()
+                                            }
+                                        )
+                                        .setRecord(buildRandomBatchedRecord(len))
+                                        .build()
+                                )
+                                .build()
+                            responseObserver?.onNext(response)
+                        }
+                    }.start()
                 }
 
-                Thread {
-                    while (!shouldCloseAllSubscriptions.get()) {
-                        Thread.sleep(500)
-
-                        val ackIdsList: List<RecordId> = request.ackIdsList
-                        assert(channel.trySendBlocking(ackIdsList).isSuccess)
-
-                        val len = 100
-                        val response = StreamingFetchResponse.newBuilder()
-                            .setReceivedRecords(
-                                ReceivedRecord.newBuilder()
-                                    .addAllRecordIds(
-                                        (1..len).map {
-                                            RecordId.newBuilder()
-                                                .setShardId(Random.nextLong())
-                                                .setBatchId(Random.nextLong())
-                                                .setBatchIndex(it).build()
-                                        }
-                                    )
-                                    .setRecord(buildRandomBatchedRecord(len))
-                                    .build()
-                            )
-                            .build()
-                        responseObserver?.onNext(response)
-                    }
-                }.start()
+                val ackIdsList: List<RecordId> = ArrayList(request.ackIdsList)
+                assert(channel.trySendBlocking(ackIdsList).isSuccess)
             }
 
             override fun onError(t: Throwable) {
@@ -196,14 +197,14 @@ class BlackBoxSourceHServerMockTests {
 
         val channel = xs.second.getAckChannel(consumerName)
         val channelAcc = mutableListOf<RecordId>()
-        var ret: List<RecordId>?
         xs.second.closeAllSubscriptions()
-        while (run {
-            ret = channel.tryReceive().getOrNull()
-            ret != null
-        }
+        assert(!channel.isEmpty)
+        while (!channel.isEmpty
         ) {
-            channelAcc.addAll(ret!!)
+            runBlocking {
+                val xs = channel.receive()
+                channelAcc.addAll(xs)
+            }
         }
         assertEquals(records.size, channelAcc.size)
     }
