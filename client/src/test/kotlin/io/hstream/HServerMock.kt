@@ -12,12 +12,9 @@ import io.hstream.impl.HStreamClientBuilderImpl
 import io.hstream.impl.HStreamClientKtImpl
 import io.hstream.impl.logger
 import io.hstream.impl.unaryCallWithCurrentUrls
-import io.hstream.internal.AppendRequest
-import io.hstream.internal.AppendResponse
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DescribeClusterResponse
 import io.hstream.internal.HStreamApiGrpc
-import io.hstream.internal.HStreamRecord
 import io.hstream.internal.ListStreamsRequest
 import io.hstream.internal.ListStreamsResponse
 import io.hstream.internal.LookupResourceRequest
@@ -39,7 +36,6 @@ import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.CompletionException
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.random.Random
 
 open class HServerMock(
@@ -47,11 +43,6 @@ open class HServerMock(
     private val serverName: String,
 ) : HStreamApiGrpc.HStreamApiImplBase() {
     private val logger = LoggerFactory.getLogger(HServerMock::class.java)
-
-    private val recordsByStreamAndShard: MutableMap<String, MutableMap<Long, MutableList<HStreamRecord>>> = mutableMapOf()
-    private val globalLsnCnt: AtomicInteger = AtomicInteger()
-
-    private val serverAppendImpl = ServerAppendImpl(recordsByStreamAndShard, globalLsnCnt)
 
     private val streams: MutableList<Stream> = arrayListOf()
     private val streamsMutex: Mutex = Mutex()
@@ -204,24 +195,6 @@ open class HServerMock(
                 Status.NOT_FOUND.asException()
             )
         }
-    }
-
-    override fun append(request: AppendRequest?, responseObserver: StreamObserver<AppendResponse>?) {
-        try {
-            checkStreamBelonging(request!!.streamName)
-        } catch (e: Throwable) {
-            responseObserver?.onError(
-                Status.INVALID_ARGUMENT.asException()
-            )
-        }
-
-        serverAppendImpl.append(request, responseObserver)
-    }
-
-    private fun checkStreamBelonging(streamName: String) {
-        assert(
-            serverName == runBlocking { hMetaMockCluster.lookupStreamName(streamName) }
-        )
     }
 
     private fun checkSubscriptionBelonging(subscriptionId: String) {
