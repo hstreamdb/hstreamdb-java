@@ -2,6 +2,9 @@ package io.hstream.util;
 
 import static com.google.common.base.Preconditions.*;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Struct;
+import com.google.protobuf.util.JsonFormat;
 import io.hstream.*;
 import io.hstream.internal.RecordId;
 import io.hstream.internal.SpecialOffset;
@@ -243,6 +246,18 @@ public class GrpcUtils {
         .status(connector.getStatus())
         .createdTime(Instant.ofEpochSecond(createdTime.getSeconds(), createdTime.getNanos()))
         .config(connector.getCnofig())
+        .offsets(
+            connector.getOffsetsList().stream()
+                .map(GrpcUtils::structToString)
+                .collect(Collectors.toList()))
         .build();
+  }
+
+  public static String structToString(Struct struct) {
+    try {
+      return JsonFormat.printer().omittingInsignificantWhitespace().print(struct);
+    } catch (InvalidProtocolBufferException e) {
+      throw new HStreamDBClientException(e);
+    }
   }
 }
