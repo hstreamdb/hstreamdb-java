@@ -14,7 +14,6 @@ import io.hstream.impl.logger
 import io.hstream.impl.unaryCallWithCurrentUrls
 import io.hstream.internal.AppendRequest
 import io.hstream.internal.AppendResponse
-import io.hstream.internal.BatchedRecord
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DescribeClusterResponse
 import io.hstream.internal.HStreamApiGrpc
@@ -39,7 +38,6 @@ import org.junit.jupiter.api.assertThrows
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.CompletionException
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.random.Random
@@ -54,16 +52,12 @@ open class HServerMock(
     private val globalLsnCnt: AtomicInteger = AtomicInteger()
 
     private val serverAppendImpl = ServerAppendImpl(recordsByStreamAndShard, globalLsnCnt)
-    private val serverStreamingFetchImpl = ServerStreamingFetchImpl(recordsByStreamAndShard)
 
     private val streams: MutableList<Stream> = arrayListOf()
     private val streamsMutex: Mutex = Mutex()
 
     private val subscriptions: MutableList<Subscription> = arrayListOf()
     private val subscriptionsMutex: Mutex = Mutex()
-
-    private val streamReceivedRecord: ConcurrentHashMap<String, MutableList<BatchedRecord>> = ConcurrentHashMap()
-    private val streamReceivedRecordConsumeProgress: ConcurrentHashMap<String, AtomicInteger> = ConcurrentHashMap()
 
     override fun describeCluster(request: Empty?, responseObserver: StreamObserver<DescribeClusterResponse>?) = runBlocking {
         val serverNodes: List<ServerNode> = hMetaMockCluster.getServerNodes()
