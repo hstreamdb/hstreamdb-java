@@ -96,7 +96,9 @@ class HStreamClientKtImpl(
     private fun <Resp> unaryCallBlockedWithLookup(resourceType: ResourceType, resourceId: String?, call: suspend (stub: HStreamApiGrpcKt.HStreamApiCoroutineStub) -> Resp): Resp {
         return runBlocking(MoreExecutors.directExecutor().asCoroutineDispatcher()) {
             val nodeUrl = lookupResource(resourceType, resourceId)
-            call(HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(nodeUrl)))
+            unaryCallCoroutine {
+                call(HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(nodeUrl)))
+            }
         }
     }
 
