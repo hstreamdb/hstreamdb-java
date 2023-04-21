@@ -74,6 +74,7 @@ class ConsumerKtImpl(
 
         if (!isRunning) return
 
+        logger.debug("begin lookupSubscription for $subscriptionId")
         val server: String = try {
             lookupSubscription()
         } catch (e: Throwable) {
@@ -111,7 +112,7 @@ class ConsumerKtImpl(
         } catch (e: CancellationException) {
             logger.info("streamingFetch is canceled")
         } catch (e: Throwable) {
-            logger.info("streaming fetch failed: $e: ${e.message}, ${e.stackTraceToString()}")
+            logger.info("streaming fetch failed, $e")
             notifyFailed(HStreamDBClientException(e))
         }
     }
