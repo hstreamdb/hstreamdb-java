@@ -81,7 +81,7 @@ class BlackBoxSourceHServerMock(
                             Thread.sleep(500)
 
                             val len = 100
-                            val response = StreamingFetchResponse.newBuilder()
+                            var response = StreamingFetchResponse.newBuilder()
                                 .setReceivedRecords(
                                     ReceivedRecord.newBuilder()
                                         .addAllRecordIds(
@@ -92,7 +92,24 @@ class BlackBoxSourceHServerMock(
                                                     .setBatchIndex(it).build()
                                             }
                                         )
-                                        .setRecord(buildRandomBatchedRecord(len))
+                                        .setRecord(buildRandomBatchedHRecord(len))
+                                        .build()
+                                )
+                                .build()
+                            responseObserver?.onNext(response)
+
+                            response = StreamingFetchResponse.newBuilder()
+                                .setReceivedRecords(
+                                    ReceivedRecord.newBuilder()
+                                        .addAllRecordIds(
+                                            (1..len).map {
+                                                RecordId.newBuilder()
+                                                    .setShardId(Random.nextLong())
+                                                    .setBatchId(Random.nextLong())
+                                                    .setBatchIndex(it).build()
+                                            }
+                                        )
+                                        .setRecord(buildRandomBatchedRawRecord(len))
                                         .build()
                                 )
                                 .build()
@@ -206,8 +223,8 @@ class BlackBoxSourceHServerMockTests {
         while (!channel.isEmpty
         ) {
             runBlocking {
-                val xs = channel.receive()
-                channelAcc.addAll(xs)
+                val ret = channel.receive()
+                channelAcc.addAll(ret)
             }
         }
         assertEquals(records.size, channelAcc.size)

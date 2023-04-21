@@ -1,5 +1,6 @@
 package io.hstream
 
+import com.google.protobuf.ByteString
 import com.google.protobuf.Timestamp
 import com.google.protobuf.kotlin.toByteStringUtf8
 import io.hstream.internal.BatchHStreamRecords
@@ -8,21 +9,21 @@ import io.hstream.internal.CompressionType
 import io.hstream.internal.HStreamRecord
 import io.hstream.internal.HStreamRecordHeader
 import java.time.Instant
+import kotlin.random.Random
 
-fun buildRandomBatchedRecord(numberOfRecords: Int): BatchedRecord {
+fun buildRandomBatchedGenericRecord(numberOfRecords: Int, payload: ByteString, flag: HStreamRecordHeader.Flag): BatchedRecord {
     val time = Instant.now()
     val timestamp = Timestamp.newBuilder().setSeconds(time.epochSecond)
         .setNanos(time.nano).build()
     val records = mutableListOf<HStreamRecord>()
     repeat(numberOfRecords) {
-        val data = "Record $it"
         val record = HStreamRecord.newBuilder()
             .setHeader(
                 HStreamRecordHeader.newBuilder()
-                    .setFlag(HStreamRecordHeader.Flag.RAW)
+                    .setFlag(flag)
                     .build()
             )
-            .setPayload(data.toByteStringUtf8())
+            .setPayload(payload)
             .build()
         records.add(record)
     }
@@ -36,4 +37,14 @@ fun buildRandomBatchedRecord(numberOfRecords: Int): BatchedRecord {
         .setBatchSize(records.size)
         .setPayload(serializedBatch)
         .build()
+}
+
+fun buildRandomBatchedHRecord(numberOfRecords: Int): BatchedRecord {
+    val payload = HRecord.newBuilder().put("some", false).put("any", "none").build().toByteString()
+    return buildRandomBatchedGenericRecord(numberOfRecords, payload, HStreamRecordHeader.Flag.JSON)
+}
+
+fun buildRandomBatchedRawRecord(numberOfRecords: Int): BatchedRecord {
+    val payload = ("Record " + Random.nextLong()).toByteStringUtf8()
+    return buildRandomBatchedGenericRecord(numberOfRecords, payload, HStreamRecordHeader.Flag.RAW)
 }

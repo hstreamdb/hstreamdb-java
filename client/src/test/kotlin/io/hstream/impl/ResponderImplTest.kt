@@ -1,10 +1,13 @@
 package io.hstream.impl
 import io.hstream.HStreamClient
+import io.hstream.ReceivedHRecord
+import io.hstream.ReceivedRawRecord
 import io.hstream.buildBlackBoxSourceClient
 import io.hstream.buildBlackBoxSourceClient_
 import io.hstream.internal.RecordId
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
@@ -103,7 +106,7 @@ class ResponderImplTest {
 
         fun inRange(time: Long): Boolean {
             return (
-                abs(intervalMs - time) <= 50
+                abs(intervalMs - time) <= 20
                 )
         }
 
@@ -114,5 +117,46 @@ class ResponderImplTest {
             val time = time0 - time1
             assert(inRange(time)) { "i = $i, time0 = $time0, time1 = $time1, time = $time" }
         }
+    }
+
+    @Test
+    fun testBothRecordReceiverShouldWork() {
+        val xs = buildBlackBoxSourceClient_()
+        val consumerName = "some-consumer"
+        val client = xs.first
+        val controller = xs.second
+        val intervalMs: Long = 500
+        val consumerBuilder = client
+            .newConsumer()
+            .name(consumerName)
+            .ackAgeLimit(intervalMs)
+            .subscription("anything")
+
+        val receivedHRecords = CopyOnWriteArrayList<ReceivedHRecord>()
+        val receivedRawRecords = CopyOnWriteArrayList<ReceivedRawRecord>()
+
+        val countDownLatch = CountDownLatch(3000)
+
+        consumerBuilder.hRecordReceiver { receivedHRecord, responder ->
+            responder.ack()
+            receivedHRecords.add(receivedHRecord)
+            countDownLatch.countDown()
+        }
+        consumerBuilder.rawRecordReceiver { receivedRawRecord, responder ->
+            responder.ack()
+            receivedRawRecords.add(receivedRawRecord)
+            countDownLatch.countDown()
+        }
+
+        val consumer = consumerBuilder.build()
+
+        consumer.startAsync().awaitRunning()
+        countDownLatch.await()
+        controller.closeAllSubscriptions()
+        Thread.sleep(50)
+        consumer.stopAsync().awaitTerminated()
+
+        assertEquals(receivedHRecords.size, receivedRawRecords.size)
+        assert(receivedHRecords.size != 0)
     }
 }
