@@ -14,6 +14,7 @@ import io.hstream.GetStreamResponse
 import io.hstream.GetSubscriptionResponse
 import io.hstream.HRecord
 import io.hstream.HStreamClient
+import io.hstream.HStreamDBClientException
 import io.hstream.ProducerBuilder
 import io.hstream.Query
 import io.hstream.QueryerBuilder
@@ -46,6 +47,7 @@ import io.hstream.internal.ListSubscriptionsRequest
 import io.hstream.internal.ListViewsRequest
 import io.hstream.internal.LookupResourceRequest
 import io.hstream.internal.LookupSubscriptionRequest
+import io.hstream.internal.ParseSqlRequest
 import io.hstream.internal.ResourceType
 import io.hstream.internal.TerminateQueryRequest
 import io.hstream.util.GrpcUtils
@@ -332,7 +334,14 @@ class HStreamClientKtImpl(
     override fun executeViewQuery(sql: String?): List<HRecord> {
         checkNotNull(sql)
         return unaryCallBlocked {
-            it.executeViewQuery(ExecuteViewQueryRequest.newBuilder().setSql(sql).build()).resultsList.map { s -> HRecord(s) }
+            val parseRes = it.parseSql(ParseSqlRequest.newBuilder().setSql(sql).build())
+            if (!parseRes.hasEvqSql()) {
+                throw HStreamDBClientException("invalid sql(correct example: select * from <view> ...;)")
+            }
+            val serverNode = lookupResource(ResourceType.ResView, parseRes.evqSql.view)
+            val stub = HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(serverNode))
+            val req = ExecuteViewQueryRequest.newBuilder().setSql(sql).build()
+            stub.executeViewQuery(req).resultsList.map { s -> HRecord(s) }
         }
     }
 
