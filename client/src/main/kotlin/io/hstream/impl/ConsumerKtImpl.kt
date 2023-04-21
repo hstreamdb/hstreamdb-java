@@ -31,12 +31,12 @@ import java.util.concurrent.TimeUnit
 
 class ConsumerKtImpl(
     private val client: HStreamClientKtImpl,
-    public val consumerName: String,
+    val consumerName: String,
     private val subscriptionId: String,
     private val rawRecordReceiver: RawRecordReceiver?,
     private val hRecordReceiver: HRecordReceiver?,
-    public val ackBufferSize: Int,
-    private val ackAgeLimit: Long
+    val ackBufferSize: Int,
+    ackAgeLimit: Long
 ) : AbstractService(), Consumer {
     private val fetchScope = CoroutineScope(Dispatchers.IO)
     private lateinit var fetchJob: Job
@@ -57,19 +57,31 @@ class ConsumerKtImpl(
             //                       after GOAWAY. HTTP/2 error code: NO_ERROR, debug data:
             //                       Server shutdown, cause=null}
             // 'Status.UNAVAILABLE': Status{code=UNAVAILABLE, description=null, cause=null}
-            if (status.code == Status.UNAVAILABLE.code) {
-                delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
-                streamingFetchWithRetry(requestFlow)
-            } else if (status.code == Status.CANCELLED.code) {
-                logger.info("grpc streamingFetch is canceled")
-            } else {
-                logger.error("streamingFetch failed")
-                notifyFailed(HStreamDBClientException(e))
+            when (status.code) {
+                Status.UNAVAILABLE.code -> {
+                    delay(DefaultSettings.REQUEST_RETRY_INTERVAL_SECONDS * 1000)
+                    streamingFetchWithRetry(requestFlow)
+                }
+                Status.CANCELLED.code -> {
+                    logger.info("grpc streamingFetch is canceled")
+                }
+                else -> {
+                    logger.error("streamingFetch failed")
+                    notifyFailed(HStreamDBClientException(e))
+                }
             }
         }
 
         if (!isRunning) return
-        val server = lookupSubscription()
+
+        val server: String = try {
+            lookupSubscription()
+        } catch (e: Throwable) {
+            logger.error("lookupSubscription error: ${e.message}")
+            notifyFailed(e)
+            return
+        }
+
         logger.debug("lookupSubscription, received:[$server]")
         val stub = client.getCoroutineStub(server)
         try {
@@ -99,7 +111,7 @@ class ConsumerKtImpl(
         } catch (e: CancellationException) {
             logger.info("streamingFetch is canceled")
         } catch (e: Throwable) {
-            logger.info("streaming fetch failed, {}", e)
+            logger.info("streaming fetch failed, $e")
             notifyFailed(HStreamDBClientException(e))
         }
     }
