@@ -40,7 +40,7 @@ jobs:
         with:
           name: unit-tests-reports
           path: |
-            hstreamdb-java/client/build/reports
+            client/build/reports
           retention-days: 7
 
       - name: publish to mavenLocal
