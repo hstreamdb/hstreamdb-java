@@ -34,6 +34,15 @@ jobs:
       - name: build and run unit tests
         run: ./gradlew build
 
+      - name: upload unit-tests-reports
+        uses: actions/upload-artifact@v2
+        if: ${{ success() }} || ${{ failure() }}
+        with:
+          name: unit-tests-reports
+          path: |
+            client/build/reports
+          retention-days: 7
+
       - name: publish to mavenLocal
         run: ./gradlew publishToMavenLocal -PdisableSigning
 
@@ -51,7 +60,7 @@ jobs:
           cd integration-tests
           ./gradlew test -PenableMavenLocal --info --fail-fast -Dtag='basicTest'
 
-      - name: upload tests-reports
+      - name: upload integration-tests-reports
         uses: actions/upload-artifact@v2
         if: ${{ success() }} || ${{ failure() }}
         with:
