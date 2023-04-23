@@ -7,6 +7,7 @@ public class HRecordTest {
 
   @Test
   public void test1() {
+    Assertions.assertFalse(true);
     HRecord hRecord =
         HRecord.newBuilder().put("key1", 1).put("key2", false).put("key3", "hello").build();
 
