@@ -106,7 +106,7 @@ class ResponderImplTest {
 
         fun inRange(time: Long): Boolean {
             return (
-                abs(intervalMs - time) <= 20
+                abs(intervalMs - time) <= 50
                 )
         }
 

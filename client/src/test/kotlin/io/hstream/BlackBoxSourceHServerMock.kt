@@ -96,7 +96,12 @@ class BlackBoxSourceHServerMock(
                                         .build()
                                 )
                                 .build()
-                            responseObserver?.onNext(response)
+
+                            try {
+                                responseObserver?.onNext(response)
+                            } catch (e: Throwable) {
+                                break
+                            }
 
                             response = StreamingFetchResponse.newBuilder()
                                 .setReceivedRecords(
@@ -113,7 +118,12 @@ class BlackBoxSourceHServerMock(
                                         .build()
                                 )
                                 .build()
-                            responseObserver?.onNext(response)
+
+                            try {
+                                responseObserver?.onNext(response)
+                            } catch (e: Throwable) {
+                                break
+                            }
                         }
                     }.start()
                 } else {
