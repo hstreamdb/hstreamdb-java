@@ -45,9 +45,7 @@ public class ProducerBuilderImplTest {
     ProducerBuilderImpl builder = new ProducerBuilderImpl(null);
     assertThrows(
         NullPointerException.class,
-        () -> {
-          builder.stream("test-stream").requestTimeoutMs(1000).build();
-        });
+        () -> builder.stream("test-stream").requestTimeoutMs(1000).build());
   }
 
   @Test
