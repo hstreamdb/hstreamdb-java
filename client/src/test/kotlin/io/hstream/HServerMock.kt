@@ -17,20 +17,30 @@ import io.hstream.internal.DescribeClusterResponse
 import io.hstream.internal.HStreamApiGrpc
 import io.hstream.internal.ListStreamsRequest
 import io.hstream.internal.ListStreamsResponse
+import io.hstream.internal.LookupResourceRequest
+import io.hstream.internal.LookupSubscriptionRequest
+import io.hstream.internal.LookupSubscriptionResponse
+import io.hstream.internal.ResourceType
 import io.hstream.internal.ServerNode
+import io.hstream.internal.SpecialOffset
+import io.hstream.internal.StreamingFetchRequest
+import io.hstream.internal.StreamingFetchResponse
 import io.hstream.util.GrpcUtils
 import io.hstream.util.UrlSchemaUtils.parseServerUrls
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.CompletionException
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 
-class HServerMock(
-    private val hMetaMockCluster: List<HMetaMock>
+open class HServerMock(
+    private val hMetaMockCluster: HMetaMock,
+    private val serverName: String,
 ) : HStreamApiGrpc.HStreamApiImplBase() {
     private val logger = LoggerFactory.getLogger(HServerMock::class.java)
 
@@ -41,8 +51,8 @@ class HServerMock(
     private val subscriptionsMutex: Mutex = Mutex()
 
     override fun describeCluster(request: Empty?, responseObserver: StreamObserver<DescribeClusterResponse>?) = runBlocking {
-        val serverNodes: List<ServerNode> = hMetaMockCluster[0].getServerNodes()
-        val serverNodesStatus = hMetaMockCluster[0].getServerNodesStatus()
+        val serverNodes: List<ServerNode> = hMetaMockCluster.getServerNodes()
+        val serverNodesStatus = hMetaMockCluster.getServerNodesStatus()
         val resp = DescribeClusterResponse
             .newBuilder()
 
@@ -66,6 +76,12 @@ class HServerMock(
             val newStream = GrpcUtils.streamFromGrpc(request)
 
             streamsMutex.withLock {
+                for (s in streams) {
+                    if (s.streamName == newStream.streamName) {
+                        TODO()
+                    }
+                }
+                hMetaMockCluster.registerStream(newStream.streamName, serverName)
                 streams.add(newStream)
             }
 
@@ -117,21 +133,148 @@ class HServerMock(
             }
         }
     }
+
+    override fun createSubscription(
+        request: io.hstream.internal.Subscription?,
+        responseObserver: StreamObserver<io.hstream.internal.Subscription>?
+    ) {
+        if (request!!.offset != SpecialOffset.EARLIEST) {
+            responseObserver?.onError(Status.INTERNAL.asException())
+        }
+
+        runBlocking {
+            streamsMutex.withLock {
+                for (stream in streams) {
+                    if (stream.streamName == request.streamName) {
+                        return@runBlocking
+                    }
+                }
+                TODO()
+            }
+        }
+
+        val subscription = GrpcUtils.subscriptionFromGrpc(request)
+        runBlocking {
+            val subscriptionId = request.subscriptionId
+            subscriptionsMutex.withLock {
+                for (sub in subscriptions) {
+                    if (sub.subscriptionId == subscriptionId) {
+                        TODO()
+                    }
+                }
+                hMetaMockCluster.registerSubscription(subscriptionId, serverName)
+                subscriptions.add(
+                    subscription
+                )
+            }
+            responseObserver?.onNext(
+                GrpcUtils.subscriptionToGrpc(subscription)
+            )
+            responseObserver?.onCompleted()
+        }
+    }
+
+    override fun lookupSubscription(
+        request: LookupSubscriptionRequest?,
+        responseObserver: StreamObserver<LookupSubscriptionResponse>?
+    ) {
+        try {
+            runBlocking {
+                val serverName = hMetaMockCluster.lookupSubscriptionName(request!!.subscriptionId)
+                val serverNode = serverNameToServerNode(serverName)
+                responseObserver?.onNext(
+                    LookupSubscriptionResponse.newBuilder()
+                        .setSubscriptionId(request.subscriptionId)
+                        .setServerNode(serverNode)
+                        .build()
+                )
+            }
+        } catch (e: Throwable) {
+            logger.error("lookup subscription failed: $e")
+            responseObserver?.onError(
+                Status.NOT_FOUND.asException()
+            )
+        }
+    }
+
+    private fun checkSubscriptionBelonging(subscriptionId: String) {
+        assert(
+            serverName == runBlocking { hMetaMockCluster.lookupSubscriptionName(subscriptionId) }
+        )
+    }
+
+    override fun lookupResource(request: LookupResourceRequest?, responseObserver: StreamObserver<ServerNode>?) {
+        val serverName: String = runBlocking {
+            when (request!!.resType) {
+                ResourceType.ResStream -> hMetaMockCluster.lookupStreamName(request.resId)
+                ResourceType.ResSubscription -> hMetaMockCluster.lookupSubscriptionName(request.resId)
+                ResourceType.ResShard -> TODO()
+                ResourceType.ResShardReader -> TODO()
+                ResourceType.ResConnector -> TODO()
+                ResourceType.ResQuery -> TODO()
+                ResourceType.ResView -> TODO()
+                ResourceType.UNRECOGNIZED -> TODO()
+                else -> TODO()
+            }
+        }
+
+        val serverNode: ServerNode = serverNameToServerNode(serverName)
+
+        responseObserver?.onNext(serverNode)
+        responseObserver?.onCompleted()
+    }
+
+    override fun streamingFetch(responseObserver: StreamObserver<StreamingFetchResponse>?): StreamObserver<StreamingFetchRequest> {
+        return object : StreamObserver<StreamingFetchRequest> {
+            val isInitReq: AtomicBoolean = AtomicBoolean(true)
+
+            override fun onNext(request: StreamingFetchRequest) {
+                if (isInitReq.get()) {
+                    try {
+                        checkSubscriptionBelonging(request.subscriptionId)
+                    } catch (e: Throwable) {
+                        responseObserver?.onError(
+                            Status.INVALID_ARGUMENT.asException()
+                        )
+                    }
+                    isInitReq.set(false)
+                }
+
+                val response = StreamingFetchResponse.newBuilder()
+                    .setReceivedRecords(
+                        io.hstream.internal.ReceivedRecord.newBuilder()
+                            .build()
+                    )
+                    .build()
+
+                responseObserver?.onNext(response)
+            }
+
+            override fun onError(t: Throwable?) {
+            }
+
+            override fun onCompleted() {
+                responseObserver?.onCompleted()
+            }
+        }
+    }
 }
 
-fun mockServiceImpl(hMetaMockCluster: List<HMetaMock>): HStreamApiGrpc.HStreamApiImplBase {
-    return HServerMock(hMetaMockCluster)
+fun mockServiceImpl(hMetaMockCluster: HMetaMock, serverName: String, hServerMockImpl: Class<out HStreamApiGrpc.HStreamApiImplBase>): HStreamApiGrpc.HStreamApiImplBase {
+    return hServerMockImpl.getConstructor(HMetaMock::class.java, String::class.java).newInstance(hMetaMockCluster, serverName)
+}
+
+fun mockServiceImpl(hMetaMockCluster: HMetaMock, serverName: String): HStreamApiGrpc.HStreamApiImplBase {
+    return mockServiceImpl(hMetaMockCluster, serverName, HServerMock::class.java)
 }
 
 fun startMockedHServer(
     grpcCleanupRule: GrpcCleanupRule,
     serverImpl: HStreamApiGrpc.HStreamApiImplBase,
-    hMetaMockCluster: List<HMetaMock>,
+    hMetaMockCluster: HMetaMock,
     serverUrl: String
 ) {
-    for (hMeta in hMetaMockCluster) {
-        runBlocking { hMeta.registerName(serverUrl) }
-    }
+    runBlocking { hMetaMockCluster.registerName(serverUrl) }
     val serverName = trimServerUrlToServerName(serverUrl)
     val name = "${urlSchemaToString(serverName.first)}://${serverName.second}"
     grpcCleanupRule.register(
@@ -188,8 +331,8 @@ class HServerMockTests {
         val hostname = "127.0.0." + randPort()
         val port = 6570
         val serverUrl = "hstream://$hostname:$port"
-        val hMetaMockCluster = arrayListOf<HMetaMock>(HMetaMock())
-        startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster), hMetaMockCluster, serverUrl)
+        val hMetaMockCluster = HMetaMock()
+        startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster, serverUrl), hMetaMockCluster, serverUrl)
 
         val channelProvider = mockChannelProvider(grpcCleanupRule)
         channelProvider.get(serverUrl)
@@ -202,8 +345,8 @@ class HServerMockTests {
         val hostname = "127.0.0." + randPort()
         val port = 6570
         val serverUrl = "hstream://$hostname:$port"
-        val hMetaMockCluster = arrayListOf<HMetaMock>(HMetaMock())
-        startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster), hMetaMockCluster, serverUrl)
+        val hMetaMockCluster = HMetaMock()
+        startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster, serverUrl), hMetaMockCluster, serverUrl)
 
         val channelProvider = mockChannelProvider(grpcCleanupRule)
         channelProvider.get(serverUrl)
@@ -222,8 +365,8 @@ class HServerMockTests {
         val hostname = "127.0.0." + randPort()
         val port = randPort()
         val serverUrl = "hstream://$hostname:$port"
-        val hMetaMockCluster = arrayListOf<HMetaMock>(HMetaMock())
-        startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster), hMetaMockCluster, serverUrl)
+        val hMetaMockCluster = HMetaMock()
+        startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster, serverUrl), hMetaMockCluster, serverUrl)
         val channelProvider = mockChannelProvider(grpcCleanupRule)
 
         try {
@@ -240,6 +383,33 @@ class HServerMockTests {
     fun testBuildMockedClient() {
         buildMockedClient().listStreams()
     }
+
+    @Test
+    fun createSubscriptionOnNonExistedStream() {
+        assertThrows<Throwable> {
+            val client = buildMockedClient()
+            client.createSubscription(
+                Subscription.newBuilder()
+                    .subscription("some-id")
+                    .offset(Subscription.SubscriptionOffset.EARLIEST)
+                    .stream("some-stream")
+                    .build()
+            )
+        }
+    }
+
+    @Test
+    fun createSubscription() {
+        val client = buildMockedClient()
+        client.createStream("some-stream")
+        client.createSubscription(
+            Subscription.newBuilder()
+                .subscription("some-id")
+                .offset(Subscription.SubscriptionOffset.EARLIEST)
+                .stream("some-stream")
+                .build()
+        )
+    }
 }
 
 fun urlSchemaToString(urlSchema: UrlSchema): String {
@@ -253,20 +423,38 @@ private fun randPort(): Int {
     return Random.nextInt(256)
 }
 
-fun buildMockedClient(): HStreamClient {
+fun buildMockedClient_(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): Pair<HStreamClient, HStreamApiGrpc.HStreamApiImplBase> {
     val grpcCleanupRule = GrpcCleanupRule()
     // TODO: AutoCloseable?
 
     val hostname = "${randPort()}.${randPort()}.${randPort()}.${randPort()}"
     val port = randPort()
     val serverUrl = "hstream://$hostname:$port"
-    val hMetaMockCluster = arrayListOf<HMetaMock>(HMetaMock())
-    startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster), hMetaMockCluster, serverUrl)
+    val hMetaMockCluster = HMetaMock()
+    val serverImpl = mockServiceImpl(hMetaMockCluster, serverUrl, hServerMock)
+    startMockedHServer(grpcCleanupRule, serverImpl, hMetaMockCluster, serverUrl)
     val channelProvider = mockChannelProvider(grpcCleanupRule)
 
     val clientBuilder = HStreamClientBuilderImpl()
     clientBuilder.serviceUrl(serverUrl)
     clientBuilder.channelProvider(channelProvider)
 
-    return clientBuilder.build() as HStreamClientKtImpl
+    return Pair(clientBuilder.build() as HStreamClientKtImpl, serverImpl)
+}
+
+fun buildMockedClient(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): HStreamClient {
+    return buildMockedClient_(hServerMock).first
+}
+
+fun buildMockedClient(): HStreamClient {
+    return buildMockedClient(HServerMock::class.java as Class<HStreamApiGrpc.HStreamApiImplBase>)
+}
+
+fun serverNameToServerNode(serverName: String): ServerNode {
+    val uri = URI(serverName)
+    assert(uri.port != -1)
+    return ServerNode.newBuilder()
+        .setHost(uri.host)
+        .setPort(uri.port)
+        .build()
 }

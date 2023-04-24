@@ -413,7 +413,7 @@ class HStreamClientKtImpl(
         }
     }
 
-    private final suspend fun lookupSubscriptionServerUrl(subscriptionId: String?): String {
+    private suspend fun lookupSubscriptionServerUrl(subscriptionId: String?): String {
         return unaryCallCoroutine {
             val req: LookupSubscriptionRequest =
                 LookupSubscriptionRequest

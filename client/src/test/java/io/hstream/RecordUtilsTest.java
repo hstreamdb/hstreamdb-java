@@ -106,7 +106,7 @@ public class RecordUtilsTest {
             .build();
     var receivedHStreamRecords = RecordUtils.decompress(receivedRecord);
     for (var receivedHStreamRecord : receivedHStreamRecords) {
-      Assertions.assertTrue(receivedHStreamRecord.getRecord().getPayload().equals(recordPayload));
+      Assertions.assertEquals(receivedHStreamRecord.getRecord().getPayload(), recordPayload);
     }
   }
 }

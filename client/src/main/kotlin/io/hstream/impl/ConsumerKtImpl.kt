@@ -74,11 +74,15 @@ class ConsumerKtImpl(
 
         if (!isRunning) return
 
+        logger.debug("begin lookupSubscription for $subscriptionId")
         val server: String = try {
             lookupSubscription()
         } catch (e: Throwable) {
             logger.error("lookupSubscription error: ${e.message}")
-            notifyFailed(e)
+            if (isRunning) {
+                notifyFailed(e)
+            }
+            stopAsync()
             return
         }
 

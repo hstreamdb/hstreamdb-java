@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
-import io.hstream.HStreamClient;
 import io.hstream.Producer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -17,27 +16,23 @@ public class ProducerBuilderImplTest {
 
   @Test
   public void testBuildWithValidInput() {
-    HStreamClient client = mock(HStreamClientKtImpl.class);
-    ProducerBuilderImpl builder = new ProducerBuilderImpl((HStreamClientKtImpl) client);
+    HStreamClientKtImpl client = mock(HStreamClientKtImpl.class);
+    ProducerBuilderImpl builder = new ProducerBuilderImpl(client);
     Producer producer = builder.stream("test-stream").requestTimeoutMs(1000).build();
     assertNotNull(producer);
   }
 
   @Test
   public void testBuildWithMissingStreamName() {
-    HStreamClient client = mock(HStreamClientKtImpl.class);
-    ProducerBuilderImpl builder = new ProducerBuilderImpl((HStreamClientKtImpl) client);
-    assertThrows(
-        NullPointerException.class,
-        () -> {
-          builder.requestTimeoutMs(1000).build();
-        });
+    HStreamClientKtImpl client = mock(HStreamClientKtImpl.class);
+    ProducerBuilderImpl builder = new ProducerBuilderImpl(client);
+    assertThrows(NullPointerException.class, () -> builder.requestTimeoutMs(1000).build());
   }
 
   @Test
   public void testBuildWithInvalidRequestTimeoutMs() {
-    HStreamClient client = mock(HStreamClientKtImpl.class);
-    ProducerBuilderImpl builder = new ProducerBuilderImpl((HStreamClientKtImpl) client);
+    HStreamClientKtImpl client = mock(HStreamClientKtImpl.class);
+    ProducerBuilderImpl builder = new ProducerBuilderImpl(client);
     assertThrows(
         IllegalArgumentException.class,
         () -> {
@@ -50,23 +45,21 @@ public class ProducerBuilderImplTest {
     ProducerBuilderImpl builder = new ProducerBuilderImpl(null);
     assertThrows(
         NullPointerException.class,
-        () -> {
-          builder.stream("test-stream").requestTimeoutMs(1000).build();
-        });
+        () -> builder.stream("test-stream").requestTimeoutMs(1000).build());
   }
 
   @Test
   public void testBuildWithDefaultRequestTimeoutMs() {
-    HStreamClient client = mock(HStreamClientKtImpl.class);
-    ProducerBuilderImpl builder = new ProducerBuilderImpl((HStreamClientKtImpl) client);
+    HStreamClientKtImpl client = mock(HStreamClientKtImpl.class);
+    ProducerBuilderImpl builder = new ProducerBuilderImpl(client);
     Producer producer = builder.stream("test-stream").build();
     assertNotNull(producer);
   }
 
   @Test
   public void testBuildWithMaxRequestTimeoutMs() {
-    HStreamClient client = mock(HStreamClientKtImpl.class);
-    ProducerBuilderImpl builder = new ProducerBuilderImpl((HStreamClientKtImpl) client);
+    HStreamClientKtImpl client = mock(HStreamClientKtImpl.class);
+    ProducerBuilderImpl builder = new ProducerBuilderImpl(client);
     Producer producer = builder.stream("test-stream").requestTimeoutMs(Long.MAX_VALUE).build();
     assertNotNull(producer);
   }
