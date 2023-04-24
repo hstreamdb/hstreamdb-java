@@ -7,8 +7,10 @@ import com.google.protobuf.Struct;
 import com.google.protobuf.util.JsonFormat;
 import io.hstream.*;
 import io.hstream.internal.RecordId;
+import io.hstream.internal.ShardOffset;
 import io.hstream.internal.SpecialOffset;
 import io.hstream.internal.TaskStatusPB;
+import io.hstream.internal.TimestampOffset;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
@@ -96,24 +98,6 @@ public class GrpcUtils {
         .build();
   }
 
-  public static StreamShardOffset streamShardOffsetFromGrpc(
-      io.hstream.internal.ShardOffset shardOffset) {
-    if (shardOffset.hasSpecialOffset()) {
-      switch (shardOffset.getSpecialOffset()) {
-        case EARLIEST:
-          return new StreamShardOffset(StreamShardOffset.SpecialOffset.EARLIEST);
-        case LATEST:
-          return new StreamShardOffset(StreamShardOffset.SpecialOffset.LATEST);
-        default:
-          throw new IllegalArgumentException("Unknown ShardOffset : " + shardOffset);
-      }
-    } else if (shardOffset.hasRecordOffset()) {
-      return new StreamShardOffset(recordIdFromGrpc(shardOffset.getRecordOffset()));
-    } else {
-      throw new IllegalArgumentException("Unknown ShardOffset : " + shardOffset);
-    }
-  }
-
   public static io.hstream.internal.ShardOffset streamShardOffsetToGrpc(
       StreamShardOffset shardOffset) {
     if (shardOffset.isSpecialOffset()) {
@@ -132,6 +116,14 @@ public class GrpcUtils {
     } else if (shardOffset.isNormalOffset()) {
       return io.hstream.internal.ShardOffset.newBuilder()
           .setRecordOffset(recordIdToGrpc(shardOffset.getNormalOffset()))
+          .build();
+    } else if (shardOffset.isTimestampOffset()) {
+      return ShardOffset.newBuilder()
+          .setTimestampOffset(
+              TimestampOffset.newBuilder()
+                  .setTimestampInMs(shardOffset.getTimestampOffset())
+                  .setStrictAccuracy(true)
+                  .build())
           .build();
     } else {
       throw new IllegalArgumentException("Unknown streamShardOffset : " + shardOffset);

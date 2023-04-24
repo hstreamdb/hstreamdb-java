@@ -7,13 +7,16 @@ public class StreamShardOffset {
     LATEST;
   }
 
-  private enum OffsetType {
+  public enum OffsetType {
     SPECIAL,
+    TIMESTAMP,
     NORMAL;
   }
 
   private SpecialOffset specialOffset;
   private String recordId;
+  private long timestamp;
+
   private OffsetType offsetType;
 
   public StreamShardOffset(SpecialOffset specialOffset) {
@@ -26,12 +29,25 @@ public class StreamShardOffset {
     this.offsetType = OffsetType.NORMAL;
   }
 
+  public StreamShardOffset(long timestamp) {
+    this.timestamp = timestamp;
+    this.offsetType = OffsetType.TIMESTAMP;
+  }
+
   public boolean isSpecialOffset() {
     return offsetType.equals(OffsetType.SPECIAL);
   }
 
   public boolean isNormalOffset() {
     return offsetType.equals(OffsetType.NORMAL);
+  }
+
+  public boolean isTimestampOffset() {
+    return offsetType.equals(OffsetType.TIMESTAMP);
+  }
+
+  public OffsetType getOffsetType() {
+    return offsetType;
   }
 
   public SpecialOffset getSpecialOffset() {
@@ -47,6 +63,14 @@ public class StreamShardOffset {
       return recordId;
     } else {
       throw new IllegalStateException("subscriptionOffset is not normal offset");
+    }
+  }
+
+  public long getTimestampOffset() {
+    if (isTimestampOffset()) {
+      return timestamp;
+    } else {
+      throw new IllegalStateException("subscriptionOffset is not timestamp offset");
     }
   }
 }
