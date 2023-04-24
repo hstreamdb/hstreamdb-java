@@ -75,20 +75,27 @@ class ResponderImplTest {
     }
 
     @Test
-    fun `when ackAgeLimit is set, and ackBufferSize is not set, ACKs should send by age limit`() {
+    fun `when ackAgeLimit is set, and ackBufferSize is set to very large, ACKs should send by age limit`() {
         val xs = buildBlackBoxSourceClient_()
         val consumerName = "some-consumer"
         val client = xs.first
         val controller = xs.second
-        val intervalMs: Long = 500
+        controller.setSendBatchLen(1)
+        val sendInterval: Long = 400
+        controller.setSendInterval(sendInterval)
+        val intervalMs: Long = 800
         val consumer = client
             .newConsumer()
             .name(consumerName)
             .ackAgeLimit(intervalMs)
             .subscription("anything")
+            .ackBufferSize(10000000)
             .rawRecordReceiver { _, responder ->
                 responder.ack()
-            }.build()
+            }.hRecordReceiver { _, responder ->
+                responder.ack()
+            }
+            .build()
 
         val retList = CopyOnWriteArrayList<Long>()
         controller.setAckChannel(consumerName)
@@ -109,7 +116,7 @@ class ResponderImplTest {
 
         fun inRange(time: Long): Boolean {
             return (
-                abs(intervalMs - time) <= 60
+                abs(intervalMs - time) <= sendInterval + 50
                 )
         }
 

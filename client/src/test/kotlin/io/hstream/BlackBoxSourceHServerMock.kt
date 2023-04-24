@@ -20,6 +20,8 @@ import java.net.URI
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
 import kotlin.random.Random
 
 class BlackBoxSourceHServerMock(
@@ -31,12 +33,22 @@ class BlackBoxSourceHServerMock(
 ) {
     private val consumerNameChannelMap: MutableMap<String, Channel<List<RecordId>>> = mutableMapOf()
     private val shouldCloseAllSubscriptions: AtomicBoolean = AtomicBoolean(false)
+    private val sendInterval: AtomicLong = AtomicLong(200)
+    private val sendBatchLen: AtomicInteger = AtomicInteger(100)
     fun getConsumerNameChannelMap(): MutableMap<String, Channel<List<RecordId>>> {
         return this.consumerNameChannelMap
     }
 
     fun getShouldCloseAllSubscriptions(): AtomicBoolean {
         return this.shouldCloseAllSubscriptions
+    }
+
+    fun getSendInterval(): AtomicLong {
+        return this.sendInterval
+    }
+
+    fun getSendBatchLen(): AtomicInteger {
+        return this.sendBatchLen
     }
 
     private val uri = run {
@@ -78,9 +90,9 @@ class BlackBoxSourceHServerMock(
 
                     Thread {
                         while (!shouldCloseAllSubscriptions.get()) {
-                            Thread.sleep(500)
+                            Thread.sleep(sendInterval.get())
 
-                            val len = 100
+                            val len = sendBatchLen.get()
                             var response = StreamingFetchResponse.newBuilder()
                                 .setReceivedRecords(
                                     ReceivedRecord.newBuilder()
@@ -145,7 +157,9 @@ class BlackBoxSourceHServerMock(
 
 class BlackBoxSourceHServerMockController(
     private val consumerNameAckChannelMap: MutableMap<String, Channel<List<RecordId>>>,
-    private val shouldCloseAllSubscriptions: AtomicBoolean
+    private val shouldCloseAllSubscriptions: AtomicBoolean,
+    private val sendInterval: AtomicLong,
+    private val sendBatchLen: AtomicInteger,
 ) {
     fun getAckChannel(consumerName: String): Channel<List<RecordId>> {
         return this.consumerNameAckChannelMap[consumerName]!!
@@ -157,6 +171,14 @@ class BlackBoxSourceHServerMockController(
 
     fun closeAllSubscriptions() {
         this.shouldCloseAllSubscriptions.set(true)
+    }
+
+    fun setSendInterval(newValue: Long) {
+        this.sendInterval.set(newValue)
+    }
+
+    fun setSendBatchLen(newValue: Int) {
+        this.sendBatchLen.set(newValue)
     }
 }
 
@@ -170,7 +192,9 @@ fun buildBlackBoxSourceClient_(): Pair<HStreamClient, BlackBoxSourceHServerMockC
         xs.first,
         BlackBoxSourceHServerMockController(
             channel,
-            serverImpl.getShouldCloseAllSubscriptions()
+            serverImpl.getShouldCloseAllSubscriptions(),
+            serverImpl.getSendInterval(),
+            serverImpl.getSendBatchLen()
         )
     )
 }
