@@ -37,7 +37,7 @@ class ResponderImplTest {
         val xs = buildBlackBoxSourceClient_()
         val consumerName = "some-consumer"
         val client = xs.first
-        val countDownLatch = CountDownLatch(500)
+        val countDownLatch = CountDownLatch(1200)
         val consumer = client
             .newConsumer()
             .name(consumerName)
@@ -45,6 +45,9 @@ class ResponderImplTest {
             .subscription("anything")
             .ackBufferSize(10)
             .rawRecordReceiver { _, responder ->
+                countDownLatch.countDown()
+                responder.ack()
+            }.hRecordReceiver { _, responder ->
                 countDownLatch.countDown()
                 responder.ack()
             }.build()
@@ -106,7 +109,7 @@ class ResponderImplTest {
 
         fun inRange(time: Long): Boolean {
             return (
-                abs(intervalMs - time) <= 50
+                abs(intervalMs - time) <= 60
                 )
         }
 

@@ -79,7 +79,10 @@ class ConsumerKtImpl(
             lookupSubscription()
         } catch (e: Throwable) {
             logger.error("lookupSubscription error: ${e.message}")
-            notifyFailed(e)
+            if (isRunning) {
+                notifyFailed(e)
+            }
+            stopAsync()
             return
         }
 
