@@ -21,6 +21,7 @@ import io.hstream.QueryerBuilder
 import io.hstream.ReaderBuilder
 import io.hstream.Shard
 import io.hstream.Stream
+import io.hstream.StreamShardReaderBuilder
 import io.hstream.Subscription
 import io.hstream.View
 import io.hstream.internal.CreateQueryRequest
@@ -144,6 +145,10 @@ class HStreamClientKtImpl(
 
     override fun newReader(): ReaderBuilder {
         return ReaderBuilderImpl(this)
+    }
+
+    override fun newStreamShardReader(): StreamShardReaderBuilder {
+        return StreamShardReaderBuilderImpl(this)
     }
 
     override fun newQueryer(): QueryerBuilder {
