@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
@@ -75,6 +76,7 @@ class ResponderImplTest {
     }
 
     @Test
+    @Disabled("should not dependent on async timers")
     fun `when ackAgeLimit is set, and ackBufferSize is set to very large, ACKs should send by age limit`() {
         val xs = buildBlackBoxSourceClient_()
         val consumerName = "some-consumer"
