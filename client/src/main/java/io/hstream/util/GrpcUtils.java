@@ -239,7 +239,7 @@ public class GrpcUtils {
         .target(connector.getTarget())
         .status(connector.getStatus())
         .createdTime(Instant.ofEpochSecond(createdTime.getSeconds(), createdTime.getNanos()))
-        .config(connector.getCnofig())
+        .config(connector.getConfig())
         .offsets(
             connector.getOffsetsList().stream()
                 .map(GrpcUtils::structToString)

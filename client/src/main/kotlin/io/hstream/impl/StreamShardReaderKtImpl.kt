@@ -43,7 +43,6 @@ class StreamShardReaderKtImpl(
                 val serverUrl = lookupShardReaderResp.serverNode.host + ":" + lookupShardReaderResp.serverNode.port
                 val respFlow = client.getCoroutineStub(serverUrl).readShardStream(
                     ReadShardStreamRequest.newBuilder().setReaderId(readerName).setShardId(shardId)
-                        .setTimeout(1000)
                         .setShardOffset(GrpcUtils.streamShardOffsetToGrpc(shardOffset)).build()
                 )
                 notifyStarted()
