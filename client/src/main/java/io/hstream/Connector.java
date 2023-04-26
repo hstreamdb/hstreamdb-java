@@ -9,7 +9,6 @@ public class Connector {
   String target;
   Instant createdTime;
   String status;
-  /** only available in GetConnector */
   String config;
 
   List<String> offsets;
