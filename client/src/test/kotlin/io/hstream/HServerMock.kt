@@ -15,6 +15,8 @@ import io.hstream.impl.unaryCallWithCurrentUrls
 import io.hstream.internal.DeleteStreamRequest
 import io.hstream.internal.DescribeClusterResponse
 import io.hstream.internal.HStreamApiGrpc
+import io.hstream.internal.ListShardsRequest
+import io.hstream.internal.ListShardsResponse
 import io.hstream.internal.ListStreamsRequest
 import io.hstream.internal.ListStreamsResponse
 import io.hstream.internal.LookupResourceRequest
@@ -22,6 +24,7 @@ import io.hstream.internal.LookupSubscriptionRequest
 import io.hstream.internal.LookupSubscriptionResponse
 import io.hstream.internal.ResourceType
 import io.hstream.internal.ServerNode
+import io.hstream.internal.Shard
 import io.hstream.internal.SpecialOffset
 import io.hstream.internal.StreamingFetchRequest
 import io.hstream.internal.StreamingFetchResponse
@@ -257,6 +260,22 @@ open class HServerMock(
                 responseObserver?.onCompleted()
             }
         }
+    }
+
+    override fun listShards(request: ListShardsRequest?, responseObserver: StreamObserver<ListShardsResponse>?) {
+        val streamName = request!!.streamName
+
+        responseObserver!!.onNext(
+            ListShardsResponse.newBuilder()
+                .addShards(
+                    Shard.newBuilder()
+                        .setStreamName(streamName)
+                        // TODO: add more fields
+                        .build()
+                )
+                .build()
+        )
+        responseObserver.onCompleted()
     }
 }
 
