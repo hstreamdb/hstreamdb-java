@@ -190,6 +190,8 @@ public class GrpcUtils {
         return TaskStatus.RUNNING;
       case TASK_ABORTED:
         return TaskStatus.ABORTED;
+      case TASK_TERMINATED:
+        return TaskStatus.TERMINATED;
       default:
         return TaskStatus.UNKNOWN;
     }

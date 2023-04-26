@@ -4,5 +4,6 @@ public enum TaskStatus {
   CREATING,
   RUNNING,
   ABORTED,
+  TERMINATED,
   UNKNOWN,
 }
