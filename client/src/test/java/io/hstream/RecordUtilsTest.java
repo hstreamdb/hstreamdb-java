@@ -33,7 +33,7 @@ public class RecordUtilsTest {
     testCompressRecords(CompressionType.ZSTD);
   }
 
-  @Disabled
+  @Disabled("compressRatio")
   @Test
   public void compressRatioWithGzip() {
     compressRatio(4096, 100, CompressionType.GZIP);
@@ -43,7 +43,7 @@ public class RecordUtilsTest {
     compressRatio(4096, 1000, CompressionType.GZIP);
   }
 
-  @Disabled
+  @Disabled("compressRatio")
   @Test
   public void compressRatioWithZstd() {
     compressRatio(4096, 100, CompressionType.ZSTD);
