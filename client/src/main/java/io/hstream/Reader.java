@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /** The interface for the HStream shard reader */
+@Deprecated
 public interface Reader extends AutoCloseable {
 
   /**
