@@ -1,6 +1,7 @@
 package io.hstream;
 
 /** A builder for {@link Reader}s. */
+@Deprecated
 public interface ReaderBuilder {
 
   ReaderBuilder streamName(String streamName);

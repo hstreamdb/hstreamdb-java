@@ -19,9 +19,11 @@ public interface HStreamClient extends AutoCloseable {
   /** @return a {@link ConsumerBuilder} */
   ConsumerBuilder newConsumer();
 
+  @Deprecated
   /** @return a {@link QueryerBuilder} */
   QueryerBuilder newQueryer();
 
+  @Deprecated
   /** @return a {@link ReaderBuilder} */
   ReaderBuilder newReader();
 
