@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var data = {"i0":38};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -127,8 +127,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang" class="externalLink">AutoCloseable</a></code></dd>
 </dl>
 <hr>
-<pre>public interface <span class="typeNameLabel">Reader</span>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>
+public interface <span class="typeNameLabel">Reader</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang" class="externalLink">AutoCloseable</a></pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">The interface for the HStream shard reader</div>
 </li>
 </ul>
@@ -144,7 +146,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -154,6 +156,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/CompletableFuture.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">CompletableFuture</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="ReceivedRecord.html" title="class in io.hstream">ReceivedRecord</a>&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#read(int)">read</a></span>&#8203;(int&nbsp;maxRecords)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Read <a href="ReceivedRecord.html" title="class in io.hstream"><code>ReceivedRecord</code></a>s from a stream shard.</div>
 </td>
 </tr>
@@ -188,6 +191,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>read</h4>
 <pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/CompletableFuture.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">CompletableFuture</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="ReceivedRecord.html" title="class in io.hstream">ReceivedRecord</a>&gt;&gt;&nbsp;read&#8203;(int&nbsp;maxRecords)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Read <a href="ReceivedRecord.html" title="class in io.hstream"><code>ReceivedRecord</code></a>s from a stream shard.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>

@@ -27,8 +27,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":1,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6,"i16":6,"i17":6,"i18":6,"i19":6,"i20":6,"i21":6,"i22":6,"i23":6,"i24":6,"i25":6,"i26":6,"i27":6,"i28":6,"i29":6,"i30":6,"i31":6,"i32":6,"i33":6,"i34":6,"i35":6,"i36":6,"i37":6,"i38":6};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
+var data = {"i0":1,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6,"i16":6,"i17":6,"i18":6,"i19":6,"i20":6,"i21":6,"i22":6,"i23":6,"i24":6,"i25":6,"i26":6,"i27":6,"i28":6,"i29":6,"i30":6,"i31":6,"i32":6,"i33":6,"i34":6,"i35":38,"i36":38,"i37":6,"i38":6};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -144,7 +144,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -368,12 +368,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <tr id="i35" class="rowColor">
 <td class="colFirst"><code><a href="QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newQueryer()">newQueryer</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+</td>
 </tr>
 <tr id="i36" class="altColor">
 <td class="colFirst"><code><a href="ReaderBuilder.html" title="interface in io.hstream">ReaderBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newReader()">newReader</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+</td>
 </tr>
 <tr id="i37" class="rowColor">
 <td class="colFirst"><code><a href="StreamShardReaderBuilder.html" title="interface in io.hstream">StreamShardReaderBuilder</a></code></td>
@@ -463,11 +467,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>newQueryer</h4>
-<pre class="methodSignature"><a href="QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a>&nbsp;newQueryer()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a <a href="QueryerBuilder.html" title="interface in io.hstream"><code>QueryerBuilder</code></a></dd>
-</dl>
+<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>
+<a href="QueryerBuilder.html" title="interface in io.hstream">QueryerBuilder</a>&nbsp;newQueryer()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 </li>
 </ul>
 <a id="newReader()">
@@ -476,11 +478,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>newReader</h4>
-<pre class="methodSignature"><a href="ReaderBuilder.html" title="interface in io.hstream">ReaderBuilder</a>&nbsp;newReader()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>a <a href="ReaderBuilder.html" title="interface in io.hstream"><code>ReaderBuilder</code></a></dd>
-</dl>
+<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>
+<a href="ReaderBuilder.html" title="interface in io.hstream">ReaderBuilder</a>&nbsp;newReader()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 </li>
 </ul>
 <a id="newStreamShardReader()">
