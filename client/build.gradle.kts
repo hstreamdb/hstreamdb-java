@@ -1,4 +1,4 @@
-import com.google.protobuf.gradle.*
+import com.google.protobuf.gradle.id
 
 plugins {
     `java-library`
@@ -194,10 +194,12 @@ tasks.withType<Jar> {
 
 spotless {
     java {
+        target("client/src/*/java/**/*.java")
         googleJavaFormat()
     }
 
     kotlin {
+        target("client/src/*/kotlin/**/*.kt")
         ktlint()
     }
 
