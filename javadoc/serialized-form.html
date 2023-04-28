@@ -45,7 +45,8 @@ loadScripts(document, 'script');</script>
 <!--   -->
 </a>
 <ul class="navList" title="Navigation">
-<li><a href="io/hstream/package-summary.html">Package</a></li>
+<li><a href="index.html">Overview</a></li>
+<li>Package</li>
 <li>Class</li>
 <li><a href="overview-tree.html">Tree</a></li>
 <li><a href="deprecated-list.html">Deprecated</a></li>
@@ -139,6 +140,2981 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </ul>
 </section>
 </li>
+<li class="blockList">
+<section>
+<h2 title="Package">Package&nbsp;io.hstream.internal</h2>
+<ul class="blockList">
+<li class="blockList"><a id="io.hstream.internal.AdminCommandRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/AdminCommandRequest.html" title="class in io.hstream.internal">io.hstream.internal.AdminCommandRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>command_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> command_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.AdminCommandResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/AdminCommandResponse.html" title="class in io.hstream.internal">io.hstream.internal.AdminCommandResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>result_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> result_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.AppendRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/AppendRequest.html" title="class in io.hstream.internal">io.hstream.internal.AppendRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>records_</h4>
+<pre><a href="io/hstream/internal/BatchedRecord.html" title="class in io.hstream.internal">BatchedRecord</a> records_</pre>
+</li>
+<li class="blockList">
+<h4>shardId_</h4>
+<pre>long shardId_</pre>
+</li>
+<li class="blockListLast">
+<h4>streamName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> streamName_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.AppendResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/AppendResponse.html" title="class in io.hstream.internal">io.hstream.internal.AppendResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>recordIds_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/RecordId.html" title="class in io.hstream.internal">RecordId</a>&gt; recordIds_</pre>
+</li>
+<li class="blockList">
+<h4>shardId_</h4>
+<pre>long shardId_</pre>
+</li>
+<li class="blockListLast">
+<h4>streamName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> streamName_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.BatchedRecord">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/BatchedRecord.html" title="class in io.hstream.internal">io.hstream.internal.BatchedRecord</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>batchSize_</h4>
+<pre>int batchSize_</pre>
+</li>
+<li class="blockList">
+<h4>compressionType_</h4>
+<pre>int compressionType_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>payload_</h4>
+<pre>com.google.protobuf.ByteString payload_</pre>
+</li>
+<li class="blockListLast">
+<h4>publishTime_</h4>
+<pre>com.google.protobuf.Timestamp publishTime_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.BatchHStreamRecords">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/BatchHStreamRecords.html" title="class in io.hstream.internal">io.hstream.internal.BatchHStreamRecords</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>records_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/HStreamRecord.html" title="class in io.hstream.internal">HStreamRecord</a>&gt; records_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CheckSubscriptionExistRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CheckSubscriptionExistRequest.html" title="class in io.hstream.internal">io.hstream.internal.CheckSubscriptionExistRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>subscriptionId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> subscriptionId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CheckSubscriptionExistResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CheckSubscriptionExistResponse.html" title="class in io.hstream.internal">io.hstream.internal.CheckSubscriptionExistResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>exists_</h4>
+<pre>boolean exists_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CommandConnect">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CommandConnect.html" title="class in io.hstream.internal">io.hstream.internal.CommandConnect</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>clientVersion_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> clientVersion_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>protocolVersion_</h4>
+<pre>int protocolVersion_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CommandConnected">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CommandConnected.html" title="class in io.hstream.internal">io.hstream.internal.CommandConnected</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>protocolVersion_</h4>
+<pre>int protocolVersion_</pre>
+</li>
+<li class="blockListLast">
+<h4>serverVersion_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> serverVersion_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CommandQuery">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CommandQuery.html" title="class in io.hstream.internal">io.hstream.internal.CommandQuery</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>stmtText_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> stmtText_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CommandQueryResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CommandQueryResponse.html" title="class in io.hstream.internal">io.hstream.internal.CommandQueryResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>resultSet_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;com.google.protobuf.Struct&gt; resultSet_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CommandStreamTask">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CommandStreamTask.html" title="class in io.hstream.internal">io.hstream.internal.CommandStreamTask</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>commandSql_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> commandSql_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CommandStreamTaskResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CommandStreamTaskResponse.html" title="class in io.hstream.internal">io.hstream.internal.CommandStreamTaskResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>commandResp_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> commandResp_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.Connector">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/Connector.html" title="class in io.hstream.internal">io.hstream.internal.Connector</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>config_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> config_</pre>
+</li>
+<li class="blockList">
+<h4>creationTime_</h4>
+<pre>com.google.protobuf.Timestamp creationTime_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>name_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> name_</pre>
+</li>
+<li class="blockList">
+<h4>offsets_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;com.google.protobuf.Struct&gt; offsets_</pre>
+</li>
+<li class="blockList">
+<h4>status_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> status_</pre>
+</li>
+<li class="blockList">
+<h4>target_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> target_</pre>
+</li>
+<li class="blockListLast">
+<h4>type_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> type_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.Consumer">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/Consumer.html" title="class in io.hstream.internal">io.hstream.internal.Consumer</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>name_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> name_</pre>
+</li>
+<li class="blockList">
+<h4>uri_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> uri_</pre>
+</li>
+<li class="blockListLast">
+<h4>userAgent_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> userAgent_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CreateConnectorRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CreateConnectorRequest.html" title="class in io.hstream.internal">io.hstream.internal.CreateConnectorRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>config_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> config_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>name_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> name_</pre>
+</li>
+<li class="blockList">
+<h4>target_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> target_</pre>
+</li>
+<li class="blockListLast">
+<h4>type_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> type_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CreateQueryRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CreateQueryRequest.html" title="class in io.hstream.internal">io.hstream.internal.CreateQueryRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>queryName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> queryName_</pre>
+</li>
+<li class="blockListLast">
+<h4>sql_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> sql_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CreateQueryWithNamespaceRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CreateQueryWithNamespaceRequest.html" title="class in io.hstream.internal">io.hstream.internal.CreateQueryWithNamespaceRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>namespace_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> namespace_</pre>
+</li>
+<li class="blockList">
+<h4>queryName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> queryName_</pre>
+</li>
+<li class="blockListLast">
+<h4>sql_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> sql_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CreateShardReaderRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CreateShardReaderRequest.html" title="class in io.hstream.internal">io.hstream.internal.CreateShardReaderRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>readerId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> readerId_</pre>
+</li>
+<li class="blockList">
+<h4>shardId_</h4>
+<pre>long shardId_</pre>
+</li>
+<li class="blockList">
+<h4>shardOffset_</h4>
+<pre><a href="io/hstream/internal/ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a> shardOffset_</pre>
+</li>
+<li class="blockList">
+<h4>streamName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> streamName_</pre>
+</li>
+<li class="blockListLast">
+<h4>timeout_</h4>
+<pre>int timeout_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.CreateShardReaderResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/CreateShardReaderResponse.html" title="class in io.hstream.internal">io.hstream.internal.CreateShardReaderResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>readerId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> readerId_</pre>
+</li>
+<li class="blockList">
+<h4>shardId_</h4>
+<pre>long shardId_</pre>
+</li>
+<li class="blockList">
+<h4>shardOffset_</h4>
+<pre><a href="io/hstream/internal/ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a> shardOffset_</pre>
+</li>
+<li class="blockList">
+<h4>streamName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> streamName_</pre>
+</li>
+<li class="blockListLast">
+<h4>timeout_</h4>
+<pre>int timeout_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.DeleteConnectorRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/DeleteConnectorRequest.html" title="class in io.hstream.internal">io.hstream.internal.DeleteConnectorRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>name_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> name_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.DeleteQueryRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/DeleteQueryRequest.html" title="class in io.hstream.internal">io.hstream.internal.DeleteQueryRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>id_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> id_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.DeleteShardReaderRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/DeleteShardReaderRequest.html" title="class in io.hstream.internal">io.hstream.internal.DeleteShardReaderRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>readerId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> readerId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.DeleteStreamRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/DeleteStreamRequest.html" title="class in io.hstream.internal">io.hstream.internal.DeleteStreamRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>force_</h4>
+<pre>boolean force_</pre>
+</li>
+<li class="blockList">
+<h4>ignoreNonExist_</h4>
+<pre>boolean ignoreNonExist_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>streamName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> streamName_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.DeleteSubscriptionRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/DeleteSubscriptionRequest.html" title="class in io.hstream.internal">io.hstream.internal.DeleteSubscriptionRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>force_</h4>
+<pre>boolean force_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>subscriptionId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> subscriptionId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.DeleteViewRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/DeleteViewRequest.html" title="class in io.hstream.internal">io.hstream.internal.DeleteViewRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>ignoreNonExist_</h4>
+<pre>boolean ignoreNonExist_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>viewId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> viewId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.DescribeClusterResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/DescribeClusterResponse.html" title="class in io.hstream.internal">io.hstream.internal.DescribeClusterResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>clusterUpTime_</h4>
+<pre>long clusterUpTime_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>protocolVersion_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> protocolVersion_</pre>
+</li>
+<li class="blockList">
+<h4>serverNodes_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/ServerNode.html" title="class in io.hstream.internal">ServerNode</a>&gt; serverNodes_</pre>
+</li>
+<li class="blockList">
+<h4>serverNodesStatus_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/ServerNodeStatus.html" title="class in io.hstream.internal">ServerNodeStatus</a>&gt; serverNodesStatus_</pre>
+</li>
+<li class="blockListLast">
+<h4>serverVersion_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> serverVersion_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.EchoRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/EchoRequest.html" title="class in io.hstream.internal">io.hstream.internal.EchoRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>msg_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> msg_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.EchoResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/EchoResponse.html" title="class in io.hstream.internal">io.hstream.internal.EchoResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>msg_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> msg_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ExecuteViewQueryRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ExecuteViewQueryRequest.html" title="class in io.hstream.internal">io.hstream.internal.ExecuteViewQueryRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>sql_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> sql_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ExecuteViewQueryResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ExecuteViewQueryResponse.html" title="class in io.hstream.internal">io.hstream.internal.ExecuteViewQueryResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>results_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;com.google.protobuf.Struct&gt; results_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ExecuteViewQuerySql">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ExecuteViewQuerySql.html" title="class in io.hstream.internal">io.hstream.internal.ExecuteViewQuerySql</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>view_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> view_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ExecuteViewQueryWithNamespaceRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ExecuteViewQueryWithNamespaceRequest.html" title="class in io.hstream.internal">io.hstream.internal.ExecuteViewQueryWithNamespaceRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>namespace_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> namespace_</pre>
+</li>
+<li class="blockListLast">
+<h4>sql_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> sql_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetConnectorLogsRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetConnectorLogsRequest.html" title="class in io.hstream.internal">io.hstream.internal.GetConnectorLogsRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>begin_</h4>
+<pre>int begin_</pre>
+</li>
+<li class="blockList">
+<h4>count_</h4>
+<pre>int count_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>name_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> name_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetConnectorLogsResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetConnectorLogsResponse.html" title="class in io.hstream.internal">io.hstream.internal.GetConnectorLogsResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>logs_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> logs_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetConnectorRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetConnectorRequest.html" title="class in io.hstream.internal">io.hstream.internal.GetConnectorRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>name_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> name_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetConnectorSpecRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetConnectorSpecRequest.html" title="class in io.hstream.internal">io.hstream.internal.GetConnectorSpecRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>target_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> target_</pre>
+</li>
+<li class="blockListLast">
+<h4>type_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> type_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetConnectorSpecResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetConnectorSpecResponse.html" title="class in io.hstream.internal">io.hstream.internal.GetConnectorSpecResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>spec_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> spec_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetQueryRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetQueryRequest.html" title="class in io.hstream.internal">io.hstream.internal.GetQueryRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>id_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> id_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetStatsRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetStatsRequest.html" title="class in io.hstream.internal">io.hstream.internal.GetStatsRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>stats_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/StatType.html" title="class in io.hstream.internal">StatType</a>&gt; stats_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetStatsResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetStatsResponse.html" title="class in io.hstream.internal">io.hstream.internal.GetStatsResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>errors_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/StatError.html" title="class in io.hstream.internal">StatError</a>&gt; errors_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>statsValues_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/StatValue.html" title="class in io.hstream.internal">StatValue</a>&gt; statsValues_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetStreamRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetStreamRequest.html" title="class in io.hstream.internal">io.hstream.internal.GetStreamRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>name_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> name_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetStreamResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetStreamResponse.html" title="class in io.hstream.internal">io.hstream.internal.GetStreamResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>stream_</h4>
+<pre><a href="io/hstream/internal/Stream.html" title="class in io.hstream.internal">Stream</a> stream_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetSubscriptionRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetSubscriptionRequest.html" title="class in io.hstream.internal">io.hstream.internal.GetSubscriptionRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>id_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> id_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetSubscriptionResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetSubscriptionResponse.html" title="class in io.hstream.internal">io.hstream.internal.GetSubscriptionResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>offsets_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/SubscriptionOffset.html" title="class in io.hstream.internal">SubscriptionOffset</a>&gt; offsets_</pre>
+</li>
+<li class="blockListLast">
+<h4>subscription_</h4>
+<pre><a href="io/hstream/internal/Subscription.html" title="class in io.hstream.internal">Subscription</a> subscription_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetViewRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetViewRequest.html" title="class in io.hstream.internal">io.hstream.internal.GetViewRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>viewId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> viewId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.HStreamRecord">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/HStreamRecord.html" title="class in io.hstream.internal">io.hstream.internal.HStreamRecord</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>header_</h4>
+<pre><a href="io/hstream/internal/HStreamRecordHeader.html" title="class in io.hstream.internal">HStreamRecordHeader</a> header_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>payload_</h4>
+<pre>com.google.protobuf.ByteString payload_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.HStreamRecordHeader">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/HStreamRecordHeader.html" title="class in io.hstream.internal">io.hstream.internal.HStreamRecordHeader</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>attributes_</h4>
+<pre>com.google.protobuf.MapField&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt; attributes_</pre>
+</li>
+<li class="blockList">
+<h4>flag_</h4>
+<pre>int flag_</pre>
+</li>
+<li class="blockList">
+<h4>key_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> key_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListConnectorsRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListConnectorsRequest.html" title="class in io.hstream.internal">io.hstream.internal.ListConnectorsRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListConnectorsResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListConnectorsResponse.html" title="class in io.hstream.internal">io.hstream.internal.ListConnectorsResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>connectors_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/Connector.html" title="class in io.hstream.internal">Connector</a>&gt; connectors_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListConsumersRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListConsumersRequest.html" title="class in io.hstream.internal">io.hstream.internal.ListConsumersRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>subscriptionId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> subscriptionId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListConsumersResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListConsumersResponse.html" title="class in io.hstream.internal">io.hstream.internal.ListConsumersResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>consumers_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/Consumer.html" title="class in io.hstream.internal">Consumer</a>&gt; consumers_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListQueriesRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListQueriesRequest.html" title="class in io.hstream.internal">io.hstream.internal.ListQueriesRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListQueriesResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListQueriesResponse.html" title="class in io.hstream.internal">io.hstream.internal.ListQueriesResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>queries_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/Query.html" title="class in io.hstream.internal">Query</a>&gt; queries_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListShardReadersRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListShardReadersRequest.html" title="class in io.hstream.internal">io.hstream.internal.ListShardReadersRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListShardReadersResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListShardReadersResponse.html" title="class in io.hstream.internal">io.hstream.internal.ListShardReadersResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>readerId_</h4>
+<pre>com.google.protobuf.LazyStringArrayList readerId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListShardsRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListShardsRequest.html" title="class in io.hstream.internal">io.hstream.internal.ListShardsRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>streamName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> streamName_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListShardsResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListShardsResponse.html" title="class in io.hstream.internal">io.hstream.internal.ListShardsResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>shards_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/Shard.html" title="class in io.hstream.internal">Shard</a>&gt; shards_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListStreamsRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListStreamsRequest.html" title="class in io.hstream.internal">io.hstream.internal.ListStreamsRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListStreamsResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListStreamsResponse.html" title="class in io.hstream.internal">io.hstream.internal.ListStreamsResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>streams_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/Stream.html" title="class in io.hstream.internal">Stream</a>&gt; streams_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListStreamsWithPrefixRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListStreamsWithPrefixRequest.html" title="class in io.hstream.internal">io.hstream.internal.ListStreamsWithPrefixRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>prefix_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> prefix_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListSubscriptionsRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListSubscriptionsRequest.html" title="class in io.hstream.internal">io.hstream.internal.ListSubscriptionsRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListSubscriptionsResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListSubscriptionsResponse.html" title="class in io.hstream.internal">io.hstream.internal.ListSubscriptionsResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>subscription_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/Subscription.html" title="class in io.hstream.internal">Subscription</a>&gt; subscription_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListSubscriptionsWithPrefixRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListSubscriptionsWithPrefixRequest.html" title="class in io.hstream.internal">io.hstream.internal.ListSubscriptionsWithPrefixRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>prefix_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> prefix_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListViewsRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListViewsRequest.html" title="class in io.hstream.internal">io.hstream.internal.ListViewsRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ListViewsResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ListViewsResponse.html" title="class in io.hstream.internal">io.hstream.internal.ListViewsResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>views_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/View.html" title="class in io.hstream.internal">View</a>&gt; views_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.LookupResourceRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/LookupResourceRequest.html" title="class in io.hstream.internal">io.hstream.internal.LookupResourceRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>resId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> resId_</pre>
+</li>
+<li class="blockListLast">
+<h4>resType_</h4>
+<pre>int resType_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.LookupShardReaderRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/LookupShardReaderRequest.html" title="class in io.hstream.internal">io.hstream.internal.LookupShardReaderRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>readerId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> readerId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.LookupShardReaderResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/LookupShardReaderResponse.html" title="class in io.hstream.internal">io.hstream.internal.LookupShardReaderResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>readerId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> readerId_</pre>
+</li>
+<li class="blockListLast">
+<h4>serverNode_</h4>
+<pre><a href="io/hstream/internal/ServerNode.html" title="class in io.hstream.internal">ServerNode</a> serverNode_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.LookupShardRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/LookupShardRequest.html" title="class in io.hstream.internal">io.hstream.internal.LookupShardRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>shardId_</h4>
+<pre>long shardId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.LookupShardResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/LookupShardResponse.html" title="class in io.hstream.internal">io.hstream.internal.LookupShardResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>serverNode_</h4>
+<pre><a href="io/hstream/internal/ServerNode.html" title="class in io.hstream.internal">ServerNode</a> serverNode_</pre>
+</li>
+<li class="blockListLast">
+<h4>shardId_</h4>
+<pre>long shardId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.LookupSubscriptionRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/LookupSubscriptionRequest.html" title="class in io.hstream.internal">io.hstream.internal.LookupSubscriptionRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>subscriptionId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> subscriptionId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.LookupSubscriptionResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/LookupSubscriptionResponse.html" title="class in io.hstream.internal">io.hstream.internal.LookupSubscriptionResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>serverNode_</h4>
+<pre><a href="io/hstream/internal/ServerNode.html" title="class in io.hstream.internal">ServerNode</a> serverNode_</pre>
+</li>
+<li class="blockListLast">
+<h4>subscriptionId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> subscriptionId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ParseSqlRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ParseSqlRequest.html" title="class in io.hstream.internal">io.hstream.internal.ParseSqlRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>sql_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> sql_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ParseSqlResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ParseSqlResponse.html" title="class in io.hstream.internal">io.hstream.internal.ParseSqlResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>sql_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> sql_</pre>
+</li>
+<li class="blockListLast">
+<h4>sqlCase_</h4>
+<pre>int sqlCase_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.PauseConnectorRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/PauseConnectorRequest.html" title="class in io.hstream.internal">io.hstream.internal.PauseConnectorRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>name_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> name_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.PauseQueryRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/PauseQueryRequest.html" title="class in io.hstream.internal">io.hstream.internal.PauseQueryRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>id_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> id_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.PerStreamTimeSeriesStatsAllRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/PerStreamTimeSeriesStatsAllRequest.html" title="class in io.hstream.internal">io.hstream.internal.PerStreamTimeSeriesStatsAllRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>intervals_</h4>
+<pre><a href="io/hstream/internal/StatsIntervalVals.html" title="class in io.hstream.internal">StatsIntervalVals</a> intervals_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>method_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> method_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.PerStreamTimeSeriesStatsAllResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/PerStreamTimeSeriesStatsAllResponse.html" title="class in io.hstream.internal">io.hstream.internal.PerStreamTimeSeriesStatsAllResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>stats_</h4>
+<pre>com.google.protobuf.MapField&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="io/hstream/internal/StatsDoubleVals.html" title="class in io.hstream.internal">StatsDoubleVals</a>&gt; stats_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.PerStreamTimeSeriesStatsRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/PerStreamTimeSeriesStatsRequest.html" title="class in io.hstream.internal">io.hstream.internal.PerStreamTimeSeriesStatsRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>intervals_</h4>
+<pre><a href="io/hstream/internal/StatsIntervalVals.html" title="class in io.hstream.internal">StatsIntervalVals</a> intervals_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>method_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> method_</pre>
+</li>
+<li class="blockListLast">
+<h4>streamName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> streamName_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.PerStreamTimeSeriesStatsResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/PerStreamTimeSeriesStatsResponse.html" title="class in io.hstream.internal">io.hstream.internal.PerStreamTimeSeriesStatsResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>stats_</h4>
+<pre><a href="io/hstream/internal/StatsDoubleVals.html" title="class in io.hstream.internal">StatsDoubleVals</a> stats_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.Query">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/Query.html" title="class in io.hstream.internal">io.hstream.internal.Query</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>createdTime_</h4>
+<pre>long createdTime_</pre>
+</li>
+<li class="blockList">
+<h4>id_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> id_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>queryText_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> queryText_</pre>
+</li>
+<li class="blockList">
+<h4>resultName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> resultName_</pre>
+</li>
+<li class="blockList">
+<h4>sources_</h4>
+<pre>com.google.protobuf.LazyStringArrayList sources_</pre>
+</li>
+<li class="blockList">
+<h4>status_</h4>
+<pre>int status_</pre>
+</li>
+<li class="blockListLast">
+<h4>type_</h4>
+<pre>int type_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ReadShardRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ReadShardRequest.html" title="class in io.hstream.internal">io.hstream.internal.ReadShardRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>maxRecords_</h4>
+<pre>int maxRecords_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>readerId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> readerId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ReadShardResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ReadShardResponse.html" title="class in io.hstream.internal">io.hstream.internal.ReadShardResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>receivedRecords_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/ReceivedRecord.html" title="class in io.hstream.internal">ReceivedRecord</a>&gt; receivedRecords_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ReadShardStreamRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ReadShardStreamRequest.html" title="class in io.hstream.internal">io.hstream.internal.ReadShardStreamRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>readerId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> readerId_</pre>
+</li>
+<li class="blockList">
+<h4>shardId_</h4>
+<pre>long shardId_</pre>
+</li>
+<li class="blockListLast">
+<h4>shardOffset_</h4>
+<pre><a href="io/hstream/internal/ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a> shardOffset_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ReadShardStreamResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ReadShardStreamResponse.html" title="class in io.hstream.internal">io.hstream.internal.ReadShardStreamResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>receivedRecords_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/ReceivedRecord.html" title="class in io.hstream.internal">ReceivedRecord</a>&gt; receivedRecords_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ReceivedRecord">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ReceivedRecord.html" title="class in io.hstream.internal">io.hstream.internal.ReceivedRecord</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>record_</h4>
+<pre><a href="io/hstream/internal/BatchedRecord.html" title="class in io.hstream.internal">BatchedRecord</a> record_</pre>
+</li>
+<li class="blockListLast">
+<h4>recordIds_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/RecordId.html" title="class in io.hstream.internal">RecordId</a>&gt; recordIds_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.RecordId">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/RecordId.html" title="class in io.hstream.internal">io.hstream.internal.RecordId</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>batchId_</h4>
+<pre>long batchId_</pre>
+</li>
+<li class="blockList">
+<h4>batchIndex_</h4>
+<pre>int batchIndex_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>shardId_</h4>
+<pre>long shardId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ResumeConnectorRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ResumeConnectorRequest.html" title="class in io.hstream.internal">io.hstream.internal.ResumeConnectorRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>name_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> name_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ResumeQueryRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ResumeQueryRequest.html" title="class in io.hstream.internal">io.hstream.internal.ResumeQueryRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>id_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> id_</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ServerNode">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ServerNode.html" title="class in io.hstream.internal">io.hstream.internal.ServerNode</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>host_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> host_</pre>
+</li>
+<li class="blockList">
+<h4>id_</h4>
+<pre>int id_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>port_</h4>
+<pre>int port_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ServerNodeStatus">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ServerNodeStatus.html" title="class in io.hstream.internal">io.hstream.internal.ServerNodeStatus</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>node_</h4>
+<pre><a href="io/hstream/internal/ServerNode.html" title="class in io.hstream.internal">ServerNode</a> node_</pre>
+</li>
+<li class="blockListLast">
+<h4>state_</h4>
+<pre>int state_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.Shard">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/Shard.html" title="class in io.hstream.internal">io.hstream.internal.Shard</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>endHashRangeKey_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> endHashRangeKey_</pre>
+</li>
+<li class="blockList">
+<h4>epoch_</h4>
+<pre>long epoch_</pre>
+</li>
+<li class="blockList">
+<h4>isActive_</h4>
+<pre>boolean isActive_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>shardId_</h4>
+<pre>long shardId_</pre>
+</li>
+<li class="blockList">
+<h4>startHashRangeKey_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> startHashRangeKey_</pre>
+</li>
+<li class="blockListLast">
+<h4>streamName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> streamName_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.ShardOffset">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/ShardOffset.html" title="class in io.hstream.internal">io.hstream.internal.ShardOffset</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>offset_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> offset_</pre>
+</li>
+<li class="blockListLast">
+<h4>offsetCase_</h4>
+<pre>int offsetCase_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.StatError">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/StatError.html" title="class in io.hstream.internal">io.hstream.internal.StatError</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>message_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> message_</pre>
+</li>
+<li class="blockListLast">
+<h4>statType_</h4>
+<pre><a href="io/hstream/internal/StatType.html" title="class in io.hstream.internal">StatType</a> statType_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.StatsDoubleVals">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/StatsDoubleVals.html" title="class in io.hstream.internal">io.hstream.internal.StatsDoubleVals</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>vals_</h4>
+<pre>com.google.protobuf.Internal.DoubleList vals_</pre>
+</li>
+<li class="blockListLast">
+<h4>valsMemoizedSerializedSize</h4>
+<pre>int valsMemoizedSerializedSize</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.StatsIntervalVals">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/StatsIntervalVals.html" title="class in io.hstream.internal">io.hstream.internal.StatsIntervalVals</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>intervals_</h4>
+<pre>com.google.protobuf.Internal.IntList intervals_</pre>
+</li>
+<li class="blockList">
+<h4>intervalsMemoizedSerializedSize</h4>
+<pre>int intervalsMemoizedSerializedSize</pre>
+</li>
+<li class="blockListLast">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.StatType">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/StatType.html" title="class in io.hstream.internal">io.hstream.internal.StatType</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>stat_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> stat_</pre>
+</li>
+<li class="blockListLast">
+<h4>statCase_</h4>
+<pre>int statCase_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.StatValue">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/StatValue.html" title="class in io.hstream.internal">io.hstream.internal.StatValue</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>statType_</h4>
+<pre><a href="io/hstream/internal/StatType.html" title="class in io.hstream.internal">StatType</a> statType_</pre>
+</li>
+<li class="blockListLast">
+<h4>statValues_</h4>
+<pre>com.google.protobuf.MapField&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Long.html?is-external=true" title="class or interface in java.lang" class="externalLink">Long</a>&gt; statValues_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.Stream">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/Stream.html" title="class in io.hstream.internal">io.hstream.internal.Stream</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>backlogDuration_</h4>
+<pre>int backlogDuration_</pre>
+</li>
+<li class="blockList">
+<h4>creationTime_</h4>
+<pre>com.google.protobuf.Timestamp creationTime_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>replicationFactor_</h4>
+<pre>int replicationFactor_</pre>
+</li>
+<li class="blockList">
+<h4>shardCount_</h4>
+<pre>int shardCount_</pre>
+</li>
+<li class="blockListLast">
+<h4>streamName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> streamName_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.StreamingFetchRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/StreamingFetchRequest.html" title="class in io.hstream.internal">io.hstream.internal.StreamingFetchRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>ackIds_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="io/hstream/internal/RecordId.html" title="class in io.hstream.internal">RecordId</a>&gt; ackIds_</pre>
+</li>
+<li class="blockList">
+<h4>consumerName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> consumerName_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>subscriptionId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> subscriptionId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.StreamingFetchResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/StreamingFetchResponse.html" title="class in io.hstream.internal">io.hstream.internal.StreamingFetchResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>receivedRecords_</h4>
+<pre><a href="io/hstream/internal/ReceivedRecord.html" title="class in io.hstream.internal">ReceivedRecord</a> receivedRecords_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.Subscription">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/Subscription.html" title="class in io.hstream.internal">io.hstream.internal.Subscription</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>ackTimeoutSeconds_</h4>
+<pre>int ackTimeoutSeconds_</pre>
+</li>
+<li class="blockList">
+<h4>creationTime_</h4>
+<pre>com.google.protobuf.Timestamp creationTime_</pre>
+</li>
+<li class="blockList">
+<h4>maxUnackedRecords_</h4>
+<pre>int maxUnackedRecords_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>offset_</h4>
+<pre>int offset_</pre>
+</li>
+<li class="blockList">
+<h4>streamName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> streamName_</pre>
+</li>
+<li class="blockListLast">
+<h4>subscriptionId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> subscriptionId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.SubscriptionOffset">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/SubscriptionOffset.html" title="class in io.hstream.internal">io.hstream.internal.SubscriptionOffset</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>batchId_</h4>
+<pre>long batchId_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>shardId_</h4>
+<pre>long shardId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.TerminateQueryRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/TerminateQueryRequest.html" title="class in io.hstream.internal">io.hstream.internal.TerminateQueryRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>queryId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> queryId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.TimestampOffset">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/TimestampOffset.html" title="class in io.hstream.internal">io.hstream.internal.TimestampOffset</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>strictAccuracy_</h4>
+<pre>boolean strictAccuracy_</pre>
+</li>
+<li class="blockListLast">
+<h4>timestampInMs_</h4>
+<pre>long timestampInMs_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.View">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/View.html" title="class in io.hstream.internal">io.hstream.internal.View</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>createdTime_</h4>
+<pre>long createdTime_</pre>
+</li>
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>queryName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> queryName_</pre>
+</li>
+<li class="blockList">
+<h4>schema_</h4>
+<pre>com.google.protobuf.LazyStringArrayList schema_</pre>
+</li>
+<li class="blockList">
+<h4>sql_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> sql_</pre>
+</li>
+<li class="blockList">
+<h4>status_</h4>
+<pre>int status_</pre>
+</li>
+<li class="blockListLast">
+<h4>viewId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> viewId_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
 </ul>
 </div>
 </main>
@@ -153,7 +3129,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!--   -->
 </a>
 <ul class="navList" title="Navigation">
-<li><a href="io/hstream/package-summary.html">Package</a></li>
+<li><a href="index.html">Overview</a></li>
+<li>Package</li>
 <li>Class</li>
 <li><a href="overview-tree.html">Tree</a></li>
 <li><a href="deprecated-list.html">Deprecated</a></li>
