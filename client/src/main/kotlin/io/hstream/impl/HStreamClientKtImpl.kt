@@ -113,8 +113,8 @@ class HStreamClientKtImpl(
         return HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(url))
     }
 
-    fun getCoroutineStubWithTimeout(url: String, timeoutSeconds: Long = requestTimeoutMs): HStreamApiGrpcKt.HStreamApiCoroutineStub {
-        return HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(url)).withDeadlineAfter(timeoutSeconds, TimeUnit.SECONDS)
+    fun getCoroutineStubWithTimeoutMs(url: String, timeoutMs: Long = requestTimeoutMs): HStreamApiGrpcKt.HStreamApiCoroutineStub {
+        return HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(url)).withDeadlineAfter(timeoutMs, TimeUnit.MILLISECONDS)
     }
 
     init {
