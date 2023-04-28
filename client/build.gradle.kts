@@ -1,13 +1,9 @@
-import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.id
-import com.google.protobuf.gradle.plugins
-import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
 
 plugins {
     `java-library`
     `maven-publish`
-    id("com.google.protobuf") version "0.8.18"
+    id("com.google.protobuf") version "0.9.3"
     id("idea")
     id("signing")
 
@@ -32,7 +28,9 @@ java {
     }
 }
 
-val grpcVersion = "1.50.2"
+val grpcVersion = "1.54.1"
+val grpcKtVersion = "1.3.0"
+val protobufVersion = "3.22.3"
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
@@ -47,7 +45,7 @@ dependencies {
     testImplementation("io.grpc:grpc-testing:$grpcVersion")
     compileOnly("org.apache.tomcat:annotations-api:6.0.53") // necessary for java 9+
 
-    implementation("com.google.protobuf:protobuf-java-util:3.21.12")
+    implementation("com.google.protobuf:protobuf-java-util:$protobufVersion")
 
     compileOnly("org.slf4j:slf4j-api:2.0.6")
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.19.0")
@@ -56,8 +54,8 @@ dependencies {
 
     api("com.google.guava:guava:31.1-jre")
 
-    implementation("io.grpc:grpc-kotlin-stub:1.3.0")
-    implementation("com.google.protobuf:protobuf-kotlin:3.21.12")
+    implementation("io.grpc:grpc-kotlin-stub:$grpcKtVersion")
+    implementation("com.google.protobuf:protobuf-kotlin:$protobufVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
@@ -83,14 +81,14 @@ sourceSets {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.19.2"
+        artifact = "com.google.protobuf:protoc:$protobufVersion"
     }
     plugins {
         id("grpc") {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.45.0"
+            artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
         }
         id("grpckt") {
-            artifact = "io.grpc:protoc-gen-grpc-kotlin:1.2.1:jdk7@jar"
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpcKtVersion:jdk8@jar"
         }
     }
     generateProtoTasks {
@@ -196,10 +194,12 @@ tasks.withType<Jar> {
 
 spotless {
     java {
+        target("client/src/*/java/**/*.java")
         googleJavaFormat()
     }
 
     kotlin {
+        target("client/src/*/kotlin/**/*.kt")
         ktlint()
     }
 
