@@ -57,7 +57,7 @@ class ResponderImplTest {
         countDownLatch.await()
         consumer.stopAsync().awaitTerminated()
 
-        val ackReceiver = xs.second.getAckChannel(consumerName)
+        val ackReceiver = xs.second.first.getAckChannel(consumerName)
         val initAckSize = ackReceiver.tryReceive().getOrThrow().size
 
         var ret: List<RecordId>?
@@ -81,7 +81,7 @@ class ResponderImplTest {
         val xs = buildBlackBoxSourceClient_()
         val consumerName = "some-consumer"
         val client = xs.first
-        val controller = xs.second
+        val controller = xs.second.first
         controller.setSendBatchLen(1)
         val sendInterval: Long = 400
         controller.setSendInterval(sendInterval)
@@ -136,7 +136,7 @@ class ResponderImplTest {
         val xs = buildBlackBoxSourceClient_()
         val consumerName = "some-consumer"
         val client = xs.first
-        val controller = xs.second
+        val controller = xs.second.first
         val intervalMs: Long = 500
         val consumerBuilder = client
             .newConsumer()
@@ -170,5 +170,61 @@ class ResponderImplTest {
 
         assertEquals(receivedHRecords.size, receivedRawRecords.size)
         assert(receivedHRecords.size != 0)
+    }
+
+    @Test
+    fun `when ackBufferSize is -1, ACKs should be sent immediately`() {
+        val xs = buildBlackBoxSourceClient_()
+        val consumerName = "some-consumer"
+        val client = xs.first
+        val controller = xs.second.first
+        val intervalMs: Long = 500
+        val consumerBuilder = client
+            .newConsumer()
+            .name(consumerName)
+            .ackAgeLimit(intervalMs)
+            .subscription("anything")
+
+        val receivedHRecords = CopyOnWriteArrayList<ReceivedHRecord>()
+        val receivedRawRecords = CopyOnWriteArrayList<ReceivedRawRecord>()
+
+        val count = 1000
+        val countDownLatch = CountDownLatch(count)
+
+        controller.setAckChannel(consumerName)
+        val ackChan = controller.getAckChannel(consumerName)
+
+        val receivedRecords = CopyOnWriteArrayList<Unit>()
+
+        consumerBuilder.hRecordReceiver { receivedHRecord, responder ->
+            responder.ack()
+            receivedHRecords.add(receivedHRecord)
+            countDownLatch.countDown()
+
+            runBlocking {
+                ackChan.receive()
+                receivedRecords.add(Unit)
+            }
+        }
+        consumerBuilder.rawRecordReceiver { receivedRawRecord, responder ->
+            responder.ack()
+            receivedRawRecords.add(receivedRawRecord)
+            countDownLatch.countDown()
+
+            runBlocking {
+                ackChan.receive()
+                receivedRecords.add(Unit)
+            }
+        }
+
+        val consumer = consumerBuilder
+            .ackBufferSize(-1)
+            .build()
+
+        consumer.startAsync().awaitRunning()
+        countDownLatch.await()
+        consumer.stopAsync().awaitTerminated()
+
+        assert(count <= receivedRecords.size)
     }
 }

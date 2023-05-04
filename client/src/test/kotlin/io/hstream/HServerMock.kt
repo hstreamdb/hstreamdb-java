@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory
 import java.net.URI
 import java.util.concurrent.CompletionException
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
 import kotlin.random.Random
 
 open class HServerMock(
@@ -270,7 +271,8 @@ open class HServerMock(
                 .addShards(
                     Shard.newBuilder()
                         .setStreamName(streamName)
-                        // TODO: add more fields
+                        .setStartHashRangeKey("000000000000000000000000000000000000000")
+                        .setEndHashRangeKey("999999999999999999999999999999999999999")
                         .build()
                 )
                 .build()
@@ -328,7 +330,17 @@ fun trimServerUrlToServerName(serverUrl: String): Pair<UrlSchema, String> {
 }
 
 class MockedChannelProvider(private val grpcCleanupRule: GrpcCleanupRule) : ChannelProviderImpl() {
+    private val delayTimeMs: AtomicLong = AtomicLong(0)
+    fun setDelayTimeMs(newValue: Long) {
+        this.delayTimeMs.set(newValue)
+    }
+
     override fun get(serverUrl: String): ManagedChannel {
+        val delayTime = delayTimeMs.get()
+        if (delayTime != 0L) {
+            Thread.sleep(delayTime)
+        }
+
         try {
             val serverUri = URI(serverUrl)
             if (serverUri.host == null && serverUri.port == -1) {
@@ -348,7 +360,7 @@ class HServerMockTests {
         val grpcCleanupRule = GrpcCleanupRule()
 
         val hostname = "127.0.0." + randPort()
-        val port = 6570
+        val port = 6000 + randPort()
         val serverUrl = "hstream://$hostname:$port"
         val hMetaMockCluster = HMetaMock()
         startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster, serverUrl), hMetaMockCluster, serverUrl)
@@ -362,7 +374,7 @@ class HServerMockTests {
         val grpcCleanupRule = GrpcCleanupRule()
 
         val hostname = "127.0.0." + randPort()
-        val port = 6570
+        val port = 6000 + randPort()
         val serverUrl = "hstream://$hostname:$port"
         val hMetaMockCluster = HMetaMock()
         startMockedHServer(grpcCleanupRule, mockServiceImpl(hMetaMockCluster, serverUrl), hMetaMockCluster, serverUrl)
@@ -442,7 +454,7 @@ private fun randPort(): Int {
     return Random.nextInt(256)
 }
 
-fun buildMockedClient_(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): Pair<HStreamClient, HStreamApiGrpc.HStreamApiImplBase> {
+fun buildMockedClient_(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): Pair<HStreamClient, Pair< HStreamApiGrpc.HStreamApiImplBase, MockedChannelProvider>> {
     val grpcCleanupRule = GrpcCleanupRule()
     // TODO: AutoCloseable?
 
@@ -458,7 +470,7 @@ fun buildMockedClient_(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): P
     clientBuilder.serviceUrl(serverUrl)
     clientBuilder.channelProvider(channelProvider)
 
-    return Pair(clientBuilder.build() as HStreamClientKtImpl, serverImpl)
+    return Pair(clientBuilder.build() as HStreamClientKtImpl, Pair(serverImpl, channelProvider))
 }
 
 fun buildMockedClient(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): HStreamClient {

@@ -182,19 +182,22 @@ class BlackBoxSourceHServerMockController(
     }
 }
 
-fun buildBlackBoxSourceClient_(): Pair<HStreamClient, BlackBoxSourceHServerMockController> {
+fun buildBlackBoxSourceClient_(): Pair<HStreamClient, Pair<BlackBoxSourceHServerMockController, MockedChannelProvider >> {
     val xs = buildMockedClient_(
         BlackBoxSourceHServerMock::class.java as Class<HStreamApiGrpc.HStreamApiImplBase>
     )
-    val serverImpl: BlackBoxSourceHServerMock = (xs.second) as BlackBoxSourceHServerMock
+    val serverImpl: BlackBoxSourceHServerMock = (xs.second.first) as BlackBoxSourceHServerMock
     val channel = serverImpl.getConsumerNameChannelMap()
     return Pair(
         xs.first,
-        BlackBoxSourceHServerMockController(
-            channel,
-            serverImpl.getShouldCloseAllSubscriptions(),
-            serverImpl.getSendInterval(),
-            serverImpl.getSendBatchLen()
+        Pair(
+            BlackBoxSourceHServerMockController(
+                channel,
+                serverImpl.getShouldCloseAllSubscriptions(),
+                serverImpl.getSendInterval(),
+                serverImpl.getSendBatchLen()
+            ),
+            xs.second.second
         )
     )
 }
@@ -250,9 +253,9 @@ class BlackBoxSourceHServerMockTests {
         countDownLatch.await()
         consumer.stopAsync().awaitTerminated()
 
-        val channel = xs.second.getAckChannel(consumerName)
+        val channel = xs.second.first.getAckChannel(consumerName)
         val channelAcc = mutableListOf<RecordId>()
-        xs.second.closeAllSubscriptions()
+        xs.second.first.closeAllSubscriptions()
         assert(!channel.isEmpty)
         while (!channel.isEmpty
         ) {
