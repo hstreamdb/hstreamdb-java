@@ -117,6 +117,7 @@ class HStreamClientKtImpl(
         return HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(url)).withDeadlineAfter(timeoutMs, TimeUnit.MILLISECONDS)
     }
 
+
     init {
         if (channelProvider == null) {
             this.channelProvider = ChannelProviderImpl(credentials)

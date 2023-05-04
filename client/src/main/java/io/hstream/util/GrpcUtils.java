@@ -98,6 +98,21 @@ public class GrpcUtils {
         .build();
   }
 
+  public static CompressionType compressionTypeFromGrpc(
+      io.hstream.internal.CompressionType compressionType) {
+    switch (compressionType) {
+      case None:
+        return CompressionType.NONE;
+      case Gzip:
+        return CompressionType.GZIP;
+      case Zstd:
+        return CompressionType.ZSTD;
+      case UNRECOGNIZED:
+        throw new IllegalArgumentException();
+    }
+    throw new IllegalArgumentException();
+  }
+
   public static io.hstream.internal.ShardOffset streamShardOffsetToGrpc(
       StreamShardOffset shardOffset) {
     if (shardOffset.isSpecialOffset()) {
