@@ -59,7 +59,7 @@ implementation 'io.hstream:hstreamdb-java:0.15.0'
 
 Here we will show you some simple examples to use hstreamdb-client,
 you can find the complete examples in [hstreamdb-java-examples](https://github.com/hstreamdb/hstreamdb-java-examples),
-for more detail on introduction and usage, please check the [guides](https://hstream.io/docs/en/latest/guides/write.html).
+for more detail on introduction and usage, please check the [guides](https://docs.hstream.io/write/write.html).
 
 ### Connect to HStreamDB
 
