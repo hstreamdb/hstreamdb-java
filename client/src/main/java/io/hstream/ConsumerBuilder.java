@@ -1,5 +1,8 @@
 package io.hstream;
 
+import java.util.List;
+import java.util.function.BiConsumer;
+
 /** A builder for {@link Consumer}s. */
 public interface ConsumerBuilder {
 
@@ -36,6 +39,8 @@ public interface ConsumerBuilder {
    * @return the ConsumerBuilder instance
    */
   ConsumerBuilder hRecordReceiver(HRecordReceiver hRecordReceiver);
+
+  ConsumerBuilder batchReceiver(BatchReceiver batchReceiver);
 
   /**
    * When {@link Responder}.ack() is called, the consumer will not send it to servers immediately,

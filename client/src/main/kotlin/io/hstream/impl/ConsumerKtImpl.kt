@@ -5,6 +5,7 @@ import com.google.protobuf.InvalidProtocolBufferException
 import io.grpc.Status
 import io.grpc.StatusException
 import io.grpc.StatusRuntimeException
+import io.hstream.BatchReceiver
 import io.hstream.Consumer
 import io.hstream.HRecordReceiver
 import io.hstream.HStreamDBClientException
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.streams.toList
 
 class ConsumerKtImpl(
     private val client: HStreamClientKtImpl,
@@ -35,6 +37,7 @@ class ConsumerKtImpl(
     private val subscriptionId: String,
     private val rawRecordReceiver: RawRecordReceiver?,
     private val hRecordReceiver: HRecordReceiver?,
+    private val batchReceiver: BatchReceiver?,
     val ackBufferSize: Int,
     ackAgeLimit: Long
 ) : AbstractService(), Consumer {
@@ -137,6 +140,22 @@ class ConsumerKtImpl(
         val receivedHStreamRecords = RecordUtils.decompress(value.receivedRecords)
         val createdTimestamp = value.receivedRecords.record.publishTime
         val createdTime = Instant.ofEpochSecond(createdTimestamp.seconds, createdTimestamp.nanos.toLong())
+        if (batchReceiver != null) {
+            val records = receivedHStreamRecords.stream().map { RecordUtils.getReceivedRecord(it, createdTime) }.toList()
+            val recordIds = receivedHStreamRecords.stream().map { it.recordId }.toList()
+            val batchAckResponder = BatchAckResponderKtImpl(ackSender, recordIds)
+            executorService.submit {
+                if (!isRunning) {
+                    return@submit
+                }
+                try {
+                    batchReceiver.processRecords(records, batchAckResponder)
+                } catch (e: Exception) {
+                    logger.error("process batch failed, recordIds:{}", recordIds)
+                }
+            }
+            return
+        }
         for (receivedHStreamRecord in receivedHStreamRecords) {
             val responder = ResponderImpl(ackSender, receivedHStreamRecord.recordId)
 
