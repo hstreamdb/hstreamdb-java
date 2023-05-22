@@ -20,6 +20,7 @@ import io.hstream.internal.RecordId;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -178,5 +179,19 @@ public class RecordUtils {
         }
     }
     throw new HStreamDBClientException("compress records error");
+  }
+
+  // decompress, map records
+  public static io.hstream.ReceivedRecord getReceivedRecord(ReceivedHStreamRecord receivedHStreamRecord, Instant publishTime) {
+      var hStreamRecord = receivedHStreamRecord.getRecord();
+      var header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord);
+      var recordBuilder = Record.newBuilder().partitionKey(header.getPartitionKey());
+      if (RecordUtils.isRawRecord(hStreamRecord)) {
+        recordBuilder.rawRecord(RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord));
+      } else {
+        recordBuilder.hRecord(RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord));
+      }
+      var recordId = GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.getRecordId());
+      return new io.hstream.ReceivedRecord(recordId, recordBuilder.build(), publishTime);
   }
 }

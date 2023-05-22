@@ -2,10 +2,8 @@ package io.hstream.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import io.hstream.Consumer;
-import io.hstream.ConsumerBuilder;
-import io.hstream.HRecordReceiver;
-import io.hstream.RawRecordReceiver;
+import io.hstream.*;
+
 import java.util.UUID;
 
 public class ConsumerBuilderImpl implements ConsumerBuilder {
@@ -15,6 +13,7 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
   private String subscription;
   private RawRecordReceiver rawRecordReceiver;
   private HRecordReceiver hRecordReceiver;
+  private BatchReceiver batchReceiver;
   private int ackBufferSize = 100;
   private long ackAgeLimit = 100;
 
@@ -47,6 +46,12 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
   }
 
   @Override
+  public ConsumerBuilder batchReceiver(BatchReceiver batchReceiver) {
+    this.batchReceiver = batchReceiver;
+    return this;
+  }
+
+  @Override
   public ConsumerBuilder ackBufferSize(int ackBufferSize) {
     this.ackBufferSize = ackBufferSize;
     return this;
@@ -62,8 +67,8 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
   public Consumer build() {
     checkArgument(subscription != null, "ConsumerBuilder: `subscription` should not be null");
     checkArgument(
-        rawRecordReceiver != null || hRecordReceiver != null,
-        "ConsumerBuilder: `rawRecordReceiver` and `hRecordReceiver` should not be both null");
+        rawRecordReceiver != null || hRecordReceiver != null || batchReceiver != null,
+        "ConsumerBuilder: record(s) receiver not found");
     if (name == null) {
       name = UUID.randomUUID().toString();
     }
@@ -72,6 +77,6 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
       ackBufferSize = 1;
     }
     return new ConsumerKtImpl(
-        client, name, subscription, rawRecordReceiver, hRecordReceiver, ackBufferSize, ackAgeLimit);
+        client, name, subscription, rawRecordReceiver, hRecordReceiver, batchReceiver, ackBufferSize, ackAgeLimit);
   }
 }
