@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -162,25 +162,30 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#batchReceiver(io.hstream.BatchReceiver)">batchReceiver</a></span>&#8203;(<a href="BatchReceiver.html" title="interface in io.hstream">BatchReceiver</a>&nbsp;batchReceiver)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="Consumer.html" title="interface in io.hstream">Consumer</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#build()">build</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hRecordReceiver(io.hstream.HRecordReceiver)">hRecordReceiver</a></span>&#8203;(<a href="HRecordReceiver.html" title="interface in io.hstream">HRecordReceiver</a>&nbsp;hRecordReceiver)</code></th>
 <td class="colLast">
 <div class="block">Same as rawRecordReceiver except receiving HRecord instead of raw record.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#name(java.lang.String)">name</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name)</code></th>
 <td class="colLast">
 <div class="block">Optional, if not provided, the ConsumerBuilder will generate a unique name.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rawRecordReceiver(io.hstream.RawRecordReceiver)">rawRecordReceiver</a></span>&#8203;(<a href="RawRecordReceiver.html" title="interface in io.hstream">RawRecordReceiver</a>&nbsp;rawRecordReceiver)</code></th>
 <td class="colLast">
@@ -189,7 +194,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  consume the next record.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#subscription(java.lang.String)">subscription</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;subscription)</code></th>
 <td class="colLast">
@@ -277,6 +282,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the ConsumerBuilder instance</dd>
 </dl>
+</li>
+</ul>
+<a id="batchReceiver(io.hstream.BatchReceiver)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>batchReceiver</h4>
+<pre class="methodSignature"><a href="ConsumerBuilder.html" title="interface in io.hstream">ConsumerBuilder</a>&nbsp;batchReceiver&#8203;(<a href="BatchReceiver.html" title="interface in io.hstream">BatchReceiver</a>&nbsp;batchReceiver)</pre>
 </li>
 </ul>
 <a id="ackBufferSize(int)">
