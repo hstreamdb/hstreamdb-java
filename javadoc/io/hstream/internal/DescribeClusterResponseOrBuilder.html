@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -157,7 +157,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getClusterUpTime()">getClusterUpTime</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>uint64 clusterUpTime = 5;</code></div>
+<div class="block"><code>uint64 clusterUpTime = 4;</code></div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -178,84 +178,70 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <td class="colFirst"><code><a href="ServerNode.html" title="class in io.hstream.internal">ServerNode</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerNodes(int)">getServerNodes</a></span>&#8203;(int&nbsp;index)</code></th>
 <td class="colLast">
-<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 3;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 2;</code></div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerNodesCount()">getServerNodesCount</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 3;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 2;</code></div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="ServerNode.html" title="class in io.hstream.internal">ServerNode</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerNodesList()">getServerNodesList</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 3;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 2;</code></div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="ServerNodeOrBuilder.html" title="interface in io.hstream.internal">ServerNodeOrBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerNodesOrBuilder(int)">getServerNodesOrBuilder</a></span>&#8203;(int&nbsp;index)</code></th>
 <td class="colLast">
-<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 3;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 2;</code></div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;? extends <a href="ServerNodeOrBuilder.html" title="interface in io.hstream.internal">ServerNodeOrBuilder</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerNodesOrBuilderList()">getServerNodesOrBuilderList</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 3;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 2;</code></div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="ServerNodeStatus.html" title="class in io.hstream.internal">ServerNodeStatus</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerNodesStatus(int)">getServerNodesStatus</a></span>&#8203;(int&nbsp;index)</code></th>
 <td class="colLast">
-<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 4;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 3;</code></div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerNodesStatusCount()">getServerNodesStatusCount</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 4;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 3;</code></div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="ServerNodeStatus.html" title="class in io.hstream.internal">ServerNodeStatus</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerNodesStatusList()">getServerNodesStatusList</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 4;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 3;</code></div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="ServerNodeStatusOrBuilder.html" title="interface in io.hstream.internal">ServerNodeStatusOrBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerNodesStatusOrBuilder(int)">getServerNodesStatusOrBuilder</a></span>&#8203;(int&nbsp;index)</code></th>
 <td class="colLast">
-<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 4;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 3;</code></div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;? extends <a href="ServerNodeStatusOrBuilder.html" title="interface in io.hstream.internal">ServerNodeStatusOrBuilder</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerNodesStatusOrBuilderList()">getServerNodesStatusOrBuilderList</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 4;</code></div>
-</td>
-</tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerVersion()">getServerVersion</a></span>()</code></th>
-<td class="colLast">
-<div class="block"><code>string serverVersion = 2;</code></div>
-</td>
-</tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>com.google.protobuf.ByteString</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerVersionBytes()">getServerVersionBytes</a></span>()</code></th>
-<td class="colLast">
-<div class="block"><code>string serverVersion = 2;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 3;</code></div>
 </td>
 </tr>
 </table>
@@ -317,34 +303,6 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 </dl>
 </li>
 </ul>
-<a id="getServerVersion()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getServerVersion</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getServerVersion()</pre>
-<div class="block"><code>string serverVersion = 2;</code></div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The serverVersion.</dd>
-</dl>
-</li>
-</ul>
-<a id="getServerVersionBytes()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getServerVersionBytes</h4>
-<pre class="methodSignature">com.google.protobuf.ByteString&nbsp;getServerVersionBytes()</pre>
-<div class="block"><code>string serverVersion = 2;</code></div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The bytes for serverVersion.</dd>
-</dl>
-</li>
-</ul>
 <a id="getServerNodesList()">
 <!--   -->
 </a>
@@ -352,7 +310,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getServerNodesList</h4>
 <pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="ServerNode.html" title="class in io.hstream.internal">ServerNode</a>&gt;&nbsp;getServerNodesList()</pre>
-<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 3;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 2;</code></div>
 </li>
 </ul>
 <a id="getServerNodes(int)">
@@ -362,7 +320,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getServerNodes</h4>
 <pre class="methodSignature"><a href="ServerNode.html" title="class in io.hstream.internal">ServerNode</a>&nbsp;getServerNodes&#8203;(int&nbsp;index)</pre>
-<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 3;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 2;</code></div>
 </li>
 </ul>
 <a id="getServerNodesCount()">
@@ -372,7 +330,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getServerNodesCount</h4>
 <pre class="methodSignature">int&nbsp;getServerNodesCount()</pre>
-<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 3;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 2;</code></div>
 </li>
 </ul>
 <a id="getServerNodesOrBuilderList()">
@@ -382,7 +340,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getServerNodesOrBuilderList</h4>
 <pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;? extends <a href="ServerNodeOrBuilder.html" title="interface in io.hstream.internal">ServerNodeOrBuilder</a>&gt;&nbsp;getServerNodesOrBuilderList()</pre>
-<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 3;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 2;</code></div>
 </li>
 </ul>
 <a id="getServerNodesOrBuilder(int)">
@@ -392,7 +350,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getServerNodesOrBuilder</h4>
 <pre class="methodSignature"><a href="ServerNodeOrBuilder.html" title="interface in io.hstream.internal">ServerNodeOrBuilder</a>&nbsp;getServerNodesOrBuilder&#8203;(int&nbsp;index)</pre>
-<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 3;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNode serverNodes = 2;</code></div>
 </li>
 </ul>
 <a id="getServerNodesStatusList()">
@@ -402,7 +360,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getServerNodesStatusList</h4>
 <pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="ServerNodeStatus.html" title="class in io.hstream.internal">ServerNodeStatus</a>&gt;&nbsp;getServerNodesStatusList()</pre>
-<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 4;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 3;</code></div>
 </li>
 </ul>
 <a id="getServerNodesStatus(int)">
@@ -412,7 +370,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getServerNodesStatus</h4>
 <pre class="methodSignature"><a href="ServerNodeStatus.html" title="class in io.hstream.internal">ServerNodeStatus</a>&nbsp;getServerNodesStatus&#8203;(int&nbsp;index)</pre>
-<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 4;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 3;</code></div>
 </li>
 </ul>
 <a id="getServerNodesStatusCount()">
@@ -422,7 +380,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getServerNodesStatusCount</h4>
 <pre class="methodSignature">int&nbsp;getServerNodesStatusCount()</pre>
-<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 4;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 3;</code></div>
 </li>
 </ul>
 <a id="getServerNodesStatusOrBuilderList()">
@@ -432,7 +390,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getServerNodesStatusOrBuilderList</h4>
 <pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;? extends <a href="ServerNodeStatusOrBuilder.html" title="interface in io.hstream.internal">ServerNodeStatusOrBuilder</a>&gt;&nbsp;getServerNodesStatusOrBuilderList()</pre>
-<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 4;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 3;</code></div>
 </li>
 </ul>
 <a id="getServerNodesStatusOrBuilder(int)">
@@ -442,7 +400,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getServerNodesStatusOrBuilder</h4>
 <pre class="methodSignature"><a href="ServerNodeStatusOrBuilder.html" title="interface in io.hstream.internal">ServerNodeStatusOrBuilder</a>&nbsp;getServerNodesStatusOrBuilder&#8203;(int&nbsp;index)</pre>
-<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 4;</code></div>
+<div class="block"><code>repeated .hstream.server.ServerNodeStatus serverNodesStatus = 3;</code></div>
 </li>
 </ul>
 <a id="getClusterUpTime()">
@@ -452,7 +410,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getClusterUpTime</h4>
 <pre class="methodSignature">long&nbsp;getClusterUpTime()</pre>
-<div class="block"><code>uint64 clusterUpTime = 5;</code></div>
+<div class="block"><code>uint64 clusterUpTime = 4;</code></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The clusterUpTime.</dd>
