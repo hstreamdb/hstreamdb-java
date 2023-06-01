@@ -9,6 +9,7 @@ public interface StreamShardReaderBuilder {
   StreamShardReaderBuilder shardOffset(StreamShardOffset shardOffset);
 
   StreamShardReaderBuilder receiver(StreamShardReaderReceiver streamShardReaderReceiver);
+  StreamShardReaderBuilder batchReceiver(StreamShardReaderBatchReceiver streamShardReaderReceiver);
 
   StreamShardReader build();
 }

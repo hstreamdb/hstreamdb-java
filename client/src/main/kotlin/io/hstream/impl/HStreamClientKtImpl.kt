@@ -310,7 +310,7 @@ class HStreamClientKtImpl(
 
     override fun terminateQuery(name: String?) {
         checkNotNull(name)
-        unaryCallBlocked {
+        unaryCallBlockedWithLookup(ResourceType.ResQuery, name) {
             it.terminateQuery(TerminateQueryRequest.newBuilder().setQueryId(name).build())
         }
     }
@@ -325,14 +325,14 @@ class HStreamClientKtImpl(
     }
 
     override fun getView(name: String?): View {
-        return unaryCallBlocked {
+        return unaryCallBlockedWithLookup(ResourceType.ResView, name) {
             val result = it.getView(GetViewRequest.newBuilder().setViewId(name).build())
             GrpcUtils.viewFromInternal(result)
         }
     }
 
     override fun deleteView(name: String?) {
-        unaryCallBlocked {
+        return unaryCallBlockedWithLookup(ResourceType.ResView, name) {
             it.deleteView(DeleteViewRequest.newBuilder().setViewId(name).build())
         }
     }

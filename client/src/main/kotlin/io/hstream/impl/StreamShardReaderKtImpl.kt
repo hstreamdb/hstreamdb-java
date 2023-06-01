@@ -7,6 +7,7 @@ import io.hstream.ReceivedRecord
 import io.hstream.Record
 import io.hstream.StreamShardOffset
 import io.hstream.StreamShardReader
+import io.hstream.StreamShardReaderBatchReceiver
 import io.hstream.StreamShardReaderReceiver
 import io.hstream.internal.LookupShardReaderRequest
 import io.hstream.internal.ReadShardStreamRequest
@@ -20,13 +21,15 @@ import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.util.UUID
 import java.util.concurrent.Executors
+import kotlin.streams.toList
 
 class StreamShardReaderKtImpl(
     private val client: HStreamClientKtImpl,
     private val streamName: String,
     private val shardId: Long,
     private val shardOffset: StreamShardOffset,
-    private val receiver: StreamShardReaderReceiver,
+    private val receiver: StreamShardReaderReceiver?,
+    private val batchReceiver: StreamShardReaderBatchReceiver?,
 ) : AbstractService(), StreamShardReader {
     private val readerScope = CoroutineScope(Dispatchers.IO)
     private val readerName: String = UUID.randomUUID().toString()
@@ -76,17 +79,32 @@ class StreamShardReaderKtImpl(
             val receivedHStreamRecords = RecordUtils.decompress(receivedRecord)
             val createdTimestamp = receivedRecord.record.publishTime
             val createdTime = Instant.ofEpochSecond(createdTimestamp.seconds, createdTimestamp.nanos.toLong())
-            for (receivedHStreamRecord in receivedHStreamRecords) {
 
+            if (batchReceiver != null) {
                 executorService.submit {
                     if (!isRunning) {
                         return@submit
                     }
 
                     try {
-                        receiver.process(toReceivedRecord(receivedHStreamRecord, createdTime))
+                        val records = receivedHStreamRecords.stream().map { toReceivedRecord(it, createdTime) }.toList()
+                        batchReceiver.process(records)
                     } catch (e: Exception) {
                         notifyFailed(e)
+                    }
+                }
+            } else {
+                for (receivedHStreamRecord in receivedHStreamRecords) {
+                    executorService.submit {
+                        if (!isRunning) {
+                            return@submit
+                        }
+
+                        try {
+                            receiver!!.process(toReceivedRecord(receivedHStreamRecord, createdTime))
+                        } catch (e: Exception) {
+                            notifyFailed(e)
+                        }
                     }
                 }
             }
