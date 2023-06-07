@@ -213,6 +213,7 @@ spotless {
 tasks {
     shadowJar {
         archiveClassifier.set("")
+        mergeServiceFiles()
     }
 }
 
