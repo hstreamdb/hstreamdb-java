@@ -11,7 +11,6 @@ plugins {
     id("com.diffplug.spotless") version "6.2.0"
 
     id("me.champeau.jmh") version "0.6.7"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "io.hstream"
@@ -105,8 +104,8 @@ protobuf {
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            project.shadow.component(this)
             artifactId = "hstreamdb-java"
+            from(components["java"])
             versionMapping {
                 usage("java-api") {
                     fromResolutionOf("runtimeClasspath")
@@ -207,13 +206,6 @@ spotless {
     kotlinGradle {
         target("*.gradle.kts")
         ktlint()
-    }
-}
-
-tasks {
-    shadowJar {
-        archiveClassifier.set("")
-        mergeServiceFiles()
     }
 }
 
