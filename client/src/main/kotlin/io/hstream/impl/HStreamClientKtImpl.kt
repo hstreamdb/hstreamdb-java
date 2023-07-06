@@ -37,6 +37,7 @@ import io.hstream.internal.GetConnectorSpecRequest
 import io.hstream.internal.GetQueryRequest
 import io.hstream.internal.GetStreamRequest
 import io.hstream.internal.GetSubscriptionRequest
+import io.hstream.internal.GetTailRecordIdRequest
 import io.hstream.internal.GetViewRequest
 import io.hstream.internal.HStreamApiGrpcKt
 import io.hstream.internal.ListConnectorsRequest
@@ -411,6 +412,17 @@ class HStreamClientKtImpl(
     override fun deleteConnector(name: String?) {
         return unaryCallBlockedWithLookup(ResourceType.ResConnector, name) {
             it.deleteConnector(DeleteConnectorRequest.newBuilder().setName(name).build())
+        }
+    }
+
+    override fun getTailRecordId(streamName: String?, shardId: Long): String {
+        checkNotNull(streamName)
+        return unaryCallBlocked {
+            val recordId = it.getTailRecordId(GetTailRecordIdRequest.newBuilder()
+                .setStreamName(streamName)
+                .setShardId(shardId)
+                .build()).tailRecordId
+            GrpcUtils.recordIdFromGrpc(recordId)
         }
     }
 
