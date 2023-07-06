@@ -29,7 +29,7 @@ class StreamShardReaderKtImpl(
     private val shardId: Long,
     private val from: StreamShardOffset,
     private val maxReadBatches: Long,
-    private val until: StreamShardOffset,
+    private val until: StreamShardOffset?,
     private val receiver: StreamShardReaderReceiver?,
     private val batchReceiver: StreamShardReaderBatchReceiver?,
 ) : AbstractService(), StreamShardReader {
@@ -46,15 +46,15 @@ class StreamShardReaderKtImpl(
                     .setReaderId(readerName).build()
                 val lookupShardReaderResp = client.unaryCallBlocked { it.lookupShardReader(lookupShardReaderRequest) }
                 val serverUrl = lookupShardReaderResp.serverNode.host + ":" + lookupShardReaderResp.serverNode.port
-                val respFlow = client.getCoroutineStub(serverUrl).readShardStream(
-                    ReadShardStreamRequest.newBuilder()
-                        .setReaderId(readerName)
-                        .setShardId(shardId)
-                        .setFrom(GrpcUtils.streamShardOffsetToGrpc(from))
-                        .setMaxReadBatches(maxReadBatches)
-                        .setUntil(GrpcUtils.streamShardOffsetToGrpc(until))
-                        .build()
-                )
+                val readerBuilder = ReadShardStreamRequest.newBuilder()
+                    .setReaderId(readerName)
+                    .setShardId(shardId)
+                    .setFrom(GrpcUtils.streamShardOffsetToGrpc(from))
+                    .setMaxReadBatches(maxReadBatches)
+                if (until != null) {
+                    readerBuilder.until = GrpcUtils.streamShardOffsetToGrpc(until)
+                }
+                val respFlow = client.getCoroutineStub(serverUrl).readShardStream(readerBuilder.build())
                 notifyStarted()
                 readerScope.launch {
                     respFlow.collect {
