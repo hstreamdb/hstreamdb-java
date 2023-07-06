@@ -6,7 +6,9 @@ public interface StreamShardReaderBuilder {
 
   StreamShardReaderBuilder shardId(long shardId);
 
-  StreamShardReaderBuilder shardOffset(StreamShardOffset shardOffset);
+  StreamShardReaderBuilder from(StreamShardOffset shardOffset);
+  StreamShardReaderBuilder maxReadBatches(long maxReadBatches);
+  StreamShardReaderBuilder until(StreamShardOffset until);
 
   StreamShardReaderBuilder receiver(StreamShardReaderReceiver streamShardReaderReceiver);
   StreamShardReaderBuilder batchReceiver(StreamShardReaderBatchReceiver streamShardReaderReceiver);

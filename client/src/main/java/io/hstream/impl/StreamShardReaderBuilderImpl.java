@@ -10,7 +10,9 @@ public class StreamShardReaderBuilderImpl implements StreamShardReaderBuilder {
   private final HStreamClientKtImpl client;
   private String streamName;
   private long shardId;
-  private StreamShardOffset shardOffset;
+  private StreamShardOffset from;
+  long maxReadBatches;
+  StreamShardOffset until;
 
   private StreamShardReaderReceiver receiver;
   private StreamShardReaderBatchReceiver batchReceiver;
@@ -32,8 +34,20 @@ public class StreamShardReaderBuilderImpl implements StreamShardReaderBuilder {
   }
 
   @Override
-  public StreamShardReaderBuilder shardOffset(StreamShardOffset shardOffset) {
-    this.shardOffset = shardOffset;
+  public StreamShardReaderBuilder from(StreamShardOffset shardOffset) {
+    this.from = shardOffset;
+    return this;
+  }
+
+  @Override
+  public StreamShardReaderBuilder maxReadBatches(long maxReadBatches) {
+    this.maxReadBatches = maxReadBatches;
+    return this;
+  }
+
+  @Override
+  public StreamShardReaderBuilder until(StreamShardOffset until) {
+    this.until = until;
     return this;
   }
 
@@ -55,9 +69,9 @@ public class StreamShardReaderBuilderImpl implements StreamShardReaderBuilder {
     checkArgument(streamName != null, "StreamShardReaderBuilder: `streamName` should not be null");
     checkArgument(shardId > 0, "StreamShardReaderBuilder: `shardId` error");
     checkArgument(
-        shardOffset != null, "StreamShardReaderBuilder: `shardOffset` should not be null");
+        from != null, "StreamShardReaderBuilder: `from` should not be null");
     checkArgument(receiver != null || batchReceiver != null,
             "StreamShardReaderBuilder: `receiver` should not be both null");
-    return new StreamShardReaderKtImpl(client, streamName, shardId, shardOffset, receiver, batchReceiver);
+    return new StreamShardReaderKtImpl(client, streamName, shardId, from, maxReadBatches, until, receiver, batchReceiver);
   }
 }
