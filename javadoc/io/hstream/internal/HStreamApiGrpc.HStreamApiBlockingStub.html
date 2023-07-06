@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -346,31 +346,36 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i27" class="rowColor">
+<td class="colFirst"><code><a href="GetTailRecordIdResponse.html" title="class in io.hstream.internal">GetTailRecordIdResponse</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTailRecordId(io.hstream.internal.GetTailRecordIdRequest)">getTailRecordId</a></span>&#8203;(<a href="GetTailRecordIdRequest.html" title="class in io.hstream.internal">GetTailRecordIdRequest</a>&nbsp;request)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i28" class="altColor">
 <td class="colFirst"><code><a href="View.html" title="class in io.hstream.internal">View</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getView(io.hstream.internal.GetViewRequest)">getView</a></span>&#8203;(<a href="GetViewRequest.html" title="class in io.hstream.internal">GetViewRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code><a href="ListConnectorsResponse.html" title="class in io.hstream.internal">ListConnectorsResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listConnectors(io.hstream.internal.ListConnectorsRequest)">listConnectors</a></span>&#8203;(<a href="ListConnectorsRequest.html" title="class in io.hstream.internal">ListConnectorsRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code><a href="ListConsumersResponse.html" title="class in io.hstream.internal">ListConsumersResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listConsumers(io.hstream.internal.ListConsumersRequest)">listConsumers</a></span>&#8203;(<a href="ListConsumersRequest.html" title="class in io.hstream.internal">ListConsumersRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code><a href="ListQueriesResponse.html" title="class in io.hstream.internal">ListQueriesResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listQueries(io.hstream.internal.ListQueriesRequest)">listQueries</a></span>&#8203;(<a href="ListQueriesRequest.html" title="class in io.hstream.internal">ListQueriesRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code><a href="ListShardReadersResponse.html" title="class in io.hstream.internal">ListShardReadersResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listShardReaders(io.hstream.internal.ListShardReadersRequest)">listShardReaders</a></span>&#8203;(<a href="ListShardReadersRequest.html" title="class in io.hstream.internal">ListShardReadersRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code><a href="ListShardsResponse.html" title="class in io.hstream.internal">ListShardsResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listShards(io.hstream.internal.ListShardsRequest)">listShards</a></span>&#8203;(<a href="ListShardsRequest.html" title="class in io.hstream.internal">ListShardsRequest</a>&nbsp;request)</code></th>
 <td class="colLast">
@@ -378,27 +383,27 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
  Shard APIs</div>
 </td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code><a href="ListStreamsResponse.html" title="class in io.hstream.internal">ListStreamsResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listStreams(io.hstream.internal.ListStreamsRequest)">listStreams</a></span>&#8203;(<a href="ListStreamsRequest.html" title="class in io.hstream.internal">ListStreamsRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code><a href="ListStreamsResponse.html" title="class in io.hstream.internal">ListStreamsResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listStreamsWithPrefix(io.hstream.internal.ListStreamsWithPrefixRequest)">listStreamsWithPrefix</a></span>&#8203;(<a href="ListStreamsWithPrefixRequest.html" title="class in io.hstream.internal">ListStreamsWithPrefixRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i35" class="rowColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code><a href="ListSubscriptionsResponse.html" title="class in io.hstream.internal">ListSubscriptionsResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listSubscriptions(io.hstream.internal.ListSubscriptionsRequest)">listSubscriptions</a></span>&#8203;(<a href="ListSubscriptionsRequest.html" title="class in io.hstream.internal">ListSubscriptionsRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i36" class="altColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code><a href="ListSubscriptionsResponse.html" title="class in io.hstream.internal">ListSubscriptionsResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listSubscriptionsWithPrefix(io.hstream.internal.ListSubscriptionsWithPrefixRequest)">listSubscriptionsWithPrefix</a></span>&#8203;(<a href="ListSubscriptionsWithPrefixRequest.html" title="class in io.hstream.internal">ListSubscriptionsWithPrefixRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i37" class="rowColor">
+<tr id="i38" class="altColor">
 <td class="colFirst"><code><a href="ListViewsResponse.html" title="class in io.hstream.internal">ListViewsResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#listViews(io.hstream.internal.ListViewsRequest)">listViews</a></span>&#8203;(<a href="ListViewsRequest.html" title="class in io.hstream.internal">ListViewsRequest</a>&nbsp;request)</code></th>
 <td class="colLast">
@@ -406,27 +411,27 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
  view related apis</div>
 </td>
 </tr>
-<tr id="i38" class="altColor">
+<tr id="i39" class="rowColor">
 <td class="colFirst"><code><a href="ServerNode.html" title="class in io.hstream.internal">ServerNode</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lookupResource(io.hstream.internal.LookupResourceRequest)">lookupResource</a></span>&#8203;(<a href="LookupResourceRequest.html" title="class in io.hstream.internal">LookupResourceRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i39" class="rowColor">
+<tr id="i40" class="altColor">
 <td class="colFirst"><code><a href="LookupShardResponse.html" title="class in io.hstream.internal">LookupShardResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lookupShard(io.hstream.internal.LookupShardRequest)">lookupShard</a></span>&#8203;(<a href="LookupShardRequest.html" title="class in io.hstream.internal">LookupShardRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i40" class="altColor">
+<tr id="i41" class="rowColor">
 <td class="colFirst"><code><a href="LookupShardReaderResponse.html" title="class in io.hstream.internal">LookupShardReaderResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lookupShardReader(io.hstream.internal.LookupShardReaderRequest)">lookupShardReader</a></span>&#8203;(<a href="LookupShardReaderRequest.html" title="class in io.hstream.internal">LookupShardReaderRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i41" class="rowColor">
+<tr id="i42" class="altColor">
 <td class="colFirst"><code><a href="LookupSubscriptionResponse.html" title="class in io.hstream.internal">LookupSubscriptionResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lookupSubscription(io.hstream.internal.LookupSubscriptionRequest)">lookupSubscription</a></span>&#8203;(<a href="LookupSubscriptionRequest.html" title="class in io.hstream.internal">LookupSubscriptionRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i42" class="altColor">
+<tr id="i43" class="rowColor">
 <td class="colFirst"><code><a href="ParseSqlResponse.html" title="class in io.hstream.internal">ParseSqlResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parseSql(io.hstream.internal.ParseSqlRequest)">parseSql</a></span>&#8203;(<a href="ParseSqlRequest.html" title="class in io.hstream.internal">ParseSqlRequest</a>&nbsp;request)</code></th>
 <td class="colLast">
@@ -434,17 +439,17 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
  parse query sql, return structuralized information</div>
 </td>
 </tr>
-<tr id="i43" class="rowColor">
+<tr id="i44" class="altColor">
 <td class="colFirst"><code>com.google.protobuf.Empty</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pauseConnector(io.hstream.internal.PauseConnectorRequest)">pauseConnector</a></span>&#8203;(<a href="PauseConnectorRequest.html" title="class in io.hstream.internal">PauseConnectorRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i44" class="altColor">
+<tr id="i45" class="rowColor">
 <td class="colFirst"><code>com.google.protobuf.Empty</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pauseQuery(io.hstream.internal.PauseQueryRequest)">pauseQuery</a></span>&#8203;(<a href="PauseQueryRequest.html" title="class in io.hstream.internal">PauseQueryRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i45" class="rowColor">
+<tr id="i46" class="altColor">
 <td class="colFirst"><code><a href="PerStreamTimeSeriesStatsResponse.html" title="class in io.hstream.internal">PerStreamTimeSeriesStatsResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#perStreamTimeSeriesStats(io.hstream.internal.PerStreamTimeSeriesStatsRequest)">perStreamTimeSeriesStats</a></span>&#8203;(<a href="PerStreamTimeSeriesStatsRequest.html" title="class in io.hstream.internal">PerStreamTimeSeriesStatsRequest</a>&nbsp;request)</code></th>
 <td class="colLast">
@@ -452,32 +457,32 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
  Stats</div>
 </td>
 </tr>
-<tr id="i46" class="altColor">
+<tr id="i47" class="rowColor">
 <td class="colFirst"><code><a href="PerStreamTimeSeriesStatsAllResponse.html" title="class in io.hstream.internal">PerStreamTimeSeriesStatsAllResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#perStreamTimeSeriesStatsAll(io.hstream.internal.PerStreamTimeSeriesStatsAllRequest)">perStreamTimeSeriesStatsAll</a></span>&#8203;(<a href="PerStreamTimeSeriesStatsAllRequest.html" title="class in io.hstream.internal">PerStreamTimeSeriesStatsAllRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i47" class="rowColor">
+<tr id="i48" class="altColor">
 <td class="colFirst"><code><a href="ReadShardResponse.html" title="class in io.hstream.internal">ReadShardResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readShard(io.hstream.internal.ReadShardRequest)">readShard</a></span>&#8203;(<a href="ReadShardRequest.html" title="class in io.hstream.internal">ReadShardRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i48" class="altColor">
+<tr id="i49" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Iterator.html?is-external=true" title="class or interface in java.util" class="externalLink">Iterator</a>&lt;<a href="ReadShardStreamResponse.html" title="class in io.hstream.internal">ReadShardStreamResponse</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readShardStream(io.hstream.internal.ReadShardStreamRequest)">readShardStream</a></span>&#8203;(<a href="ReadShardStreamRequest.html" title="class in io.hstream.internal">ReadShardStreamRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i49" class="rowColor">
+<tr id="i50" class="altColor">
 <td class="colFirst"><code>com.google.protobuf.Empty</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resumeConnector(io.hstream.internal.ResumeConnectorRequest)">resumeConnector</a></span>&#8203;(<a href="ResumeConnectorRequest.html" title="class in io.hstream.internal">ResumeConnectorRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i50" class="altColor">
+<tr id="i51" class="rowColor">
 <td class="colFirst"><code>com.google.protobuf.Empty</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resumeQuery(io.hstream.internal.ResumeQueryRequest)">resumeQuery</a></span>&#8203;(<a href="ResumeQueryRequest.html" title="class in io.hstream.internal">ResumeQueryRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i51" class="rowColor">
+<tr id="i52" class="altColor">
 <td class="colFirst"><code><a href="AdminCommandResponse.html" title="class in io.hstream.internal">AdminCommandResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendAdminCommand(io.hstream.internal.AdminCommandRequest)">sendAdminCommand</a></span>&#8203;(<a href="AdminCommandRequest.html" title="class in io.hstream.internal">AdminCommandRequest</a>&nbsp;request)</code></th>
 <td class="colLast">
@@ -485,7 +490,7 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
  Admin Command</div>
 </td>
 </tr>
-<tr id="i52" class="altColor">
+<tr id="i53" class="rowColor">
 <td class="colFirst"><code>com.google.protobuf.Empty</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#terminateQuery(io.hstream.internal.TerminateQueryRequest)">terminateQuery</a></span>&#8203;(<a href="TerminateQueryRequest.html" title="class in io.hstream.internal">TerminateQueryRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -615,6 +620,15 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
 <li class="blockList">
 <h4>append</h4>
 <pre class="methodSignature">public&nbsp;<a href="AppendResponse.html" title="class in io.hstream.internal">AppendResponse</a>&nbsp;append&#8203;(<a href="AppendRequest.html" title="class in io.hstream.internal">AppendRequest</a>&nbsp;request)</pre>
+</li>
+</ul>
+<a id="getTailRecordId(io.hstream.internal.GetTailRecordIdRequest)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getTailRecordId</h4>
+<pre class="methodSignature">public&nbsp;<a href="GetTailRecordIdResponse.html" title="class in io.hstream.internal">GetTailRecordIdResponse</a>&nbsp;getTailRecordId&#8203;(<a href="GetTailRecordIdRequest.html" title="class in io.hstream.internal">GetTailRecordIdRequest</a>&nbsp;request)</pre>
 </li>
 </ul>
 <a id="listShards(io.hstream.internal.ListShardsRequest)">

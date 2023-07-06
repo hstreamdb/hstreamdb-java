@@ -537,12 +537,24 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>com.google.protobuf.Timestamp creationTime_</pre>
 </li>
 <li class="blockList">
+<h4>dockerStatus_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> dockerStatus_</pre>
+</li>
+<li class="blockList">
+<h4>image_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> image_</pre>
+</li>
+<li class="blockList">
 <h4>memoizedIsInitialized</h4>
 <pre>byte memoizedIsInitialized</pre>
 </li>
 <li class="blockList">
 <h4>name_</h4>
 <pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> name_</pre>
+</li>
+<li class="blockList">
+<h4>node_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> node_</pre>
 </li>
 <li class="blockList">
 <h4>offsets_</h4>
@@ -555,6 +567,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <h4>target_</h4>
 <pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> target_</pre>
+</li>
+<li class="blockList">
+<h4>taskId_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> taskId_</pre>
 </li>
 <li class="blockListLast">
 <h4>type_</h4>
@@ -1419,6 +1435,58 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockListLast">
 <h4>subscription_</h4>
 <pre><a href="io/hstream/internal/Subscription.html" title="class in io.hstream.internal">Subscription</a> subscription_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetTailRecordIdRequest">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetTailRecordIdRequest.html" title="class in io.hstream.internal">io.hstream.internal.GetTailRecordIdRequest</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockList">
+<h4>shardId_</h4>
+<pre>long shardId_</pre>
+</li>
+<li class="blockListLast">
+<h4>streamName_</h4>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> streamName_</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="blockList"><a id="io.hstream.internal.GetTailRecordIdResponse">
+<!--   -->
+</a>
+<h3>Class <a href="io/hstream/internal/GetTailRecordIdResponse.html" title="class in io.hstream.internal">io.hstream.internal.GetTailRecordIdResponse</a> extends com.google.protobuf.GeneratedMessageV3 implements Serializable</h3>
+<dl class="nameValue">
+<dt>serialVersionUID:</dt>
+<dd>0L</dd>
+</dl>
+<ul class="blockList">
+<li class="blockList">
+<h3>Serialized Fields</h3>
+<ul class="blockList">
+<li class="blockList">
+<h4>memoizedIsInitialized</h4>
+<pre>byte memoizedIsInitialized</pre>
+</li>
+<li class="blockListLast">
+<h4>tailRecordId_</h4>
+<pre><a href="io/hstream/internal/RecordId.html" title="class in io.hstream.internal">RecordId</a> tailRecordId_</pre>
 </li>
 </ul>
 </li>
@@ -2361,6 +2429,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>byte memoizedIsInitialized</pre>
 </li>
 <li class="blockList">
+<h4>nodeId_</h4>
+<pre>int nodeId_</pre>
+</li>
+<li class="blockList">
 <h4>queryText_</h4>
 <pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a> queryText_</pre>
 </li>
@@ -2449,6 +2521,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h3>Serialized Fields</h3>
 <ul class="blockList">
 <li class="blockList">
+<h4>from_</h4>
+<pre><a href="io/hstream/internal/ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a> from_</pre>
+</li>
+<li class="blockList">
+<h4>maxReadBatches_</h4>
+<pre>long maxReadBatches_</pre>
+</li>
+<li class="blockList">
 <h4>memoizedIsInitialized</h4>
 <pre>byte memoizedIsInitialized</pre>
 </li>
@@ -2461,8 +2541,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>long shardId_</pre>
 </li>
 <li class="blockListLast">
-<h4>shardOffset_</h4>
-<pre><a href="io/hstream/internal/ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a> shardOffset_</pre>
+<h4>until_</h4>
+<pre><a href="io/hstream/internal/ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a> until_</pre>
 </li>
 </ul>
 </li>

@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":9,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":9,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -195,166 +195,246 @@ implements <a href="ReadShardStreamRequestOrBuilder.html" title="interface in io
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearFrom()">clearFrom</a></span>()</code></th>
+<td class="colLast">
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearMaxReadBatches()">clearMaxReadBatches</a></span>()</code></th>
+<td class="colLast">
+<div class="block">
+ Total number of batches reader read at most</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearReaderId()">clearReaderId</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>string readerId = 1;</code></div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearShardId()">clearShardId</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>uint64 shardId = 2;</code></div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearShardOffset()">clearShardOffset</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearUntil()">clearUntil</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.html" title="class in io.hstream.internal">ReadShardStreamRequest</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDefaultInstanceForType()">getDefaultInstanceForType</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static com.google.protobuf.Descriptors.Descriptor</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDescriptor()">getDescriptor</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>com.google.protobuf.Descriptors.Descriptor</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDescriptorForType()">getDescriptorForType</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code><a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFrom()">getFrom</a></span>()</code></th>
+<td class="colLast">
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code><a href="ShardOffset.Builder.html" title="class in io.hstream.internal">ShardOffset.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFromBuilder()">getFromBuilder</a></span>()</code></th>
+<td class="colLast">
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
+</td>
+</tr>
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code><a href="ShardOffsetOrBuilder.html" title="interface in io.hstream.internal">ShardOffsetOrBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFromOrBuilder()">getFromOrBuilder</a></span>()</code></th>
+<td class="colLast">
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
+<td class="colFirst"><code>long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaxReadBatches()">getMaxReadBatches</a></span>()</code></th>
+<td class="colLast">
+<div class="block">
+ Total number of batches reader read at most</div>
+</td>
+</tr>
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getReaderId()">getReaderId</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>string readerId = 1;</code></div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>com.google.protobuf.ByteString</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getReaderIdBytes()">getReaderIdBytes</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>string readerId = 1;</code></div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getShardId()">getShardId</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>uint64 shardId = 2;</code></div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getShardOffset()">getShardOffset</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUntil()">getUntil</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code><a href="ShardOffset.Builder.html" title="class in io.hstream.internal">ShardOffset.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getShardOffsetBuilder()">getShardOffsetBuilder</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUntilBuilder()">getUntilBuilder</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="ShardOffsetOrBuilder.html" title="interface in io.hstream.internal">ShardOffsetOrBuilder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getShardOffsetOrBuilder()">getShardOffsetOrBuilder</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUntilOrBuilder()">getUntilOrBuilder</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasShardOffset()">hasShardOffset</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasFrom()">hasFrom</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i22" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasUntil()">hasUntil</a></span>()</code></th>
+<td class="colLast">
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+</td>
+</tr>
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#internalGetFieldAccessorTable()">internalGetFieldAccessorTable</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isInitialized()">isInitialized</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeFrom(com.google.protobuf.CodedInputStream,com.google.protobuf.ExtensionRegistryLite)">mergeFrom</a></span>&#8203;(com.google.protobuf.CodedInputStream&nbsp;input,
          com.google.protobuf.ExtensionRegistryLite&nbsp;extensionRegistry)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeFrom(com.google.protobuf.Message)">mergeFrom</a></span>&#8203;(com.google.protobuf.Message&nbsp;other)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeFrom(io.hstream.internal.ReadShardStreamRequest)">mergeFrom</a></span>&#8203;(<a href="ReadShardStreamRequest.html" title="class in io.hstream.internal">ReadShardStreamRequest</a>&nbsp;other)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeShardOffset(io.hstream.internal.ShardOffset)">mergeShardOffset</a></span>&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeFrom(io.hstream.internal.ShardOffset)">mergeFrom</a></span>&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeUnknownFields(com.google.protobuf.UnknownFieldSet)">mergeUnknownFields</a></span>&#8203;(com.google.protobuf.UnknownFieldSet&nbsp;unknownFields)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i30" class="altColor">
+<td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeUntil(io.hstream.internal.ShardOffset)">mergeUntil</a></span>&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</code></th>
+<td class="colLast">
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+</td>
+</tr>
+<tr id="i31" class="rowColor">
+<td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setFrom(io.hstream.internal.ShardOffset)">setFrom</a></span>&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</code></th>
+<td class="colLast">
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
+</td>
+</tr>
+<tr id="i32" class="altColor">
+<td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setFrom(io.hstream.internal.ShardOffset.Builder)">setFrom</a></span>&#8203;(<a href="ShardOffset.Builder.html" title="class in io.hstream.internal">ShardOffset.Builder</a>&nbsp;builderForValue)</code></th>
+<td class="colLast">
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
+</td>
+</tr>
+<tr id="i33" class="rowColor">
+<td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setMaxReadBatches(long)">setMaxReadBatches</a></span>&#8203;(long&nbsp;value)</code></th>
+<td class="colLast">
+<div class="block">
+ Total number of batches reader read at most</div>
+</td>
+</tr>
+<tr id="i34" class="altColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setReaderId(java.lang.String)">setReaderId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block"><code>string readerId = 1;</code></div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setReaderIdBytes(com.google.protobuf.ByteString)">setReaderIdBytes</a></span>&#8203;(com.google.protobuf.ByteString&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block"><code>string readerId = 1;</code></div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setShardId(long)">setShardId</a></span>&#8203;(long&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block"><code>uint64 shardId = 2;</code></div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
-<td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setShardOffset(io.hstream.internal.ShardOffset)">setShardOffset</a></span>&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</code></th>
-<td class="colLast">
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
-</td>
-</tr>
-<tr id="i27" class="rowColor">
-<td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setShardOffset(io.hstream.internal.ShardOffset.Builder)">setShardOffset</a></span>&#8203;(<a href="ShardOffset.Builder.html" title="class in io.hstream.internal">ShardOffset.Builder</a>&nbsp;builderForValue)</code></th>
-<td class="colLast">
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
-</td>
-</tr>
-<tr id="i28" class="altColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setUnknownFields(com.google.protobuf.UnknownFieldSet)">setUnknownFields</a></span>&#8203;(com.google.protobuf.UnknownFieldSet&nbsp;unknownFields)</code></th>
 <td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i38" class="altColor">
+<td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setUntil(io.hstream.internal.ShardOffset)">setUntil</a></span>&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</code></th>
+<td class="colLast">
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+</td>
+</tr>
+<tr id="i39" class="rowColor">
+<td class="colFirst"><code><a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setUntil(io.hstream.internal.ShardOffset.Builder)">setUntil</a></span>&#8203;(<a href="ShardOffset.Builder.html" title="class in io.hstream.internal">ShardOffset.Builder</a>&nbsp;builderForValue)</code></th>
+<td class="colLast">
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -707,99 +787,253 @@ implements <a href="ReadShardStreamRequestOrBuilder.html" title="interface in io
 </dl>
 </li>
 </ul>
-<a id="hasShardOffset()">
+<a id="hasFrom()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>hasShardOffset</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;hasShardOffset()</pre>
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<h4>hasFrom</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;hasFrom()</pre>
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="ReadShardStreamRequestOrBuilder.html#hasShardOffset()">hasShardOffset</a></code>&nbsp;in interface&nbsp;<code><a href="ReadShardStreamRequestOrBuilder.html" title="interface in io.hstream.internal">ReadShardStreamRequestOrBuilder</a></code></dd>
+<dd><code><a href="ReadShardStreamRequestOrBuilder.html#hasFrom()">hasFrom</a></code>&nbsp;in interface&nbsp;<code><a href="ReadShardStreamRequestOrBuilder.html" title="interface in io.hstream.internal">ReadShardStreamRequestOrBuilder</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>Whether the shardOffset field is set.</dd>
+<dd>Whether the from field is set.</dd>
 </dl>
 </li>
 </ul>
-<a id="getShardOffset()">
+<a id="getFrom()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getShardOffset</h4>
-<pre class="methodSignature">public&nbsp;<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;getShardOffset()</pre>
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<h4>getFrom</h4>
+<pre class="methodSignature">public&nbsp;<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;getFrom()</pre>
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="ReadShardStreamRequestOrBuilder.html#getShardOffset()">getShardOffset</a></code>&nbsp;in interface&nbsp;<code><a href="ReadShardStreamRequestOrBuilder.html" title="interface in io.hstream.internal">ReadShardStreamRequestOrBuilder</a></code></dd>
+<dd><code><a href="ReadShardStreamRequestOrBuilder.html#getFrom()">getFrom</a></code>&nbsp;in interface&nbsp;<code><a href="ReadShardStreamRequestOrBuilder.html" title="interface in io.hstream.internal">ReadShardStreamRequestOrBuilder</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The shardOffset.</dd>
+<dd>The from.</dd>
 </dl>
 </li>
 </ul>
-<a id="setShardOffset(io.hstream.internal.ShardOffset)">
+<a id="setFrom(io.hstream.internal.ShardOffset)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setShardOffset</h4>
-<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;setShardOffset&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</pre>
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<h4>setFrom</h4>
+<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;setFrom&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</pre>
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
 </li>
 </ul>
-<a id="setShardOffset(io.hstream.internal.ShardOffset.Builder)">
+<a id="setFrom(io.hstream.internal.ShardOffset.Builder)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setShardOffset</h4>
-<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;setShardOffset&#8203;(<a href="ShardOffset.Builder.html" title="class in io.hstream.internal">ShardOffset.Builder</a>&nbsp;builderForValue)</pre>
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<h4>setFrom</h4>
+<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;setFrom&#8203;(<a href="ShardOffset.Builder.html" title="class in io.hstream.internal">ShardOffset.Builder</a>&nbsp;builderForValue)</pre>
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
 </li>
 </ul>
-<a id="mergeShardOffset(io.hstream.internal.ShardOffset)">
+<a id="mergeFrom(io.hstream.internal.ShardOffset)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>mergeShardOffset</h4>
-<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;mergeShardOffset&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</pre>
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<h4>mergeFrom</h4>
+<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;mergeFrom&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</pre>
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
 </li>
 </ul>
-<a id="clearShardOffset()">
+<a id="clearFrom()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>clearShardOffset</h4>
-<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;clearShardOffset()</pre>
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<h4>clearFrom</h4>
+<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;clearFrom()</pre>
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
 </li>
 </ul>
-<a id="getShardOffsetBuilder()">
+<a id="getFromBuilder()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getShardOffsetBuilder</h4>
-<pre class="methodSignature">public&nbsp;<a href="ShardOffset.Builder.html" title="class in io.hstream.internal">ShardOffset.Builder</a>&nbsp;getShardOffsetBuilder()</pre>
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<h4>getFromBuilder</h4>
+<pre class="methodSignature">public&nbsp;<a href="ShardOffset.Builder.html" title="class in io.hstream.internal">ShardOffset.Builder</a>&nbsp;getFromBuilder()</pre>
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
 </li>
 </ul>
-<a id="getShardOffsetOrBuilder()">
+<a id="getFromOrBuilder()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getShardOffsetOrBuilder</h4>
-<pre class="methodSignature">public&nbsp;<a href="ShardOffsetOrBuilder.html" title="interface in io.hstream.internal">ShardOffsetOrBuilder</a>&nbsp;getShardOffsetOrBuilder()</pre>
-<div class="block"><code>.hstream.server.ShardOffset shardOffset = 3;</code></div>
+<h4>getFromOrBuilder</h4>
+<pre class="methodSignature">public&nbsp;<a href="ShardOffsetOrBuilder.html" title="interface in io.hstream.internal">ShardOffsetOrBuilder</a>&nbsp;getFromOrBuilder()</pre>
+<div class="block"><code>.hstream.server.ShardOffset from = 3;</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="ReadShardStreamRequestOrBuilder.html#getShardOffsetOrBuilder()">getShardOffsetOrBuilder</a></code>&nbsp;in interface&nbsp;<code><a href="ReadShardStreamRequestOrBuilder.html" title="interface in io.hstream.internal">ReadShardStreamRequestOrBuilder</a></code></dd>
+<dd><code><a href="ReadShardStreamRequestOrBuilder.html#getFromOrBuilder()">getFromOrBuilder</a></code>&nbsp;in interface&nbsp;<code><a href="ReadShardStreamRequestOrBuilder.html" title="interface in io.hstream.internal">ReadShardStreamRequestOrBuilder</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="getMaxReadBatches()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMaxReadBatches</h4>
+<pre class="methodSignature">public&nbsp;long&nbsp;getMaxReadBatches()</pre>
+<div class="block"><pre>
+ Total number of batches reader read at most
+ </pre>
+
+ <code>uint64 maxReadBatches = 4;</code></div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="ReadShardStreamRequestOrBuilder.html#getMaxReadBatches()">getMaxReadBatches</a></code>&nbsp;in interface&nbsp;<code><a href="ReadShardStreamRequestOrBuilder.html" title="interface in io.hstream.internal">ReadShardStreamRequestOrBuilder</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The maxReadBatches.</dd>
+</dl>
+</li>
+</ul>
+<a id="setMaxReadBatches(long)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setMaxReadBatches</h4>
+<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;setMaxReadBatches&#8203;(long&nbsp;value)</pre>
+<div class="block"><pre>
+ Total number of batches reader read at most
+ </pre>
+
+ <code>uint64 maxReadBatches = 4;</code></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>value</code> - The maxReadBatches to set.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>This builder for chaining.</dd>
+</dl>
+</li>
+</ul>
+<a id="clearMaxReadBatches()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>clearMaxReadBatches</h4>
+<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;clearMaxReadBatches()</pre>
+<div class="block"><pre>
+ Total number of batches reader read at most
+ </pre>
+
+ <code>uint64 maxReadBatches = 4;</code></div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>This builder for chaining.</dd>
+</dl>
+</li>
+</ul>
+<a id="hasUntil()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hasUntil</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;hasUntil()</pre>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="ReadShardStreamRequestOrBuilder.html#hasUntil()">hasUntil</a></code>&nbsp;in interface&nbsp;<code><a href="ReadShardStreamRequestOrBuilder.html" title="interface in io.hstream.internal">ReadShardStreamRequestOrBuilder</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the until field is set.</dd>
+</dl>
+</li>
+</ul>
+<a id="getUntil()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getUntil</h4>
+<pre class="methodSignature">public&nbsp;<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;getUntil()</pre>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="ReadShardStreamRequestOrBuilder.html#getUntil()">getUntil</a></code>&nbsp;in interface&nbsp;<code><a href="ReadShardStreamRequestOrBuilder.html" title="interface in io.hstream.internal">ReadShardStreamRequestOrBuilder</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The until.</dd>
+</dl>
+</li>
+</ul>
+<a id="setUntil(io.hstream.internal.ShardOffset)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setUntil</h4>
+<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;setUntil&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</pre>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+</li>
+</ul>
+<a id="setUntil(io.hstream.internal.ShardOffset.Builder)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setUntil</h4>
+<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;setUntil&#8203;(<a href="ShardOffset.Builder.html" title="class in io.hstream.internal">ShardOffset.Builder</a>&nbsp;builderForValue)</pre>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+</li>
+</ul>
+<a id="mergeUntil(io.hstream.internal.ShardOffset)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>mergeUntil</h4>
+<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;mergeUntil&#8203;(<a href="ShardOffset.html" title="class in io.hstream.internal">ShardOffset</a>&nbsp;value)</pre>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+</li>
+</ul>
+<a id="clearUntil()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>clearUntil</h4>
+<pre class="methodSignature">public&nbsp;<a href="ReadShardStreamRequest.Builder.html" title="class in io.hstream.internal">ReadShardStreamRequest.Builder</a>&nbsp;clearUntil()</pre>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+</li>
+</ul>
+<a id="getUntilBuilder()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getUntilBuilder</h4>
+<pre class="methodSignature">public&nbsp;<a href="ShardOffset.Builder.html" title="class in io.hstream.internal">ShardOffset.Builder</a>&nbsp;getUntilBuilder()</pre>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+</li>
+</ul>
+<a id="getUntilOrBuilder()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getUntilOrBuilder</h4>
+<pre class="methodSignature">public&nbsp;<a href="ShardOffsetOrBuilder.html" title="interface in io.hstream.internal">ShardOffsetOrBuilder</a>&nbsp;getUntilOrBuilder()</pre>
+<div class="block"><code>.hstream.server.ShardOffset until = 5;</code></div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="ReadShardStreamRequestOrBuilder.html#getUntilOrBuilder()">getUntilOrBuilder</a></code>&nbsp;in interface&nbsp;<code><a href="ReadShardStreamRequestOrBuilder.html" title="interface in io.hstream.internal">ReadShardStreamRequestOrBuilder</a></code></dd>
 </dl>
 </li>
 </ul>

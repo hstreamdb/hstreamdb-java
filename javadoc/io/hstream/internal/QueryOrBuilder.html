@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -175,93 +175,101 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNodeId()">getNodeId</a></span>()</code></th>
+<td class="colLast">
+<div class="block">
+ Id of the node to execute the query</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getQueryText()">getQueryText</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>string queryText = 4;</code></div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>com.google.protobuf.ByteString</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getQueryTextBytes()">getQueryTextBytes</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>string queryText = 4;</code></div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResultName()">getResultName</a></span>()</code></th>
 <td class="colLast">
-<div class="block">
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>com.google.protobuf.ByteString</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResultNameBytes()">getResultNameBytes</a></span>()</code></th>
-<td class="colLast">
-<div class="block">
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name</div>
+<div class="block"><code>string resultName = 6;</code></div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>com.google.protobuf.ByteString</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResultNameBytes()">getResultNameBytes</a></span>()</code></th>
+<td class="colLast">
+<div class="block"><code>string resultName = 6;</code></div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSources(int)">getSources</a></span>&#8203;(int&nbsp;index)</code></th>
 <td class="colLast">
 <div class="block"><code>repeated string sources = 5;</code></div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>com.google.protobuf.ByteString</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSourcesBytes(int)">getSourcesBytes</a></span>&#8203;(int&nbsp;index)</code></th>
 <td class="colLast">
 <div class="block"><code>repeated string sources = 5;</code></div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSourcesCount()">getSourcesCount</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>repeated string sources = 5;</code></div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSourcesList()">getSourcesList</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>repeated string sources = 5;</code></div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="TaskStatusPB.html" title="enum in io.hstream.internal">TaskStatusPB</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStatus()">getStatus</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>.hstream.server.TaskStatusPB status = 2;</code></div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStatusValue()">getStatusValue</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>.hstream.server.TaskStatusPB status = 2;</code></div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="QueryType.html" title="enum in io.hstream.internal">QueryType</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getType()">getType</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block">
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTypeValue()">getTypeValue</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block">
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name</div>
 </td>
 </tr>
 </table>
@@ -460,13 +468,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getResultName</h4>
 <pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getResultName()</pre>
-<div class="block"><pre>
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name
- </pre>
-
- <code>string resultName = 6;</code></div>
+<div class="block"><code>string resultName = 6;</code></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The resultName.</dd>
@@ -480,13 +482,7 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getResultNameBytes</h4>
 <pre class="methodSignature">com.google.protobuf.ByteString&nbsp;getResultNameBytes()</pre>
-<div class="block"><pre>
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name
- </pre>
-
- <code>string resultName = 6;</code></div>
+<div class="block"><code>string resultName = 6;</code></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The bytes for resultName.</dd>
@@ -500,7 +496,13 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <li class="blockList">
 <h4>getTypeValue</h4>
 <pre class="methodSignature">int&nbsp;getTypeValue()</pre>
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block"><pre>
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name
+ </pre>
+
+ <code>.hstream.server.QueryType type = 7;</code></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The enum numeric value on the wire for type.</dd>
@@ -510,14 +512,38 @@ extends com.google.protobuf.MessageOrBuilder</pre>
 <a id="getType()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getType</h4>
 <pre class="methodSignature"><a href="QueryType.html" title="enum in io.hstream.internal">QueryType</a>&nbsp;getType()</pre>
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block"><pre>
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name
+ </pre>
+
+ <code>.hstream.server.QueryType type = 7;</code></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The type.</dd>
+</dl>
+</li>
+</ul>
+<a id="getNodeId()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getNodeId</h4>
+<pre class="methodSignature">int&nbsp;getNodeId()</pre>
+<div class="block"><pre>
+ Id of the node to execute the query
+ </pre>
+
+ <code>uint32 nodeId = 8;</code></div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The nodeId.</dd>
 </dl>
 </li>
 </ul>

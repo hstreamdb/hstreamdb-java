@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":9,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":9,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -230,255 +230,273 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearNodeId()">clearNodeId</a></span>()</code></th>
+<td class="colLast">
+<div class="block">
+ Id of the node to execute the query</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearQueryText()">clearQueryText</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>string queryText = 4;</code></div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearResultName()">clearResultName</a></span>()</code></th>
 <td class="colLast">
-<div class="block">
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name</div>
+<div class="block"><code>string resultName = 6;</code></div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearSources()">clearSources</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>repeated string sources = 5;</code></div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearStatus()">clearStatus</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>.hstream.server.TaskStatusPB status = 2;</code></div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearType()">clearType</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block">
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCreatedTime()">getCreatedTime</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>int64 createdTime = 3;</code></div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="Query.html" title="class in io.hstream.internal">Query</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDefaultInstanceForType()">getDefaultInstanceForType</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static com.google.protobuf.Descriptors.Descriptor</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDescriptor()">getDescriptor</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>com.google.protobuf.Descriptors.Descriptor</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDescriptorForType()">getDescriptorForType</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getId()">getId</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>string id = 1;</code></div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>com.google.protobuf.ByteString</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getIdBytes()">getIdBytes</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>string id = 1;</code></div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNodeId()">getNodeId</a></span>()</code></th>
+<td class="colLast">
+<div class="block">
+ Id of the node to execute the query</div>
+</td>
+</tr>
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getQueryText()">getQueryText</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>string queryText = 4;</code></div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>com.google.protobuf.ByteString</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getQueryTextBytes()">getQueryTextBytes</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>string queryText = 4;</code></div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResultName()">getResultName</a></span>()</code></th>
 <td class="colLast">
-<div class="block">
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name</div>
+<div class="block"><code>string resultName = 6;</code></div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>com.google.protobuf.ByteString</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getResultNameBytes()">getResultNameBytes</a></span>()</code></th>
 <td class="colLast">
-<div class="block">
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name</div>
+<div class="block"><code>string resultName = 6;</code></div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSources(int)">getSources</a></span>&#8203;(int&nbsp;index)</code></th>
 <td class="colLast">
 <div class="block"><code>repeated string sources = 5;</code></div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>com.google.protobuf.ByteString</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSourcesBytes(int)">getSourcesBytes</a></span>&#8203;(int&nbsp;index)</code></th>
 <td class="colLast">
 <div class="block"><code>repeated string sources = 5;</code></div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSourcesCount()">getSourcesCount</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>repeated string sources = 5;</code></div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>com.google.protobuf.ProtocolStringList</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSourcesList()">getSourcesList</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>repeated string sources = 5;</code></div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code><a href="TaskStatusPB.html" title="enum in io.hstream.internal">TaskStatusPB</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStatus()">getStatus</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>.hstream.server.TaskStatusPB status = 2;</code></div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStatusValue()">getStatusValue</a></span>()</code></th>
 <td class="colLast">
 <div class="block"><code>.hstream.server.TaskStatusPB status = 2;</code></div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code><a href="QueryType.html" title="enum in io.hstream.internal">QueryType</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getType()">getType</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block">
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTypeValue()">getTypeValue</a></span>()</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block">
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code>protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#internalGetFieldAccessorTable()">internalGetFieldAccessorTable</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isInitialized()">isInitialized</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeFrom(com.google.protobuf.CodedInputStream,com.google.protobuf.ExtensionRegistryLite)">mergeFrom</a></span>&#8203;(com.google.protobuf.CodedInputStream&nbsp;input,
          com.google.protobuf.ExtensionRegistryLite&nbsp;extensionRegistry)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeFrom(com.google.protobuf.Message)">mergeFrom</a></span>&#8203;(com.google.protobuf.Message&nbsp;other)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i35" class="rowColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeFrom(io.hstream.internal.Query)">mergeFrom</a></span>&#8203;(<a href="Query.html" title="class in io.hstream.internal">Query</a>&nbsp;other)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i36" class="altColor">
+<tr id="i38" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeUnknownFields(com.google.protobuf.UnknownFieldSet)">mergeUnknownFields</a></span>&#8203;(com.google.protobuf.UnknownFieldSet&nbsp;unknownFields)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i37" class="rowColor">
+<tr id="i39" class="rowColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setCreatedTime(long)">setCreatedTime</a></span>&#8203;(long&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block"><code>int64 createdTime = 3;</code></div>
 </td>
 </tr>
-<tr id="i38" class="altColor">
+<tr id="i40" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setId(java.lang.String)">setId</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block"><code>string id = 1;</code></div>
 </td>
 </tr>
-<tr id="i39" class="rowColor">
+<tr id="i41" class="rowColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setIdBytes(com.google.protobuf.ByteString)">setIdBytes</a></span>&#8203;(com.google.protobuf.ByteString&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block"><code>string id = 1;</code></div>
 </td>
 </tr>
-<tr id="i40" class="altColor">
+<tr id="i42" class="altColor">
+<td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setNodeId(int)">setNodeId</a></span>&#8203;(int&nbsp;value)</code></th>
+<td class="colLast">
+<div class="block">
+ Id of the node to execute the query</div>
+</td>
+</tr>
+<tr id="i43" class="rowColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setQueryText(java.lang.String)">setQueryText</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block"><code>string queryText = 4;</code></div>
 </td>
 </tr>
-<tr id="i41" class="rowColor">
+<tr id="i44" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setQueryTextBytes(com.google.protobuf.ByteString)">setQueryTextBytes</a></span>&#8203;(com.google.protobuf.ByteString&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block"><code>string queryText = 4;</code></div>
 </td>
 </tr>
-<tr id="i42" class="altColor">
+<tr id="i45" class="rowColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setResultName(java.lang.String)">setResultName</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
 <td class="colLast">
-<div class="block">
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name</div>
+<div class="block"><code>string resultName = 6;</code></div>
 </td>
 </tr>
-<tr id="i43" class="rowColor">
+<tr id="i46" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setResultNameBytes(com.google.protobuf.ByteString)">setResultNameBytes</a></span>&#8203;(com.google.protobuf.ByteString&nbsp;value)</code></th>
 <td class="colLast">
-<div class="block">
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name</div>
+<div class="block"><code>string resultName = 6;</code></div>
 </td>
 </tr>
-<tr id="i44" class="altColor">
+<tr id="i47" class="rowColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSources(int,java.lang.String)">setSources</a></span>&#8203;(int&nbsp;index,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
@@ -486,35 +504,41 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 <div class="block"><code>repeated string sources = 5;</code></div>
 </td>
 </tr>
-<tr id="i45" class="rowColor">
+<tr id="i48" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setStatus(io.hstream.internal.TaskStatusPB)">setStatus</a></span>&#8203;(<a href="TaskStatusPB.html" title="enum in io.hstream.internal">TaskStatusPB</a>&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block"><code>.hstream.server.TaskStatusPB status = 2;</code></div>
 </td>
 </tr>
-<tr id="i46" class="altColor">
+<tr id="i49" class="rowColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setStatusValue(int)">setStatusValue</a></span>&#8203;(int&nbsp;value)</code></th>
 <td class="colLast">
 <div class="block"><code>.hstream.server.TaskStatusPB status = 2;</code></div>
 </td>
 </tr>
-<tr id="i47" class="rowColor">
+<tr id="i50" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setType(io.hstream.internal.QueryType)">setType</a></span>&#8203;(<a href="QueryType.html" title="enum in io.hstream.internal">QueryType</a>&nbsp;value)</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block">
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name</div>
 </td>
 </tr>
-<tr id="i48" class="altColor">
+<tr id="i51" class="rowColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setTypeValue(int)">setTypeValue</a></span>&#8203;(int&nbsp;value)</code></th>
 <td class="colLast">
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block">
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name</div>
 </td>
 </tr>
-<tr id="i49" class="rowColor">
+<tr id="i52" class="altColor">
 <td class="colFirst"><code><a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setUnknownFields(com.google.protobuf.UnknownFieldSet)">setUnknownFields</a></span>&#8203;(com.google.protobuf.UnknownFieldSet&nbsp;unknownFields)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -1181,13 +1205,7 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 <li class="blockList">
 <h4>getResultName</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getResultName()</pre>
-<div class="block"><pre>
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name
- </pre>
-
- <code>string resultName = 6;</code></div>
+<div class="block"><code>string resultName = 6;</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="QueryOrBuilder.html#getResultName()">getResultName</a></code>&nbsp;in interface&nbsp;<code><a href="QueryOrBuilder.html" title="interface in io.hstream.internal">QueryOrBuilder</a></code></dd>
@@ -1203,13 +1221,7 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 <li class="blockList">
 <h4>getResultNameBytes</h4>
 <pre class="methodSignature">public&nbsp;com.google.protobuf.ByteString&nbsp;getResultNameBytes()</pre>
-<div class="block"><pre>
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name
- </pre>
-
- <code>string resultName = 6;</code></div>
+<div class="block"><code>string resultName = 6;</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="QueryOrBuilder.html#getResultNameBytes()">getResultNameBytes</a></code>&nbsp;in interface&nbsp;<code><a href="QueryOrBuilder.html" title="interface in io.hstream.internal">QueryOrBuilder</a></code></dd>
@@ -1225,13 +1237,7 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 <li class="blockList">
 <h4>setResultName</h4>
 <pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a>&nbsp;setResultName&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
-<div class="block"><pre>
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name
- </pre>
-
- <code>string resultName = 6;</code></div>
+<div class="block"><code>string resultName = 6;</code></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>value</code> - The resultName to set.</dd>
@@ -1247,13 +1253,7 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 <li class="blockList">
 <h4>clearResultName</h4>
 <pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a>&nbsp;clearResultName()</pre>
-<div class="block"><pre>
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name
- </pre>
-
- <code>string resultName = 6;</code></div>
+<div class="block"><code>string resultName = 6;</code></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>This builder for chaining.</dd>
@@ -1267,13 +1267,7 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 <li class="blockList">
 <h4>setResultNameBytes</h4>
 <pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a>&nbsp;setResultNameBytes&#8203;(com.google.protobuf.ByteString&nbsp;value)</pre>
-<div class="block"><pre>
- type:
-    CreateStreamAs: resultName is result stream name
-    CreateViewAs: resultName is result view name
- </pre>
-
- <code>string resultName = 6;</code></div>
+<div class="block"><code>string resultName = 6;</code></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>value</code> - The bytes for resultName to set.</dd>
@@ -1289,7 +1283,13 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 <li class="blockList">
 <h4>getTypeValue</h4>
 <pre class="methodSignature">public&nbsp;int&nbsp;getTypeValue()</pre>
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block"><pre>
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name
+ </pre>
+
+ <code>.hstream.server.QueryType type = 7;</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="QueryOrBuilder.html#getTypeValue()">getTypeValue</a></code>&nbsp;in interface&nbsp;<code><a href="QueryOrBuilder.html" title="interface in io.hstream.internal">QueryOrBuilder</a></code></dd>
@@ -1305,7 +1305,13 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 <li class="blockList">
 <h4>setTypeValue</h4>
 <pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a>&nbsp;setTypeValue&#8203;(int&nbsp;value)</pre>
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block"><pre>
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name
+ </pre>
+
+ <code>.hstream.server.QueryType type = 7;</code></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>value</code> - The enum numeric value on the wire for type to set.</dd>
@@ -1321,7 +1327,13 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 <li class="blockList">
 <h4>getType</h4>
 <pre class="methodSignature">public&nbsp;<a href="QueryType.html" title="enum in io.hstream.internal">QueryType</a>&nbsp;getType()</pre>
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block"><pre>
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name
+ </pre>
+
+ <code>.hstream.server.QueryType type = 7;</code></div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="QueryOrBuilder.html#getType()">getType</a></code>&nbsp;in interface&nbsp;<code><a href="QueryOrBuilder.html" title="interface in io.hstream.internal">QueryOrBuilder</a></code></dd>
@@ -1337,7 +1349,13 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 <li class="blockList">
 <h4>setType</h4>
 <pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a>&nbsp;setType&#8203;(<a href="QueryType.html" title="enum in io.hstream.internal">QueryType</a>&nbsp;value)</pre>
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block"><pre>
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name
+ </pre>
+
+ <code>.hstream.server.QueryType type = 7;</code></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>value</code> - The type to set.</dd>
@@ -1353,7 +1371,71 @@ implements <a href="QueryOrBuilder.html" title="interface in io.hstream.internal
 <li class="blockList">
 <h4>clearType</h4>
 <pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a>&nbsp;clearType()</pre>
-<div class="block"><code>.hstream.server.QueryType type = 7;</code></div>
+<div class="block"><pre>
+ type:
+    CreateStreamAs: resultName is result stream name
+    CreateViewAs: resultName is result view name
+ </pre>
+
+ <code>.hstream.server.QueryType type = 7;</code></div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>This builder for chaining.</dd>
+</dl>
+</li>
+</ul>
+<a id="getNodeId()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getNodeId</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getNodeId()</pre>
+<div class="block"><pre>
+ Id of the node to execute the query
+ </pre>
+
+ <code>uint32 nodeId = 8;</code></div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="QueryOrBuilder.html#getNodeId()">getNodeId</a></code>&nbsp;in interface&nbsp;<code><a href="QueryOrBuilder.html" title="interface in io.hstream.internal">QueryOrBuilder</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The nodeId.</dd>
+</dl>
+</li>
+</ul>
+<a id="setNodeId(int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setNodeId</h4>
+<pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a>&nbsp;setNodeId&#8203;(int&nbsp;value)</pre>
+<div class="block"><pre>
+ Id of the node to execute the query
+ </pre>
+
+ <code>uint32 nodeId = 8;</code></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>value</code> - The nodeId to set.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>This builder for chaining.</dd>
+</dl>
+</li>
+</ul>
+<a id="clearNodeId()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>clearNodeId</h4>
+<pre class="methodSignature">public&nbsp;<a href="Query.Builder.html" title="class in io.hstream.internal">Query.Builder</a>&nbsp;clearNodeId()</pre>
+<div class="block"><pre>
+ Id of the node to execute the query
+ </pre>
+
+ <code>uint32 nodeId = 8;</code></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>This builder for chaining.</dd>
