@@ -57,8 +57,13 @@ class StreamShardReaderKtImpl(
                 val respFlow = client.getCoroutineStub(serverUrl).readShardStream(readerBuilder.build())
                 notifyStarted()
                 readerScope.launch {
+                try{
                     respFlow.collect {
                         process(it)
+                    }
+                    } catch (e: Exception) {
+                      logger.error("steamShardReader $readerName failed", e)
+                      notifyFailed(HStreamDBClientException(e))
                     }
                 }
             } catch (e: Exception) {
