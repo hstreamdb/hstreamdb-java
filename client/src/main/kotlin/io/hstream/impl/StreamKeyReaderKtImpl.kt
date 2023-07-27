@@ -98,7 +98,7 @@ class StreamKeyReaderKtImpl(
        return !isStopped.get() || !buffer.isEmpty()
     }
 
-    override fun next(): ReceivedRecord {
+    override fun next(): ReceivedRecord? {
 
         var res: ReceivedRecord? = null
 
@@ -108,6 +108,8 @@ class StreamKeyReaderKtImpl(
             if(res == null) {
                 val e = exceptionRef.get()
                 if(e != null) throw e
+
+                if(isStopped.get()) return null
             }
         }
 
