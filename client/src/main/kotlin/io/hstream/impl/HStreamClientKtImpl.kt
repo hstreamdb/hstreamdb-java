@@ -4,26 +4,7 @@ import com.google.common.base.Preconditions.checkArgument
 import com.google.common.util.concurrent.MoreExecutors
 import com.google.protobuf.Empty
 import io.grpc.ChannelCredentials
-import io.hstream.BufferedProducerBuilder
-import io.hstream.Cluster
-import io.hstream.Connector
-import io.hstream.ConsumerBuilder
-import io.hstream.ConsumerInformation
-import io.hstream.CreateConnectorRequest
-import io.hstream.GetStreamResponse
-import io.hstream.GetSubscriptionResponse
-import io.hstream.HRecord
-import io.hstream.HStreamClient
-import io.hstream.HStreamDBClientException
-import io.hstream.ProducerBuilder
-import io.hstream.Query
-import io.hstream.QueryerBuilder
-import io.hstream.ReaderBuilder
-import io.hstream.Shard
-import io.hstream.Stream
-import io.hstream.StreamShardReaderBuilder
-import io.hstream.Subscription
-import io.hstream.View
+import io.hstream.*
 import io.hstream.internal.CreateQueryRequest
 import io.hstream.internal.DeleteConnectorRequest
 import io.hstream.internal.DeleteQueryRequest
@@ -151,6 +132,10 @@ class HStreamClientKtImpl(
 
     override fun newStreamShardReader(): StreamShardReaderBuilder {
         return StreamShardReaderBuilderImpl(this)
+    }
+
+    override fun newKeyShardReader(): StreamKeyReaderBuilder {
+       return StreamKeyReaderBuilderImpl(this)
     }
 
     override fun newQueryer(): QueryerBuilder {
