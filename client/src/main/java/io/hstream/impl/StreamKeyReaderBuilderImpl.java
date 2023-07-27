@@ -10,8 +10,8 @@ public class StreamKeyReaderBuilderImpl implements StreamKeyReaderBuilder {
   private final HStreamClientKtImpl client;
   private String streamName;
   private String key;
-  private StreamShardOffset from;
-  StreamShardOffset until;
+  private StreamShardOffset from = new StreamShardOffset(StreamShardOffset.SpecialOffset.EARLIEST);
+  private StreamShardOffset until = new StreamShardOffset(StreamShardOffset.SpecialOffset.LATEST);
 
   int bufferSize = 100;
 
@@ -57,6 +57,8 @@ public class StreamKeyReaderBuilderImpl implements StreamKeyReaderBuilder {
     checkArgument(key != null, "StreamKeyReaderBuilder: `key` should not be null");
     checkArgument(
         from != null, "StreamKeyReaderBuilder: `from` should not be null");
+    checkArgument(
+            until != null, "StreamKeyReaderBuilder: `from` should not be null");
     checkArgument(bufferSize > 0);
     return new StreamKeyReaderKtImpl(client, streamName, key, from, until, bufferSize);
   }
