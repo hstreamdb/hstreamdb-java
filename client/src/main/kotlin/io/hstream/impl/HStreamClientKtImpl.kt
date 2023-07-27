@@ -134,7 +134,7 @@ class HStreamClientKtImpl(
         return StreamShardReaderBuilderImpl(this)
     }
 
-    override fun newKeyShardReader(): StreamKeyReaderBuilder {
+    override fun newStreamKeyReader(): StreamKeyReaderBuilder {
        return StreamKeyReaderBuilderImpl(this)
     }
 
