@@ -16,7 +16,6 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.math.log
 
 class StreamKeyReaderKtImpl(
     private val client: HStreamClientKtImpl,
@@ -57,28 +56,34 @@ class StreamKeyReaderKtImpl(
         }
         val respFlow = client.getCoroutineStub(serverUrl).readStreamByKey(requestFlow)
         readerScope.launch {
-           try{
-               launch {
-                   // wait until rpc called
-                   while (requestFlow.subscriptionCount.value == 0) {
-                       delay(100)
-                   }
-                   requestFlow.emit(requestBuilder.build())
+           launch {
+               // wait until rpc called
+               while (requestFlow.subscriptionCount.value == 0) {
+                   delay(100)
                }
-               launch {
+               try{
+                   requestFlow.emit(requestBuilder.build())
+               } catch (e: Exception) {
+                   logger.error("steamKeyReader $readerName failed", e)
+                   exceptionRef.compareAndSet(null, e)
+                   isStopped.set(true)
+               }
+           }
+           launch {
+               try {
                    respFlow.collect {
                        saveToBuffer(it)
                    }
-                   // wait for saveToBuffer complete
-                   delay(100)
+                } catch (e: Exception) {
+                   logger.error("steamKeyReader $readerName failed", e)
+                   exceptionRef.compareAndSet(null, e)
                    isStopped.set(true)
-                   logger.info("server stopped")
-
-               }
-           } catch (e: Exception) {
-               logger.error("steamKeyReader $readerName failed", e)
-               exceptionRef.compareAndSet(null, e)
+                }
+               // wait for saveToBuffer complete
+               delay(100)
                isStopped.set(true)
+               logger.info("server stopped")
+
            }
         }
     }
@@ -86,6 +91,7 @@ class StreamKeyReaderKtImpl(
     override fun close() {
         readerScope.cancel()
         executorService.shutdownNow()
+        logger.info("StreamKeyReader $readerName closed")
     }
 
     override fun hasNext() : Boolean {
