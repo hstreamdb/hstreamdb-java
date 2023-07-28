@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":10,"i59":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -523,17 +523,34 @@ extends io.grpc.stub.AbstractAsyncStub&lt;<a href="HStreamApiGrpc.HStreamApiStub
 </tr>
 <tr id="i50" class="altColor">
 <td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readSingleShardStream(io.hstream.internal.ReadSingleShardStreamRequest,io.grpc.stub.StreamObserver)">readSingleShardStream</a></span>&#8203;(<a href="ReadSingleShardStreamRequest.html" title="class in io.hstream.internal">ReadSingleShardStreamRequest</a>&nbsp;request,
+                     io.grpc.stub.StreamObserver&lt;<a href="ReadSingleShardStreamResponse.html" title="class in io.hstream.internal">ReadSingleShardStreamResponse</a>&gt;&nbsp;responseObserver)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i51" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readStream(io.hstream.internal.ReadStreamRequest,io.grpc.stub.StreamObserver)">readStream</a></span>&#8203;(<a href="ReadStreamRequest.html" title="class in io.hstream.internal">ReadStreamRequest</a>&nbsp;request,
+          io.grpc.stub.StreamObserver&lt;<a href="ReadStreamResponse.html" title="class in io.hstream.internal">ReadStreamResponse</a>&gt;&nbsp;responseObserver)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i52" class="altColor">
+<td class="colFirst"><code>io.grpc.stub.StreamObserver&lt;<a href="ReadStreamByKeyRequest.html" title="class in io.hstream.internal">ReadStreamByKeyRequest</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readStreamByKey(io.grpc.stub.StreamObserver)">readStreamByKey</a></span>&#8203;(io.grpc.stub.StreamObserver&lt;<a href="ReadStreamByKeyResponse.html" title="class in io.hstream.internal">ReadStreamByKeyResponse</a>&gt;&nbsp;responseObserver)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i53" class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resumeConnector(io.hstream.internal.ResumeConnectorRequest,io.grpc.stub.StreamObserver)">resumeConnector</a></span>&#8203;(<a href="ResumeConnectorRequest.html" title="class in io.hstream.internal">ResumeConnectorRequest</a>&nbsp;request,
                io.grpc.stub.StreamObserver&lt;com.google.protobuf.Empty&gt;&nbsp;responseObserver)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i51" class="rowColor">
+<tr id="i54" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resumeQuery(io.hstream.internal.ResumeQueryRequest,io.grpc.stub.StreamObserver)">resumeQuery</a></span>&#8203;(<a href="ResumeQueryRequest.html" title="class in io.hstream.internal">ResumeQueryRequest</a>&nbsp;request,
            io.grpc.stub.StreamObserver&lt;com.google.protobuf.Empty&gt;&nbsp;responseObserver)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i52" class="altColor">
+<tr id="i55" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendAdminCommand(io.hstream.internal.AdminCommandRequest,io.grpc.stub.StreamObserver)">sendAdminCommand</a></span>&#8203;(<a href="AdminCommandRequest.html" title="class in io.hstream.internal">AdminCommandRequest</a>&nbsp;request,
                 io.grpc.stub.StreamObserver&lt;<a href="AdminCommandResponse.html" title="class in io.hstream.internal">AdminCommandResponse</a>&gt;&nbsp;responseObserver)</code></th>
@@ -542,15 +559,27 @@ extends io.grpc.stub.AbstractAsyncStub&lt;<a href="HStreamApiGrpc.HStreamApiStub
  Admin Command</div>
 </td>
 </tr>
-<tr id="i53" class="rowColor">
+<tr id="i56" class="altColor">
 <td class="colFirst"><code>io.grpc.stub.StreamObserver&lt;<a href="StreamingFetchRequest.html" title="class in io.hstream.internal">StreamingFetchRequest</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#streamingFetch(io.grpc.stub.StreamObserver)">streamingFetch</a></span>&#8203;(io.grpc.stub.StreamObserver&lt;<a href="StreamingFetchResponse.html" title="class in io.hstream.internal">StreamingFetchResponse</a>&gt;&nbsp;responseObserver)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i54" class="altColor">
+<tr id="i57" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#terminateQuery(io.hstream.internal.TerminateQueryRequest,io.grpc.stub.StreamObserver)">terminateQuery</a></span>&#8203;(<a href="TerminateQueryRequest.html" title="class in io.hstream.internal">TerminateQueryRequest</a>&nbsp;request,
               io.grpc.stub.StreamObserver&lt;com.google.protobuf.Empty&gt;&nbsp;responseObserver)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i58" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#trimShard(io.hstream.internal.TrimShardRequest,io.grpc.stub.StreamObserver)">trimShard</a></span>&#8203;(<a href="TrimShardRequest.html" title="class in io.hstream.internal">TrimShardRequest</a>&nbsp;request,
+         io.grpc.stub.StreamObserver&lt;com.google.protobuf.Empty&gt;&nbsp;responseObserver)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i59" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#trimStream(io.hstream.internal.TrimStreamRequest,io.grpc.stub.StreamObserver)">trimStream</a></span>&#8203;(<a href="TrimStreamRequest.html" title="class in io.hstream.internal">TrimStreamRequest</a>&nbsp;request,
+          io.grpc.stub.StreamObserver&lt;com.google.protobuf.Empty&gt;&nbsp;responseObserver)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -638,6 +667,16 @@ extends io.grpc.stub.AbstractAsyncStub&lt;<a href="HStreamApiGrpc.HStreamApiStub
                          io.grpc.stub.StreamObserver&lt;com.google.protobuf.Empty&gt;&nbsp;responseObserver)</pre>
 </li>
 </ul>
+<a id="trimStream(io.hstream.internal.TrimStreamRequest,io.grpc.stub.StreamObserver)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>trimStream</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;trimStream&#8203;(<a href="TrimStreamRequest.html" title="class in io.hstream.internal">TrimStreamRequest</a>&nbsp;request,
+                       io.grpc.stub.StreamObserver&lt;com.google.protobuf.Empty&gt;&nbsp;responseObserver)</pre>
+</li>
+</ul>
 <a id="getStream(io.hstream.internal.GetStreamRequest,io.grpc.stub.StreamObserver)">
 <!--   -->
 </a>
@@ -711,6 +750,16 @@ extends io.grpc.stub.AbstractAsyncStub&lt;<a href="HStreamApiGrpc.HStreamApiStub
  </pre></div>
 </li>
 </ul>
+<a id="trimShard(io.hstream.internal.TrimShardRequest,io.grpc.stub.StreamObserver)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>trimShard</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;trimShard&#8203;(<a href="TrimShardRequest.html" title="class in io.hstream.internal">TrimShardRequest</a>&nbsp;request,
+                      io.grpc.stub.StreamObserver&lt;com.google.protobuf.Empty&gt;&nbsp;responseObserver)</pre>
+</li>
+</ul>
 <a id="createShardReader(io.hstream.internal.CreateShardReaderRequest,io.grpc.stub.StreamObserver)">
 <!--   -->
 </a>
@@ -769,6 +818,35 @@ extends io.grpc.stub.AbstractAsyncStub&lt;<a href="HStreamApiGrpc.HStreamApiStub
 <h4>deleteShardReader</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;deleteShardReader&#8203;(<a href="DeleteShardReaderRequest.html" title="class in io.hstream.internal">DeleteShardReaderRequest</a>&nbsp;request,
                               io.grpc.stub.StreamObserver&lt;com.google.protobuf.Empty&gt;&nbsp;responseObserver)</pre>
+</li>
+</ul>
+<a id="readStream(io.hstream.internal.ReadStreamRequest,io.grpc.stub.StreamObserver)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readStream</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;readStream&#8203;(<a href="ReadStreamRequest.html" title="class in io.hstream.internal">ReadStreamRequest</a>&nbsp;request,
+                       io.grpc.stub.StreamObserver&lt;<a href="ReadStreamResponse.html" title="class in io.hstream.internal">ReadStreamResponse</a>&gt;&nbsp;responseObserver)</pre>
+</li>
+</ul>
+<a id="readSingleShardStream(io.hstream.internal.ReadSingleShardStreamRequest,io.grpc.stub.StreamObserver)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readSingleShardStream</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;readSingleShardStream&#8203;(<a href="ReadSingleShardStreamRequest.html" title="class in io.hstream.internal">ReadSingleShardStreamRequest</a>&nbsp;request,
+                                  io.grpc.stub.StreamObserver&lt;<a href="ReadSingleShardStreamResponse.html" title="class in io.hstream.internal">ReadSingleShardStreamResponse</a>&gt;&nbsp;responseObserver)</pre>
+</li>
+</ul>
+<a id="readStreamByKey(io.grpc.stub.StreamObserver)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readStreamByKey</h4>
+<pre class="methodSignature">public&nbsp;io.grpc.stub.StreamObserver&lt;<a href="ReadStreamByKeyRequest.html" title="class in io.hstream.internal">ReadStreamByKeyRequest</a>&gt;&nbsp;readStreamByKey&#8203;(io.grpc.stub.StreamObserver&lt;<a href="ReadStreamByKeyResponse.html" title="class in io.hstream.internal">ReadStreamByKeyResponse</a>&gt;&nbsp;responseObserver)</pre>
 </li>
 </ul>
 <a id="createSubscription(io.hstream.internal.Subscription,io.grpc.stub.StreamObserver)">

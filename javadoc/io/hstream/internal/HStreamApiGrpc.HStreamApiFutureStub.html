@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -490,6 +490,16 @@ extends io.grpc.stub.AbstractFutureStub&lt;<a href="HStreamApiGrpc.HStreamApiFut
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#terminateQuery(io.hstream.internal.TerminateQueryRequest)">terminateQuery</a></span>&#8203;(<a href="TerminateQueryRequest.html" title="class in io.hstream.internal">TerminateQueryRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i53" class="rowColor">
+<td class="colFirst"><code>com.google.common.util.concurrent.ListenableFuture&lt;com.google.protobuf.Empty&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#trimShard(io.hstream.internal.TrimShardRequest)">trimShard</a></span>&#8203;(<a href="TrimShardRequest.html" title="class in io.hstream.internal">TrimShardRequest</a>&nbsp;request)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i54" class="altColor">
+<td class="colFirst"><code>com.google.common.util.concurrent.ListenableFuture&lt;com.google.protobuf.Empty&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#trimStream(io.hstream.internal.TrimStreamRequest)">trimStream</a></span>&#8203;(<a href="TrimStreamRequest.html" title="class in io.hstream.internal">TrimStreamRequest</a>&nbsp;request)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.io.grpc.stub.AbstractFutureStub">
@@ -572,6 +582,15 @@ extends io.grpc.stub.AbstractFutureStub&lt;<a href="HStreamApiGrpc.HStreamApiFut
 <pre class="methodSignature">public&nbsp;com.google.common.util.concurrent.ListenableFuture&lt;com.google.protobuf.Empty&gt;&nbsp;deleteStream&#8203;(<a href="DeleteStreamRequest.html" title="class in io.hstream.internal">DeleteStreamRequest</a>&nbsp;request)</pre>
 </li>
 </ul>
+<a id="trimStream(io.hstream.internal.TrimStreamRequest)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>trimStream</h4>
+<pre class="methodSignature">public&nbsp;com.google.common.util.concurrent.ListenableFuture&lt;com.google.protobuf.Empty&gt;&nbsp;trimStream&#8203;(<a href="TrimStreamRequest.html" title="class in io.hstream.internal">TrimStreamRequest</a>&nbsp;request)</pre>
+</li>
+</ul>
 <a id="getStream(io.hstream.internal.GetStreamRequest)">
 <!--   -->
 </a>
@@ -636,6 +655,15 @@ extends io.grpc.stub.AbstractFutureStub&lt;<a href="HStreamApiGrpc.HStreamApiFut
 <div class="block"><pre>
  Shard APIs
  </pre></div>
+</li>
+</ul>
+<a id="trimShard(io.hstream.internal.TrimShardRequest)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>trimShard</h4>
+<pre class="methodSignature">public&nbsp;com.google.common.util.concurrent.ListenableFuture&lt;com.google.protobuf.Empty&gt;&nbsp;trimShard&#8203;(<a href="TrimShardRequest.html" title="class in io.hstream.internal">TrimShardRequest</a>&nbsp;request)</pre>
 </li>
 </ul>
 <a id="createShardReader(io.hstream.internal.CreateShardReaderRequest)">

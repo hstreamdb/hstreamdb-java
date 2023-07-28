@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -473,16 +473,26 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i50" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Iterator.html?is-external=true" title="class or interface in java.util" class="externalLink">Iterator</a>&lt;<a href="ReadSingleShardStreamResponse.html" title="class in io.hstream.internal">ReadSingleShardStreamResponse</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readSingleShardStream(io.hstream.internal.ReadSingleShardStreamRequest)">readSingleShardStream</a></span>&#8203;(<a href="ReadSingleShardStreamRequest.html" title="class in io.hstream.internal">ReadSingleShardStreamRequest</a>&nbsp;request)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i51" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Iterator.html?is-external=true" title="class or interface in java.util" class="externalLink">Iterator</a>&lt;<a href="ReadStreamResponse.html" title="class in io.hstream.internal">ReadStreamResponse</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#readStream(io.hstream.internal.ReadStreamRequest)">readStream</a></span>&#8203;(<a href="ReadStreamRequest.html" title="class in io.hstream.internal">ReadStreamRequest</a>&nbsp;request)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i52" class="altColor">
 <td class="colFirst"><code>com.google.protobuf.Empty</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resumeConnector(io.hstream.internal.ResumeConnectorRequest)">resumeConnector</a></span>&#8203;(<a href="ResumeConnectorRequest.html" title="class in io.hstream.internal">ResumeConnectorRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i51" class="rowColor">
+<tr id="i53" class="rowColor">
 <td class="colFirst"><code>com.google.protobuf.Empty</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resumeQuery(io.hstream.internal.ResumeQueryRequest)">resumeQuery</a></span>&#8203;(<a href="ResumeQueryRequest.html" title="class in io.hstream.internal">ResumeQueryRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i52" class="altColor">
+<tr id="i54" class="altColor">
 <td class="colFirst"><code><a href="AdminCommandResponse.html" title="class in io.hstream.internal">AdminCommandResponse</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendAdminCommand(io.hstream.internal.AdminCommandRequest)">sendAdminCommand</a></span>&#8203;(<a href="AdminCommandRequest.html" title="class in io.hstream.internal">AdminCommandRequest</a>&nbsp;request)</code></th>
 <td class="colLast">
@@ -490,9 +500,19 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
  Admin Command</div>
 </td>
 </tr>
-<tr id="i53" class="rowColor">
+<tr id="i55" class="rowColor">
 <td class="colFirst"><code>com.google.protobuf.Empty</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#terminateQuery(io.hstream.internal.TerminateQueryRequest)">terminateQuery</a></span>&#8203;(<a href="TerminateQueryRequest.html" title="class in io.hstream.internal">TerminateQueryRequest</a>&nbsp;request)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i56" class="altColor">
+<td class="colFirst"><code>com.google.protobuf.Empty</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#trimShard(io.hstream.internal.TrimShardRequest)">trimShard</a></span>&#8203;(<a href="TrimShardRequest.html" title="class in io.hstream.internal">TrimShardRequest</a>&nbsp;request)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i57" class="rowColor">
+<td class="colFirst"><code>com.google.protobuf.Empty</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#trimStream(io.hstream.internal.TrimStreamRequest)">trimStream</a></span>&#8203;(<a href="TrimStreamRequest.html" title="class in io.hstream.internal">TrimStreamRequest</a>&nbsp;request)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -577,6 +597,15 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
 <pre class="methodSignature">public&nbsp;com.google.protobuf.Empty&nbsp;deleteStream&#8203;(<a href="DeleteStreamRequest.html" title="class in io.hstream.internal">DeleteStreamRequest</a>&nbsp;request)</pre>
 </li>
 </ul>
+<a id="trimStream(io.hstream.internal.TrimStreamRequest)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>trimStream</h4>
+<pre class="methodSignature">public&nbsp;com.google.protobuf.Empty&nbsp;trimStream&#8203;(<a href="TrimStreamRequest.html" title="class in io.hstream.internal">TrimStreamRequest</a>&nbsp;request)</pre>
+</li>
+</ul>
 <a id="getStream(io.hstream.internal.GetStreamRequest)">
 <!--   -->
 </a>
@@ -643,6 +672,15 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
  </pre></div>
 </li>
 </ul>
+<a id="trimShard(io.hstream.internal.TrimShardRequest)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>trimShard</h4>
+<pre class="methodSignature">public&nbsp;com.google.protobuf.Empty&nbsp;trimShard&#8203;(<a href="TrimShardRequest.html" title="class in io.hstream.internal">TrimShardRequest</a>&nbsp;request)</pre>
+</li>
+</ul>
 <a id="createShardReader(io.hstream.internal.CreateShardReaderRequest)">
 <!--   -->
 </a>
@@ -695,6 +733,24 @@ extends io.grpc.stub.AbstractBlockingStub&lt;<a href="HStreamApiGrpc.HStreamApiB
 <li class="blockList">
 <h4>deleteShardReader</h4>
 <pre class="methodSignature">public&nbsp;com.google.protobuf.Empty&nbsp;deleteShardReader&#8203;(<a href="DeleteShardReaderRequest.html" title="class in io.hstream.internal">DeleteShardReaderRequest</a>&nbsp;request)</pre>
+</li>
+</ul>
+<a id="readStream(io.hstream.internal.ReadStreamRequest)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readStream</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Iterator.html?is-external=true" title="class or interface in java.util" class="externalLink">Iterator</a>&lt;<a href="ReadStreamResponse.html" title="class in io.hstream.internal">ReadStreamResponse</a>&gt;&nbsp;readStream&#8203;(<a href="ReadStreamRequest.html" title="class in io.hstream.internal">ReadStreamRequest</a>&nbsp;request)</pre>
+</li>
+</ul>
+<a id="readSingleShardStream(io.hstream.internal.ReadSingleShardStreamRequest)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>readSingleShardStream</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Iterator.html?is-external=true" title="class or interface in java.util" class="externalLink">Iterator</a>&lt;<a href="ReadSingleShardStreamResponse.html" title="class in io.hstream.internal">ReadSingleShardStreamResponse</a>&gt;&nbsp;readSingleShardStream&#8203;(<a href="ReadSingleShardStreamRequest.html" title="class in io.hstream.internal">ReadSingleShardStreamRequest</a>&nbsp;request)</pre>
 </li>
 </ul>
 <a id="createSubscription(io.hstream.internal.Subscription)">
