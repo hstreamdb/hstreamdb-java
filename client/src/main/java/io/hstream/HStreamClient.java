@@ -29,6 +29,8 @@ public interface HStreamClient extends AutoCloseable {
 
   StreamShardReaderBuilder newStreamShardReader();
 
+  StreamKeyReaderBuilder newStreamKeyReader();
+
   /**
    * Create a new stream with 1 replicas.
    *
