@@ -39,11 +39,10 @@ class StreamKeyReaderKtImpl(
 
     private  fun doStart() {
         logger.info("streamKeyReader $readerName is starting")
-        val lookupRequest = LookupResourceRequest.newBuilder()
-                .setResType(ResourceType.ResStream)
-                .setResId(streamName)
+        val lookupRequest = LookupKeyRequest.newBuilder()
+                .setPartitionKey(key)
                 .build()
-        val lookupResp = client.unaryCallBlocked { it.lookupResource(lookupRequest) }
+        val lookupResp = client.unaryCallBlocked { it.lookupKey(lookupRequest) }
         val serverUrl = lookupResp.host + ":" + lookupResp.port
         val requestBuilder = ReadStreamByKeyRequest.newBuilder()
             .setReaderId(readerName)
