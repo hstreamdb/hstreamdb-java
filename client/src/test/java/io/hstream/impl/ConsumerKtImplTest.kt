@@ -36,7 +36,7 @@ class ConsumerKtImplTest {
                     future.completeExceptionally(failure)
                 }
             },
-            threadPool
+            threadPool,
         )
         consumer.startAsync().awaitRunning()
         Thread.sleep(1000)

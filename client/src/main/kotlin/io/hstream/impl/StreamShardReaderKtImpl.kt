@@ -39,7 +39,6 @@ class StreamShardReaderKtImpl(
 
     override fun doStart() {
         Thread {
-
             try {
                 logger.info("streamShardReader $readerName is starting")
                 val lookupShardReaderRequest = LookupShardReaderRequest.newBuilder()
@@ -57,13 +56,13 @@ class StreamShardReaderKtImpl(
                 val respFlow = client.getCoroutineStub(serverUrl).readShardStream(readerBuilder.build())
                 notifyStarted()
                 readerScope.launch {
-                try{
-                    respFlow.collect {
-                        process(it)
-                    }
+                    try {
+                        respFlow.collect {
+                            process(it)
+                        }
                     } catch (e: Exception) {
-                      logger.error("steamShardReader $readerName failed", e)
-                      notifyFailed(HStreamDBClientException(e))
+                        logger.error("steamShardReader $readerName failed", e)
+                        notifyFailed(HStreamDBClientException(e))
                     }
                 }
             } catch (e: Exception) {
@@ -87,7 +86,6 @@ class StreamShardReaderKtImpl(
         }
 
         for (receivedRecord in value.receivedRecordsList) {
-
             val receivedHStreamRecords = RecordUtils.decompress(receivedRecord)
             val createdTimestamp = receivedRecord.record.publishTime
             val createdTime = Instant.ofEpochSecond(createdTimestamp.seconds, createdTimestamp.nanos.toLong())
@@ -130,19 +128,18 @@ class StreamShardReaderKtImpl(
             return try {
                 val header = RecordUtils.parseRecordHeaderFromHStreamRecord(receivedHStreamRecord.record)
                 if (RecordUtils.isRawRecord(receivedHStreamRecord.record)) {
-
                     val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(receivedHStreamRecord.record)
                     ReceivedRecord(
                         GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId),
                         Record.newBuilder().partitionKey(header.partitionKey).rawRecord(rawRecord).build(),
-                        createdTime
+                        createdTime,
                     )
                 } else {
                     val hRecord = RecordUtils.parseHRecordFromHStreamRecord(receivedHStreamRecord.record)
                     ReceivedRecord(
                         GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId),
                         Record.newBuilder().partitionKey(header.partitionKey).hRecord(hRecord).build(),
-                        createdTime
+                        createdTime,
                     )
                 }
             } catch (e: InvalidProtocolBufferException) {

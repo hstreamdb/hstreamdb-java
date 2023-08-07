@@ -15,7 +15,7 @@ class ProducerKtImplTest {
         var future = producer.write(
             Record.newBuilder()
                 .rawRecord("ok-payload".toByteArray())
-                .build()
+                .build(),
         )
         future.join()
         future = producer.write(
@@ -23,8 +23,8 @@ class ProducerKtImplTest {
                 .hRecord(
                     HRecord.newBuilder()
                         .put("some-how", "any-how")
-                        .build()
-                ).build()
+                        .build(),
+                ).build(),
         )
         future.join()
     }

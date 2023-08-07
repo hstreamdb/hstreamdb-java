@@ -8,7 +8,7 @@ plugins {
     id("signing")
 
     kotlin("jvm") version "1.6.10"
-    id("com.diffplug.spotless") version "6.2.0"
+    id("com.diffplug.spotless") version "6.20.0"
 
     id("me.champeau.jmh") version "0.6.7"
 }
@@ -147,17 +147,25 @@ publishing {
             // def releasesRepoUrl = layout.buildDirectory.dir('repos/releases')
             // def snapshotsRepoUrl = layout.buildDirectory.dir('repos/snapshots')
             url = uri(
-                if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+                if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl,
             )
             credentials {
                 username =
-                    if (project.hasProperty("ossrhUsername")) project.property("ossrhUsername") as String? else System.getenv(
-                        "OSSRH_USERNAME"
-                    )
+                    if (project.hasProperty("ossrhUsername")) {
+                        project.property("ossrhUsername") as String?
+                    } else {
+                        System.getenv(
+                            "OSSRH_USERNAME",
+                        )
+                    }
                 password =
-                    if (project.hasProperty("ossrhPassword")) project.property("ossrhPassword") as String? else System.getenv(
-                        "OSSRH_TOKEN"
-                    )
+                    if (project.hasProperty("ossrhPassword")) {
+                        project.property("ossrhPassword") as String?
+                    } else {
+                        System.getenv(
+                            "OSSRH_TOKEN",
+                        )
+                    }
             }
         }
     }
@@ -194,12 +202,12 @@ tasks.withType<Jar> {
 
 spotless {
     java {
-        target("client/src/*/java/**/*.java")
+        target("**/*.java")
         googleJavaFormat()
     }
 
     kotlin {
-        target("client/src/*/kotlin/**/*.kt")
+        target("**/*.kt")
         ktlint()
     }
 

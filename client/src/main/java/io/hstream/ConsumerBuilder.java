@@ -1,8 +1,5 @@
 package io.hstream;
 
-import java.util.List;
-import java.util.function.BiConsumer;
-
 /** A builder for {@link Consumer}s. */
 public interface ConsumerBuilder {
 

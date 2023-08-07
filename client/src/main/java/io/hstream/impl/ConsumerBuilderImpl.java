@@ -2,8 +2,11 @@ package io.hstream.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import io.hstream.*;
-
+import io.hstream.BatchReceiver;
+import io.hstream.Consumer;
+import io.hstream.ConsumerBuilder;
+import io.hstream.HRecordReceiver;
+import io.hstream.RawRecordReceiver;
 import java.util.UUID;
 
 public class ConsumerBuilderImpl implements ConsumerBuilder {
@@ -77,6 +80,13 @@ public class ConsumerBuilderImpl implements ConsumerBuilder {
       ackBufferSize = 1;
     }
     return new ConsumerKtImpl(
-        client, name, subscription, rawRecordReceiver, hRecordReceiver, batchReceiver, ackBufferSize, ackAgeLimit);
+        client,
+        name,
+        subscription,
+        rawRecordReceiver,
+        hRecordReceiver,
+        batchReceiver,
+        ackBufferSize,
+        ackAgeLimit);
   }
 }

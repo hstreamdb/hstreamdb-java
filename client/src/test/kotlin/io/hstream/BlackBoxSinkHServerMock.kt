@@ -18,7 +18,7 @@ class BlackBoxSinkHServerMock(
     private val serverName: String,
 ) : HServerMock(
     hMetaMockCluster,
-    serverName
+    serverName,
 ) {
     val delayTimeMs: AtomicLong = AtomicLong(0)
     val streamNameFlushChannelMap: MutableMap<String, Channel<Pair<List<RecordId>, BatchedRecord>>> = mutableMapOf()
@@ -28,7 +28,7 @@ class BlackBoxSinkHServerMock(
         if (sleepTimeMs != 0L) {
             io.hstream.impl.logger.info("append: sleep for $sleepTimeMs ms")
             Thread.sleep(
-                sleepTimeMs
+                sleepTimeMs,
             )
         }
 
@@ -48,7 +48,7 @@ class BlackBoxSinkHServerMock(
         if (sendResult.isClosed || sendResult.isFailure) {
             io.hstream.impl.logger.error(sendResult.toString())
             responseObserver!!.onError(
-                io.grpc.Status.INTERNAL.asException()
+                io.grpc.Status.INTERNAL.asException(),
             )
         }
 
@@ -58,7 +58,7 @@ class BlackBoxSinkHServerMock(
                 .setStreamName(streamName)
                 .setShardId(shardId)
                 .addAllRecordIds(recordIds)
-                .build()
+                .build(),
         )
         responseObserver.onCompleted()
     }
@@ -70,7 +70,7 @@ class BlackBoxSinkHServerMock(
             LookupShardResponse.newBuilder()
                 .setShardId(shardId)
                 .setServerNode(serverNameToServerNode(serverName))
-                .build()
+                .build(),
         )
 
         responseObserver.onCompleted()
@@ -94,13 +94,13 @@ class BlackBoxSinkHServerMockController(
 
 fun buildBlackBoxSinkClient_(): Pair<HStreamClient, Pair<BlackBoxSinkHServerMockController, MockedChannelProvider>> {
     val xs = buildMockedClient_(
-        BlackBoxSinkHServerMock::class.java as Class<HStreamApiGrpc.HStreamApiImplBase>
+        BlackBoxSinkHServerMock::class.java as Class<HStreamApiGrpc.HStreamApiImplBase>,
     )
     val client = xs.first
     val server = xs.second.first as BlackBoxSinkHServerMock
     val controller = BlackBoxSinkHServerMockController(
         server.streamNameFlushChannelMap,
-        server.delayTimeMs
+        server.delayTimeMs,
     )
     return Pair(client, Pair(controller, xs.second.second))
 }

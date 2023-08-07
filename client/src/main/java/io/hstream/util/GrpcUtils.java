@@ -1,11 +1,24 @@
 package io.hstream.util;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
 import com.google.protobuf.util.JsonFormat;
-import io.hstream.*;
+import io.hstream.CompressionType;
+import io.hstream.Connector;
+import io.hstream.ConnectorType;
+import io.hstream.ConsumerInformation;
+import io.hstream.GetStreamResponse;
+import io.hstream.GetSubscriptionResponse;
+import io.hstream.HStreamDBClientException;
+import io.hstream.Query;
+import io.hstream.Stream;
+import io.hstream.StreamShardOffset;
+import io.hstream.Subscription;
+import io.hstream.SubscriptionOffset;
+import io.hstream.TaskStatus;
+import io.hstream.View;
 import io.hstream.internal.RecordId;
 import io.hstream.internal.ShardOffset;
 import io.hstream.internal.SpecialOffset;

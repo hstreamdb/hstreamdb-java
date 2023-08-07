@@ -74,7 +74,7 @@ open class HServerMock(
 
     override fun createStream(
         request: io.hstream.internal.Stream?,
-        responseObserver: StreamObserver<io.hstream.internal.Stream>?
+        responseObserver: StreamObserver<io.hstream.internal.Stream>?,
     ) {
         runBlocking {
             val newStream = GrpcUtils.streamFromGrpc(request)
@@ -96,7 +96,7 @@ open class HServerMock(
 
     override fun listStreams(
         request: ListStreamsRequest?,
-        responseObserver: StreamObserver<ListStreamsResponse>?
+        responseObserver: StreamObserver<ListStreamsResponse>?,
     ) {
         runBlocking {
             val response = streamsMutex.withLock {
@@ -104,7 +104,7 @@ open class HServerMock(
                     .addAllStreams(
                         streams.map {
                             GrpcUtils.streamToGrpc(it)
-                        }
+                        },
                     )
                     .build()
             }
@@ -116,7 +116,7 @@ open class HServerMock(
 
     override fun deleteStream(
         request: DeleteStreamRequest?,
-        responseObserver: StreamObserver<Empty>?
+        responseObserver: StreamObserver<Empty>?,
     ) {
         runBlocking {
             val streamName = request?.streamName ?: ""
@@ -140,7 +140,7 @@ open class HServerMock(
 
     override fun createSubscription(
         request: io.hstream.internal.Subscription?,
-        responseObserver: StreamObserver<io.hstream.internal.Subscription>?
+        responseObserver: StreamObserver<io.hstream.internal.Subscription>?,
     ) {
         if (request!!.offset != SpecialOffset.EARLIEST) {
             responseObserver?.onError(Status.INTERNAL.asException())
@@ -168,11 +168,11 @@ open class HServerMock(
                 }
                 hMetaMockCluster.registerSubscription(subscriptionId, serverName)
                 subscriptions.add(
-                    subscription
+                    subscription,
                 )
             }
             responseObserver?.onNext(
-                GrpcUtils.subscriptionToGrpc(subscription)
+                GrpcUtils.subscriptionToGrpc(subscription),
             )
             responseObserver?.onCompleted()
         }
@@ -180,7 +180,7 @@ open class HServerMock(
 
     override fun lookupSubscription(
         request: LookupSubscriptionRequest?,
-        responseObserver: StreamObserver<LookupSubscriptionResponse>?
+        responseObserver: StreamObserver<LookupSubscriptionResponse>?,
     ) {
         try {
             runBlocking {
@@ -190,20 +190,20 @@ open class HServerMock(
                     LookupSubscriptionResponse.newBuilder()
                         .setSubscriptionId(request.subscriptionId)
                         .setServerNode(serverNode)
-                        .build()
+                        .build(),
                 )
             }
         } catch (e: Throwable) {
             logger.error("lookup subscription failed: $e")
             responseObserver?.onError(
-                Status.NOT_FOUND.asException()
+                Status.NOT_FOUND.asException(),
             )
         }
     }
 
     private fun checkSubscriptionBelonging(subscriptionId: String) {
         assert(
-            serverName == runBlocking { hMetaMockCluster.lookupSubscriptionName(subscriptionId) }
+            serverName == runBlocking { hMetaMockCluster.lookupSubscriptionName(subscriptionId) },
         )
     }
 
@@ -238,7 +238,7 @@ open class HServerMock(
                         checkSubscriptionBelonging(request.subscriptionId)
                     } catch (e: Throwable) {
                         responseObserver?.onError(
-                            Status.INVALID_ARGUMENT.asException()
+                            Status.INVALID_ARGUMENT.asException(),
                         )
                     }
                     isInitReq.set(false)
@@ -247,7 +247,7 @@ open class HServerMock(
                 val response = StreamingFetchResponse.newBuilder()
                     .setReceivedRecords(
                         io.hstream.internal.ReceivedRecord.newBuilder()
-                            .build()
+                            .build(),
                     )
                     .build()
 
@@ -273,9 +273,9 @@ open class HServerMock(
                         .setStreamName(streamName)
                         .setStartHashRangeKey("000000000000000000000000000000000000000")
                         .setEndHashRangeKey("999999999999999999999999999999999999999")
-                        .build()
+                        .build(),
                 )
-                .build()
+                .build(),
         )
         responseObserver.onCompleted()
     }
@@ -293,7 +293,7 @@ fun startMockedHServer(
     grpcCleanupRule: GrpcCleanupRule,
     serverImpl: HStreamApiGrpc.HStreamApiImplBase,
     hMetaMockCluster: HMetaMock,
-    serverUrl: String
+    serverUrl: String,
 ) {
     runBlocking { hMetaMockCluster.registerName(serverUrl) }
     val serverName = trimServerUrlToServerName(serverUrl)
@@ -302,7 +302,7 @@ fun startMockedHServer(
         InProcessServerBuilder
             .forName(name)
             .directExecutor()
-            .addService(serverImpl).build().start()
+            .addService(serverImpl).build().start(),
     )
     logger.info("startMockedHServer: serverName = $name")
 }
@@ -312,7 +312,7 @@ fun getMockedHServerChannel(grpcCleanupRule: GrpcCleanupRule, serverName: String
     return grpcCleanupRule.register(
         InProcessChannelBuilder
             .forName(serverName)
-            .directExecutor().build()
+            .directExecutor().build(),
     )
 }
 
@@ -424,7 +424,7 @@ class HServerMockTests {
                     .subscription("some-id")
                     .offset(Subscription.SubscriptionOffset.EARLIEST)
                     .stream("some-stream")
-                    .build()
+                    .build(),
             )
         }
     }
@@ -438,7 +438,7 @@ class HServerMockTests {
                 .subscription("some-id")
                 .offset(Subscription.SubscriptionOffset.EARLIEST)
                 .stream("some-stream")
-                .build()
+                .build(),
         )
     }
 }
@@ -454,7 +454,7 @@ private fun randPort(): Int {
     return Random.nextInt(256)
 }
 
-fun buildMockedClient_(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): Pair<HStreamClient, Pair< HStreamApiGrpc.HStreamApiImplBase, MockedChannelProvider>> {
+fun buildMockedClient_(hServerMock: Class<HStreamApiGrpc.HStreamApiImplBase>): Pair<HStreamClient, Pair<HStreamApiGrpc.HStreamApiImplBase, MockedChannelProvider>> {
     val grpcCleanupRule = GrpcCleanupRule()
     // TODO: AutoCloseable?
 

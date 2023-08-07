@@ -108,7 +108,7 @@ class ResponderImplTest {
                 while (true) {
                     ackReceiver.receive()
                     retList.add(
-                        System.currentTimeMillis()
+                        System.currentTimeMillis(),
                     )
                 }
             }

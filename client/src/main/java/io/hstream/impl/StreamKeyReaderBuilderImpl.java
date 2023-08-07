@@ -1,9 +1,11 @@
 package io.hstream.impl;
 
-import io.hstream.*;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import io.hstream.StreamKeyReader;
+import io.hstream.StreamKeyReaderBuilder;
+import io.hstream.StreamShardOffset;
 
 public class StreamKeyReaderBuilderImpl implements StreamKeyReaderBuilder {
 
@@ -31,7 +33,6 @@ public class StreamKeyReaderBuilderImpl implements StreamKeyReaderBuilder {
     return this;
   }
 
-
   @Override
   public StreamKeyReaderBuilder from(StreamShardOffset shardOffset) {
     this.from = shardOffset;
@@ -55,10 +56,8 @@ public class StreamKeyReaderBuilderImpl implements StreamKeyReaderBuilder {
     checkNotNull(client);
     checkArgument(streamName != null, "StreamKeyReaderBuilder: `streamName` should not be null");
     checkArgument(key != null, "StreamKeyReaderBuilder: `key` should not be null");
-    checkArgument(
-        from != null, "StreamKeyReaderBuilder: `from` should not be null");
-    checkArgument(
-            until != null, "StreamKeyReaderBuilder: `from` should not be null");
+    checkArgument(from != null, "StreamKeyReaderBuilder: `from` should not be null");
+    checkArgument(until != null, "StreamKeyReaderBuilder: `from` should not be null");
     checkArgument(bufferSize > 0);
     return new StreamKeyReaderKtImpl(client, streamName, key, from, until, bufferSize);
   }

@@ -31,7 +31,7 @@ import kotlin.collections.HashMap
 open class ProducerKtImpl(
     private val client: HStreamClientKtImpl,
     private val stream: String,
-    val requestTimeoutMs: Long
+    val requestTimeoutMs: Long,
 ) : Producer {
     private val serverUrls: HashMap<Long, String> = HashMap()
     private val serverUrlsLock: Mutex = Mutex()
@@ -121,7 +121,7 @@ open class ProducerKtImpl(
         appendRequest: AppendRequest,
         shardId: Long,
         tryTimes: Int,
-        forceUpdate: Boolean = false
+        forceUpdate: Boolean = false,
     ): List<String> {
         // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
         //       This function is for handling them.
@@ -153,7 +153,7 @@ open class ProducerKtImpl(
     protected suspend fun writeHStreamRecords(
         hStreamRecords: List<HStreamRecord>,
         shardId: Long,
-        compressionType: CompressionType = CompressionType.NONE
+        compressionType: CompressionType = CompressionType.NONE,
     ): List<String> {
         val payload = RecordUtils.compress(hStreamRecords, compressionType)
         val batchedRecord = BatchedRecord.newBuilder().setCompressionType(GrpcUtils.compressionTypeToInternal(compressionType))

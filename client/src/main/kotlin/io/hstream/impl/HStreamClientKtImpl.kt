@@ -4,7 +4,27 @@ import com.google.common.base.Preconditions.checkArgument
 import com.google.common.util.concurrent.MoreExecutors
 import com.google.protobuf.Empty
 import io.grpc.ChannelCredentials
-import io.hstream.*
+import io.hstream.BufferedProducerBuilder
+import io.hstream.Cluster
+import io.hstream.Connector
+import io.hstream.ConsumerBuilder
+import io.hstream.ConsumerInformation
+import io.hstream.CreateConnectorRequest
+import io.hstream.GetStreamResponse
+import io.hstream.GetSubscriptionResponse
+import io.hstream.HRecord
+import io.hstream.HStreamClient
+import io.hstream.HStreamDBClientException
+import io.hstream.ProducerBuilder
+import io.hstream.Query
+import io.hstream.QueryerBuilder
+import io.hstream.ReaderBuilder
+import io.hstream.Shard
+import io.hstream.Stream
+import io.hstream.StreamKeyReaderBuilder
+import io.hstream.StreamShardReaderBuilder
+import io.hstream.Subscription
+import io.hstream.View
 import io.hstream.internal.CreateQueryRequest
 import io.hstream.internal.DeleteConnectorRequest
 import io.hstream.internal.DeleteQueryRequest
@@ -46,7 +66,7 @@ class HStreamClientKtImpl(
     private val bootstrapServerUrls: List<String>,
     private val requestTimeoutMs: Long,
     credentials: ChannelCredentials? = null,
-    channelProvider: ChannelProvider? = null
+    channelProvider: ChannelProvider? = null,
 ) : HStreamClient {
 
     private val logger = LoggerFactory.getLogger(HStreamClientKtImpl::class.java)
@@ -56,7 +76,7 @@ class HStreamClientKtImpl(
     fun refreshClusterServerUrls() {
         val describeClusterResponse = unaryCallWithCurrentUrls(
             bootstrapServerUrls,
-            this.channelProvider
+            this.channelProvider,
         ) { stub -> stub.describeCluster(Empty.newBuilder().build()) }
         val serverNodes = describeClusterResponse.serverNodesList
         val serverUrls: ArrayList<String> = ArrayList(serverNodes.size)
@@ -99,7 +119,6 @@ class HStreamClientKtImpl(
         return HStreamApiGrpcKt.HStreamApiCoroutineStub(channelProvider.get(url)).withDeadlineAfter(timeoutMs, TimeUnit.MILLISECONDS)
     }
 
-
     init {
         if (channelProvider == null) {
             this.channelProvider = ChannelProviderImpl(credentials)
@@ -135,7 +154,7 @@ class HStreamClientKtImpl(
     }
 
     override fun newStreamKeyReader(): StreamKeyReaderBuilder {
-       return StreamKeyReaderBuilderImpl(this)
+        return StreamKeyReaderBuilderImpl(this)
     }
 
     override fun newQueryer(): QueryerBuilder {
@@ -167,8 +186,8 @@ class HStreamClientKtImpl(
                         .replicationFactor(replicationFactor.toInt())
                         .shardCount(shardCnt)
                         .backlogDuration(backlogDuration)
-                        .build()
-                )
+                        .build(),
+                ),
             )
         }
     }
@@ -177,7 +196,7 @@ class HStreamClientKtImpl(
         checkNotNull(stream)
         unaryCallBlocked {
             it.createStream(
-                GrpcUtils.streamToGrpc(stream)
+                GrpcUtils.streamToGrpc(stream),
             )
         }
     }
@@ -191,7 +210,7 @@ class HStreamClientKtImpl(
                 it.streamName,
                 it.shardId,
                 it.startHashRangeKey,
-                it.endHashRangeKey
+                it.endHashRangeKey,
             )
         }
     }
@@ -223,7 +242,7 @@ class HStreamClientKtImpl(
     override fun listSubscriptions(): List<Subscription> {
         return unaryCallBlocked {
             it.listSubscriptions(ListSubscriptionsRequest.newBuilder().build()).subscriptionList.map(
-                GrpcUtils::subscriptionFromGrpc
+                GrpcUtils::subscriptionFromGrpc,
             )
         }
     }
@@ -246,10 +265,10 @@ class HStreamClientKtImpl(
             val serverUrl = lookupSubscriptionServerUrl(subscriptionId)
             HStreamApiGrpcKt.HStreamApiCoroutineStub(
                 channelProvider.get(
-                    serverUrl
-                )
+                    serverUrl,
+                ),
             ).deleteSubscription(
-                DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).setForce(force).build()
+                DeleteSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).setForce(force).build(),
             )
         }
     }
@@ -389,7 +408,7 @@ class HStreamClientKtImpl(
                     .setName(name)
                     .setBegin(beginLine)
                     .setCount(readCount)
-                    .build()
+                    .build(),
             ).logs
         }
     }
@@ -403,10 +422,12 @@ class HStreamClientKtImpl(
     override fun getTailRecordId(streamName: String?, shardId: Long): String {
         checkNotNull(streamName)
         return unaryCallBlocked {
-            val recordId = it.getTailRecordId(GetTailRecordIdRequest.newBuilder()
-                .setStreamName(streamName)
-                .setShardId(shardId)
-                .build()).tailRecordId
+            val recordId = it.getTailRecordId(
+                GetTailRecordIdRequest.newBuilder()
+                    .setStreamName(streamName)
+                    .setShardId(shardId)
+                    .build(),
+            ).tailRecordId
             GrpcUtils.recordIdFromGrpc(recordId)
         }
     }

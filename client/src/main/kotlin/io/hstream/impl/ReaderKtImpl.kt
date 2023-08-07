@@ -26,7 +26,7 @@ class ReaderKtImpl(
     private val shardOffset: StreamShardOffset,
     private val timeoutMs: Int,
     private val readerId: String,
-    private val requestTimeoutMs: Long
+    private val requestTimeoutMs: Long,
 ) : Reader {
 
     private var serverUrl: String
@@ -78,7 +78,6 @@ class ReaderKtImpl(
     }
 
     override fun close() {
-
         val deleteShardReaderRequest = DeleteShardReaderRequest.newBuilder()
             .setReaderId(readerId)
             .build()

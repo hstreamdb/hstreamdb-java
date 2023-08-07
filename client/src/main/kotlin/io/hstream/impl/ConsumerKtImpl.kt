@@ -39,7 +39,7 @@ class ConsumerKtImpl(
     private val hRecordReceiver: HRecordReceiver?,
     private val batchReceiver: BatchReceiver?,
     val ackBufferSize: Int,
-    ackAgeLimit: Long
+    ackAgeLimit: Long,
 ) : AbstractService(), Consumer {
     private val fetchScope = CoroutineScope(Dispatchers.IO)
     private lateinit var fetchJob: Job
@@ -126,7 +126,7 @@ class ConsumerKtImpl(
     private suspend fun lookupSubscription(): String {
         return client.unaryCallCoroutine {
             val serverNode = it.lookupSubscription(
-                LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build()
+                LookupSubscriptionRequest.newBuilder().setSubscriptionId(subscriptionId).build(),
             ).serverNode
             return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
         }
@@ -171,21 +171,22 @@ class ConsumerKtImpl(
                         logger.debug(
                             "consumer [{}] processes rawRecord [{}] done",
                             consumerName,
-                            receivedHStreamRecord.recordId
+                            receivedHStreamRecord.recordId,
                         )
                     } catch (e: Exception) {
                         logger.error(
                             "consumer [{}] processes rawRecord [{}] error",
                             consumerName,
                             receivedHStreamRecord.recordId,
-                            e
+                            e,
                         )
                     }
                 } else {
                     logger.debug("consumer [{}] ready to process hRecord [{}]", consumerName, receivedHStreamRecord.recordId)
                     try {
                         hRecordReceiver!!.processHRecord(
-                            toReceivedHRecord(receivedHStreamRecord, createdTime), responder
+                            toReceivedHRecord(receivedHStreamRecord, createdTime),
+                            responder,
                         )
                         logger.debug("consumer [{}] processes hRecord [{}] done", consumerName, receivedHStreamRecord.recordId)
                     } catch (e: Exception) {
@@ -193,7 +194,7 @@ class ConsumerKtImpl(
                             "consumer [{}] processes hRecord [{}] error",
                             consumerName,
                             receivedHStreamRecord.recordId,
-                            e
+                            e,
                         )
                     }
                 }
@@ -243,7 +244,10 @@ class ConsumerKtImpl(
                 val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(receivedHStreamRecord.record)
                 val header = RecordUtils.parseRecordHeaderFromHStreamRecord(receivedHStreamRecord.record)
                 ReceivedRawRecord(
-                    GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId), header, rawRecord, createdTime
+                    GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.recordId),
+                    header,
+                    rawRecord,
+                    createdTime,
                 )
             } catch (e: InvalidProtocolBufferException) {
                 throw HStreamDBClientException.InvalidRecordException("parse HStreamRecord error", e)
