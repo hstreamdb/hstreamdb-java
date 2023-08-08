@@ -41,7 +41,9 @@ public class Subscription {
     this.createdTime = createdTime;
   }
 
-  /** @return {@link Subscription.Builder} */
+  /**
+   * @return {@link Subscription.Builder}
+   */
   public static Builder newBuilder() {
     return new Builder();
   }

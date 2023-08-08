@@ -22,7 +22,7 @@ class BufferedProducerKtImplTest {
         val writeResult = producer.write(
             Record.newBuilder()
                 .rawRecord("some-byte-data".toByteArray())
-                .build()
+                .build(),
         )
         producer.flush()
         writeResult.get()
@@ -45,7 +45,7 @@ class BufferedProducerKtImplTest {
             val writeResult = producer.write(
                 Record.newBuilder()
                     .rawRecord("some-byte-data".toByteArray())
-                    .build()
+                    .build(),
             )
             producer.flush()
             writeResult.get()
@@ -68,7 +68,7 @@ class BufferedProducerKtImplTest {
             .batchSetting(
                 BatchSetting.newBuilder()
                     .recordCountLimit(recordCountLimit)
-                    .build()
+                    .build(),
             )
             .build()
 
@@ -77,7 +77,7 @@ class BufferedProducerKtImplTest {
             val writeResult = producer.write(
                 Record.newBuilder()
                     .rawRecord("some-byte-data".toByteArray())
-                    .build()
+                    .build(),
             )
             mutWriteResults.add(writeResult)
         }
@@ -89,7 +89,7 @@ class BufferedProducerKtImplTest {
         val writeResult = producer.write(
             Record.newBuilder()
                 .rawRecord("some-byte-data".toByteArray())
-                .build()
+                .build(),
         )
         mutWriteResults.add(writeResult)
         Thread.sleep(150)

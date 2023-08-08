@@ -21,7 +21,7 @@ fun buildRandomBatchedGenericRecord(numberOfRecords: Int, payload: ByteString, f
             .setHeader(
                 HStreamRecordHeader.newBuilder()
                     .setFlag(flag)
-                    .build()
+                    .build(),
             )
             .setPayload(payload)
             .build()

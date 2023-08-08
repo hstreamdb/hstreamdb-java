@@ -1,14 +1,16 @@
 package io.hstream.util;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import com.github.luben.zstd.Zstd;
 import com.github.luben.zstd.ZstdException;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Struct;
-import io.hstream.*;
+import io.hstream.HRecord;
+import io.hstream.HStreamDBClientException;
 import io.hstream.Record;
+import io.hstream.RecordHeader;
 import io.hstream.impl.DefaultSettings;
 import io.hstream.impl.ReceivedHStreamRecord;
 import io.hstream.internal.BatchHStreamRecords;
@@ -182,16 +184,17 @@ public class RecordUtils {
   }
 
   // decompress, map records
-  public static io.hstream.ReceivedRecord getReceivedRecord(ReceivedHStreamRecord receivedHStreamRecord, Instant publishTime) {
-      var hStreamRecord = receivedHStreamRecord.getRecord();
-      var header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord);
-      var recordBuilder = Record.newBuilder().partitionKey(header.getPartitionKey());
-      if (RecordUtils.isRawRecord(hStreamRecord)) {
-        recordBuilder.rawRecord(RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord));
-      } else {
-        recordBuilder.hRecord(RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord));
-      }
-      var recordId = GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.getRecordId());
-      return new io.hstream.ReceivedRecord(recordId, recordBuilder.build(), publishTime);
+  public static io.hstream.ReceivedRecord getReceivedRecord(
+      ReceivedHStreamRecord receivedHStreamRecord, Instant publishTime) {
+    var hStreamRecord = receivedHStreamRecord.getRecord();
+    var header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord);
+    var recordBuilder = Record.newBuilder().partitionKey(header.getPartitionKey());
+    if (RecordUtils.isRawRecord(hStreamRecord)) {
+      recordBuilder.rawRecord(RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord));
+    } else {
+      recordBuilder.hRecord(RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord));
+    }
+    var recordId = GrpcUtils.recordIdFromGrpc(receivedHStreamRecord.getRecordId());
+    return new io.hstream.ReceivedRecord(recordId, recordBuilder.build(), publishTime);
   }
 }

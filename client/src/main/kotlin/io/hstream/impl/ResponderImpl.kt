@@ -23,12 +23,13 @@ class AckSender(
     private val ackFlow: MutableSharedFlow<StreamingFetchRequest>,
     private val consumerName: String,
     private val bufferSize: Int,
-    private val ackAgeLimit: Long
+    private val ackAgeLimit: Long,
 ) : Closeable {
     private val lock = ReentrantLock()
     private val buffer: MutableList<RecordId> = ArrayList(bufferSize)
     private val emitScope = CoroutineScope(Dispatchers.IO)
     private var scheduler: ScheduledExecutorService? = null
+
     @Volatile
     private var closed: Boolean = false
     private var pendingFlushFuture: ScheduledFuture<*>? = null
@@ -93,7 +94,7 @@ class AckSender(
 
 class ResponderImpl(
     private val ackSender: AckSender,
-    private val recordId: RecordId
+    private val recordId: RecordId,
 ) : Responder {
     override fun ack() {
         ackSender.ack(recordId)

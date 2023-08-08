@@ -1,6 +1,6 @@
 package io.hstream;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkState;
 
 public class FlowControlSetting {
 

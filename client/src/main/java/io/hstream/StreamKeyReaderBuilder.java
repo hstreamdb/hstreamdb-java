@@ -9,6 +9,7 @@ public interface StreamKeyReaderBuilder {
   StreamKeyReaderBuilder from(StreamShardOffset from);
 
   StreamKeyReaderBuilder until(StreamShardOffset until);
+
   StreamKeyReaderBuilder bufferSize(int bufferSize);
 
   StreamKeyReader build();

@@ -26,10 +26,10 @@ import kotlin.random.Random
 
 class BlackBoxSourceHServerMock(
     hMetaMockCluster: HMetaMock,
-    private val serverName: String
+    private val serverName: String,
 ) : HServerMock(
     hMetaMockCluster,
-    serverName
+    serverName,
 ) {
     private val consumerNameChannelMap: MutableMap<String, Channel<List<RecordId>>> = mutableMapOf()
     private val shouldCloseAllSubscriptions: AtomicBoolean = AtomicBoolean(false)
@@ -59,7 +59,7 @@ class BlackBoxSourceHServerMock(
 
     override fun lookupSubscription(
         request: LookupSubscriptionRequest?,
-        responseObserver: StreamObserver<LookupSubscriptionResponse>?
+        responseObserver: StreamObserver<LookupSubscriptionResponse>?,
     ) {
         responseObserver?.onNext(
             LookupSubscriptionResponse.newBuilder()
@@ -69,8 +69,8 @@ class BlackBoxSourceHServerMock(
                         .setHost(uri.host)
                         .setPort(uri.port)
                         .setId(0)
-                        .build()
-                ).build()
+                        .build(),
+                ).build(),
         )
         responseObserver?.onCompleted()
     }
@@ -102,10 +102,10 @@ class BlackBoxSourceHServerMock(
                                                     .setShardId(Random.nextLong())
                                                     .setBatchId(Random.nextLong())
                                                     .setBatchIndex(it).build()
-                                            }
+                                            },
                                         )
                                         .setRecord(buildRandomBatchedHRecord(len))
-                                        .build()
+                                        .build(),
                                 )
                                 .build()
 
@@ -124,10 +124,10 @@ class BlackBoxSourceHServerMock(
                                                     .setShardId(Random.nextLong())
                                                     .setBatchId(Random.nextLong())
                                                     .setBatchIndex(it).build()
-                                            }
+                                            },
                                         )
                                         .setRecord(buildRandomBatchedRawRecord(len))
-                                        .build()
+                                        .build(),
                                 )
                                 .build()
 
@@ -182,9 +182,9 @@ class BlackBoxSourceHServerMockController(
     }
 }
 
-fun buildBlackBoxSourceClient_(): Pair<HStreamClient, Pair<BlackBoxSourceHServerMockController, MockedChannelProvider >> {
+fun buildBlackBoxSourceClient_(): Pair<HStreamClient, Pair<BlackBoxSourceHServerMockController, MockedChannelProvider>> {
     val xs = buildMockedClient_(
-        BlackBoxSourceHServerMock::class.java as Class<HStreamApiGrpc.HStreamApiImplBase>
+        BlackBoxSourceHServerMock::class.java as Class<HStreamApiGrpc.HStreamApiImplBase>,
     )
     val serverImpl: BlackBoxSourceHServerMock = (xs.second.first) as BlackBoxSourceHServerMock
     val channel = serverImpl.getConsumerNameChannelMap()
@@ -195,10 +195,10 @@ fun buildBlackBoxSourceClient_(): Pair<HStreamClient, Pair<BlackBoxSourceHServer
                 channel,
                 serverImpl.getShouldCloseAllSubscriptions(),
                 serverImpl.getSendInterval(),
-                serverImpl.getSendBatchLen()
+                serverImpl.getSendBatchLen(),
             ),
-            xs.second.second
-        )
+            xs.second.second,
+        ),
     )
 }
 

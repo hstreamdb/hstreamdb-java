@@ -6,25 +6,35 @@ import java.util.List;
 /** A client for the HStreamDB. */
 public interface HStreamClient extends AutoCloseable {
 
-  /** @return a {@link HStreamClientBuilder} */
+  /**
+   * @return a {@link HStreamClientBuilder}
+   */
   static HStreamClientBuilder builder() {
     return new HStreamClientBuilderImpl();
   }
 
-  /** @return a {@link ProducerBuilder} */
+  /**
+   * @return a {@link ProducerBuilder}
+   */
   ProducerBuilder newProducer();
 
   BufferedProducerBuilder newBufferedProducer();
 
-  /** @return a {@link ConsumerBuilder} */
+  /**
+   * @return a {@link ConsumerBuilder}
+   */
   ConsumerBuilder newConsumer();
 
   @Deprecated
-  /** @return a {@link QueryerBuilder} */
+  /**
+   * @return a {@link QueryerBuilder}
+   */
   QueryerBuilder newQueryer();
 
   @Deprecated
-  /** @return a {@link ReaderBuilder} */
+  /**
+   * @return a {@link ReaderBuilder}
+   */
   ReaderBuilder newReader();
 
   StreamShardReaderBuilder newStreamShardReader();

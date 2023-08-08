@@ -1,9 +1,13 @@
 package io.hstream.impl;
 
-import static com.google.common.base.Preconditions.*;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import io.hstream.*;
+import io.hstream.StreamShardOffset;
+import io.hstream.StreamShardReader;
+import io.hstream.StreamShardReaderBatchReceiver;
+import io.hstream.StreamShardReaderBuilder;
+import io.hstream.StreamShardReaderReceiver;
 
 public class StreamShardReaderBuilderImpl implements StreamShardReaderBuilder {
 
@@ -68,10 +72,11 @@ public class StreamShardReaderBuilderImpl implements StreamShardReaderBuilder {
     checkNotNull(client);
     checkArgument(streamName != null, "StreamShardReaderBuilder: `streamName` should not be null");
     checkArgument(shardId > 0, "StreamShardReaderBuilder: `shardId` error");
+    checkArgument(from != null, "StreamShardReaderBuilder: `from` should not be null");
     checkArgument(
-        from != null, "StreamShardReaderBuilder: `from` should not be null");
-    checkArgument(receiver != null || batchReceiver != null,
-            "StreamShardReaderBuilder: `receiver` should not be both null");
-    return new StreamShardReaderKtImpl(client, streamName, shardId, from, maxReadBatches, until, receiver, batchReceiver);
+        receiver != null || batchReceiver != null,
+        "StreamShardReaderBuilder: `receiver` should not be both null");
+    return new StreamShardReaderKtImpl(
+        client, streamName, shardId, from, maxReadBatches, until, receiver, batchReceiver);
   }
 }

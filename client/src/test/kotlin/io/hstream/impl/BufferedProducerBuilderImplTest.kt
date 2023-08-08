@@ -28,7 +28,7 @@ class BufferedProducerBuilderImplTest {
         val client = buildMockedClient()
         val builder = BufferedProducerBuilderImpl(client as HStreamClientKtImpl)
         assertThrows(
-            IllegalArgumentException::class.java
+            IllegalArgumentException::class.java,
         ) { builder.stream("test-stream").requestTimeoutMs(-1).build() }
     }
 
@@ -36,7 +36,7 @@ class BufferedProducerBuilderImplTest {
     fun testBuildWithNullClient() {
         val builder = BufferedProducerBuilderImpl(null)
         assertThrows(
-            NullPointerException::class.java
+            NullPointerException::class.java,
         ) { builder.stream("test-stream").requestTimeoutMs(1000).build() }
     }
 

@@ -88,7 +88,7 @@ suspend fun <Resp> unaryCallCoroutine(
     urlsRef: AtomicReference<List<String>>,
     channelProvider: ChannelProvider,
     timeoutMs: Long,
-    call: suspend (stub: HStreamApiCoroutineStub) -> Resp
+    call: suspend (stub: HStreamApiCoroutineStub) -> Resp,
 ): Resp {
     // Note: A failed grpc call can throw both 'StatusException' and 'StatusRuntimeException'.
     //       This function is for handling them.
@@ -126,7 +126,7 @@ fun <Resp> unaryCallAsync(
     urlsRef: AtomicReference<List<String>>,
     channelProvider: ChannelProvider,
     timeoutMs: Long,
-    call: suspend (stub: HStreamApiCoroutineStub) -> Resp
+    call: suspend (stub: HStreamApiCoroutineStub) -> Resp,
 ): CompletableFuture<Resp> {
     return futureForIO { unaryCallCoroutine(urlsRef, channelProvider, timeoutMs, call) }
 }
@@ -136,14 +136,14 @@ fun <Resp> unaryCallBlocked(
     urlsRef: AtomicReference<List<String>>,
     channelProvider: ChannelProvider,
     timeoutMs: Long,
-    call: suspend (stub: HStreamApiCoroutineStub) -> Resp
+    call: suspend (stub: HStreamApiCoroutineStub) -> Resp,
 ): Resp {
     return runBlocking(MoreExecutors.directExecutor().asCoroutineDispatcher()) {
         unaryCallCoroutine(
             urlsRef,
             channelProvider,
             timeoutMs,
-            call
+            call,
         )
     }
 }

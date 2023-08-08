@@ -1,13 +1,24 @@
 package io.hstream.impl
 
 import com.google.protobuf.InvalidProtocolBufferException
-import io.hstream.*
+import io.hstream.HStreamDBClientException
 import io.hstream.ReceivedRecord
-import io.hstream.internal.*
+import io.hstream.Record
+import io.hstream.StreamKeyReader
+import io.hstream.StreamShardOffset
+import io.hstream.internal.HStreamRecord
+import io.hstream.internal.LookupKeyRequest
+import io.hstream.internal.ReadStreamByKeyRequest
+import io.hstream.internal.ReadStreamByKeyResponse
+import io.hstream.internal.RecordId
 import io.hstream.util.GrpcUtils
 import io.hstream.util.RecordUtils
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.util.UUID
@@ -34,14 +45,14 @@ class StreamKeyReaderKtImpl(
     private val isStopped: AtomicBoolean = AtomicBoolean(false)
 
     init {
-       doStart()
+        doStart()
     }
 
-    private  fun doStart() {
+    private fun doStart() {
         logger.info("streamKeyReader $readerName is starting")
         val lookupRequest = LookupKeyRequest.newBuilder()
-                .setPartitionKey(key)
-                .build()
+            .setPartitionKey(key)
+            .build()
         val lookupResp = client.unaryCallBlocked { it.lookupKey(lookupRequest) }
         val serverUrl = lookupResp.host + ":" + lookupResp.port
         val requestBuilder = ReadStreamByKeyRequest.newBuilder()
@@ -55,35 +66,34 @@ class StreamKeyReaderKtImpl(
         }
         val respFlow = client.getCoroutineStub(serverUrl).readStreamByKey(requestFlow)
         readerScope.launch {
-           launch {
-               // wait until rpc called
-               while (requestFlow.subscriptionCount.value == 0) {
-                   delay(100)
-               }
-               try{
-                   requestFlow.emit(requestBuilder.build())
-               } catch (e: Exception) {
-                   logger.error("steamKeyReader $readerName failed", e)
-                   exceptionRef.compareAndSet(null, e)
-                   isStopped.set(true)
-               }
-           }
-           launch {
-               try {
-                   respFlow.collect {
-                       saveToBuffer(it)
-                   }
-                } catch (e: Exception) {
-                   logger.error("steamKeyReader $readerName failed", e)
-                   exceptionRef.compareAndSet(null, e)
-                   isStopped.set(true)
+            launch {
+                // wait until rpc called
+                while (requestFlow.subscriptionCount.value == 0) {
+                    delay(100)
                 }
-               // wait for saveToBuffer complete
-               delay(100)
-               isStopped.set(true)
-               logger.info("server stopped")
-
-           }
+                try {
+                    requestFlow.emit(requestBuilder.build())
+                } catch (e: Exception) {
+                    logger.error("steamKeyReader $readerName failed", e)
+                    exceptionRef.compareAndSet(null, e)
+                    isStopped.set(true)
+                }
+            }
+            launch {
+                try {
+                    respFlow.collect {
+                        saveToBuffer(it)
+                    }
+                } catch (e: Exception) {
+                    logger.error("steamKeyReader $readerName failed", e)
+                    exceptionRef.compareAndSet(null, e)
+                    isStopped.set(true)
+                }
+                // wait for saveToBuffer complete
+                delay(100)
+                isStopped.set(true)
+                logger.info("server stopped")
+            }
         }
     }
 
@@ -93,27 +103,26 @@ class StreamKeyReaderKtImpl(
         logger.info("StreamKeyReader $readerName closed")
     }
 
-    override fun hasNext() : Boolean {
-       return !isStopped.get() || !buffer.isEmpty()
+    override fun hasNext(): Boolean {
+        return !isStopped.get() || !buffer.isEmpty()
     }
 
     override fun next(): ReceivedRecord? {
-
         var res: ReceivedRecord? = null
 
         while (res == null) {
             res = buffer.poll(100, TimeUnit.MILLISECONDS)
 
-            if(res == null) {
+            if (res == null) {
                 val e = exceptionRef.get()
-                if(e != null) throw e
+                if (e != null) throw e
 
-                if(isStopped.get()) return null
+                if (isStopped.get()) return null
             }
         }
 
         readerScope.launch {
-            try{
+            try {
                 requestFlow.emit(ReadStreamByKeyRequest.newBuilder().setReadRecordCount(1).build())
             } catch (e: Exception) {
                 logger.error("steamKeyReader $readerName failed", e)
@@ -142,19 +151,18 @@ class StreamKeyReaderKtImpl(
             return try {
                 val header = RecordUtils.parseRecordHeaderFromHStreamRecord(hStreamRecord)
                 if (RecordUtils.isRawRecord(hStreamRecord)) {
-
                     val rawRecord = RecordUtils.parseRawRecordFromHStreamRecord(hStreamRecord)
                     ReceivedRecord(
                         GrpcUtils.recordIdFromGrpc(recordId),
                         Record.newBuilder().partitionKey(header.partitionKey).rawRecord(rawRecord).build(),
-                        createdTime
+                        createdTime,
                     )
                 } else {
                     val hRecord = RecordUtils.parseHRecordFromHStreamRecord(hStreamRecord)
                     ReceivedRecord(
                         GrpcUtils.recordIdFromGrpc(recordId),
                         Record.newBuilder().partitionKey(header.partitionKey).hRecord(hRecord).build(),
-                        createdTime
+                        createdTime,
                     )
                 }
             } catch (e: InvalidProtocolBufferException) {

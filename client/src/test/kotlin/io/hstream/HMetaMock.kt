@@ -195,7 +195,7 @@ class HMetaMockTest {
         val serverName1 = "localhost:8080"
         val serverName2 = "localhost:8081"
         hMetaMock.registerStream(streamName, serverName1)
-        assertThrows <Throwable> {
+        assertThrows<Throwable> {
             hMetaMock.registerStream(streamName, serverName2)
         }
         Unit

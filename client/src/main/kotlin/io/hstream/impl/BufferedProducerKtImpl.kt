@@ -47,7 +47,7 @@ class BufferedProducerKtImpl(
     private var timerServices: HashMap<Long, ScheduledFuture<*>> = HashMap()
 
     override fun writeInternal(
-        hStreamRecord: HStreamRecord
+        hStreamRecord: HStreamRecord,
     ): CompletableFuture<String> {
         if (closed) {
             throw HStreamDBClientException("BufferedProducer is closed")

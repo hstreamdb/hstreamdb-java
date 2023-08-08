@@ -2,7 +2,12 @@ package io.hstream.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import io.hstream.*;
+import io.hstream.HRecord;
+import io.hstream.HStreamClient;
+import io.hstream.HStreamDBClientException;
+import io.hstream.Observer;
+import io.hstream.Queryer;
+import io.hstream.QueryerBuilder;
 import java.util.List;
 
 public class QueryerBuilderImpl implements QueryerBuilder {
