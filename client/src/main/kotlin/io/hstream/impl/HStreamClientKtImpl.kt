@@ -3,7 +3,6 @@ package io.hstream.impl
 import com.google.common.base.Preconditions.checkArgument
 import com.google.common.util.concurrent.MoreExecutors
 import com.google.protobuf.Empty
-import io.grpc.ChannelCredentials
 import io.hstream.BufferedProducerBuilder
 import io.hstream.Cluster
 import io.hstream.Connector
@@ -65,12 +64,10 @@ import kotlin.streams.toList
 class HStreamClientKtImpl(
     private val bootstrapServerUrls: List<String>,
     private val requestTimeoutMs: Long,
-    credentials: ChannelCredentials? = null,
-    channelProvider: ChannelProvider? = null,
+    private val channelProvider: ChannelProvider,
 ) : HStreamClient {
 
     private val logger = LoggerFactory.getLogger(HStreamClientKtImpl::class.java)
-    private var channelProvider: ChannelProvider
 
     private val clusterServerUrls: AtomicReference<List<String>> = AtomicReference(null)
     fun refreshClusterServerUrls() {
@@ -120,11 +117,6 @@ class HStreamClientKtImpl(
     }
 
     init {
-        if (channelProvider == null) {
-            this.channelProvider = ChannelProviderImpl(credentials)
-        } else {
-            this.channelProvider = channelProvider
-        }
         logger.info("client init with bootstrapServerUrls [{}]", bootstrapServerUrls)
         refreshClusterServerUrls()
     }

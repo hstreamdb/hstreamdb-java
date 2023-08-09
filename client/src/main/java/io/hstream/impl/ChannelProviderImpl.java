@@ -1,10 +1,10 @@
 package io.hstream.impl;
 
 import com.google.common.util.concurrent.MoreExecutors;
-import io.grpc.ChannelCredentials;
-import io.grpc.Grpc;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.*;
+import io.grpc.stub.MetadataUtils;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChannelProviderImpl implements ChannelProvider {
@@ -16,6 +16,8 @@ public class ChannelProviderImpl implements ChannelProvider {
   static final String userAgent =
       "hstreamdb-java/" + ChannelProvider.class.getPackage().getImplementationVersion();
 
+  Map<String, String> header = new HashMap<>();
+
   public ChannelProviderImpl(int size) {
     provider = new ConcurrentHashMap<>(size);
   }
@@ -25,31 +27,42 @@ public class ChannelProviderImpl implements ChannelProvider {
     provider = new ConcurrentHashMap<>(DEFAULT_CHANNEL_PROVIDER_SIZE);
   }
 
+  public ChannelProviderImpl(ChannelCredentials credentials, Map<String, String> header) {
+    this.credentials = credentials;
+    provider = new ConcurrentHashMap<>(DEFAULT_CHANNEL_PROVIDER_SIZE);
+    if (header != null) {
+      this.header = header;
+    }
+  }
+
   public ChannelProviderImpl() {
     this(DEFAULT_CHANNEL_PROVIDER_SIZE);
   }
 
   @Override
   public ManagedChannel get(String serverUrl) {
+    return provider.computeIfAbsent(serverUrl, this::getInternal);
+  }
+
+  ManagedChannel getInternal(String url) {
+    ManagedChannelBuilder<?> builder;
     if (credentials == null) {
-      return provider.computeIfAbsent(
-          serverUrl,
-          url ->
-              ManagedChannelBuilder.forTarget(url)
-                  .disableRetry()
-                  .usePlaintext()
-                  .userAgent(userAgent)
-                  .executor(MoreExecutors.directExecutor())
-                  .build());
+      builder = ManagedChannelBuilder.forTarget(url);
+    } else {
+      builder = Grpc.newChannelBuilder(url, credentials);
     }
-    return provider.computeIfAbsent(
-        serverUrl,
-        url ->
-            Grpc.newChannelBuilder(url, credentials)
-                .disableRetry()
-                .userAgent(userAgent)
-                .executor(MoreExecutors.directExecutor())
-                .build());
+    if (!header.isEmpty()) {
+      var metadata = new Metadata();
+      header.forEach(
+          (k, v) -> metadata.put(Metadata.Key.of(k, Metadata.ASCII_STRING_MARSHALLER), v));
+      builder.intercept(MetadataUtils.newAttachHeadersInterceptor(metadata));
+    }
+    return builder
+        .disableRetry()
+        .usePlaintext()
+        .userAgent(userAgent)
+        .executor(MoreExecutors.directExecutor())
+        .build();
   }
 
   @Override

@@ -53,5 +53,7 @@ public interface HStreamClientBuilder {
 
   HStreamClientBuilder requestTimeoutMs(long timeoutMs);
 
+  HStreamClientBuilder withMetadata(String key, String value);
+
   HStreamClient build();
 }
