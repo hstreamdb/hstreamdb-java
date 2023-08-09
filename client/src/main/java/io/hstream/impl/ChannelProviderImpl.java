@@ -47,7 +47,7 @@ public class ChannelProviderImpl implements ChannelProvider {
   ManagedChannel getInternal(String url) {
     ManagedChannelBuilder<?> builder;
     if (credentials == null) {
-      builder = ManagedChannelBuilder.forTarget(url);
+      builder = ManagedChannelBuilder.forTarget(url).usePlaintext();
     } else {
       builder = Grpc.newChannelBuilder(url, credentials);
     }
@@ -59,7 +59,6 @@ public class ChannelProviderImpl implements ChannelProvider {
     }
     return builder
         .disableRetry()
-        .usePlaintext()
         .userAgent(userAgent)
         .executor(MoreExecutors.directExecutor())
         .build();
