@@ -3,6 +3,7 @@ package io.hstream.impl;
 import static com.google.common.base.Preconditions.*;
 import static io.hstream.util.UrlSchemaUtils.parseServerUrls;
 
+import io.grpc.ChannelCredentials;
 import io.grpc.TlsChannelCredentials;
 import io.hstream.HStreamClient;
 import io.hstream.HStreamClientBuilder;
@@ -10,7 +11,9 @@ import io.hstream.HStreamDBClientException;
 import io.hstream.UrlSchema;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class HStreamClientBuilderImpl implements HStreamClientBuilder {
@@ -21,6 +24,7 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
   boolean enableTlsAuthentication;
   String keyPath;
   String certPath;
+  Map<String, String> metadata = new HashMap<>();
 
   long requestTimeoutMs = DefaultSettings.GRPC_CALL_TIMEOUT_MS;
 
@@ -73,6 +77,12 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
   }
 
   @Override
+  public HStreamClientBuilder withMetadata(String key, String value) {
+    metadata.put(key, value);
+    return this;
+  }
+
+  @Override
   public HStreamClient build() {
     checkArgument(serviceUrl != null, "HStreamClientBuilder: `serviceUrl` should not be null");
     checkArgument(requestTimeoutMs > 0);
@@ -81,6 +91,9 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
     if (schemaHosts.getKey().equals(UrlSchema.HSTREAMS) && !enableTls) {
       throw new HStreamDBClientException("hstreams url schema should enable tls");
     }
+
+    // tls
+    ChannelCredentials credentials = null;
     if (enableTls) {
       checkArgument(caPath != null, "when TLS is enabled, `caPath` should not be null");
       try {
@@ -94,12 +107,17 @@ public class HStreamClientBuilderImpl implements HStreamClientBuilder {
               keyPath != null, "when TLS authentication is enabled, `keyPath` should not be null");
           credentialsBuilder = credentialsBuilder.keyManager(new File(certPath), new File(keyPath));
         }
-        return new HStreamClientKtImpl(
-            schemaHosts.getRight(), requestTimeoutMs, credentialsBuilder.build(), channelProvider);
+        credentials = credentialsBuilder.build();
       } catch (IOException e) {
         throw new HStreamDBClientException(String.format("invalid tls options, %s", e));
       }
     }
-    return new HStreamClientKtImpl(schemaHosts.getRight(), requestTimeoutMs, null, channelProvider);
+
+    // channel provider
+    ChannelProvider provider = channelProvider;
+    if (provider == null) {
+      provider = new ChannelProviderImpl(credentials, metadata);
+    }
+    return new HStreamClientKtImpl(schemaHosts.getRight(), requestTimeoutMs, provider);
   }
 }
