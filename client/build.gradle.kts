@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "io.hstream"
-version = "0.17.0"
+version = "0.17.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
