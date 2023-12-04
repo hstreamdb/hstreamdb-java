@@ -187,4 +187,6 @@ public interface HStreamClient extends AutoCloseable {
   void deleteConnector(String name);
 
   String getTailRecordId(String streamName, long shardId);
+
+  void trimShards(String stream, List<String> records);
 }

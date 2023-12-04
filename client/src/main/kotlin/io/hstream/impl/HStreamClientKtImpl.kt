@@ -52,6 +52,7 @@ import io.hstream.internal.LookupSubscriptionRequest
 import io.hstream.internal.ParseSqlRequest
 import io.hstream.internal.ResourceType
 import io.hstream.internal.TerminateQueryRequest
+import io.hstream.internal.TrimShardsRequest
 import io.hstream.util.GrpcUtils
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
@@ -441,6 +442,19 @@ class HStreamClientKtImpl(
             val req: LookupResourceRequest = LookupResourceRequest.newBuilder().setResType(resourceType).setResId(resourceId).build()
             val serverNode = it.lookupResource(req)
             return@unaryCallCoroutine "${serverNode.host}:${serverNode.port}"
+        }
+    }
+
+    override fun trimShards(stream: String?, records: List<String>?) {
+        checkNotNull(stream)
+        checkNotNull(records)
+        unaryCallBlocked {
+            it.trimShards(
+                TrimShardsRequest.newBuilder()
+                    .setStreamName(stream)
+                    .addAllRecordIds(records)
+                    .build(),
+            )
         }
     }
 }
