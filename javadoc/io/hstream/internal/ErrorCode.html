@@ -273,9 +273,21 @@ implements com.google.protobuf.ProtocolMessageEnum</pre>
 </td>
 </tr>
 <tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderAccessGap">ShardReaderAccessGap</a></span></code></th>
+<td class="colLast">
+<div class="block"><code>ShardReaderAccessGap = 904;</code></div>
+</td>
+</tr>
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderConflictOffset">ShardReaderConflictOffset</a></span></code></th>
 <td class="colLast">
 <div class="block"><code>ShardReaderConflictOffset = 901;</code></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderDataLossGap">ShardReaderDataLossGap</a></span></code></th>
+<td class="colLast">
+<div class="block"><code>ShardReaderDataLossGap = 903;</code></div>
 </td>
 </tr>
 <tr class="altColor">
@@ -286,9 +298,21 @@ implements com.google.protobuf.ProtocolMessageEnum</pre>
 </td>
 </tr>
 <tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderNotInConfigGap">ShardReaderNotInConfigGap</a></span></code></th>
+<td class="colLast">
+<div class="block"><code>ShardReaderNotInConfigGap = 905;</code></div>
+</td>
+</tr>
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderTooManyShards">ShardReaderTooManyShards</a></span></code></th>
 <td class="colLast">
 <div class="block"><code>ShardReaderTooManyShards = 902;</code></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderUnknownGap">ShardReaderUnknownGap</a></span></code></th>
+<td class="colLast">
+<div class="block"><code>ShardReaderUnknownGap = 906;</code></div>
 </td>
 </tr>
 <tr class="altColor">
@@ -573,9 +597,23 @@ implements com.google.protobuf.ProtocolMessageEnum</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderAccessGap_VALUE">ShardReaderAccessGap_VALUE</a></span></code></th>
+<td class="colLast">
+<div class="block"><code>ShardReaderAccessGap = 904;</code></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderConflictOffset_VALUE">ShardReaderConflictOffset_VALUE</a></span></code></th>
 <td class="colLast">
 <div class="block"><code>ShardReaderConflictOffset = 901;</code></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderDataLossGap_VALUE">ShardReaderDataLossGap_VALUE</a></span></code></th>
+<td class="colLast">
+<div class="block"><code>ShardReaderDataLossGap = 903;</code></div>
 </td>
 </tr>
 <tr class="altColor">
@@ -588,9 +626,23 @@ implements com.google.protobuf.ProtocolMessageEnum</pre>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderNotInConfigGap_VALUE">ShardReaderNotInConfigGap_VALUE</a></span></code></th>
+<td class="colLast">
+<div class="block"><code>ShardReaderNotInConfigGap = 905;</code></div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderTooManyShards_VALUE">ShardReaderTooManyShards_VALUE</a></span></code></th>
 <td class="colLast">
 <div class="block"><code>ShardReaderTooManyShards = 902;</code></div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ShardReaderUnknownGap_VALUE">ShardReaderUnknownGap_VALUE</a></span></code></th>
+<td class="colLast">
+<div class="block"><code>ShardReaderUnknownGap = 906;</code></div>
 </td>
 </tr>
 <tr class="altColor">
@@ -1311,6 +1363,46 @@ the order they are declared.</div>
 <div class="block"><code>ShardReaderTooManyShards = 902;</code></div>
 </li>
 </ul>
+<a id="ShardReaderDataLossGap">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ShardReaderDataLossGap</h4>
+<pre>public static final&nbsp;<a href="ErrorCode.html" title="enum in io.hstream.internal">ErrorCode</a> ShardReaderDataLossGap</pre>
+<div class="block"><code>ShardReaderDataLossGap = 903;</code></div>
+</li>
+</ul>
+<a id="ShardReaderAccessGap">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ShardReaderAccessGap</h4>
+<pre>public static final&nbsp;<a href="ErrorCode.html" title="enum in io.hstream.internal">ErrorCode</a> ShardReaderAccessGap</pre>
+<div class="block"><code>ShardReaderAccessGap = 904;</code></div>
+</li>
+</ul>
+<a id="ShardReaderNotInConfigGap">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ShardReaderNotInConfigGap</h4>
+<pre>public static final&nbsp;<a href="ErrorCode.html" title="enum in io.hstream.internal">ErrorCode</a> ShardReaderNotInConfigGap</pre>
+<div class="block"><code>ShardReaderNotInConfigGap = 905;</code></div>
+</li>
+</ul>
+<a id="ShardReaderUnknownGap">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ShardReaderUnknownGap</h4>
+<pre>public static final&nbsp;<a href="ErrorCode.html" title="enum in io.hstream.internal">ErrorCode</a> ShardReaderUnknownGap</pre>
+<div class="block"><code>ShardReaderUnknownGap = 906;</code></div>
+</li>
+</ul>
 <a id="UNRECOGNIZED">
 <!--   -->
 </a>
@@ -1939,7 +2031,7 @@ the order they are declared.</div>
 <a id="ShardReaderTooManyShards_VALUE">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>ShardReaderTooManyShards_VALUE</h4>
 <pre>public static final&nbsp;int ShardReaderTooManyShards_VALUE</pre>
@@ -1947,6 +2039,62 @@ the order they are declared.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../constant-values.html#io.hstream.internal.ErrorCode.ShardReaderTooManyShards_VALUE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="ShardReaderDataLossGap_VALUE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ShardReaderDataLossGap_VALUE</h4>
+<pre>public static final&nbsp;int ShardReaderDataLossGap_VALUE</pre>
+<div class="block"><code>ShardReaderDataLossGap = 903;</code></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#io.hstream.internal.ErrorCode.ShardReaderDataLossGap_VALUE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="ShardReaderAccessGap_VALUE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ShardReaderAccessGap_VALUE</h4>
+<pre>public static final&nbsp;int ShardReaderAccessGap_VALUE</pre>
+<div class="block"><code>ShardReaderAccessGap = 904;</code></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#io.hstream.internal.ErrorCode.ShardReaderAccessGap_VALUE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="ShardReaderNotInConfigGap_VALUE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ShardReaderNotInConfigGap_VALUE</h4>
+<pre>public static final&nbsp;int ShardReaderNotInConfigGap_VALUE</pre>
+<div class="block"><code>ShardReaderNotInConfigGap = 905;</code></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#io.hstream.internal.ErrorCode.ShardReaderNotInConfigGap_VALUE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="ShardReaderUnknownGap_VALUE">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>ShardReaderUnknownGap_VALUE</h4>
+<pre>public static final&nbsp;int ShardReaderUnknownGap_VALUE</pre>
+<div class="block"><code>ShardReaderUnknownGap = 906;</code></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../constant-values.html#io.hstream.internal.ErrorCode.ShardReaderUnknownGap_VALUE">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
