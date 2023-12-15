@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 public class HServerException extends RuntimeException {
   ErrBody errBody;
 
-  static public class ErrBody {
+  public static class ErrBody {
     public int error;
     public String message;
     public JsonElement extra;
