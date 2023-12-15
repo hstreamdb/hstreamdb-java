@@ -7,10 +7,10 @@ import com.google.gson.JsonSyntaxException;
 public class HServerException extends RuntimeException {
   ErrBody errBody;
 
-  static class ErrBody {
-    int error;
-    String message;
-    JsonElement extra;
+  public static class ErrBody {
+    public int error;
+    public String message;
+    public JsonElement extra;
   }
 
   HServerException(ErrBody errBody) {
@@ -24,6 +24,10 @@ public class HServerException extends RuntimeException {
 
   public String getErrorMessage() {
     return errBody.message;
+  }
+
+  public ErrBody getErrBody() {
+    return errBody;
   }
 
   public String getRawErrorBody() {

@@ -1,5 +1,9 @@
 package io.hstream.impl
 
+import io.grpc.Status
+import io.grpc.StatusException
+import io.grpc.StatusRuntimeException
+import io.hstream.HServerException
 import io.hstream.HStreamDBClientException
 import io.hstream.Reader
 import io.hstream.ReceivedRecord
@@ -7,6 +11,7 @@ import io.hstream.Record
 import io.hstream.StreamShardOffset
 import io.hstream.internal.CreateShardReaderRequest
 import io.hstream.internal.DeleteShardReaderRequest
+import io.hstream.internal.ErrorCode
 import io.hstream.internal.LookupShardReaderRequest
 import io.hstream.internal.ReadShardRequest
 import io.hstream.util.GrpcUtils
@@ -70,11 +75,25 @@ class ReaderKtImpl(
                     }
                 }
                 readFuture.complete(res as MutableList<ReceivedRecord>?)
+            } catch (e: StatusException) {
+                handleGrpcError(e.status, readFuture)
+            } catch (e: StatusRuntimeException) {
+                handleGrpcError(e.status, readFuture)
             } catch (e: Throwable) {
                 readFuture.completeExceptionally(HStreamDBClientException(e))
             }
         }
         return readFuture
+    }
+
+    private fun handleGrpcError(status: Status, future: CompletableFuture<MutableList<ReceivedRecord>>) {
+        val e = HServerException.tryToHServerException(status.description)
+        if (e != null && e.errBody.error == ErrorCode.ShardReaderDataLossGap.number) {
+            logger.warn("skip a data loss gap error, {}", status)
+            future.complete(mutableListOf())
+        } else {
+            future.completeExceptionally(HStreamDBClientException(status.asException()))
+        }
     }
 
     override fun close() {
