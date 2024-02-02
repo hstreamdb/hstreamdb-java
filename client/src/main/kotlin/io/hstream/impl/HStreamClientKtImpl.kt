@@ -24,6 +24,7 @@ import io.hstream.StreamKeyReaderBuilder
 import io.hstream.StreamShardReaderBuilder
 import io.hstream.Subscription
 import io.hstream.View
+import io.hstream.internal.AlterConnectorConfigRequest
 import io.hstream.internal.CreateQueryRequest
 import io.hstream.internal.DeleteConnectorRequest
 import io.hstream.internal.DeleteQueryRequest
@@ -403,6 +404,12 @@ class HStreamClientKtImpl(
                     .setCount(readCount)
                     .build(),
             ).logs
+        }
+    }
+
+    override fun alterConnectorConfig(name: String?, config: String?) {
+        return unaryCallBlockedWithLookup(ResourceType.ResConnector, name) {
+            it.alterConnectorConfig(AlterConnectorConfigRequest.newBuilder().setName(name).setConfig(config).build())
         }
     }
 
